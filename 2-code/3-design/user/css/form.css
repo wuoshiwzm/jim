@@ -1,0 +1,59 @@
+   .uploadify-button {
+            background-color: #3994c7;
+            /*background-image: -moz-linear-gradient(center bottom , #fe6901 0%, #fe6901 100%);*/
+            background-image: -moz-linear-gradient(center bottom , #3994c7 0%, #3994c7 100%);
+            background-position: center top;
+            background-repeat: no-repeat;
+            border-radius: 2px;
+            color: #fff;
+            font: bold 12px Arial,Helvetica,sans-serif;
+            margin-left: 110px;
+            text-align: center;
+            text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.25);
+        }
+        .pic-group{
+            margin-left: 95px;
+        }
+        .pic-group .pic_1{
+            padding-left: 5px;
+        }
+        .Validform_checktip{
+            overflow:hidden;
+            color:#999;
+            font-size:14px;
+            font-family: '微软雅黑';
+        }
+        .Validform_right{
+            color:#71b83d;
+            padding:0 0 2px 24px !important;
+            margin-left: 10px;
+            background:url(../images/right.png) no-repeat left 0;
+        }
+        .Validform_wrong{
+            color:#F96800;
+            padding:0 0 1px 24px !important;
+            white-space:nowrap;
+            margin-left: 10px;
+            background:url(../images/wrro.png) left 0 no-repeat;
+            display: inline-block;
+            vertical-align: middle;
+        }
+        .Validform_skate {
+            color:#1188d3;
+            padding:0 0 1px 24px !important;
+            white-space:nowrap;
+            margin-left: 10px;
+            background:url(../images/p_p.png) left 0 no-repeat;
+            display: inline-block;
+            vertical-align: middle;
+        }
+
+        .background{
+            background: url(../images/success_1.png) no-repeat scroll 0 0 transparent;
+            position: absolute; width: 35px; right: 0px; bottom:27px; height: 32px;
+        }
+        ul{list-style: none}
+        .clear{clear: both}
+        .itab ul li{float: left;padding-left: 15px;}
+        .forminfo li{padding-top: 10px;line-height: 26px}
+        .formlbale{width: 70px;float: left}

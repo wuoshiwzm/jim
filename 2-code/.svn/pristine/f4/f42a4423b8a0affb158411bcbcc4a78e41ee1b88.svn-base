@@ -1,0 +1,776 @@
+<!DOCTYPE html>
+<head>
+    <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport">
+	<meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,Chrome=1">
+	<meta name="keywords" content="居利家养老网商城">
+	<meta name="description" content="居利家养老网商城">
+	<meta name="viewport" content="width=device-width">
+	<title>居利家养老网商城</title>
+    <link rel="stylesheet" type="text/css" href="../css/css_all.css">
+    <link rel="stylesheet" type="text/css" href="../css/style_shop.css">
+    <link rel="stylesheet" type="text/css" href="../css/animate.css">
+</head>
+<body>
+
+<!-- header start -->
+<div class="g-header g-header02">
+	<div class="m-nav">
+		<div class="width_center">
+            <!--切换城市-->
+            <div class="m-city">
+                <a href="##" >商城首页</a>
+            </div>
+            <!--/切换城市-->
+			<div class="login">    
+			  <div class="login_div">
+                 <span id="ge_login"><a href="ge_login.html" rel="nofollow">md_183928zgf</a></span>
+                 <span><a href="register.html" rel="nofollow">退出</a></span>
+                 <span><a href="register.html" rel="nofollow">我的订单</a></span>
+                 <span><a href="register.html" rel="nofollow">个人中心</a></span>
+              </div>
+            </div>
+			
+			<div class="clear"></div> 
+		</div>
+    </div>
+	
+	<div class="top-content">
+        <div class="m-logo">
+            <a href="index.html" title="logo" target="_blank" rel="nofollow"><img src="../images/logo03.png" alt="logo" /></a>
+            <h1>养老商城</h1>
+        </div>
+        
+        <!-- 搜索 -->
+        <div class="list_nav_so">
+           <div class="er_so"> 
+            <form class="m-form">
+                <input type="text" placeholder="找宝贝" class="input" />
+                <input type="button" class="u-btn" value="搜索" />
+                <div class="clear"></div>
+            </form>            
+            <span><a href="##" class="color_red">制氧机</a><a href="##">代步车</a><a href="##" class="color_red">电动轮椅</a><a href="##">血糖仪</a><a href="##">血压计</a><a href="##">木制柺杖</a><a href="##">足浴盆</a><a href="##">血糖仪</a><a href="##">血压计</a><a href="##">木制柺杖</a></span>
+           </div>
+            
+           <div class="er_che"> <div class="er_che_di"> 
+            <font>0</font><a href="##">我的购物车</a> 
+           </div></div>
+        </div>	
+        	
+        <!-- 主导航 -->
+        <div class="list_nav">
+            <ul>                                                                   
+                <li><a href="##">首 页</a></li>
+                <li class="current"><a href="##">出行代步</a></li>
+                <li><a href="##">健康监测</a></li>
+                <li><a href="##">健康护理</a></li>
+                <li><a href="wen.html">常见问题</a></li>
+            </ul>
+
+        </div>
+        <div class="banner_nav02">
+          <div class="banner_left">	
+            <div class="banner_left_h2">
+              <h2>商品分类</h2>
+              <ul id="nav">		
+                <li class="mainCate " >
+                  <h3><font><img src="../images/a05.jpg"></font><a href="#">出行代步</a></h3>
+                  <p><a href="#">电动轮椅</a><a href="#">手动轮椅</a></p>
+                  <div class="subCate" style="display: none;">
+                    <h4>出行代步</h4>
+                    <ul>
+                      <li><a href="#">存储卡数</a><a href="#">池苹果</a><a href="#">电源</a><a href="#">茅台</a><a href="#">茅台</a><a href="#">茅台</a><a href="#">手机壳</a><a href="#">茅台</a><a href="#">茅台</a><a href="#">周边移动</a><a href="#">茅台</a><a href="#">茅台</a><a href="#">茅台</a><a href="#">茅台</a><a href="#">耳机</a><a href="#">电器手机</a><a href="#">件手机饰品</a><a href="#">耳机手</a><a href="#">机支架车</a><a href="#">茅台</a><a href="#">茅台</a><a href="#">贴膜手机</a></li>	             
+                    </ul>	 
+                    
+                    <h4>电轮椅</h4>
+                    <ul>
+                      <li><a href="#">手机电</a><a href="#">创意配</a><a href="#">据线充</a><a href="#">载配件</a><a href="#">拍照配件</a><a href="#">茅台</a><a href="#">蓝牙</a><a href="#">茅台</a><a href="#">茅台</a><a href="#">茅台</a><a href="#">茅台</a><a href="#">茅台</a><a href="#">茅台</a><a href="#">茅台</a><a href="#">茅台</a><a href="#">茅台</a><a href="#">茅台</a><a href="#">茅台</a><a href="#">茅台</a><a href="#">茅台</a><a href="#">茅台</a><a href="#">茅台</a></li>	
+                    
+                    </ul>
+                  </div>
+                </li>
+        
+                <li class="mainCate " >
+                  <h3><font><img src="../images/img01.png"></font><a href="#">出行代步</a></h3>
+                  <p><a href="#">电动轮椅</a><a href="#">手动轮椅</a></p>
+                  <div class="subCate" style="display: none;">
+                    <h4>出行代步</h4>
+                    <ul>
+                      <li><a href="#">存储卡数</a><a href="#">池苹果</a><a href="#">电源</a><a href="#">茅台</a><a href="#">茅台</a><a href="#">茅台</a><a href="#">手机壳</a><a href="#">茅台</a><a href="#">茅台</a><a href="#">周边移动</a><a href="#">茅台</a><a href="#">茅台</a><a href="#">茅台</a><a href="#">茅台</a><a href="#">耳机</a><a href="#">电器手机</a><a href="#">件手机饰品</a><a href="#">耳机手</a><a href="#">机支架车</a><a href="#">茅台</a><a href="#">茅台</a><a href="#">贴膜手机</a></li>	             
+                    </ul>	 
+                    
+                    <h4>电轮椅</h4>
+                    <ul>
+                      <li><a href="#">手机电</a><a href="#">创意配</a><a href="#">据线充</a><a href="#">载配件</a><a href="#">拍照配件</a><a href="#">茅台</a><a href="#">蓝牙</a><a href="#">茅台</a><a href="#">茅台</a><a href="#">茅台</a><a href="#">茅台</a><a href="#">茅台</a><a href="#">茅台</a><a href="#">茅台</a><a href="#">茅台</a><a href="#">茅台</a><a href="#">茅台</a><a href="#">茅台</a><a href="#">茅台</a><a href="#">茅台</a><a href="#">茅台</a><a href="#">茅台</a></li>	
+                    
+                    </ul>
+                  </div>
+                </li>
+      
+                <li class="mainCate " >
+                  <h3><font><img src="../images/img01.png"></font><a href="#">出行代步</a></h3>
+                  <p><a href="#">电动轮椅</a><a href="#">手动轮椅</a></p>
+                  <div class="subCate" style="display: none;">
+                    <h4>出行代步</h4>
+                    <ul>
+                      <li><a href="#">存储卡数</a><a href="#">池苹果</a><a href="#">电源</a><a href="#">茅台</a><a href="#">茅台</a><a href="#">茅台</a><a href="#">手机壳</a><a href="#">茅台</a><a href="#">茅台</a><a href="#">周边移动</a><a href="#">茅台</a><a href="#">茅台</a><a href="#">茅台</a><a href="#">茅台</a><a href="#">耳机</a><a href="#">电器手机</a><a href="#">件手机饰品</a><a href="#">耳机手</a><a href="#">机支架车</a><a href="#">茅台</a><a href="#">茅台</a><a href="#">贴膜手机</a></li>	             
+                    </ul>	 
+                    
+                    <h4>电轮椅</h4>
+                    <ul>
+                      <li><a href="#">手机电</a><a href="#">创意配</a><a href="#">据线充</a><a href="#">载配件</a><a href="#">拍照配件</a><a href="#">茅台</a><a href="#">蓝牙</a><a href="#">茅台</a><a href="#">茅台</a><a href="#">茅台</a><a href="#">茅台</a><a href="#">茅台</a><a href="#">茅台</a><a href="#">茅台</a><a href="#">茅台</a><a href="#">茅台</a><a href="#">茅台</a><a href="#">茅台</a><a href="#">茅台</a><a href="#">茅台</a><a href="#">茅台</a><a href="#">茅台</a></li>	
+                    
+                    </ul>
+                  </div>
+                </li>
+              </ul>
+            </div>	
+          </div>
+ 
+        </div>
+            
+       
+
+        
+        
+	</div>
+</div>
+<!-- /header end -->
+
+
+<!-- 产品内页  -->
+<div class="g-main g-main_nei">
+
+	<div class="house-list">
+        <!-- 产品介绍  -->
+		<div class="m-area">
+             <div class="area-title"><p><a href="">居利家商城</a> > <a href="">出行代步</a> > 美国普拉德REVO至尊版四轮老年人电动代步车</p>   
+               <div  class="bdshare_t bds_tools get-codes-bdshare" id="bdshare">
+                                  <span class="bds_more">分享到：</span>
+                                  <a href="#" title="分享到QQ空间" class="bds_qzone"></a>
+                                  <a href="#" title="分享到新浪微博" class="bds_tsina"></a>
+                                  <a href="#" title="分享到腾讯微博" class="bds_tqq"></a>
+                                  <a href="#" title="分享到百度搜藏" class="bds_baidu"></a>
+                                  <a href="#" title="分享到人人网" class="bds_renren"></a>
+                                  <a href="#" title="分享到开心网" class="bds_kaixin001"></a>
+                                  <script data="type=tools&amp;uid=6520365" id="bdshare_js" type="text/javascript" src="http://bdimg.share.baidu.com/static/js/bds_s_v2.js?cdnversion=398956"></script>
+               </div>
+  
+             </div>
+			<!-- 顶部图片轮换start -->   
+   
+   			 <div class="details_pic">
+                    
+                    <div class="preview">
+                        <div id="vertical" class="bigImg">
+                            <img src="../images/a01.jpg" width="400" height="400" alt="" id="midimg" />
+                            <div style="display:none;" id="winSelector"></div>
+                        </div><!--bigImg end-->	
+                        <div class="smallImg">
+                            <div class="scrollbutton smallImgUp disabled"></div>
+                            <div id="imageMenu">
+                                <ul>
+                                    <li id="onlickImg"><img src="../images/a01.jpg" width="68" height="68" alt=""/></li>
+                                    <li><img src="../images/a02.jpg" width="68" height="68" alt=" "/></li>
+                                    <li><img src="../images/a03.jpg" width="68" height="68" alt=" "/></li>
+                                    <li><img src="../images/a04.jpg" width="68" height="68" alt=" "/></li>
+                                    <li><img src="../images/a05.jpg" width="68" height="68" alt=" "/></li>
+                                </ul>
+                            </div>
+                            <div class="scrollbutton smallImgDown"></div>
+                        </div><!--smallImg end-->	
+                        <div id="bigView" style="display:none;"><img width="800" height="800" alt="" src="" /></div>
+                    </div>
+	        		<!-- 楼盘信息介绍 -->
+			        <div class="bulid_info">
+			            <h1 title="美国普拉德REVO至尊版四轮老年人电动代步车">美国普拉德REVO至尊版四轮老年人电动代步车至尊版四轮老年人电动代步车至尊版四轮老年人电动代步车至尊版四轮老年人电动代步车</h1>
+			            <div class="detail_msg">
+			                <ul>
+			                     <li class="phone_bg">
+                                     <div><span class="black">销 售 价：</span><span class="price">¥580.00</span>&nbsp;&nbsp;<span class="price02">¥1200.00</span></div>
+                                     <div><span class="black">促销信息：</span><span class="vip_zhe"><font class="red_bg">可用优惠券</font>可使用组合折扣</span></div>
+                                 </li>
+                                 <li><span class="black">限时抢购：</span><span class="xs_qg"><font>00:08:04</font>后结束</span></li>
+			                     <li><span class="black">商品货号：</span>T100113</li>
+			                     <li><span class="black">重　　量：</span>9.54kg</li>
+                                 <li><span class="black">颜　　色：</span><div class="color_list"><a href="##" title="黑色" class="xuan_on"><img src="../images/color01.png"></a><a href="##"><img src="../images/color02.png"></a><a href="##"><img src="../images/color03.png"></a><a href="##"><img src="../images/color04.png"></a><a href="##"><img src="../images/color05.png"></a><a href="##"><img src="../images/color06.png"></a></div></li>
+                                               <li class="phone_umber"><span class="black">数　　量：</span><div class="umber"><a href="##">-</a><input name="" type="text" value="1"><a href="##">+</a></div></li>
+                   <li class="phone_umber"><a href="##" class="u-buy1">立即购买</a><a href="##" class="u-buy2">加入购物车</a><a href="##" class="love">收藏</a></li>
+			                </ul>
+			            </div>
+			        </div>
+    		 </div>
+    		 <div class="clear"></div>
+            <!-- /顶部图片轮换end -->
+	    </div>
+        
+        <!-- 产品参数及图文介绍  -->
+        <div class="bottom_content">
+          <!-- top导航  -->
+          <div class="bulid_ch">
+              <div class="hd top_menu"  id="top">
+                  <ul class="bulid_nav" >
+                      <li class="current">
+                          <a onclick="animate1('#can')">规格参数</a>
+                      </li>
+                      <li>
+                          <a onclick="animate1('#pin')">商品介绍</a>
+                      </li>
+                      <li>
+                          <a onclick="animate1('#dianping')">商品评价</a>
+                      </li>
+                  </ul>
+              </div>
+           </div>
+          
+          <div class="bulid_right">
+              <!--    推荐 start     -->
+              <h1>推荐产品</h1>
+              <div class="bulid_right_ul"> 
+                <ul>   
+                <li><a href="#" target="_blank"> <img src="../images/a02.jpg" alt=""></a>
+                <span><a href="#" target="_blank"> 天津蓟县荣康老年公寓(老年公寓)</a></span>  
+                <font>¥500</font>     
+                </li>
+                
+                <li><a href="#" target="_blank"> <img src="../images/a03.jpg" alt=""></a>
+                <span><a href="#" target="_blank"> 锁养老院</a></span>     
+                <font>¥500</font>       
+                </li>
+                         
+                </li>   
+                </ul>
+              </div>
+              <div class="clear"></div>
+          </div>
+   
+          <div class="gongyong"  id="can">
+              <ul>
+                  <li>商品名称：鱼跃制氧机</li>
+                  <li>商品编号：1123427</li>
+                  <li>商品毛重：9.54kg</li>
+                  <li>商品产地：江苏丹阳</li>
+                  <li>分类：制氧机</li>
+                  <li>国产/进口：国产</li>
+                  <li>价位：1000-1999</li>
+                  <li>特色：便携式，车载式</li>
+                  <li>规格：1L机</li>
+              </ul>
+          </div>
+
+          <div class="gongyong"  id="pin">
+              <div>
+                  <p>
+                  <img src="../images/p01.jpg">
+                  </p>
+                  <p>
+                  <img src="../images/p02.jpg">
+                  </p>
+              </div>
+          </div>
+          
+          <!-- 评论  -->
+          <div  class="gongyong gongyong02"  id="dianping">
+              <h1>服务点评</h1>
+              <div  class="dianping">
+                 <dl>
+                   <dt><font>96</font>分</dt>
+                   <dd>共有<font>321</font>人评论</dd>
+                 </dl>
+              </div>
+              <div  class="dianping_xing">
+                <div class="box_163css">
+                    <span class="s_name">好评<font>(80%)</font></span>
+                    <span class="s_result"><font style="width:90%"></font></span>
+                </div>
+                
+                <div class="box_163css">
+                    <span class="s_name">中评<font>(9%)</font></span>
+
+                    <span class="s_result"><font style="width:9%"></font></span>
+                </div>
+                
+                <div class="box_163css">
+                    <span class="s_name">差评<font>(10%)</font></span>
+
+                    <span class="s_result"><font style="width:10%"></font></span>
+                </div>
+              </div>
+
+              <div  class="dianping_ping">
+                  <div class="hd">
+                     <ul><li>所有评论（30）</li><li>好评（10）</li><li>中评（10）</li><li>差评（10）</li></ul>
+                  </div>
+      
+                  <div class="bd">
+                     <ul>
+                       <li class="dianping_txt">
+                         <div class="dianping_txt_left">
+                           <dl>
+                             <dt><img alt="头像" src="../images/a001.jpg" /></dt>
+                             <dd>夏梦涵</dd>
+                           </dl>
+                           <span class="tou_bg"></span>
+                         </div>
+                         <div class="dianping_txt_right">
+                           <div>少人纷纷更换工作单位或投递简历。昨日，招聘网站发布节后第一期数据图表显示，春节期间房地产(建筑建材工程等)行业白领跳槽意向最强。其中90后跳槽意向最强烈，<a class="huifu">回复</a><p class="huifu_p"><textarea name="" cols="" rows="" class="textarea"></textarea><input name="" type="submit" value="保存" class="bottom"/><p></div>
+                           <div class="dianping_txt_right_hui"><span>机构回复 :</span>递简历。昨日，招聘网站发布节后第一期数据图表显示，春节期间房地产(建筑建材工程等)行业白领跳槽意向最强。其中90后跳槽意向最强烈，</div>
+                         </div>
+                       </li>
+                       <li class="dianping_txt">
+                         <div class="dianping_txt_left">
+                           <dl>
+                             <dt><img alt="头像" src="../images/a002.jpg" /></dt>
+                             <dd>夏梦涵</dd>
+                           </dl>
+                           <span class="tou_bg"></span>
+                         </div>
+                         <div class="dianping_txt_right">
+                           <div>少人纷纷更换工作单位或投递简历。昨日，招聘网站发布节后第一期数据图表显示，春节期间房地产(建筑建材工程等)行业白领跳槽意向最强。其中90后跳槽意向最强烈，<a class="huifu">回复</a><p class="huifu_p"><textarea name="" cols="" rows="" class="textarea"></textarea><input name="" type="submit" value="保存" class="bottom"/><p></div>
+                           <div class="dianping_txt_right_hui"><span>机构回复 :</span>递简历。昨日，招聘网站发布节后第一期数据图表显示，春节期间房地产(建筑建材工程等)行业白领跳槽意向最强。其中90后跳槽意向最强烈，</div>
+                         </div>
+                       </li>
+                       
+                       <li class="dianping_txt">
+                         <div class="dianping_txt_left">
+                           <dl>
+                             <dt><img alt="头像" src="../images/a002.jpg" /></dt>
+                             <dd>春节期间房春节期间房地产春节期间房地产地产</dd>
+                           </dl>
+                           <span class="tou_bg"></span>
+                         </div>
+                         <div class="dianping_txt_right">
+                           <div>数据图表显示少人纷纷更换工作单位或投递少人纷纷更换工作单位或投递简历。昨日，招聘网站发布节后第一期少人纷纷更换工作单位或投递简历。昨日，招聘网站发布节后第一期简历。昨日，招聘网站发布节后第少人纷纷更换工作单位或投递简历。昨日，招聘网站发布节后第一期一期，春节期间房地产(建筑建材工程等)行业白领跳槽意向最强。其中90后跳槽意向最强烈，</div>
+                         </div>
+                       </li>
+                       
+                       <div id="pagination" class="list_nei">
+
+              <ul class="pagination">
+                  <li class="disabled" >
+                      <a class="shang_up" title="上一页">&lt;</a>
+                  </li>
+                  
+                  <li class="active">
+                      <a href="##">1</a>
+                  </li>
+                  <li>
+                      <a href="##">2</a>
+                  </li>
+                  <li>
+                      <a href="##">3</a>
+                  </li>
+                  <li>
+                      <a href="##">4</a>
+                  </li>
+                  
+                  <li class="disabled">
+                      <a class="shang_down" title="下一页">&gt;</a>
+                  </li>
+              </ul>
+              <div class="pagination-info">
+                  共<font>7</font>条
+              </div>
+       </div>
+                     </ul>
+                     <ul>
+                       <li class="dianping_txt">
+                         <div class="dianping_txt_left">
+                           <dl>
+                             <dt><img alt="头像" src="../images/a001.jpg" /></dt>
+                             <dd>春节期间房春节期间房地产春节期间房地产地产</dd>
+                           </dl>
+                           <span class="tou_bg"></span>
+                         </div>
+                         <div class="dianping_txt_right">
+                           <div>数据图表显示少人纷纷更换工作单位或投递少人纷纷更换工作单位或投递简历。昨日，招聘网站发布节后第一期少人纷纷更换工作单位或投递简历。昨日，招聘网站发布节后第一期简历。昨日，招聘网站发布节后第少人纷纷更换工作单位或投递简历。昨日，招聘网站发布节后第一期一期，春节期间房地产(建筑建材工程等)行业白领跳槽意向最强。其中90后跳槽意向最强烈，</div>
+                         </div>
+                       </li>
+                       <li class="dianping_txt">
+                         <div class="dianping_txt_left">
+                           <dl>
+                             <dt><img alt="头像" src="../images/a04.jpg" /></dt>
+                             <dd>春节期间房春节期间房地产春节期间房地产地产</dd>
+                           </dl>
+                           <span class="tou_bg"></span>
+                         </div>
+                         <div class="dianping_txt_right">
+                           <div>数据图表显示少人纷纷更换工作单位或投递少人纷纷更换工作单位或投递简历。昨日，招聘网站发布节后第一期少人纷纷更换工作单位或投递简历。昨日，招聘网站发布节后第一期简历。昨日，招聘网站发布节后第少人纷纷更换工作单位或投递简历。昨日，招聘网站发布节后第一期一期，春节期间房地产(建筑建材工程等)行业白领跳槽意向最强。其中90后跳槽意向最强烈，</div>
+                         </div>
+                       </li>
+                     </ul>
+                     <ul>
+                       <li class="dianping_txt">
+                         <div class="dianping_txt_left">
+                           <dl>
+                             <dt><img alt="头像" src="../images/a05.png" /></dt>
+                             <dd>夏梦涵</dd>
+                           </dl>
+                           <span class="tou_bg"></span>
+                         </div>
+                         <div class="dianping_txt_right">
+                           <div>少人纷纷更换工作单位或投递简历。昨日，招聘网站发布节后第一期数据图表显示，春节期间房地产(建筑建材工程等)行业白领跳槽意向最强。其中90后跳槽意向最强烈，<a href="##">回复</a></div>
+                           <div class="dianping_txt_right_hui">递简历。昨日，招聘网站发布节后第一期数据图表显示，春节期间房地产(建筑建材工程等)行业白领跳槽意向最强。其中90后跳槽意向最强烈，</div>
+                         </div>
+                       </li>
+                       <li class="dianping_txt">
+                         <div class="dianping_txt_left">
+                           <dl>
+                             <dt><img alt="头像" src="../images/a06.png" /></dt>
+                             <dd>夏梦涵</dd>
+                           </dl>
+                           <span class="tou_bg"></span>
+                         </div>
+                         <div class="dianping_txt_right">
+                           <div>少人纷纷更换工作单位或投递简历。昨日，招聘网站发布节后第一期数据图表显示，春节期间房地产(建筑建材工程等)行业白领跳槽意向最强。其中90后跳槽意向最强烈，<a href="##">回复</a></div>
+                           <div class="dianping_txt_right_hui">递简历。昨日，招聘网站发布节后第一期数据图表显示，春节期间房地产(建筑建材工程等)行业白领跳槽意向最强。其中90后跳槽意向最强烈，</div>
+                         </div>
+                       </li>
+                     </ul>
+                     <ul>
+                       <li class="dianping_txt">
+                         <div class="dianping_txt_left">
+                           <dl>
+                             <dt><img alt="头像" src="../images/a05.png" /></dt>
+                             <dd>夏梦涵</dd>
+                           </dl>
+                           <span class="tou_bg"></span>
+                         </div>
+                         <div class="dianping_txt_right">
+                           <div>少人纷纷更换工作单位或投递简历。昨日，招聘网站发布节后第一期数据图表显示，春节期间房地产(建筑建材工程等)行业白领跳槽意向最强。其中90后跳槽意向最强烈，<a href="##">回复</a></div>
+                           <div class="dianping_txt_right_hui">递简历。昨日，招聘网站发布节后第一期数据图表显示，春节期间房地产(建筑建材工程等)行业白领跳槽意向最强。其中90后跳槽意向最强烈，</div>
+                         </div>
+                       </li>
+                       <li class="dianping_txt">
+                         <div class="dianping_txt_left">
+                           <dl>
+                             <dt><img alt="头像" src="../images/a06.png" /></dt>
+                             <dd>夏梦涵</dd>
+                           </dl>
+                           <span class="tou_bg"></span>
+                         </div>
+                         <div class="dianping_txt_right">
+                           <div>少人纷纷更换工作单位或投递简历。昨日，招聘网站发布节后第一期数据图表显示，春节期间房地产(建筑建材工程等)行业白领跳槽意向最强。其中90后跳槽意向最强烈，<a href="##">回复</a></div>
+                           <div class="dianping_txt_right_hui">递简历。昨日，招聘网站发布节后第一期数据图表显示，春节期间房地产(建筑建材工程等)行业白领跳槽意向最强。其中90后跳槽意向最强烈，</div>
+                         </div>
+                       </li>
+                     </ul>
+                  </div>
+              </div>
+          </div>
+          
+        </div>
+        <!--/end-->
+    </div>
+</div>
+<!-- /产品展示 end -->
+
+<!-- 悬浮导航 -->
+<div class="float" id="float">	
+        <a href="##" class="an_1">导航9</a>
+        <a href="##" class="an_2">导航10</a>
+        <a href="##" class="an_3">导航11</a>
+        <a href="#top" class="an_4">导航12</a>
+</div>
+
+<!-- 底部开始 -->
+<div class="g-footer">
+    <div class="footer_nav">
+        <div class="footer_nav_left">
+            <h2>400-619-9909</h2>
+            <div class="link_about_left_ul">
+                <ul>
+                    <li><a href="http://www.julijia.cn/website/aboutus.html"  target="_blank"  title="关于我们" rel="nofollow">关于我们</a></li>
+                    <li>|</li>
+                    <li><a href="http://www.julijia.cn/website/copyright.html"   target="_blank"  title="版权声明" rel="nofollow">版权声明</a></li>
+                    <li>|</li>
+                    <li><a href="http://www.julijia.cn/website/common.html"   target="_blank"   title="常见问题" rel="nofollow">常见问题</a></li>
+                    <li>|</li>
+                    <li><a href="http://www.julijia.cn/website/disclaimer.html"   target="_blank"   title="免责声明" rel="nofollow">免责声明</a></li>
+                    <li>|</li>
+                    <li><a href="http://www.julijia.cn/website/contact.html"   target="_blank"   title="联系我们" rel="nofollow">联系我们</a></li>
+                    <li>|</li>
+                    <li><a href="http://www.julijia.cn/website/cooperation.html"   target="_blank"   title="合作共赢" rel="nofollow">合作共赢</a></li>
+                    <li>|</li>
+                    <li><a href="http://www.julijia.cn/website/agreement.html"   target="_blank"   title="用户协议" rel="nofollow">用户协议</a></li>
+                    <li>|</li>
+                    <li><a href="http://www.julijia.cn/website/recruit.html"   target="_blank"   title="招聘岗位" rel="nofollow">招聘岗位</a></li>
+                </ul>
+            </div>
+            <div class="link_a">
+                <h3>友情链接</h3>
+                <ul><li><p><a href="http://www.ftxk.cn/zhuanti/ljdtdan/" target="_blank" title="老君定痛丹价格"><span style="font-family: 微软雅黑, &#39;Microsoft YaHei&#39;;">老君定痛丹价格<br/></span></a></p></li><li><p><span style="font-family: 微软雅黑, &#39;Microsoft YaHei&#39;;"><a href="http://www.julijia.cn" target="_blank" title="养老网" textvalue="养老网">养老网<br/></a></span></p></li><li><p><a href="http://www.chinaasta.com" target="_blank" title="天然虾青素"><span style="font-family: 微软雅黑, &#39;Microsoft YaHei&#39;;">天然虾青素<br/></span></a></p></li><li><p><a href="http://www.heigaoyao88.com" target="_blank" title="黑膏药加工" textvalue="黑膏药加工"><span style="font-family: 微软雅黑, &#39;Microsoft YaHei&#39;;">黑膏药加工<br/></span></a></p></li><li><p><a href="http://health.ypk.com.cn" target="_blank" title="药品库健康频道" textvalue="药品库健康频道"><span style="font-family: 微软雅黑, &#39;Microsoft YaHei&#39;;">药品库健康频道<br/></span></a></p></li></ul>
+            </div>
+        </div>
+        <div class="footer_nav_right">
+            <span><a href="http://www.julijia.cn/website/contact.html" target="_blank"  rel="nofollow"><img src="../images/abuot.png"/></a></span>
+            <p><a href="javascript:;"><img src="../images/er.jpg" /></a><font>微信平台</font></p>
+        </div>
+    </div>
+</div>
+<div class="f-bottom">
+    <div class="f-bottom_div">
+        <p class="f-bottom_div_left"><span>邮箱: service@sxdaxin.com&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;客服热线: 400-619-9909 </span>
+            <script type="text/javascript">var cnzz_protocol = (("https:" == document.location.protocol) ? " https://" : " http://");document.write(unescape("%3Cspan id='cnzz_stat_icon_1259915913'%3E%3C/span%3E%3Cscript src='" + cnzz_protocol + "s11.cnzz.com/z_stat.php%3Fid%3D1259915913%26show%3Dpic1' type='text/javascript'%3E%3C/script%3E"));</script>
+            <a href="javascript:;" class="gongshang" target="_blank"><img src="/images/green/gs_icon.png" height="40" width="32" alt="西安工商" /></a>
+        </p>
+        <p class="f-bottom_div_right">Copyright@ 2015-2016&nbsp;&nbsp;陕西大信网络科技有限公司&nbsp;&nbsp;版权所有&nbsp;&nbsp;陕ICP备14011723号-5</p>
+    </div>
+</div><!-- 底部结束 -->
+
+</body>
+<script type="text/javascript" src="../js/jquery-1.9.1.min.js"></script>
+<script type="text/javascript" src="../js/pin.js"></script>
+<script type="text/javascript" src="../js/jquery.SuperSlide.2.1.js"></script>
+<script type="text/javascript" src="../js/jlj_index.js"></script>
+
+<!-- 产品放大效果 -->
+<script type="text/javascript">
+$(document).ready(function(){
+	// 图片上下滚动
+	var count = $("#imageMenu li").length - 5; /* 显示 6 个 li标签内容 */
+	var interval = $("#imageMenu li:first").width();
+	var curIndex = 0;
+	
+	$('.scrollbutton').click(function(){
+		if( $(this).hasClass('disabled') ) return false;
+		
+		if ($(this).hasClass('smallImgUp')) --curIndex;
+		else ++curIndex;
+		
+		$('.scrollbutton').removeClass('disabled');
+		if (curIndex == 0) $('.smallImgUp').addClass('disabled');
+		if (curIndex == count-1) $('.smallImgDown').addClass('disabled');
+		
+		$("#imageMenu ul").stop(false, true).animate({"marginLeft" : -curIndex*interval + "px"}, 600);
+	});	
+	// 解决 ie6 select框 问题
+	$.fn.decorateIframe = function(options) {
+        if ($.browser.msie && $.browser.version < 7) {
+            var opts = $.extend({}, $.fn.decorateIframe.defaults, options);
+            $(this).each(function() {
+                var $myThis = $(this);
+                //创建一个IFRAME
+                var divIframe = $("<iframe />");
+                divIframe.attr("id", opts.iframeId);
+                divIframe.css("position", "absolute");
+                divIframe.css("display", "none");
+                divIframe.css("display", "block");
+                divIframe.css("z-index", opts.iframeZIndex);
+                divIframe.css("border");
+                divIframe.css("top", "0");
+                divIframe.css("left", "0");
+                if (opts.width == 0) {
+                    divIframe.css("width", $myThis.width() + parseInt($myThis.css("padding")) * 2 + "px");
+                }
+                if (opts.height == 0) {
+                    divIframe.css("height", $myThis.height() + parseInt($myThis.css("padding")) * 2 + "px");
+                }
+                divIframe.css("filter", "mask(color=#fff)");
+                $myThis.append(divIframe);
+            });
+        }
+    }
+    $.fn.decorateIframe.defaults = {
+        iframeId: "decorateIframe1",
+        iframeZIndex: -1,
+        width: 0,
+        height: 0
+    }
+    //放大镜视窗
+    $("#bigView").decorateIframe();
+    //点击到中图
+    var midChangeHandler = null;
+	
+    $("#imageMenu li img").bind("click", function(){
+		if ($(this).attr("id") != "onlickImg") {
+			midChange($(this).attr("src").replace("small", "mid"));
+			$("#imageMenu li").removeAttr("id");
+			$(this).parent().attr("id", "onlickImg");
+		}
+	}).bind("mouseover", function(){
+		if ($(this).attr("id") != "onlickImg") {
+			window.clearTimeout(midChangeHandler);
+			midChange($(this).attr("src").replace("small", "mid"));
+			$(this).css({ "border": "3px solid #959595" });
+		}
+	}).bind("mouseout", function(){
+		if($(this).attr("id") != "onlickImg"){
+			$(this).removeAttr("style");
+			midChangeHandler = window.setTimeout(function(){
+				midChange($("#onlickImg img").attr("src").replace("small", "mid"));
+			}, 1000);
+		}
+	});
+    function midChange(src) {
+        $("#midimg").attr("src", src).load(function() {
+            changeViewImg();
+        });
+    }
+    //大视窗看图
+    function mouseover(e) {
+        if ($("#winSelector").css("display") == "none") {
+            $("#winSelector,#bigView").show();
+        }
+        $("#winSelector").css(fixedPosition(e));
+        e.stopPropagation();
+    }
+    function mouseOut(e) {
+        if ($("#winSelector").css("display") != "none") {
+            $("#winSelector,#bigView").hide();
+        }
+        e.stopPropagation();
+    }
+    $("#midimg").mouseover(mouseover); //中图事件
+    $("#midimg,#winSelector").mousemove(mouseover).mouseout(mouseOut); //选择器事件
+
+    var $divWidth = $("#winSelector").width(); //选择器宽度
+    var $divHeight = $("#winSelector").height(); //选择器高度
+    var $imgWidth = $("#midimg").width(); //中图宽度
+    var $imgHeight = $("#midimg").height(); //中图高度
+    var $viewImgWidth = $viewImgHeight = $height = null; //IE加载后才能得到 大图宽度 大图高度 大图视窗高度
+
+    function changeViewImg() {
+        $("#bigView img").attr("src", $("#midimg").attr("src").replace("mid", "big"));
+    }
+    changeViewImg();
+    $("#bigView").scrollLeft(0).scrollTop(0);
+    function fixedPosition(e) {
+        if (e == null) {
+            return;
+        }
+        var $imgLeft = $("#midimg").offset().left; //中图左边距
+        var $imgTop = $("#midimg").offset().top; //中图上边距
+        X = e.pageX - $imgLeft - $divWidth / 2; //selector顶点坐标 X
+        Y = e.pageY - $imgTop - $divHeight / 2; //selector顶点坐标 Y
+        X = X < 0 ? 0 : X;
+        Y = Y < 0 ? 0 : Y;
+        X = X + $divWidth > $imgWidth ? $imgWidth - $divWidth : X;
+        Y = Y + $divHeight > $imgHeight ? $imgHeight - $divHeight : Y;
+
+        if ($viewImgWidth == null) {
+            $viewImgWidth = $("#bigView img").outerWidth();
+            $viewImgHeight = $("#bigView img").height();
+            if ($viewImgWidth < 200 || $viewImgHeight < 200) {
+                $viewImgWidth = $viewImgHeight = 800;
+            }
+            $height = $divHeight * $viewImgHeight / $imgHeight;
+            $("#bigView").width($divWidth * $viewImgWidth / $imgWidth);
+            $("#bigView").height($height);
+        }
+        var scrollX = X * $viewImgWidth / $imgWidth;
+        var scrollY = Y * $viewImgHeight / $imgHeight;
+        $("#bigView img").css({ "left": scrollX * -1, "top": scrollY * -1 });
+        $("#bigView").css({ "top": 258, "left": $(".preview").offset().left + $(".preview").width() + 15 });
+
+        return { left: X, top: Y };
+    }
+});
+</script>
+
+
+<!-- 产品轮播 -->
+<script type="text/javascript">
+<!--
+(function(){
+	function G(s){
+		return document.getElementById(s);
+	}
+	
+	function getStyle(obj, attr){
+		if(obj.currentStyle){
+			return obj.currentStyle[attr];
+		}else{
+			return getComputedStyle(obj, false)[attr];
+		}
+	}
+	
+	function Animate(obj, json){
+		if(obj.timer){
+			clearInterval(obj.timer);
+		}
+		obj.timer = setInterval(function(){
+			for(var attr in json){
+				var iCur = parseInt(getStyle(obj, attr));
+				iCur = iCur ? iCur : 0;
+				var iSpeed = (json[attr] - iCur) / 5;
+				iSpeed = iSpeed > 0 ? Math.ceil(iSpeed) : Math.floor(iSpeed);
+				obj.style[attr] = iCur + iSpeed + 'px';
+				if(iCur == json[attr]){
+					clearInterval(obj.timer);
+				}
+			}
+		}, 30);
+	}
+
+	var oPic = G("picBox");
+	var oList = G("listBox");
+	
+	var oPrev = G("prev");
+	var oNext = G("next");
+	var oPrevTop = G("prevTop");
+	var oNextTop = G("nextTop");
+
+	var oPicLi = oPic.getElementsByTagName("li");
+	var oListLi = oList.getElementsByTagName("li");
+	var len1 = oPicLi.length;
+	var len2 = oListLi.length;
+	
+	var oPicUl = oPic.getElementsByTagName("ul")[0];
+	var oListUl = oList.getElementsByTagName("ul")[0];
+	var w1 = oPicLi[0].offsetWidth;
+	var w2 = oListLi[0].offsetWidth;
+
+	oPicUl.style.width = w1 * len1 + "px";
+	oListUl.style.width = w2 * len2 + "px";
+
+	var index = 0;
+	
+	var num = 5;
+	var num2 = Math.ceil(num / 2);
+
+	function Change(){
+
+		Animate(oPicUl, {left: - index * w1});
+		
+		if(index < num2){
+			Animate(oListUl, {left: 0});
+		}else if(index + num2 <= len2){
+			Animate(oListUl, {left: - (index - num2 + 1) * w2});
+		}else{
+			Animate(oListUl, {left: - (len2 - num) * w2});
+		}
+
+		for (var i = 0; i < len2; i++) {
+			oListLi[i].className = "";
+			if(i == index){
+				oListLi[i].className = "on";
+			}
+		}
+	}
+	
+	oNextTop.onclick = oNext.onclick = function(){
+		index ++;
+		index = index == len2 ? 0 : index;
+		Change();
+	}
+
+	oPrevTop.onclick = oPrev.onclick = function(){
+		index --;
+		index = index == -1 ? len2 -1 : index;
+		Change();
+	}
+
+	for (var i = 0; i < len2; i++) {
+		oListLi[i].index = i;
+		oListLi[i].onclick = function(){
+			index = this.index;
+			Change();
+		}
+	}
+	
+})()
+//-->
+</script>
+
+</html> 

@@ -1,0 +1,1214 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta charset="utf-8">
+<title>曼蒂商城平台管理中心</title>
+<meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport">
+<meta content="" name="description">
+<meta content="" name="author">
+<meta name="renderer" content="webkit">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,Chrome=1">
+
+<!-- 网站头像 -->
+<link rel="icon" type="image/x-icon" href="../images/icon.png">
+<link rel="shortcut icon" type="image/x-icon" href="../images/icon.png">
+
+<!-- ================== 框架和特效样式 ================== -->
+<link type="text/css" rel="stylesheet" href="../css/iconfont.css">
+<link type="text/css" rel="stylesheet" href="../css/bootstrap.min.css">
+
+<!-- ================== 页面样式 ================== -->
+<link type="text/css" rel="stylesheet" href="../css/loaders.css">
+<link type="text/css" rel="stylesheet" href="../css/common.css">
+<link type="text/css" rel="stylesheet" href="../css/index.css">
+
+<!--[if lt IE 9]>
+      <script type="text/javascript" src="../js/html5shiv.min.js"></script>
+      <script type="text/javascript" src="../js/respond.min.js"></script>
+<![endif]-->
+
+<script type="text/javascript" src="../js/jquery.js"></script>
+<!-- ================== 下拉框样式 ================== -->
+<link rel="stylesheet" href="../css/layer.css" id="layui_layer_skinlayercss">
+<link rel="stylesheet" href="../css/layer.ext.css" id="layui_layer_skinlayerextcss">
+</head>
+<body class="pace-done" id="c1">
+
+	<!--[if IE]>
+<div class="ie-warning">什么？您还在使用 Internet Explorer (IE) 浏览器？ 很遗憾，我们已不再支持IE浏览器。事实上，升级到以下支持HTML5的浏览器将获得更牛逼的操作体验：<a href="http://www.mozillaonline.com/">Firefox</a> / <a href="http://www.google.com/chrome/?hl=zh-CN">Chrome</a> / <a href="http://www.apple.com.cn/safari/">Safari</a> / <a href="http://www.operachina.com/">Opera</a>，
+赶紧升级浏览器，让操作效率提升80%-120%！
+</div>
+    <![endif]-->
+	<!--顶部菜单-->
+	<div class="admincp-header" id="main-navbar-top">
+		<a class="toggle-left-box">
+			<i class="fa fa-bars"></i>
+		</a>
+		<!--logo信息-->
+		<div class="admincp-name">
+			<h1 class="logo-image">
+				<img src="../images/logo_admin.png">
+			</h1>
+			<div id="foldSidebar" data-switch-toggle="state">
+				<i class="arrow-right"></i>
+			</div>
+		</div>
+		<!--顶级导航TAB-->
+		<div class="module-menu">
+			<ul class="nav nav-tabs shop-row">
+								
+				<li class="active" data-param="product">
+					<a href="index#product" data-toggle="tab">商城</a>
+					<b class="arrow"></b>
+				</li>					
+				
+				<li class="" data-param="finance">
+					<a href="index#finance" data-toggle="tab">财务</a>
+					<b class="arrow"></b>
+				</li>			
+                
+                <li class="" data-param="supplier">
+					<a href="index#supplier" data-toggle="tab">供应商</a>
+					<b class="arrow"></b>
+				</li>			
+				
+				<li class="" data-param="app">
+					<a href="index#app" data-toggle="tab">手机端</a>
+					<b class="arrow"></b>
+				</li>			
+                
+                <li class="" data-param="system_sat">
+					<a href="index#system_sat" data-toggle="tab">系统</a>
+					<b class="arrow"></b>
+				</li>		
+                	
+		   </ul>
+		</div>
+
+		<div class="admincp-header-r animated" id="admin-cog">
+
+			<!--提醒、主题、全部功能、清除缓存、查看店铺、退出-->
+			<ul class="operate shop-row">
+				<li class="top-menu" data-toggle="tooltip" data-placement="auto bottom" title="" data-original-title="查看商城">
+					<a href="##" class="top_icon homepage" target="_blank">
+						<i></i>
+						<span>商城</span>
+					</a>
+
+				</li>
+
+
+				<li id="clear_cache" class="top-menu">
+					
+					<a href="javascript:void(0);" data-menus="system|system-setting|system-setting-cache" class="top_icon clear-cache" title="点击进行深度清理">
+						<i></i>
+						<span>清缓存</span>
+					</a>
+					
+					<div id="clear_cache_panel" class="manager-menu dropdown-menu colorbg" style="display: none;">
+						<span class="top-dropdown-bg"></span>
+						<a href="javascript:void(0);" class="close" title="点击关闭">×</a>
+						<div class="title">
+							<strong>清理缓存</strong>
+						</div>
+						<form id="cacheForm" action="index.html" method="POST">
+<input type="hidden" name="_csrf" value="ejBKRjJ5VnpLcwIsdSllTEhoBAtROCUQHGkeBEJPIks4fXkpfzJ7Mw==">
+						<ul class="clear-cache-list">
+							
+							<li>
+								<label>
+									<input type="checkbox" name="codes[]" value="common_runtime">
+									公共缓存
+								</label>
+							</li>
+							
+							<li>
+								<label>
+									<input type="checkbox" name="codes[]" value="site_index">
+									网站首页
+								</label>
+							</li>
+							
+							<li>
+								<label>
+									<input type="checkbox" name="codes[]" value="m_site_index">
+									微商城首页
+								</label>
+							</li>
+							
+							<li>
+								<label>
+									<input type="checkbox" name="codes[]" value="shop_index">
+									店铺首页
+								</label>
+							</li>
+							
+							<li>
+								<label>
+									<input type="checkbox" name="codes[]" value="m_shop_index">
+									微商城店铺首页
+								</label>
+							</li>
+							
+							<li>
+								<label>
+									<input type="checkbox" name="codes[]" value="config">
+									系统配置
+								</label>
+							</li>
+							
+							<li>
+								<label>
+									<input type="checkbox" name="codes[]" value="region">
+									地区缓存
+								</label>
+							</li>
+							
+							<li>
+								<label>
+									<input type="checkbox" name="codes[]" value="menus">
+									系统菜单
+								</label>
+							</li>
+							
+							<li>
+								<label>
+									<input type="checkbox" name="codes[]" value="auths">
+									系统权限
+								</label>
+							</li>
+							
+						</ul>
+						<div class="skin-setttings text-r p-t-5">
+							<label class="all-check">
+								<input type="checkbox" id="cache_all">
+								全选
+							</label>
+							<input type="button" id="btn_clear_cache" value="清理缓存" class="btn btn-warning btn-sm">
+						</div>
+						
+</form>
+					</div>
+				</li>
+				<!--data-toggle="dropdown"-->
+				<li id="change_color" class="top-menu">
+					<a class="top_icon style-color">
+						<i></i>
+						<span>皮肤</span>
+					</a>
+					<div id="change_color_panel" class="manager-menu dropdown-menu colorbg" style="display: none;">
+						<span class="top-dropdown-bg"></span>
+						<a class="close" title="点击关闭">×</a>
+						<div class="title">
+							<strong>皮肤选择</strong>
+						</div>
+						<ul class="inline">
+							<li name="c1" class="color-09c color-1"></li>
+							<li name="c2" class="color-blue color-2"></li>
+							<li name="c3" class="color-green color-3"></li>
+							<li name="c4" class="color-red color-4"></li>
+							<li name="c5" class="color-orange color-5 active"></li>
+							<li name="c6" class="color-purple color-6"></li>
+							<li name="c7" class="color-dark color-7"></li>
+						</ul>
+						<div class="skin-setttings">
+							<div class="title">
+								<strong>主题设置</strong>
+							</div>
+							<div class="setings-item">
+								<span>左侧菜单</span>
+								<div class="btn-group" data-toggle="buttons">
+									<label class="btn btn-default left-menu-state btn-sm" data-default="true">
+										<input type="radio">
+										展开
+									</label>
+									<label class="btn btn-default left-menu-state btn-sm active" data-default="false">
+										<input type="radio">
+										收起
+									</label>
+								</div>
+							</div>
+							
+						</div>
+					</div>
+				</li>
+
+				<li class="top-menu" data-toggle="tooltip" data-placement="auto bottom" title="" data-original-title="退出">
+					<a href="site/logout" class="top_icon login-out">
+						<i></i>
+						<span>退出</span>
+					</a>
+				</li>
+			</ul>
+			<!--个人信息-->
+			<div id="personal_message" class="manager">
+				<div class="manager-btn">
+					<dl>
+						<dt class="name">平台管理员</dt>
+						<dd class="group">管理员</dd>
+					</dl>
+					<span class="avatar">
+						<img src="../images/admin.jpg">
+					</span>
+					<i class="arrow"></i>
+				</div>
+				<div id="personal_message_panel" class="manager-menu dropdown-menu personal" style="display: none;">
+					<span class="top-dropdown-bg"></span>
+					<a class="close" title="点击关闭">×</a>
+					<div class="title">
+						<strong>最后登录</strong>
+						<a class=" btn btn-warning btn-xs" >修改密码</a>
+					</div>
+                    
+					<div class="login-date">2016-09-30 17:06:09<span>（IP：100.109.222.57）</span></div>
+                    
+					<div class="title" style="display: none">
+						<strong>个人设置</strong>
+						<a class="add-menu pull-right" href="javascript:void(0)" data-toggle="modal" data-target="#allModal">添加菜单</a>
+					</div>
+					<ul class="shop-row" >
+						<li>
+							<a href="javascript:void(0);">清理缓存</a>
+						</li>
+						<li>
+							<a href="javascript:void(0);">文章分类</a>
+						</li>
+						<li>
+							<a href="javascript:void(0);">文章管理</a>
+						</li>
+						<li>
+							<a href="javascript:void(0);">会员协议</a>
+						</li>
+						<li>
+							<a href="javascript:void(0);">广告管理</a>
+						</li>
+						<li>
+							<a href="javascript:void(0);">资讯设置</a>
+						</li>
+						<li>
+							<a href="javascript:void(0);">首页管理</a>
+						</li>
+						<li>
+							<a href="javascript:void(0);">导航管理</a>
+						</li>
+						<li>
+							<a href="javascript:void(0);">评论管理</a>
+						</li>
+					</ul>
+				</div>
+			</div>
+
+		</div>
+		<div class="clear"></div>
+	</div>
+	<div class="admincp-container main-wrapper-design-mode wpst-toolbar-show fold">
+		<!--左侧内容-->
+		<!--PC端、Paid端导航效果-->
+		<div class="admincp-container-left vl-sidebar tab-content">
+			<div class="top-border">
+				<span class="nav-side"></span>
+				<span class="sub-side"></span>
+			</div>
+								
+			<div id="product" class="nav-tabs tab-pane active">
+				<ul class="tab-bar">
+				
+					<li class="J_ToolbarItem SZY-MENU-2" href="#system-index" data-toggle="tab" onclick="openMenu(&#39;index.html&#39;,this, &#39;&#39;)">
+						<div class="wrap J_TGoldData">
+							<div class="left-line"></div>
+							
+							<b class="iconfont iconfont_f20">&#xe614;</b>
+							
+							<div class="v-text">首页</div>
+							<b class="fa fa-caret-left"></b>
+						</div>
+						
+					<!-- 循环收缩的二级菜单 END -->
+					</li>	
+                    				
+					<li class="J_ToolbarItem  SZY-MENU-2" href="#product_set" data-toggle="tab">
+						<div class="wrap J_TGoldData">
+							<div class="left-line"></div>
+                            
+							<b class="iconfont iconfont_f20">&#xe61d;</b>
+							
+							<div class="v-text">商品</div>
+							<b class="fa fa-caret-left"></b>
+						</div>
+						<!-- 循环收缩的二级菜单 start -->
+						<div class="submenu">
+							<ul>
+                                <li><a href="javascript:void(0);" onclick="openMenu(&#39;attbute_set.html&#39;,this, &#39;&#39;)">属性集管理</a></li>		
+                                <li><a href="javascript:void(0);" onclick="openMenu(&#39;attbute.html&#39;,this, &#39;&#39;)">属性管理</a></li>							
+								<li><a href="javascript:void(0);" onclick="openMenu(&#39;Product_management.html&#39;,this, &#39;&#39;)">商品管理</a></li>	
+                                <li><a href="javascript:void(0);" onclick="openMenu(&#39;product_list.html&#39;,this, &#39;&#39;)">分类管理</a></li>	
+                                <li><a href="javascript:void(0);" onclick="openMenu(&#39;set.html&#39;,this, &#39;&#39;)">商品设置</a></li>	
+                                
+							</ul>
+						</div>
+						<!-- 循环收缩的二级菜单 END -->
+					</li>
+								
+					<li class="J_ToolbarItem  SZY-MENU-2" href="#order" data-toggle="tab">
+						<div class="wrap J_TGoldData">
+							<div class="left-line"></div>
+							
+							<b class="iconfont">&#xe728;</b>
+							
+							<div class="v-text">订单</div>
+							<b class="fa fa-caret-left"></b>
+						</div>
+						<!-- 循环收缩的二级菜单 start -->
+						<div class="submenu">
+							<ul>
+																
+								<li><a href="javascript:void(0);" onclick="openMenu(&#39;order_all01.html&#39;,this, &#39;&#39;)">订单列表</a></li>	
+                                <li><a href="javascript:void(0);" onclick="openMenu(&#39;refund.html&#39;,this, &#39;&#39;)">退款管理</a></li>	                <li><a href="javascript:void(0);" onclick="openMenu(&#39;evaluation.html&#39;,this, &#39;&#39;)">评价管理</a></li>	
+                                <li><a href="javascript:void(0);" onclick="openMenu(&#39;complaints01.html&#39;,this, &#39;&#39;)">投诉管理</a></li>
+                                <li><a href="javascript:void(0);" onclick="openMenu(&#39;order_fa.html&#39;,this, &#39;&#39;)">发货管理</a></li>	
+							</ul>
+						</div>
+						<!-- 循环收缩的二级菜单 END -->
+					</li>
+                    
+                    <li class="J_ToolbarItem  SZY-MENU-2" href="#members" data-toggle="tab">
+						<div class="wrap J_TGoldData">
+							<div class="left-line"></div>
+							
+							<b class="iconfont iconfont_f20">&#xe6bb;</b>
+							
+							<div class="v-text">会员</div>
+							<b class="fa fa-caret-left"></b>
+						</div>
+						<!-- 循环收缩的二级菜单 start -->
+						<div class="submenu">
+							<ul>
+																
+								<li><a href="javascript:void(0);" onclick="openMenu(&#39;vip.html&#39;,this, &#39;&#39;)">用户列表</a></li>
+                                <li><a href="javascript:void(0);" onclick="openMenu(&#39;vip_jy.html&#39;,this, &#39;&#39;)">交易记录</a></li>
+                                <li><a href="javascript:void(0);" onclick="openMenu(&#39;vip_dj.html&#39;,this, &#39;&#39;)">用户等级</a></li>      
+                                <li><a href="javascript:void(0);" onclick="openMenu(&#39;set.html&#39;,this, &#39;&#39;)">用户设置</a></li>
+                                
+							</ul>
+						</div>
+												<!-- 循环收缩的二级菜单 END -->
+					</li>
+                    
+                    <li class="J_ToolbarItem  SZY-MENU-2" href="#marketing" data-toggle="tab">
+						<div class="wrap J_TGoldData">
+							<div class="left-line"></div>
+							
+							<b class="iconfont iconfont_f20">&#xe72e;</b>
+							
+							<div class="v-text">营销</div>
+							<b class="fa fa-caret-left"></b>
+						</div>
+						<!-- 循环收缩的二级菜单 start -->
+						<div class="submenu">
+							<ul>
+																
+								<li><a href="javascript:void(0);" onclick="openMenu(&#39;sales.html&#39;,this, &#39;&#39;)">满减满送</a></li>
+                                <li><a href="javascript:void(0);" onclick="openMenu(&#39;coupons.html&#39;,this, &#39;&#39;)">优惠券</a></li>
+                                <li><a href="javascript:void(0);" onclick="openMenu(&#39;set.html&#39;,this, &#39;&#39;)">收银台优惠</a></li>
+                                <li><a href="javascript:void(0);" onclick="openMenu(&#39;set.html&#39;,this, &#39;&#39;)">礼品</a></li>
+                                
+							</ul>
+						</div>
+												<!-- 循环收缩的二级菜单 END -->
+					</li>
+                    
+                    <li class="J_ToolbarItem  SZY-MENU-2" href="#news" data-toggle="tab">
+						<div class="wrap J_TGoldData">
+							<div class="left-line"></div>
+							
+							<b class="iconfont">&#xe608;</b>
+							
+							<div class="v-text">新闻</div>
+							<b class="fa fa-caret-left"></b>
+						</div>
+						<!-- 循环收缩的二级菜单 start -->
+						<div class="submenu">
+							<ul>
+																
+								<li><a href="javascript:void(0);" onclick="openMenu(&#39;new_category.html&#39;,this, &#39;&#39;)">资讯分类</a></li>
+								<li><a href="javascript:void(0);" onclick="openMenu(&#39;new_list.html&#39;,this, &#39;&#39;)">资讯</a></li>
+                                
+							</ul>
+						</div>
+												<!-- 循环收缩的二级菜单 END -->
+					</li>
+                    
+                    <li class="J_ToolbarItem  SZY-MENU-2" href="#statistical" data-toggle="tab">
+						<div class="wrap J_TGoldData">
+							<div class="left-line"></div>
+							
+							<b class="iconfont iconfont_f20" >&#xe68d;</b>
+							
+							<div class="v-text">统计</div>
+							<b class="fa fa-caret-left"></b>
+						</div>
+						<!-- 循环收缩的二级菜单 start -->
+						<div class="submenu">
+							<ul>
+																
+								<li><a href="javascript:void(0);" onclick="openMenu(&#39;/product_set.html&#39;,this, &#39;&#39;)">订单</a></li>
+								<li><a href="javascript:void(0);" onclick="openMenu(&#39;/product_set.html&#39;,this, &#39;&#39;)">购物车</a></li>
+                                <li><a href="javascript:void(0);" onclick="openMenu(&#39;/product_set.html&#39;,this, &#39;&#39;)">客户</a></li>
+                                
+							</ul>
+						</div>
+												<!-- 循环收缩的二级菜单 END -->
+					</li>
+					
+				</ul>
+                
+				<ul class="toolbar J_ModuleSlides">
+										
+					<!-- 循环展开的二级菜单 BEGIN -->				
+					<li id="system-index" class="slide tab-pane">
+						<div class="product-nav-list mCustomScrollbar ">
+							<ul>
+								<li class="">
+									<a href="javascript:void(0);" onclick="openMenu(&#39;index.html&#39;,this, &#39;&#39;)" >
+										<div class="nav-title">
+											欢迎页
+											<em class="arrow-icon  fa fa-angle-right"></em>
+
+										</div>
+									</a>
+								</li>							
+							</ul>
+						</div>
+					</li>
+					<!-- 循环展开的二级菜单 END  -->
+					
+										
+					<!-- 循环展开的二级菜单 BEGIN -->
+				
+					<li id="product_set" class="slide tab-pane active">
+						<div class="product-nav-list mCustomScrollbar ">
+							<ul>								
+								<li class="active">
+									<a href="javascript:void(0);" onclick="openMenu(&#39;/product_set.html&#39;,this, &#39;&#39;)">
+										<div class="nav-title">
+											商品管理
+											<em class="arrow-icon  fa fa-angle-right"></em>
+
+										</div>
+									</a>
+								</li>							
+															
+								<li class="">
+									<a href="javascript:void(0);" onclick="openMenu(&#39;/product_set.html&#39;,this, &#39;&#39;)">
+										<div class="nav-title">
+											批量修改商品
+											<em class="arrow-icon  fa fa-angle-right"></em>
+
+										</div>
+									</a>
+								</li>
+																
+								<li class="">
+									<a href="javascript:void(0);" onclick="openMenu(&#39;/product_set.html&#39;,this, &#39;&#39;)">
+										<div class="nav-title">
+											分类管理
+											<em class="arrow-icon  fa fa-angle-right"></em>
+
+										</div>
+									</a>
+								</li>
+								
+																
+								<li class="">
+									<a href="javascript:void(0);" onclick="openMenu(&#39;/product_set.html&#39;,this, &#39;&#39;)">
+										<div class="nav-title">
+											商品配置属性
+											<em class="arrow-icon  fa fa-angle-right"></em>
+
+										</div>
+									</a>
+								</li>
+																
+								<li class="">
+									<a href="javascript:void(0);" onclick="openMenu(&#39;/product_set.html&#39;,this, &#39;&#39;)">
+										<div class="nav-title">
+											属性管理
+											<em class="arrow-icon  fa fa-angle-right"></em>
+
+										</div>
+									</a>
+								</li>
+																		
+						</ul>
+					  </div>
+					</li>
+					<!-- 循环展开的二级菜单 END  -->
+					
+										
+					<!-- 循环展开的二级菜单 BEGIN -->
+					
+										
+					<li id="order" class="slide tab-pane ">
+						<div class="product-nav-list mCustomScrollbar">
+							<ul>							
+								<li>
+									<a href="javascript:void(0);" onclick="openMenu(&#39;/product_set.html&#39;,this, &#39;&#39;)">
+										<div class="nav-title">
+											订单列表
+											<em class="arrow-icon  fa fa-angle-right"></em>
+
+										</div>
+									</a>
+								</li>
+							
+								<li>
+									<a href="javascript:void(0);" onclick="openMenu(&#39;/product_set.html&#39;,this, &#39;&#39;)">
+										<div class="nav-title">
+											退款/纠纷
+											<em class="arrow-icon  fa fa-angle-right"></em>
+
+										</div>
+									</a>
+								</li>
+																	
+								<li>
+									<a href="javascript:void(0);" onclick="openMenu(&#39;/product_set.html&#39;,this, &#39;&#39;)">
+										<div class="nav-title">
+											订单批量导出
+											<em class="arrow-icon  fa fa-angle-right"></em>
+
+										</div>
+									</a>
+								</li>
+                                
+                                <li>
+									<a href="javascript:void(0);" onclick="openMenu(&#39;/product_set.html&#39;,this, &#39;&#39;)">
+										<div class="nav-title">
+											发货管理
+											<em class="arrow-icon  fa fa-angle-right"></em>
+
+										</div>
+									</a>
+								</li>
+                                
+                                <li>
+									<a href="javascript:void(0);" onclick="openMenu(&#39;/product_set.html&#39;,this, &#39;&#39;)">
+										<div class="nav-title">
+											物流查询统计
+											<em class="arrow-icon  fa fa-angle-right"></em>
+
+										</div>
+									</a>
+								</li>
+                                
+                                <li>
+									<a href="javascript:void(0);" onclick="openMenu(&#39;complaints01.html&#39;,this, &#39;&#39;)">
+										<div class="nav-title">
+											交易评价
+											<em class="arrow-icon  fa fa-angle-right"></em>
+
+										</div>
+									</a>
+								</li>
+                                
+                                <li>
+									<a href="javascript:void(0);" onclick="openMenu(&#39;/product_set.html&#39;,this, &#39;&#39;)">
+										<div class="nav-title">
+											投诉管理
+											<em class="arrow-icon  fa fa-angle-right"></em>
+
+										</div>
+									</a>
+								</li>
+								
+							</ul>
+						</div>
+					</li>
+					<!-- 循环展开的二级菜单 END  -->
+                    
+                    <!-- 循环展开的二级菜单 BEGIN -->				
+					<li id="members" class="slide tab-pane ">
+						<div class="product-nav-list mCustomScrollbar">
+							<ul>							
+								<li>
+									<a href="javascript:void(0);" onclick="openMenu(&#39;vip.html&#39;,this, &#39;&#39;)">
+										<div class="nav-title">
+											会员列表
+											<em class="arrow-icon  fa fa-angle-right"></em>
+
+										</div>
+									</a>
+								</li>
+							
+								<li>
+									<a href="javascript:void(0);" onclick="openMenu(&#39;/product_set.html&#39;,this, &#39;&#39;)">
+										<div class="nav-title">
+											会员设置
+											<em class="arrow-icon  fa fa-angle-right"></em>
+
+										</div>
+									</a>
+								</li>
+																	
+								<li>
+									<a href="javascript:void(0);" onclick="openMenu(&#39;/product_set.html&#39;,this, &#39;&#39;)">
+										<div class="nav-title">
+											客户等级
+											<em class="arrow-icon  fa fa-angle-right"></em>
+
+										</div>
+									</a>
+								</li>
+
+							</ul>
+						</div>
+					</li>
+					<!-- 循环展开的二级菜单 END  -->
+                    
+                    <!-- 循环展开的二级菜单 BEGIN -->				
+					<li id="marketing" class="slide tab-pane">
+						<div class="product-nav-list mCustomScrollbar">
+							<ul>							
+								<li>
+									<a href="javascript:void(0);" onclick="openMenu(&#39;/product_set.html&#39;,this, &#39;&#39;)">
+										<div class="nav-title">
+											满减满送
+											<em class="arrow-icon  fa fa-angle-right"></em>
+
+										</div>
+									</a>
+								</li>
+							
+								<li>
+									<a href="javascript:void(0);" onclick="openMenu(&#39;/product_set.html&#39;,this, &#39;&#39;)">
+										<div class="nav-title">
+											优惠券
+											<em class="arrow-icon  fa fa-angle-right"></em>
+
+										</div>
+									</a>
+								</li>
+																	
+								<li>
+									<a href="javascript:void(0);" onclick="openMenu(&#39;/product_set.html&#39;,this, &#39;&#39;)">
+										<div class="nav-title">
+											收银台优惠
+											<em class="arrow-icon  fa fa-angle-right"></em>
+
+										</div>
+									</a>
+								</li>
+                                
+                                <li>
+									<a href="javascript:void(0);" onclick="openMenu(&#39;/product_set.html&#39;,this, &#39;&#39;)">
+										<div class="nav-title">
+											礼品
+											<em class="arrow-icon  fa fa-angle-right"></em>
+
+										</div>
+									</a>
+								</li>
+
+							</ul>
+						</div>
+					</li>
+					<!-- 循环展开的二级菜单 END  -->
+                    
+                    <!-- 循环展开的二级菜单 BEGIN -->				
+					<li id="news" class="slide tab-pane">
+						<div class="product-nav-list mCustomScrollbar">
+							<ul>							
+								<li>
+									<a href="javascript:void(0);" onclick="openMenu(&#39;/product_set.html&#39;,this, &#39;&#39;)">
+										<div class="nav-title">
+											资讯分类
+											<em class="arrow-icon  fa fa-angle-right"></em>
+
+										</div>
+									</a>
+								</li>
+							
+								<li>
+									<a href="javascript:void(0);" onclick="openMenu(&#39;/product_set.html&#39;,this, &#39;&#39;)">
+										<div class="nav-title">
+											资讯
+											<em class="arrow-icon  fa fa-angle-right"></em>
+
+										</div>
+									</a>
+								</li>
+							</ul>
+						</div>
+					</li>
+					<!-- 循环展开的二级菜单 END  -->
+                    
+                    <!-- 循环展开的二级菜单 BEGIN -->				
+					<li id="statistical" class="slide tab-pane">
+						<div class="product-nav-list mCustomScrollbar">
+							<ul>							
+								<li>
+									<a href="javascript:void(0);" onclick="openMenu(&#39;/product_set.html&#39;,this, &#39;&#39;)">
+										<div class="nav-title">
+											订单
+											<em class="arrow-icon  fa fa-angle-right"></em>
+
+										</div>
+									</a>
+								</li>
+							
+								<li>
+									<a href="javascript:void(0);" onclick="openMenu(&#39;/product_set.html&#39;,this, &#39;&#39;)">
+										<div class="nav-title">
+											购物车
+											<em class="arrow-icon  fa fa-angle-right"></em>
+
+										</div>
+									</a>
+								</li>
+                                
+                                <li>
+									<a href="javascript:void(0);" onclick="openMenu(&#39;/product_set.html&#39;,this, &#39;&#39;)">
+										<div class="nav-title">
+											客户
+											<em class="arrow-icon  fa fa-angle-right"></em>
+
+										</div>
+									</a>
+								</li>
+							</ul>
+						</div>
+					</li>
+					<!-- 循环展开的二级菜单 END  -->
+					
+				</ul>
+			</div>
+
+			<div id="supplier" class="nav-tabs tab-pane ">
+				<ul class="tab-bar">
+													
+					<li class="J_ToolbarItem  SZY-MENU-2"  href="javascript:void(0);" onclick="openMenu(&#39;live.html&#39;,this, &#39;&#39;)"  data-toggle="tab">
+						<div class="wrap J_TGoldData">
+							<div class="left-line"></div>
+							<b class="iconfont iconfont_f20">&#xe712;</b>
+							<div class="v-text">入驻</div>
+							<b class="fa fa-caret-left"></b>
+						</div>
+
+					</li>
+                    <li class="J_ToolbarItem  SZY-MENU-2"  href="javascript:void(0);" onclick="openMenu(&#39;brand.html&#39;,this, &#39;&#39;)"  data-toggle="tab">
+						<div class="wrap J_TGoldData">
+							<div class="left-line"></div>
+							
+							<b class="iconfont iconfont_f20">&#xe71f;</b>
+							
+							<div class="v-text">品牌</div>
+							<b class="fa fa-caret-left"></b>
+						</div>
+
+					</li>
+                    <li class="J_ToolbarItem  SZY-MENU-2" href="javascript:void(0);" onclick="openMenu(&#39;shop.html&#39;,this, &#39;&#39;)"  data-toggle="tab">
+						<div class="wrap J_TGoldData">
+							<div class="left-line"></div>
+							<b class="iconfont iconfont_f20">&#xe72f;</b>
+							<div class="v-text">门店</div>
+							<b class="fa fa-caret-left"></b>
+						</div>
+
+					</li>
+					
+				</ul>
+				<ul class="toolbar J_ModuleSlides">
+										
+					<!-- 循环展开的二级菜单 BEGIN -->					
+					<li id="supplier_01" class="slide tab-pane ">
+						<div class="product-nav-list mCustomScrollbar ">
+							<ul>
+                            								
+								<li><a href="javascript:void(0);" onclick="openMenu(&#39;live.html&#39;,this, &#39;&#39;)">
+										<div class="nav-title">
+											入驻列表
+											<em class="arrow-icon  fa fa-angle-right"></em>
+
+										</div>
+									</a>
+								</li>
+							</ul>
+						</div>
+					</li>
+                    <li id="supplier_02" class="slide tab-pane ">
+						<div class="product-nav-list mCustomScrollbar ">
+							<ul>
+                            								
+								<li><a href="javascript:void(0);" onclick="openMenu(&#39;brand.html&#39;,this, &#39;&#39;)">
+										<div class="nav-title">
+											品牌管理
+											<em class="arrow-icon  fa fa-angle-right"></em>
+
+										</div>
+									</a>
+								</li>
+							</ul>
+						</div>
+					</li>
+                    <li id="supplier_03" class="slide tab-pane ">
+						<div class="product-nav-list mCustomScrollbar ">
+							<ul>
+                            								
+								<li><a href="javascript:void(0);" onclick="openMenu(&#39;shop.html&#39;,this, &#39;&#39;)">
+										<div class="nav-title">
+											供应商
+											<em class="arrow-icon  fa fa-angle-right"></em>
+
+										</div>
+									</a>
+								</li>
+							</ul>
+						</div>
+					</li>
+                    
+					<!-- 循环展开的二级菜单 END  -->
+					
+				</ul>
+			</div>
+            			
+			<div id="finance" class="nav-tabs tab-pane ">
+				<ul class="tab-bar">
+													
+					<li class="J_ToolbarItem  SZY-MENU-2" href="#finance-capital" data-toggle="tab">
+						<div class="wrap J_TGoldData">
+							<div class="left-line"></div>
+							
+							<b class="fa fa-money fa-fw"></b>
+							
+							<div class="v-text">品牌</div>
+							<b class="fa fa-caret-left"></b>
+						</div>
+						<!-- 循环收缩的二级菜单 start -->
+						<div class="submenu">
+							<ul>						
+								<li><a href="javascript:void(0);" onclick="openMenu(&#39;/product_set.html&#39;,this, &#39;&#39;)">财务管理</a></li>
+								
+							</ul>
+						</div>
+												<!-- 循环收缩的二级菜单 END -->
+					</li>
+					
+				</ul>
+				<ul class="toolbar J_ModuleSlides">
+										
+					<!-- 循环展开的二级菜单 BEGIN -->
+					
+										
+					<li id="finance-capital" class="slide tab-pane ">
+						<div class="product-nav-list mCustomScrollbar ">
+							<ul>
+                            								
+								<li><a href="javascript:void(0);" onclick="openMenu(&#39;/product_set.html&#39;,this, &#39;&#39;)">
+										<div class="nav-title">
+											财务管理
+											<em class="arrow-icon  fa fa-angle-right"></em>
+
+										</div>
+									</a>
+								</li>
+							</ul>
+						</div>
+					</li>
+					<!-- 循环展开的二级菜单 END  -->
+					
+				</ul>
+			</div>
+						
+			<div id="app" class="nav-tabs tab-pane ">
+				<ul class="tab-bar">
+			
+					<li class="J_ToolbarItem  SZY-MENU-2" href="#app-setting" data-toggle="tab">
+						<div class="wrap J_TGoldData">
+							<div class="left-line"></div>
+							
+							<b class="fa fa-cog fa-fw"></b>
+							
+							<div class="v-text">管理</div>
+							<b class="fa fa-caret-left"></b>
+						</div>
+						<!-- 循环收缩的二级菜单 start -->
+						<div class="submenu">
+							<ul>
+																
+								<li><a href="javascript:void(0);" onclick="openMenu(&#39;/product_set.html&#39;,this, &#39;&#39;)">用户管理</a></li>
+								<li><a href="javascript:void(0);" onclick="openMenu(&#39;/product_set.html&#39;,this, &#39;&#39;)">角色管理</a></li>
+                                <li><a href="javascript:void(0);" onclick="openMenu(&#39;/product_set.html&#39;,this, &#39;&#39;)">菜单管理</a></li>
+                                <li><a href="javascript:void(0);" onclick="openMenu(&#39;/product_set.html&#39;,this, &#39;&#39;)">缓存管理</a></li>
+                                <li><a href="javascript:void(0);" onclick="openMenu(&#39;/product_set.html&#39;,this, &#39;&#39;)">索引管理</a></li>	
+							</ul>
+						</div>
+												<!-- 循环收缩的二级菜单 END -->
+					</li>
+                    <li class="J_ToolbarItem  SZY-MENU-2" href="#app-setting" data-toggle="tab">
+						<div class="wrap J_TGoldData">
+							<div class="left-line"></div>
+							
+							<b class="fa fa-cog fa-fw"></b>
+							
+							<div class="v-text">设置</div>
+							<b class="fa fa-caret-left"></b>
+						</div>
+						<!-- 循环收缩的二级菜单 start -->
+						<div class="submenu">
+							<ul>
+																
+								<li><a href="javascript:void(0);" onclick="openMenu(&#39;set.html&#39;,this, &#39;&#39;)">系统设置</a></li>
+								<li><a href="javascript:void(0);" onclick="openMenu(&#39;set.html&#39;,this, &#39;&#39;)">通信设置</a></li>
+                                
+							</ul>
+						</div>
+												<!-- 循环收缩的二级菜单 END -->
+					</li>
+                    
+				</ul>
+				<ul class="toolbar J_ModuleSlides">
+										
+					<!-- 循环展开的二级菜单 BEGIN -->
+					
+										
+					<li id="app-setting" class="slide tab-pane ">
+						<div class="product-nav-list mCustomScrollbar">
+							<ul>
+																							
+								<li class="">
+									<a href="javascript:void(0);" onclick="openMenu(&#39;/product_set.html&#39;,this, &#39;&#39;)">
+										<div class="nav-title">
+											用户管理
+											<em class="arrow-icon  fa fa-angle-right"></em>
+
+										</div>
+									</a>
+								</li>
+																
+								<li class="">
+									<a href="javascript:void(0);" onclick="openMenu(&#39;/product_set.html&#39;,this, &#39;&#39;)">
+										<div class="nav-title">
+											角色管理
+											<em class="arrow-icon  fa fa-angle-right"></em>
+
+										</div>
+									</a>
+								</li>
+
+								<li class="">
+									<a href="javascript:void(0);" onclick="openMenu(&#39;/product_set.html&#39;,this, &#39;&#39;)">
+										<div class="nav-title">
+											菜单管理
+											<em class="arrow-icon  fa fa-angle-right"></em>
+
+										</div>
+									</a>
+								</li>
+                                
+                                <li class="">
+									<a href="javascript:void(0);" onclick="openMenu(&#39;/product_set.html&#39;,this, &#39;&#39;)">
+										<div class="nav-title">
+											缓存管理
+											<em class="arrow-icon  fa fa-angle-right"></em>
+
+										</div>
+									</a>
+								</li>
+                                
+                                <li class="">
+									<a href="javascript:void(0);" onclick="openMenu(&#39;/product_set.html&#39;,this, &#39;&#39;)">
+										<div class="nav-title">
+											索引管理
+											<em class="arrow-icon  fa fa-angle-right"></em>
+
+										</div>
+									</a>
+								</li>
+								
+							</ul>
+						</div>
+					</li>
+					<!-- 循环展开的二级菜单 END  -->
+		
+				</ul>
+			</div>
+						
+			<div id="system_sat" class="nav-tabs tab-pane ">
+				<ul class="tab-bar">
+			
+					<li class="J_ToolbarItem  SZY-MENU-2" href="#management" data-toggle="tab">
+						<div class="wrap J_TGoldData">
+							<div class="left-line"></div>
+							
+							<b class="fa fa-cog fa-fw"></b>
+							
+							<div class="v-text">管理</div>
+							<b class="fa fa-caret-left"></b>
+						</div>
+						<!-- 循环收缩的二级菜单 start -->
+						<div class="submenu">
+							<ul>
+																
+								<li><a href="javascript:void(0);" onclick="openMenu(&#39;/product_set.html&#39;,this, &#39;&#39;)">用户管理</a></li>
+								<li><a href="javascript:void(0);" onclick="openMenu(&#39;/product_set.html&#39;,this, &#39;&#39;)">角色管理</a></li>
+                                <li><a href="javascript:void(0);" onclick="openMenu(&#39;/product_set.html&#39;,this, &#39;&#39;)">菜单管理</a></li>
+                                <li><a href="javascript:void(0);" onclick="openMenu(&#39;/product_set.html&#39;,this, &#39;&#39;)">缓存管理</a></li>
+                                <li><a href="javascript:void(0);" onclick="openMenu(&#39;/product_set.html&#39;,this, &#39;&#39;)">索引管理</a></li>	
+							</ul>
+						</div>
+												<!-- 循环收缩的二级菜单 END -->
+					</li>
+                    <li class="J_ToolbarItem  SZY-MENU-2" href="#System_Settings" data-toggle="tab">
+						<div class="wrap J_TGoldData">
+							<div class="left-line"></div>
+							
+							<b class="fa fa-cog fa-fw"></b>
+							
+							<div class="v-text">设置</div>
+							<b class="fa fa-caret-left"></b>
+						</div>
+						<!-- 循环收缩的二级菜单 start -->
+						<div class="submenu">
+							<ul>
+																
+								<li><a href="javascript:void(0);" onclick="openMenu(&#39;/product_set.html&#39;,this, &#39;&#39;)">系统设置</a></li>
+								<li><a href="javascript:void(0);" onclick="openMenu(&#39;/product_set.html&#39;,this, &#39;&#39;)">通信设置</a></li>
+                                
+							</ul>
+						</div>
+												<!-- 循环收缩的二级菜单 END -->
+					</li>
+                    
+				</ul>
+				<ul class="toolbar J_ModuleSlides">
+										
+					<!-- 循环展开的二级菜单 BEGIN -->
+					
+										
+					<li id="management" class="slide tab-pane ">
+						<div class="product-nav-list mCustomScrollbar">
+							<ul>
+																							
+								<li class="">
+									<a href="javascript:void(0);" onclick="openMenu(&#39;/product_set.html&#39;,this, &#39;&#39;)">
+										<div class="nav-title">
+											用户管理
+											<em class="arrow-icon  fa fa-angle-right"></em>
+
+										</div>
+									</a>
+								</li>
+																
+								<li class="">
+									<a href="javascript:void(0);" onclick="openMenu(&#39;/product_set.html&#39;,this, &#39;&#39;)">
+										<div class="nav-title">
+											角色管理
+											<em class="arrow-icon  fa fa-angle-right"></em>
+
+										</div>
+									</a>
+								</li>
+
+								<li class="">
+									<a href="javascript:void(0);" onclick="openMenu(&#39;/product_set.html&#39;,this, &#39;&#39;)">
+										<div class="nav-title">
+											菜单管理
+											<em class="arrow-icon  fa fa-angle-right"></em>
+
+										</div>
+									</a>
+								</li>
+                                
+                                <li class="">
+									<a href="javascript:void(0);" onclick="openMenu(&#39;/product_set.html&#39;,this, &#39;&#39;)">
+										<div class="nav-title">
+											缓存管理
+											<em class="arrow-icon  fa fa-angle-right"></em>
+
+										</div>
+									</a>
+								</li>
+                                
+                                <li class="">
+									<a href="javascript:void(0);" onclick="openMenu(&#39;/product_set.html&#39;,this, &#39;&#39;)">
+										<div class="nav-title">
+											索引管理
+											<em class="arrow-icon  fa fa-angle-right"></em>
+
+										</div>
+									</a>
+								</li>
+								
+							</ul>
+						</div>
+					</li>
+					<!-- 循环展开的二级菜单 END  -->
+					
+										
+					<!-- 循环展开的二级菜单 BEGIN -->				
+					<li id="System_Settings" class="slide tab-pane ">
+						<div class="product-nav-list mCustomScrollbar">
+							<ul>
+																							
+								<li class="">
+									<a href="javascript:void(0);" onclick="openMenu(&#39;/product_set.html&#39;,this, &#39;&#39;)">
+										<div class="nav-title">
+											系统设置
+											<em class="arrow-icon  fa fa-angle-right"></em>
+
+										</div>
+									</a>
+								</li>
+																
+								<li class="">
+									<a href="javascript:void(0);" onclick="openMenu(&#39;/product_set.html&#39;,this, &#39;&#39;)">
+										<div class="nav-title">
+											通信设置
+											<em class="arrow-icon  fa fa-angle-right"></em>
+
+										</div>
+									</a>
+								</li>
+
+							</ul>
+						</div>
+					</li>
+					<!-- 循环展开的二级菜单 END  -->
+					
+				</ul>
+			</div>
+						
+			
+			
+						<!--展开收起菜单按钮-->
+			<div class="navbar-collapse" data-switch-toggle="state">
+				<a class="navbar-btn">
+					<i class="fa fa-outdent"></i>
+				</a>
+			</div>
+		</div>
+		<!--右侧内容-->
+		<div class="admincp-container-right">
+
+			<!--缓载div-->
+			<div class="loading" id="page-load" style="display: none;">
+				<div class="loader">
+					<!-- 样式：ball-beat、ball-pulse-sync -->
+					<div class="loader-inner ball-beat">
+						<div></div>
+						<div></div>
+						<div></div>
+					</div>
+				</div>
+			</div>
+			<iframe id="workspace" frameborder="0" scrolling="yes" style="width: 100%; height: 93%; *height: 580px; _height: 580px; overflow: hidden;" src="index.html"></iframe>
+		</div>
+	</div>
+
+	<!-- ================== BEGIN BASE  STYLE ================== -->
+<script type="text/javascript" src="../js/jquery.cookie.js"></script>
+<script type="text/javascript" src="../js/bootstrap.min.js"></script>
+<script type="text/javascript" src="../js/bootstrap-switch.min.js"></script>
+	<!-- ================== END BASE CSS STYLE ================== -->
+
+<script type="text/javascript" src="../js/main.js"></script>
+</body></html>

@@ -1,0 +1,302 @@
+@section('title','添加属性')
+@section('admincss')
+    <link type="text/css" rel="stylesheet" href="{{url('css/admin/loaders.css').'?v='.Config::get('tools.adminJsTime')}}">
+    <link type="text/css" rel="stylesheet" href="{{url('css/admin/styles.css').'?v='.Config::get('tools.adminJsTime')}}">
+@stop
+@section('content')
+<div class="page">
+    <div class="fixed-bar">
+        <div class="item-title">
+            <div class="subject">
+                <h3><span class="action">添加属性</span></h3>
+                <h5>
+				<span class="action-span">
+					<a href="{{url('admin/product/attribute_index')}}" class="btn btn-warning click-loading">
+                        <i class="iconfont">&#xe6d4;</i>
+                        返回属性列表
+                    </a>
+				</span>
+                </h5>
+            </div>
+        </div>
+    </div>
+    <!--表单-->
+    <form id="SystemConfigModel" class="form-horizontal form"  action="{{url('admin/product/attribute_store')}}" method="post">
+        <div class="table-content m-t-30 ">
+            <div class="simple-form-field">
+                <div class="form-group">
+                    <label class="col-sm-4 control-label">
+                        <span class="text-danger ng-binding">*</span>
+                        <span class="ng-binding">属性名称：</span>
+                    </label>
+                    <div class="col-sm-8">
+                        <div class="form-control-box">
+                            <input type="text"  name="name" class="form-control valid" datatype="/^[a-z_]{3,20}$/" tipsrmsg="请输入3-20位英文字母" errormsg="3-20位英文字母，可以包含下划线">
+                            <span class="Validform_checktip"></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="simple-form-field">
+                <div class="form-group">
+                    <label class="col-sm-4 control-label">
+                        <span class="text-danger ng-binding">*</span>
+                        <span class="ng-binding">后台标题：</span>
+                    </label>
+                    <div class="col-sm-8">
+                        <div class="form-control-box">
+                            <input type="text"  name="admin_label" class="form-control valid" datatype="s2-20" tipsrmsg="请输入2-20位字符（不包含特殊字符）" errormsg="2-20位字符（不包含特殊字符）">
+                            <span class="Validform_checktip"></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="simple-form-field">
+                <div class="form-group">
+                    <label class="col-sm-4 control-label">
+                        <span class="text-danger ng-binding">*</span>
+                        <span class="ng-binding">类 型：</span>
+                    </label>
+                    <div class="col-sm-8">
+                        <div class="form-control-box">
+                            <select name="type" class="form-control valid w200" >
+                                <option value="varchar">输入框</option>
+                                <option value="text">文本域</option>
+                                <option value="int">整数类型</option>
+                                <option value="decimal">小数类型</option>
+                                <option value="timestamps">时间类型</option>
+                            </select>
+                        </div>
+                        <div class="help-block help-block-t"><div class="help-block help-block-t">选择数据类型</div></div>
+                    </div>
+                </div>
+            </div>
+            <div class="simple-form-field">
+                <div class="form-group">
+                    <label class="col-sm-4 control-label">
+                        <span class="text-danger ng-binding">*</span>
+                        <span class="ng-binding">长 度：</span>
+                    </label>
+                    <div class="col-sm-8">
+                        <div class="form-control-box">
+                            <input type="text"  name="length" class="form-control valid" datatype="/^[1-9]\d*$/" maxlength="3" tipsrmsg="请输入1-3位正整数" errormsg="请输入1-3位正整数">
+                            <span class="Validform_checktip"></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="simple-form-field">
+                <div class="form-group">
+                    <label class="col-sm-4 control-label">
+                        <span class="text-danger ng-binding">*</span>
+                        <span class="ng-binding">前端类型：</span>
+                    </label>
+                    <div class="col-sm-8">
+                        <div class="form-control-box">
+                            <select class="form-control valid w200" name="front_input" onchange="InputType( this )">
+                                <option value="text">文本框</option>
+                                <option value="radio">单选</option>
+                                <option value="checkbox">多选</option>
+                                <option value="select">下拉列表</option>
+                                <option value="textarea">文本域</option>
+                                <option value="time">时间</option>
+                            </select>
+                        </div>
+                        <div class="shezi" style="display: none;">
+                            <table border="0" cellpadding="0" cellspacing="0">
+                                <tr class="one" >
+                                    <th>文本</th>
+                                    <th>值</th>
+                                    <th>默认</th>
+                                    <th>图片</th>
+                                    <th class="hiddens"><a class="hiddens add" href="javascript:;">添 加</a></th>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="simple-form-field">
+                <div class="form-group">
+                    <label class="col-sm-4 control-label">
+                        <span class="text-danger ng-binding">*</span>
+                        <span class="ng-binding">前端标题：</span>
+                    </label>
+                    <div class="col-sm-8">
+                        <div class="form-control-box">
+                            <input type="text"  name="front_lable" class="form-control valid"  datatype="s2-20" tipsrmsg="请输入2-20位字符（不包含特殊字符）" errormsg="2-20位字符（不包含特殊字符）">
+                            <span class="Validform_checktip"></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="simple-form-field">
+                <div class="form-group">
+                    <label class="col-sm-4 control-label">
+                        <span class="ng-binding">排 序：</span>
+                    </label>
+                    <div class="col-sm-8">
+                        <div class="form-control-box">
+                            <input type="text"  name="sort"  class="form-control valid"  ignore="ignore" datatype="n1-3" tipsrmsg="请输入1-3位数字" errormsg="请输入1-3位数字">
+                            <span class="Validform_checktip"></span>
+                        </div>
+                        <div class="help-block help-block-t"><div class="help-block help-block-t">数字越大，排名越前</div></div>
+                    </div>
+                </div>
+            </div>
+            <div class="simple-form-field">
+                <div class="form-group">
+                    <label class="col-sm-4 control-label">
+                        <span class="ng-binding">是否隐藏：</span>
+                    </label>
+                    <div class="col-sm-8">
+                        <div class="form-control-box">
+                            <div>
+                                <label class="control-label cur-p m-r-10"><input type="radio" name="is_hidden" value="1" >是</label>
+                                <label class="control-label cur-p m-r-10"><input type="radio" name="is_hidden" value="0" checked="checked">否</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="simple-form-field">
+                <div class="form-group">
+                    <label class="col-sm-4 control-label">
+                        <span class="ng-binding">是否必填：</span>
+                    </label>
+                    <div class="col-sm-8">
+                        <div class="form-control-box">
+                            <div>
+                                <label class="control-label cur-p m-r-10"><input type="radio" name="is_required" value="1" checked="checked">是</label>
+                                <label class="control-label cur-p m-r-10"><input type="radio" name="is_required" value="0" >否</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="simple-form-field">
+                <div class="form-group">
+                    <label class="col-sm-4 control-label">
+                        <span class="ng-binding">是否多元素：</span>
+                    </label>
+                    <div class="col-sm-8">
+                        <div class="form-control-box">
+                            <div>
+                                <label class="control-label cur-p m-r-10"><input type="radio" name="is_fiter" value="1" >是</label>
+                                <label class="control-label cur-p m-r-10"><input type="radio" name="is_fiter" value="0" checked="checked">否</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="simple-form-field">
+                <div class="form-group">
+                    <label class="col-sm-4 control-label">
+                        <span class="ng-binding">前端筛选：</span>
+                    </label>
+                    <div class="col-sm-8">
+                        <div class="form-control-box">
+                            <div>
+                                <label class="control-label cur-p m-r-10"><input type="radio" name="is_layer_search" value="1" >是</label>
+                                <label class="control-label cur-p m-r-10"><input type="radio" name="is_layer_search" value="0" checked="checked">否</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="simple-form-field">
+                <div class="form-group">
+                    <label class="col-sm-4 control-label">
+                        <span class="ng-binding">前端详情参数：</span>
+                    </label>
+                    <div class="col-sm-8">
+                        <div class="form-control-box">
+                            <div>
+                                <label class="control-label cur-p m-r-10"><input type="radio" name="is_html_allowed_on_front" value="1" >是</label>
+                                <label class="control-label cur-p m-r-10"><input type="radio" name="is_html_allowed_on_front" value="0" checked="checked">否</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="simple-form-field">
+                <div class="form-group">
+                    <label class="col-sm-4 control-label">
+                        <span class="text-danger ng-binding">*</span>
+                        <span class="ng-binding">验证规则：</span>
+                    </label>
+                    <div class="col-sm-8">
+                        <div class="form-control-box">
+                            <select class="form-control valid w200" name="valid_rule">
+                                <option value="n">数字类型</option>
+                                <option value="s">字符串类型</option>
+                                <option value="*">必填项</option>
+                                <option value="p">邮政编码</option>
+                                <option value="m">手机号码</option>
+                                <option value="e">email格式</option>
+                                <option value="url">网址</option>
+                                <option value="je">价格</option>
+                                <option value="weight">重量</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="simple-form-field">
+                <div class="form-group">
+                    <label class="col-sm-4 control-label">
+                        <span class="text-danger ng-binding">*</span>
+                        <span class="ng-binding">默认提示：</span>
+                    </label>
+                    <div class="col-sm-8">
+                        <div class="form-control-box">
+                            <input type="text" name="tipgs" class="form-control valid" datatype="s3-20" tipsrmsg="请输入3-20位字符（不包含特殊字符）" errormsg="3-20位字符（不包含特殊字符）">
+                            <span class="Validform_checktip"></span>
+                        </div>
+                        <div class="help-block help-block-t"><div class="help-block help-block-t">鼠标获取焦点，默认提示</div></div>
+                    </div>
+                </div>
+            </div>
+            <div class="simple-form-field">
+                <div class="form-group">
+                    <label class="col-sm-4 control-label">
+                        <span class="text-danger ng-binding">*</span>
+                        <span class="ng-binding">错误提示：</span>
+                    </label>
+                    <div class="col-sm-8">
+                        <div class="form-control-box">
+                            <input type="text" name="errormsg" class="form-control valid" datatype="s3-20" tipsrmsg="请输入3-20位字符（不包含特殊字符）" errormsg="3-20位字符（不包含特殊字符）">
+                            <span class="Validform_checktip"></span>
+                        </div>
+                        <div class="help-block help-block-t"><div class="help-block help-block-t">验证不通过，错误提示信息</div></div>
+                    </div>
+                </div>
+            </div>
+           <!-- <div class="simple-form-field">
+                <div class="form-group">
+                    <label class="col-sm-4 control-label">
+                        <span class="ng-binding">资源模型：</span>
+                    </label>
+                    <div class="col-sm-8">
+                        <div class="form-control-box">
+                            <input type="text" name="model" maxlength="20" ignore="ignore" class="form-control valid" datatype="/^[a-zA-Z_]{3,20}$/" tipsrmsg="请输入3-20位英文字母" errormsg="请输入3-20位英文字母">
+                            <span class="Validform_checktip"></span>
+                        </div>
+                    </div>
+                </div>
+            </div>-->
+            <div class="simple-form-field p-b-30">
+                <div class="form-group">
+                    <label for="text4" class="col-sm-4 control-label"></label>
+                    <div class="col-xs-8">
+                        <input type="submit" id="btn_submit" value="确认提交" class="btn btn-primary">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+@stop
+@section('footer_js')
+    <script type="text/javascript" src="/js/admin/admineav.js?v={{Config::get('tools.adminJsTime')}}"></script>
+@stop

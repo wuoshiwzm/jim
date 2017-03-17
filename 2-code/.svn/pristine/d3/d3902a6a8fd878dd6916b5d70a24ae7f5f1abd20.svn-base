@@ -1,0 +1,102 @@
+<?php
+
+/**
+ * 操作产品控制器
+ * Class GoodsController
+ */
+class KeepAndCartController extends \BaseController
+{
+
+    protected static $user;
+    public function __construct()
+    {
+        $ajax = Request::ajax();
+        $user = Session::get('member');
+        if( $ajax )
+        {
+            if( $user == false )
+            {
+                die('no');
+            }
+        }else
+        {
+            if( $user == false )
+            {
+                header( "Location:/member/login");
+                die();
+            }
+        }
+        self::$user = $user;
+        parent::__construct();
+    }
+
+    /**
+     * 收藏
+     */
+    public function keep()
+    {
+        $ajax = Request::ajax();
+        if( $ajax )
+        {
+            //判断token
+            $data = Input::get('data');
+            $token = Session::token();
+            if( $token != $data['token'] )
+            {
+                return 'fail';
+            }
+            $res = KeepAndCart::keep( $data, self::$user );
+            return $res?'success':'fail';
+        }
+        return 'fail';
+    }
+
+
+    /**
+     * @return mixed
+     * 加入购物车
+     */
+    public function shoppingCart()
+    {
+        //判断token
+        $data = Input::all();
+        $token = Session::token();
+        if( $token != $data['_token'] )
+        {
+            return Redirect::back();
+        }
+        //查询写入购物车
+
+        $res = KeepAndCart::cart( $data, self::$user);
+        if( $res )
+        {
+            return Redirect::to('/member/cart');
+        }else
+        {
+            return Redirect::back();
+        }
+        
+    }
+
+
+
+    /**
+     * 购物车确认下订单
+     */
+    public function confirmOrder()
+    {
+        //产品id按照英文的逗号隔开
+        $id = decode( trim(Input::get('order')) );
+        $pid = explode( ",", $id );
+        $uid = self::$user->id;
+        $goods = Source_Cart_CartItem::where('user_id',$uid)->whereIn('product_id',$pid)->get();
+        $address = Source_User_UserInfoAdd::where('user_id',$uid)->get();
+        $this->view('frontend.order.confirmorder',compact('address','goods'));
+
+    }
+
+
+
+
+
+}

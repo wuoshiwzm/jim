@@ -1,0 +1,9 @@
+public文件夹组织
+  1  css
+      公共css 存放  css/[模板名称]/
+      私有css 存放  css/[模板名称]/文件名称
+  2  js
+       公共js 存放  css/[模板名称]/
+       私有js 存放  css/[模板名称]/文件名称
+  3  images
+      参考css 与js 

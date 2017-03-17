@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta charset="utf-8">
+<title>曼蒂商城个人中心</title>
+<meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport">
+<meta content="" name="description">
+<meta content="" name="author">
+<meta name="renderer" content="webkit">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,Chrome=1">
+
+<!-- 网站头像 -->
+<link rel="icon" type="image/x-icon" href="../images/icon.png">
+<link rel="shortcut icon" type="image/x-icon" href="../images/icon.png">
+	<link rel="stylesheet" type="text/css" href="../css/admin.css">
+    <link rel="stylesheet" type="text/css" href="../css/css.css">
+    <link rel="stylesheet" type="text/css" href="../css/iconfont.css">
+    <link rel="stylesheet" type="text/css" href="../css/layui.css" >
+</head>
+<body>
+ 
+<div class="nav_top">
+  	<div>
+      <span>李四<font>vip1</font><a href="##">退出</a></span>
+      <ul>
+         <li><a href="##">商城首页</a></li>
+         <li><a href="##">购物车 ( <font>2</font> )</a></li>
+         <li><a href="##">收藏夹 ( <font>2</font> )</a></li>
+         <li><a href="##">消息 ( <font>2</font> )</a></li>
+      </ul>
+	</div>
+</div>
+
+<div class="ge_admin01">
+  	<div class="ge_admin_xin">
+      <h2><img src="../images/logo.png"></h2>
+      <ul>
+         <li><a href="ge_admin.html" >个人中心</a></li>
+         <li class="nav_on02 nav_on"><a href="ge_admin_mi.html" >账号设置</a></li>
+         <li class="nav_on03"><a href="ge_admin_message.html">消息<span>2</span></a></li>
+      </ul>
+      <div class="tui"><a href="##" >退出</a></div>
+	</div>
+</div>
+
+<div class="ge_admin02">
+  	<div class="ge_admin_nei">
+      <div class="ge_admin_nei_left">
+       <ul>
+         <li><a href="ge_admin_mi.html"><font class="iconfont">&#xe65d;</font>个人设置</a></li>
+         <li class="c_on"><a href="ge_admin_address.html"><font class="iconfont">&#xe651;</font>收货地址</a></li>
+         <li><a href="ge_admin_set.html"><font class="iconfont">&#xe657;</font>密码设置</a></li>
+         <li><a href="ge_admin_prompt.html"><font class="iconfont">&#xe621;</font>网站提醒</a></li>
+       </ul>
+      </div>
+     
+      <div class="ge_admin_nei_right">
+         <div class="spinner">
+          <div class="double-bounce1"></div>
+          <div class="double-bounce2"></div>
+         </div>
+       
+         <div class="admin_form">  
+           <div class="h-title">
+              收货地址<font>Shipping Address</font>
+           </div>        
+          <form class="layui-form m-form" action="">
+            <div class="layui-form-item">
+              <label class="layui-form-label"><span class="red">*</span>所在地区</label>
+              <div class="layui-input-inline">
+                <select name="quiz1">
+                  <option value="">请选择省</option>
+                  <option value="浙江" selected="">浙江省</option>
+                  <option value="你的工号">江西省</option>
+                  <option value="你最喜欢的老师">福建省</option>
+                </select>
+              </div>
+              <div class="layui-input-inline">
+                <select name="quiz2">
+                  <option value="">请选择市</option>
+                  <option value="杭州">杭州</option>
+                  <option value="宁波">宁波</option>
+                  <option value="温州">温州</option>
+                  <option value="温州">台州</option>
+                  <option value="温州">绍兴</option>
+                </select>
+              </div>
+              <div class="layui-input-inline">
+                <select name="quiz3">
+                  <option value="">请选择县/区</option>
+                  <option value="西湖区">西湖区</option>
+                  <option value="余杭区">余杭区</option>
+                  <option value="拱墅区">临安市</option>
+                </select>
+              </div>
+            </div>
+            
+            <div class="layui-form-item">
+              <label class="layui-form-label"><span class="red">*</span>详细地址</label>
+              <div class="layui-input-block">
+                <textarea name="desc" class="layui-textarea w80b f_left" placeholder="建议您如实填写详细收货地址，例如街道名称，门牌号码，楼层和房间号等信息" autocomplete="off" ignore="ignore"  datatype="n"  errormsg="5-120个字符，一个汉字为两个字符" tipsrmsg="请输入详细地址" ></textarea><span class="Validform_checktip"></span>
+              </div>
+            </div>
+            
+            <div class="layui-form-item">
+              <label class="layui-form-label">邮政编码</label>
+              <div class="layui-input-block">
+                <input type="text" name="title"  placeholder="如您不清楚邮递区号，请填写000000" autocomplete="off" class="layui-input w40b f_left"    errormsg="请输入邮政编码" tipsrmsg="请输入邮政编码" ><span class="Validform_checktip"></span>
+              </div>
+            </div>
+            
+            <div class="layui-form-item">
+              <label class="layui-form-label"><span class="red">*</span>收货人</label>
+              <div class="layui-input-block">
+                <input type="text" name="title"  placeholder="长度不超过25个字符" autocomplete="off" class="layui-input w40b f_left"  ignore="ignore"  datatype="n"  errormsg="收货人姓名应为2-25个字符，一个汉字为两个字符" tipsrmsg="请输入收货人姓名" ><span class="Validform_checktip"></span>
+              </div>
+            </div>
+            
+            <div class="layui-form-item">
+              <label class="layui-form-label"><span class="red">*</span>手机号码</label>
+              <div class="layui-input-block">
+                <input type="text" name="title"  placeholder="电话号码、手机号码必须填一项" autocomplete="off" class="layui-input w40b f_left"  ignore="ignore"  datatype="n"  errormsg="6-20个数字" tipsrmsg="请输入手机号码" ><span class="Validform_checktip"></span>
+              </div>
+            </div>
+            
+            <div class="layui-form-item">
+              <label class="layui-form-label">电话号码</label>
+              <div class="layui-input-block">
+              <input type="text" name="title"  placeholder="区号" class="layui-input w20b f_left m_r_10" >
+              <input type="text" name="title"  placeholder="电话号码" class="layui-input w30b f_left m_r_10" >
+              <input type="text" name="title"  placeholder="分机" class="layui-input w20b f_left m_r_10">
+              </div>
+            </div>
+            
+            <div class="layui-form-item">
+              <label class="layui-form-label"> </label>
+              <div class="layui-input-block">
+                <input type="checkbox" name="like[write]" title="设为默认地址"><div class="layui-unselect layui-form-checkbox layui-form-checked"><span>设为默认地址</span><i class="layui-icon"></i></div>
+              </div>
+            </div>
+
+            <div class="layui-form-item">
+              <div class="layui-input-block">
+                <button class="layui-btn" >保存</button>
+              </div>
+            </div>
+          </form>
+         </div>
+         
+         <div class="admin_table">  
+           <div class="h-title">
+              <table border="0" cellpadding="0" cellspacing="0">
+                <tr>
+                  <th width="10%">收货人</th>
+                  <th width="20%">所在地区</th>
+                  <th>详细地址</th>
+                  <th width="10%">邮编</th>
+                  <th width="16%">电话/手机</th>
+                  <th width="18%" class="border_rn">操作</th>
+                </tr>
+                <tr>
+                  <td>小舒子</td>
+                  <td>陕西省，西安市，雁塔区</td>
+                  <td>高新路12海天大厦12层2015室</td>
+                  <td>710065</td>
+                  <td>15812455252</td>
+                  <td class="border_rn"><a href="##">修改</a>&nbsp;&nbsp;&nbsp;<a href="##">删除</a>&nbsp;&nbsp;&nbsp;<a href="##">设为默认</a></td>
+                </tr>
+                <tr>
+                  <td>小舒子</td>
+                  <td>陕西省，西安市，雁塔区</td>
+                  <td>高新路12海天大厦12层2015室</td>
+                  <td>710065</td>
+                  <td>15812455252</td>
+                  <td class="border_rn"><a href="##">修改</a>&nbsp;&nbsp;&nbsp;<a href="##">删除</a>&nbsp;&nbsp;&nbsp;<a href="##" class="color_on">默认地址</a></td>
+                </tr>
+                <tr>
+                  <td>小舒子</td>
+                  <td>陕西省，西安市，雁塔区</td>
+                  <td>高新路12海天大厦12层2015室</td>
+                  <td>710065</td>
+                  <td>15812455252</td>
+                  <td class="border_rn"><a href="##">修改</a>&nbsp;&nbsp;&nbsp;<a href="##">删除</a>&nbsp;&nbsp;&nbsp;<a href="##">设为默认</a></td>
+                </tr>
+                <tr>
+                  <td>小舒子</td>
+                  <td>陕西省，西安市，雁塔区</td>
+                  <td>高新路12海天大厦12层2015室</td>
+                  <td>710065</td>
+                  <td>15812455252</td>
+                  <td class="border_rn"><a href="##">修改</a>&nbsp;&nbsp;&nbsp;<a href="##">删除</a>&nbsp;&nbsp;&nbsp;<a href="##">设为默认</a></td>
+                </tr>
+              </table>
+           </div>        
+         </div>
+         
+        
+	  </div>
+     
+   </div>
+</div>
+
+
+<!-- footer -->
+<div class="g-footer g-footer02">
+
+	<div class="footer_nav">
+          <div class="link_about_left_ul">
+           
+            <ul>
+                <li><a href="##" title="关于曼蒂">关于曼蒂</a></li>
+                <li>|</li>
+                <li><a href="##" title="版权声明">版权声明</a></li>
+                <li>|</li>
+                <li><a href="##" title="常见问题">常见问题</a></li>
+                <li>|</li>
+                <li><a href="##" title="免责声明">免责声明</a></li>
+                <li>|</li>
+                <li><a href="##" title="联系我们">联系我们</a></li>
+                <li>|</li>
+                <li><a href="##" title="网站合作">网站合作</a></li>
+                <li>|</li>
+                <li><a href="##" title="用户协议">用户协议</a></li>
+                <li>|</li>
+                <li><a href="##" title="网站地图">网站地图</a></li>
+            </ul>
+            <div class="clear"></div>
+              <p class="f-bottom_div_left"><span>邮箱: xxx@xxx.com&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;客服热线: 400-xxx-xxxx </span>
+              </p>
+               <p class="f-bottom_div_right">Copyright@2016-2026&nbsp;&nbsp;曼蒂税保&nbsp;&nbsp;版权所有&nbsp;&nbsp;陕ICP备xxxxxxxx号-1</p>
+               
+          </div>
+          <div  class="link_about_right"><img src="../images/er.jpg" /><p>手机端曼蒂</p></div>
+    </div>
+    
+</div>
+
+</body>
+
+<script type="text/javascript" src="../js/jquery-1.9.1.min.js"></script>
+<script type="text/javascript" src="../js/Validform_v5.3.2_min.js"></script>
+<script type="text/javascript" src="../js/er_admin.js"></script>
+<script type="text/javascript" src="../js/rules.js"></script>
+
+<script src="../js/layer-v1.9.3/layer/layer.js"></script>
+<script type="text/javascript" src="../js/layui.js"></script>
+<script>
+layui.use('form', function(){
+  var form = layui.form(); //只有执行了这一步，部分表单元素才会修饰成功
+  //……
+});  
+</script> 
+<script type="text/javascript" >
+$(document).ready(function () { $(".spinner").hide();});//页面加载特效
+</script>
+
+</html> 

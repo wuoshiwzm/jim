@@ -1,0 +1,22 @@
+<div class="preview">
+    <div id="vertical" class="bigImg">
+        @foreach( $carousel as $key=>$car )
+            @if( $key == 0)
+            <img src="{{ getImgSize( 'goods', $car->entity_id, $car->value ) }}" width="400" height="400" id="midimg" />
+            @endif
+        @endforeach
+        <div style="display:none;" id="winSelector"></div>
+    </div>
+    <div class="smallImg">
+        <div class="scrollbutton smallImgUp disabled"></div>
+        <div id="imageMenu">
+            <ul>
+                @foreach( $carousel as $car )
+                <li><img src="{{ getImgSize( 'goods', $car->entity_id, $car->value ) }}" width="68" height="68" /></li>
+                @endforeach
+            </ul>
+        </div>
+        <div class="scrollbutton smallImgDown"></div>
+    </div><!--smallImg end-->
+    <div id="bigView" style="display:none;"><img width="800" height="800" alt="" src="" /></div>
+</div>

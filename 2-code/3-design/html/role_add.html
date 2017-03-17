@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta charset="utf-8">
+<title>角色管理 - 添加角色</title>
+<meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport">
+<meta content="" name="description">
+<meta content="" name="author">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,Chrome=1">
+
+<!-- ================== BEGIN BASE CSS STYLE ================== -->
+<link type="text/css" rel="stylesheet" href="../css/iconfont.css">
+<link type="text/css" rel="stylesheet" href="../css/bootstrap.min.css">
+<link type="text/css" rel="stylesheet" href="../css/bootstrap-switch.min.css">
+<link type="text/css" rel="stylesheet" href="../css/loaders.css">
+<link type="text/css" rel="stylesheet" href="../css/common.css">
+<link type="text/css" rel="stylesheet" href="../css/zTreeStyle.css">
+<!-- ================== END BASE CSS STYLE ================== -->
+<!--[if lt IE 9]>
+      <script type="text/javascript" src="../js/html5shiv.min.js"></script>
+      <script type="text/javascript" src="../js/respond.min.js"></script>
+    <![endif]-->
+<!-- ================== BEGIN BASE JS ================== -->
+<script type="text/javascript" src="../js/jquery.js"></script>
+<script type="text/javascript" src="../js/jquery.ztree.core.js"></script>
+<script type="text/javascript" src="../js/jquery.ztree.excheck.js"></script>
+<SCRIPT type="text/javascript">
+		<!--
+		var setting = {
+			check: {
+				enable: true,
+				nocheckInherit: true
+			},
+			data: {
+				simpleData: {
+					enable: true
+				}
+			}
+		};
+
+		var zNodes =[
+			{ id:1, pId:0, name:"随意勾选 1", open:true},
+			{ id:11, pId:1, name:"随意勾选 1-1", open:true},
+			{ id:111, pId:11, name:"无 checkbox 1-1-1", nocheck:true},
+			{ id:112, pId:11, name:"随意勾选 1-1-2"},
+			{ id:12, pId:1, name:"无 checkbox 1-2", nocheck:true, open:true},
+			{ id:121, pId:12, name:"无 checkbox 1-2-1"},
+			{ id:122, pId:12, name:"无 checkbox 1-2-2"},
+			{ id:2, pId:0, name:"随意勾选 2", checked:true, open:true},
+			{ id:21, pId:2, name:"随意勾选 2-1"},
+			{ id:22, pId:2, name:"随意勾选 2-2", open:true},
+			{ id:221, pId:22, name:"添加", checked:true ,icon:"../images/2.png"},
+			{ id:222, pId:22, name:"删除",icon:"../images/4.png"},
+			{ id:222, pId:22, name:"查询",icon:"../images/3.png"},
+			{ id:222, pId:22, name:"修改",icon:"../images/9.png"},
+			{ id:222, pId:22, name:"导出",icon:"../images/6.png"},
+			{ id:23, pId:2, name:"随意勾选 2-3"}
+		];
+
+		function nocheckNode(e) {
+			var zTree = $.fn.zTree.getZTreeObj("treeDemo"),
+			nocheck = e.data.nocheck,
+			nodes = zTree.getSelectedNodes();
+			if (nodes.length == 0) {
+				alert("请先选择一个节点");
+			}
+
+			for (var i=0, l=nodes.length; i<l; i++) {
+				nodes[i].nocheck = nocheck;
+				zTree.updateNode(nodes[i]);
+			}
+		}
+
+		$(document).ready(function(){
+			$.fn.zTree.init($("#treeDemo"), setting, zNodes);
+			$("#nocheckTrue").bind("click", {nocheck: true}, nocheckNode);
+			$("#nocheckFalse").bind("click", {nocheck: false}, nocheckNode);
+		});
+		//-->
+	</SCRIPT>
+
+</head>
+<body class="pace-done">
+	
+<div class="page">
+	<div class="fixed-bar">
+	<div class="item-title">
+		<div class="subject">
+			<h3>
+				<span class="action">角色管理 - 添加角色</span>
+			</h3>	
+            <h5>
+				<span class="action-span">
+					<a href="role.html" class="btn btn-warning click-loading">
+						<i class="iconfont">&#xe6d4;</i>
+						返回角色管理
+					</a>
+				</span>
+			</h5>		
+		</div>
+	</div>
+</div>
+		
+	<form id="SystemConfigModel" class="form-horizontal m-form"  method="post"  novalidate>
+	<div class="table-content m-t-30">
+
+		<div class="simple-form-field">
+          <div class="form-group">
+              <label class="col-sm-4 control-label"> 
+                <span class="text-danger ng-binding">*</span>
+                <span class="ng-binding">角色名称：</span>
+              </label>
+              <div class="col-sm-8">
+                <div class="form-control-box">
+                   <input type="text" class="form-control"  ignore="ignore"  datatype="n"  errormsg="请输入" tipsrmsg="请输入" placeholder="请输入角色名称"><span class="Validform_checktip"></span>    
+                </div>
+              </div>
+          </div>
+        </div>
+        
+        <div class="simple-form-field">
+          <div class="form-group">
+              <label class="col-sm-4 control-label"> 
+                <span class="text-danger ng-binding">*</span>
+                <span class="ng-binding">类型：</span>
+              </label>
+              <div class="col-sm-8">
+                <div class="form-control-box">
+                  <div>
+                       <label class="control-label cur-p m-r-10"><input type="radio" name="danxuan" value="0" >管理员</label>
+                       <label class="control-label cur-p m-r-10"><input type="radio" name="danxuan" value="1">用户</label>
+                  </div>
+                </div>
+            </div>
+          </div>
+        </div>
+        
+        <div class="simple-form-field">
+          <div class="form-group">
+              <label class="col-sm-4 control-label"> 
+                <span class="text-danger ng-binding">*</span>
+                <span class="ng-binding">接收消息：</span>
+              </label>
+              <div class="col-sm-8">
+                <div class="form-control-box">
+                  <div>
+                       <label class="control-label cur-p m-r-10"><input type="radio" name="danxuan" value="0" >是</label>
+                       <label class="control-label cur-p m-r-10"><input type="radio" name="danxuan" value="1">否</label>
+                  </div>
+                </div>
+            </div>
+          </div>
+        </div>
+        
+        <div class="simple-form-field">
+          <div class="form-group">
+              <label class="col-sm-4 control-label"> 
+                <span class="text-danger ng-binding">*</span>
+                <span class="ng-binding">权限分配：</span>
+              </label>
+              <div class="col-sm-8 quanxian">
+                <div class="form-control-box ">
+                  <ul id="treeDemo" class="ztree"></ul>
+                </div>
+            </div>
+          </div>
+        </div> 
+
+		<div class="simple-form-field p-b-30">
+			<div class="form-group">
+				<label for="text4" class="col-sm-4 control-label"></label>
+				<div class="col-xs-8">
+					<input type="hidden" name="back_url" value=" ">
+					<input type="button" id="btn_submit" value="确认保存" class="btn btn-primary">
+				</div>
+			</div>
+		</div>
+
+	</div></form>
+</div>
+
+	
+	<div class="copyright">
+	<div class="text-c">
+		<p></p>
+		<p>
+			Copyright © 2016-2026 曼蒂税保 - 版权所有
+		</p>
+	</div>
+</div>
+
+<script type="text/javascript" src="../js/Validform_v5.3.2_min.js"></script>
+<script type="text/javascript">
+//初始化验证//
+ 
+        
+		     $(".m-form").Validform({
+		         altercss:'Validform_skate',
+		         postonce:true,
+		         showAllError:true,
+		         postonce:true,
+		         tiptype:function(msg,o,cssctl){
+		             if(!o.obj.is("form")){//验证表单元素时o.obj为该表单元素，全部验证通过提交表单时o.obj为该表单对象;
+		                 var objtip=o.obj.parent().find(".Validform_checktip");
+		                 objtip.removeClass('Validform_skate');
+		                 cssctl(objtip,o.type);
+		                 objtip.text(msg);
+		             }else{
+		                 var objtip=o.obj.find("#msgdemo");
+		                 objtip.removeClass('Validform_skate');
+		                 cssctl(objtip,o.type);
+		                 objtip.text(msg);
+		             }
+		         },
+		     });
+		     $(".m-form").find('input').each(function() {
+		         $(this).focus(function () {
+		             if ($(this).val() == '') {
+		                 var msg = $(this).attr('tipsrmsg');
+		                 $(this).parent().find(".Validform_checktip").addClass('Validform_skate');
+		                 $(this).parent().find(".Validform_checktip").removeClass('Validform_wrong');
+		                 $(this).parent().find(".Validform_checktip").text(msg);
+		             } else {
+		                 $(this).parent().find(".Validform_checktip").removeClass('Validform_skate');
+		             }
+		         });
+		         $(this).blur(function () {
+		             if ($(this).val() == '') {
+		                 var msg = $(this).attr('errormsg');
+		                 $(this).parent().find(".Validform_checktip").removeClass('Validform_skate');
+		                 $(this).parent().find(".Validform_checktip").addClass('Validform_wrong');
+		                 $(this).parent().find(".Validform_checktip").text(msg);
+		             }
+		         });
+		     });
+           
+//
+</script>
+
+<script type="text/javascript" src="../js/rules.js"></script>
+</body></html>

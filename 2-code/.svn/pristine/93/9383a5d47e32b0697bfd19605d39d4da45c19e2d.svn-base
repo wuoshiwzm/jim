@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta charset="utf-8">
+<title>分类管理</title>
+<meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport">
+<meta content="" name="description">
+<meta content="" name="author">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,Chrome=1">
+
+<!-- ================== BEGIN BASE CSS STYLE ================== -->
+<link type="text/css" rel="stylesheet" href="../css/iconfont.css">
+<link type="text/css" rel="stylesheet" href="../css/bootstrap.min.css">
+<link type="text/css" rel="stylesheet" href="../css/bootstrap-switch.min.css">
+
+<link type="text/css" rel="stylesheet" href="../css/common.css">
+<!-- ================== END BASE CSS STYLE ================== -->
+<!--[if lt IE 9]>
+      <script type="text/javascript" src="../js/html5shiv.min.js"></script>
+      <script type="text/javascript" src="../js/respond.min.js"></script>
+    <![endif]-->
+<!-- ================== BEGIN BASE JS ================== -->
+<script type="text/javascript" src="../js/jquery.js"></script>
+
+</head>
+<body class="pace-done">
+	
+<link type="text/css" rel="stylesheet" href="../css/styles.css">
+
+<div class="page">
+	<div class="fixed-bar">
+	<div class="item-title">
+		<div class="subject">
+			<h3>
+				<span class="action">分类管理 - 管理</span>
+			</h3>
+	    </div>
+	</div>
+</div>
+
+<div class="titleBar-box">
+	<a class="btn btn-default dropdown-toggle" >
+		主题
+		<span class="caret"></span>
+	</a>
+	<ul class="dropdown-menu flipInX animated" >
+		<li role="presentation">
+			<a href="list.html" data-tab-id="tab_list">管理</a>
+		</li>
+	</ul>
+
+</div>
+ 
+	<!-- 温馨提示 -->
+<div class="explanation m-b-10">
+	<div class="title">
+    	<i class="arrow-icon explain-checkZoom" title="点击此处展开或收起"></i>
+		<i class="iconfont">&#xe6a7;</i>
+		<h4>温馨提示</h4>
+	</div>
+	<ul class="explain-panel">
+		<li>
+			<span>当店主发布商品时可以选择商品分类，用户在前台可以通过商品分类查询商品</span>
+		</li>
+	</ul>
+</div>
+
+	<!-- 搜索条件 -->
+	<div class="search-term">
+		<div class="simple-form-field">
+			<div class="form-group">
+				<label class="control-label">
+					<span>分类名称：</span>
+				</label>
+				<div class="form-control-wrap">
+					<input type="text" id="cat_name" class="form-control">
+				</div>
+			</div>
+		</div>
+		<div class="simple-form-field">
+			<input type="button" id="btn_submit" class="btn btn-primary m-r-5" value="查询">
+            <input type="button" id="btn_submit" class="btn btn-primary m-r-5" value="添加分类" onclick="location='product_list_add.html'">
+
+		</div>
+	</div>
+	
+	<!-- 分类列表 -->
+	<div id="table_list" class="table-responsive m-t-10">
+		
+<div class="common-title">
+	<div class="ftitle">
+		<h3>商品分类列表</h3>
+		
+		<h5>
+			(&nbsp;共
+			<span data-total-record="true">551</span>
+			条记录&nbsp;)
+		</h5>
+		
+	</div>
+	<div class="operate">
+		
+		<a class="reload" href="javascript:reload();" data-toggle="tooltip" data-placement="auto bottom" title="" data-original-title="刷新数据">
+			<i class="iconfont">&#xe6fb;</i>
+		</a>
+		<script type="text/javascript">
+			function reload() {
+				
+			}
+		</script>
+		
+		
+		
+	</div>
+</div>
+		<table id="list-table" class="table table-hover">
+
+			<thead>
+				<tr>
+					<th>
+						<a class="expand-toggle category-all" onclick="expandAll(this)">全部收缩</a>
+						分类名称
+					</th>
+					<th class="text-c">商品数量</th>
+                    <th class="text-c">是否显示</th>	
+					<th class="text-c">排序</th>
+					<th class="handle">操作</th>
+				</tr>
+			</thead>
+			<tbody>	
+				<tr class="1" data-id="554" data-parent-id="0">
+					<td><div onclick="change(this)" style="cursor:pointer;"><img src="../images/s_jian.png" width="18" style="margin-left:2.5em ;" class="icon-image"  border="0" >
+						<a href="javascript:void(0);">家具</a></div>
+					</td>
+					<td class="handle text-c">
+						12
+					</td>
+					<!-- <td>默认规格</td> -->
+					<td class="text-c">
+						<font class="f14">是</font>
+					</td>
+					<td class="text-c"><input type="text" class="form-control small" value="420"></td>
+					<td class="handle">
+						<a href="product_list_add.html">编辑</a>
+						<span>|</span>
+						<a href="javascript:reload();" object_id="558" class="del border-none dele_d">删除</a>
+					</td>
+				</tr>
+				
+				<tr class="2" data-id="555" data-parent-id="554">
+					<td><div onclick="change(this)" style="cursor:pointer;"><img src="../images/s_add.png" width="18" style="margin-left:7.5em ;" class="icon-image"  border="0" >
+						<a href="javascript:void(0);">家具</a></div>
+					</td>
+					<td class="handle text-c">
+						12
+					</td>
+					<!-- <td>默认规格</td> -->
+					<td class="text-c">
+						<font class="f14">是</font>
+					</td>
+					<td class="text-c"><input type="text" class="form-control small" value="420"></td>
+					<td class="handle">
+						<a href="product_list_add.html">编辑</a>
+						<span>|</span>
+						<a href="javascript:reload();" object_id="558" class="del border-none dele_d">删除</a>
+					</td>
+				</tr>
+				
+				<tr class="3" data-id="556" data-parent-id="555">
+					<td><div onclick="change(this)" ><img src="../images/s_add.png" style="margin-left:12.5em ;" width="18" class="icon-image"  border="0" >
+						<a href="javascript:void(0);">家具</a></div>
+					</td>
+					<td class="handle text-c">
+						12
+					</td>
+					<!-- <td>默认规格</td> -->
+					<td class="text-c">
+						<font class="f14">是</font>
+					</td>
+					<td class="text-c"><input type="text" class="form-control small" value="420"></td>
+					<td class="handle">
+						<a href="product_list_add.html">编辑</a>
+						<span>|</span>
+						<a href="javascript:reload();" object_id="558" class="del border-none dele_d">删除</a>
+					</td>
+				</tr>
+				
+				
+
+			</tbody>
+		</table>
+		
+	
+</div>
+</div>
+<script type="text/javascript">
+	/**
+	 * 折叠分类列表
+	 */
+	var imgPlus = new Image();
+	imgPlus.src = "../images/s_jian.png";
+
+	var plus_image_url = "../images/s_add.png";
+	var minus_image_url = "../images/s_add.png";
+
+	function change(obj, expand, depth) {
+		var tr = null;
+		if ($(obj).prop("tagName") == 'TR') {
+			tr = obj;
+		} else {
+			tr = $(obj).parents("tr");
+		}
+		var image = $(tr).find(".icon-image");
+
+		if (expand == undefined) {
+			if ($(image).attr("src") != minus_image_url) {
+				$(image).attr("src", minus_image_url);
+				expand = true;
+			} else {
+				$(image).attr("src", plus_image_url);
+				expand = false;
+			}
+		} else {
+			if (expand) {
+				$(image).attr("src", minus_image_url);
+			} else {
+				$(image).attr("src", plus_image_url);
+			}
+		}
+
+		if (depth != undefined && depth != 0) {
+			var level = $(tr).data("level");
+			console.info(level);
+			if (depth > level) {
+				return false;
+			}
+		}
+
+		var table = $(tr).parents("table");
+		var cat_id = $(tr).data("id");
+		$(table).find("[data-parent-id='" + cat_id + "']").each(function() {
+			if (expand == true) {
+				$(this).show();
+			} else {
+				$(this).hide();
+			}
+			change(this, expand, depth);
+		});
+	}
+
+
+</script>
+	
+<script type="text/javascript" src="../js/d_tan.js"></script>
+<script type="text/javascript" src="../js/layer/layer.js"></script>	
+
+</body></html>

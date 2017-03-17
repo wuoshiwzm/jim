@@ -1,0 +1,39 @@
+<?php
+
+//用户管理模块路由
+
+//用户管理用户列表
+$router->get('/index','MemberInfoController@index');
+
+//用户中心欢迎页
+$router->get('/welc','MemberInfoController@welc');
+
+//用户中心 会员信息
+$router->get('/info','MemberInfoController@info');
+
+//用户中心 收货地址
+$router->get('/info','MemberInfoController@address');
+
+//用户中心 订单
+$router->get('/info','MemberInfoController@order');
+
+//用户中心 购物车
+$router->get('/info','MemberInfoController@cart');
+
+//用户中心 收藏
+$router->get('/info','MemberInfoController@collect');
+
+//用户中心 评价
+$router->get('/info','MemberInfoController@comment');
+
+//用户中心 投诉
+$router->get('/info','MemberInfoController@feedback');
+
+
+
+
+
+
+
+
+
