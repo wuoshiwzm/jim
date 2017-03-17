@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+
+<html lang="zh-CN"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta charset="utf-8">
+<title>优惠券 - 编辑新增</title>
+<meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport">
+<meta content="" name="description">
+<meta content="" name="author">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,Chrome=1">
+
+<!-- ================== BEGIN BASE CSS STYLE ================== -->
+<link type="text/css" rel="stylesheet" href="../css/iconfont.css">
+<link type="text/css" rel="stylesheet" href="../css/bootstrap.min.css">
+
+<link type="text/css" rel="stylesheet" href="../css/bootstrap-switch.min.css">
+<link type="text/css" rel="stylesheet" href="../css/loaders.css">
+<link type="text/css" rel="stylesheet" href="../css/common.css">
+
+<!-- ================== END BASE CSS STYLE ================== -->
+<!--[if lt IE 9]>
+      <script type="text/javascript" src="../js/html5shiv.min.js"></script>
+      <script type="text/javascript" src="../js/respond.min.js"></script>
+    <![endif]-->
+<!-- ================== BEGIN BASE JS ================== -->
+<script type="text/javascript" src="../js/jquery.js"></script>
+
+</head>
+<body class="pace-done">
+	
+<div class="page">
+	<div class="fixed-bar">
+	<div class="item-title">
+		<div class="subject">
+			<h3>
+				<span class="action">
+                优惠券 - 编辑新增
+                </span>
+			</h3>
+            	
+            <h5>
+				<span class="action-span">
+					<a href="sales.html" class="btn btn-warning click-loading">
+						<i class="iconfont">&#xe6d4;</i>
+						返回优惠劵列表
+					</a>
+				</span>
+			</h5>	
+		</div>
+	</div>
+</div>
+
+
+	
+	<form id="SystemConfigModel" class="form-horizontal"  method="post"  novalidate>
+	<div class="table-content m-t-30 ">
+    
+        <h5 class="tab_h5"><font class="iconfont">&#xe64e;</font>基本信息</h5>
+		<div class="simple-form-field">
+          <div class="form-group">
+              <label class="col-sm-4 control-label"> 
+                <span class="text-danger ng-binding">*</span>
+                <span class="ng-binding">标 题：</span>
+              </label>
+              <div class="col-sm-8">
+                <div class="form-control-box">
+                   <input type="text"  class="form-control valid" >	
+                </div>
+              </div>
+          </div>
+        </div>
+        
+        <div class="simple-form-field">
+          <div class="form-group">
+              <label class="col-sm-4 control-label"> 
+                <span class="ng-binding">备注信息：</span>
+              </label>
+              <div class="col-sm-8">
+                <div class="form-control-box">
+                   <textarea class="form-control valid" rows="5" style="height:60px"></textarea>
+                </div>
+              </div>
+          </div>
+        </div>
+        
+        <div class="simple-form-field">
+          <div class="form-group">
+              <label class="col-sm-4 control-label"> 
+                <span class="ng-binding">状 态：</span>
+              </label>
+              <div class="col-sm-8">
+                 <div class="form-control-box">
+                    <select class="form-control valid w100" >
+                    <option value="0">启用</option>
+                    <option value="1">禁用</option>
+                    </select>
+		         </div>
+              </div>
+          </div>
+        </div>
+          
+        <div class="simple-form-field">
+          <div class="form-group">
+              <label class="col-sm-4 control-label"> 
+                <span class="ng-binding">使用人数：</span>
+              </label>
+              <div class="col-sm-8">
+                <div class="form-control-box">
+                   <input type="text"  class="form-control valid" >	
+                </div>
+              </div>
+          </div>
+        </div>
+        
+        <div class="simple-form-field">
+          <div class="form-group">
+              <label class="col-sm-4 control-label"> 
+                <span class="ng-binding">使用次数：</span>
+              </label>
+              <div class="col-sm-8">
+                <div class="form-control-box">
+                   <input type="text"  class="form-control valid" >	
+                </div>
+              </div>
+          </div>
+        </div>
+        
+        <div class="simple-form-field">
+          <div class="form-group">
+              <label class="col-sm-4 control-label"> 
+                <span class="ng-binding">每人/每天：</span>
+              </label>
+              <div class="col-sm-8">
+                <div class="form-control-box">
+                   <input type="text"  class="form-control valid" >	
+                </div>
+              </div>
+          </div>
+        </div>
+        
+        <h5 class="tab_h5"><font class="iconfont">&#xe663;</font>触发条件</h5>
+        
+        <div class="simple-form-field">
+          <div class="form-group">
+              <label class="col-sm-4 control-label"> 
+                <span class="ng-binding">触发条件：</span>
+              </label>
+              <div class="col-sm-8">
+                <div class="form-control-box">
+                   <input type="text"  class="form-control valid" >	
+                </div>
+                <div class="help-block help-block-t"><div class="help-block help-block-t">满*元触发规则</div></div>
+              </div>
+          </div>
+        </div>
+        
+        <h5 class="tab_h5"><font class="iconfont">&#xe66c;</font>使用操作</h5>
+        
+        <div class="simple-form-field">
+          <div class="form-group">
+              <label class="col-sm-4 control-label"> 
+                <span class="ng-binding">触发条件：</span>
+              </label>
+              <div class="col-sm-8">
+                 <div class="form-control-box">
+                    <select class="form-control valid w100">
+                    <option value="0">固定折扣</option>
+                    <option value="1">百分比</option>
+                    <option value="2">买*件折扣</option>
+                    </select>
+		         </div>
+              </div>
+          </div>
+        </div>
+        
+        <div class="simple-form-field">
+          <div class="form-group">
+              <label class="col-sm-4 control-label"> 
+                <span class="ng-binding">金 额：</span>
+              </label>
+              <div class="col-sm-8">
+                <div class="form-control-box">
+                   <input type="text"  class="form-control valid" >	
+                </div>
+              </div>
+          </div>
+        </div>
+        
+        <div class="simple-form-field">
+          <div class="form-group">
+              <label class="col-sm-4 control-label"> 
+                <span class="ng-binding">免运费：</span>
+              </label>
+              <div class="col-sm-8">
+                 <div class="form-control-box">
+                    <select class="form-control valid w100">
+                    <option value="0">是</option>
+                    <option value="1">否</option>
+                    </select>
+		         </div>
+              </div>
+          </div>
+        </div>
+        
+        
+		<div class="simple-form-field p-b-30">
+			<div class="form-group">
+				<label for="text4" class="col-sm-4 control-label"></label>
+				<div class="col-xs-8">
+					<input type="button" id="btn_submit" value="确认提交" class="btn btn-primary">
+				</div>
+			</div>
+		</div>
+
+	</div></form>
+</div>
+
+	
+	<div class="copyright">
+	<div class="text-c">
+		<p></p>
+		<p>
+			Copyright © 2016-2026 曼蒂税保 - 版权所有
+		</p>
+	</div>
+</div>
+
+	
+</body></html>

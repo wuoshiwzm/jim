@@ -1,0 +1,36 @@
+<div class="g-footer">
+    <div class="footer_nav">
+        <div class="footer_nav_left">
+            <h2>400-619-9909</h2>
+            <div class="link_about_left_ul">
+                <ul>
+                    <li><a href="http://www.julijia.cn/website/aboutus.html"  target="_blank"  title="关于我们" rel="nofollow">关于我们</a></li>
+                    <li>|</li>
+                    <li><a href="http://www.julijia.cn/website/copyright.html"   target="_blank"  title="版权声明" rel="nofollow">版权声明</a></li>
+                    <li>|</li>
+                    <li><a href="http://www.julijia.cn/website/common.html"   target="_blank"   title="常见问题" rel="nofollow">常见问题</a></li>
+                    <li>|</li>
+                    <li><a href="http://www.julijia.cn/website/disclaimer.html"   target="_blank"   title="免责声明" rel="nofollow">免责声明</a></li>
+                    <li>|</li>
+                    <li><a href="http://www.julijia.cn/website/contact.html"   target="_blank"   title="联系我们" rel="nofollow">联系我们</a></li>
+                    <li>|</li>
+                    <li><a href="http://www.julijia.cn/website/cooperation.html"   target="_blank"   title="合作共赢" rel="nofollow">合作共赢</a></li>
+                    <li>|</li>
+                    <li><a href="http://www.julijia.cn/website/agreement.html"   target="_blank"   title="用户协议" rel="nofollow">用户协议</a></li>
+                    <li>|</li>
+                    <li><a href="http://www.julijia.cn/website/recruit.html"   target="_blank"   title="招聘岗位" rel="nofollow">招聘岗位</a></li>
+                </ul>
+            </div>
+            <div class="link_a">
+                <h3>友情链接</h3>
+                <ul>
+                    @yield('friendshiplink')
+                </ul>
+            </div>
+        </div>
+        <div class="footer_nav_right">
+            <span><a href="http://www.julijia.cn/website/contact.html" target="_blank"  rel="nofollow"><img src="{{url('images/frontend/abuot.png')}}"/></a></span>
+            <p><a href="javascript:;"><img src="/images/frontend/er.png" /></a><font>微信平台</font></p>
+        </div>
+    </div>
+</div>

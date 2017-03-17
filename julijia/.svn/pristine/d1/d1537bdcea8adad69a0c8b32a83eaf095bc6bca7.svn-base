@@ -1,0 +1,66 @@
+@section('title')
+
+    收货地址
+@stop
+
+
+@section('admincss')
+@stop
+
+@section('left')
+    @include('member.public.left_config')
+
+
+    @stop
+
+@section('content')
+
+    <div class="ge_admin_nei_right">
+        <div class="spinner">
+            <div class="double-bounce1"></div>
+            <div class="double-bounce2"></div>
+        </div>
+
+        <div class="admin_form">
+            <div class="h-title">
+                网站提醒<font>Site To Remind</font>
+            </div>
+            <div class="h-txt">
+                <ul>
+
+
+                    @foreach($notices as $notice)
+
+                        <li>
+                            <span>{{$notice->created_at}}</span>
+                            <a href="##" class="font_a"><font class="iconfont">&#xe641;</font></a>
+                            <dl>
+                                <dt>{{$notice->title}}</dt>
+                                <dd>{{$notice->content}}</dd>
+                            </dl>
+                        </li>
+
+                    @endforeach
+
+                </ul>
+                <div id="paging">
+                    <div class="layui-box layui-laypage layui-laypage-default">
+                        <a href="javascript:;" class="layui-laypage-prev"><em>&lt;</em></a>
+                        <a href="javascript:;">1</a>
+                        <a href="javascript:;">2</a>
+                        <a href="javascript:;" class="paging_on">3</a>
+                        <a href="javascript:;">4</a>
+                        <a href="javascript:;">5</a>
+                        <a href="javascript:;">…</a>
+                        <a href="javascript:;" title="尾页" data-page="100">100</a>
+                        <a href="javascript:;" class="layui-laypage-next" data-page="3"><em>&gt;</em></a>
+                    </div>
+                </div>
+            </div>
+
+
+        </div>
+
+    </div>
+
+@stop

@@ -1,0 +1,10 @@
+extends('admin')
+
+@section('headcss')
+'Default headcss'
+@stop
+
+
+
+@yield('content', 'Default content')
+@yield('footer_js', 'Default footer_js')

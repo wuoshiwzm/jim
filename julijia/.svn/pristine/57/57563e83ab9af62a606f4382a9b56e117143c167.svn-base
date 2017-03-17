@@ -1,0 +1,43 @@
+//收货
+function receive(itemId) {
+    var token = $("input[name='_token']").val();
+    phone = $("#phone").val();
+    layer.confirm('确定要收货吗？', {
+        btn: ['确定', '取消']
+    }, function () {
+
+        $.post('/member/receive' , {_token: token,itemId:itemId}, function (msg) {
+            if (msg.status == '0') {
+                layer.msg(msg.msg, {icon: 1});
+                location = location;
+            } else {
+                layer.msg(msg.msg, {icon: 2});
+                location = location;
+            }
+        }, 'json')
+    });
+}
+
+//购物车删除商品
+
+
+function delItem(quoteSn) {
+    var token = $("input[name='_token']").val();
+
+
+    layer.confirm('确定要删除此商品吗？', {
+        btn: ['确定', '取消']
+    }, function () {
+
+        $.post('/member/del_cart_item', {_token: token,quoteSn:quoteSn}, function (msg) {
+
+            if (msg.status == '0') {
+                layer.msg(msg.msg, {icon: 1});
+                location = location;
+            } else {
+                layer.msg(msg.msg, {icon: 2});
+            }
+        }, 'json')
+    });
+}
+

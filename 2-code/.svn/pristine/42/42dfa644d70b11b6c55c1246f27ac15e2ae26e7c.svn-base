@@ -1,0 +1,166 @@
+@foreach( $data['data'] as $K=>$name )
+    <h5 class="h5_bottom">{{$name['name']}}</h5>
+    @foreach( $name['value'] as $row )
+        @if( isset($row->productEavToEav->id)  )
+            <div class="simple-form-field">
+                <div class="form-group">
+                    <label class="col-sm-3 control-label">
+                        @if( $row->productEavToEav->is_required  )
+                            <span class="text-danger ng-binding">*</span>
+                        @endif
+                        <span class="ng-binding">{{$row->productEavToEav->admin_label}}：</span>
+                    </label>
+                    <div class="col-sm-9">
+                        <div class="form-control-box">
+                            <!-- text -->
+                            @if( $row->productEavToEav->front_input == 'text' )
+                            <?php $name = $row->productEavToEav->name; ?>
+                            <input type="text" class="form-control" @if( $row->productEavToEav->is_system == 1 ) value="{{$flat->$name}}" @else value="{{$flat->productFlatToFlatDetail->$name}}" @endif name="{{$row->productEavToEav->id}}" @if( $row->productEavToEav->is_required == 0 ) ignore="ignore" @endif  datatype="{{$row->productEavToEav->valid_rule}}"  errormsg="{{$row->productEavToEav->errormsg}}" tipsrmsg="{{$row->productEavToEav->tipgs}}" >
+                            <span class="Validform_checktip"></span>
+                            @endif
+
+                             <!-- time -->
+                            @if( $row->productEavToEav->front_input == 'time' )
+                            <?php $name = $row->productEavToEav->name; ?>
+                            <input type="text" class="form-control"  onfocus="WdatePicker({lang:'zh-cn',dateFmt:'yyyy-MM-dd HH:mm',minDate:new Date('yyyy-MM-dd HH:mm')})"  @if( $row->productEavToEav->is_system == 1 ) value="{{$flat->$name}}" @else value="{{$flat->productFlatToFlatDetail->$name}}" @endif  @if( $row->productEavToEav->is_required == 0 ) ignore="ignore" @endif name="{{$row->productEavToEav->id}}"  datatype="{{$row->productEavToEav->valid_rule}}"  errormsg="{{$row->productEavToEav->errormsg}}" tipsrmsg="{{$row->productEavToEav->tipgs}}" >
+                            <span class="Validform_checktip"></span>
+                            @endif
+
+                            <!-- radio -->
+                            @if( $row->productEavToEav->front_input == 'radio' )
+                            <?php $name = $row->productEavToEav->name; ?>
+                            @foreach(Source_Eav_AttrbuteValue::where('attributeid',$row->productEavToEav->id)->get() as $rows )
+                                <label class="control-label cur-p m-r-10">
+                                    <input type="radio"  @if( $row->productEavToEav->is_system == 1 ) @if($flat->$name == $rows->value ) checked="checked" @endif @else  @if($flat->productFlatToFlatDetail->$name == $rows->value ) checked="checked" @endif @endif name="{{$row->productEavToEav->id}}" value="{{$rows->value}}" @if( $row->productEavToEav->is_required == 0 ) ignore="ignore" @endif  datatype="{{$row->productEavToEav->valid_rule}}"  errormsg="{{$row->productEavToEav->errormsg}}" tipsrmsg="{{$row->productEavToEav->tipgs}}" >{{$rows->text}}
+                                </label>
+                            @endforeach
+                            <span class="Validform_checktip"></span>
+                            @endif
+
+
+                            <!-- checkbox -->
+                            @if( $row->productEavToEav->front_input == 'checkbox' )
+                            <?php $name = $row->productEavToEav->name; ?>
+                            <label class="control-label cur-p m-r-10">
+                                <input type="checkbox"  @if( $row->productEavToEav->is_system == 1 ) @if($flat->$name == $rows->value ) checked="checked" @endif @else  @if($flat->productFlatToFlatDetail->$name == $rows->value ) checked="checked" @endif @endif name="{{$row->productEavToEav->id}}"  @if( $row->productEavToEav->is_required == 0 ) ignore="ignore" @endif  datatype="{{$row->productEavToEav->valid_rule}}"  errormsg="{{$row->productEavToEav->errormsg}}" tipsrmsg="{{$row->productEavToEav->tipgs}}">红色
+                                <span class="Validform_checktip"></span>
+                            </label>
+                            @endif
+
+
+                            <!-- select -->
+                            @if( $row->productEavToEav->front_input == 'select' )
+                            <?php $name = $row->productEavToEav->name; ?>
+                            <select class="form-control valid w200" name="{{$row->productEavToEav->id}}" >
+                                @foreach(Source_Eav_AttrbuteValue::where('attributeid',$row->productEavToEav->id)->get()  as $rows )
+                                    <option value="{{$rows->value}}" @if( $row->productEavToEav->is_system == 1 ) @if($flat->$name == $rows->value ) selected="selected" @endif @else  @if($flat->productFlatToFlatDetail->$name == $rows->value ) selected="selected" @endif @endif>{{$rows->text}}</option>
+                                @endforeach
+                            </select>
+                            <span class="Validform_checktip"></span>
+                            @endif
+
+                            <!-- texteare -->
+                            @if( $row->productEavToEav->front_input == 'textarea' )
+                            <?php $name = $row->productEavToEav->name; $url = Config::get('tools.imagePath').'goods/';?>
+                                <textarea class="form-control valid"  @if( $row->productEavToEav->name == 'desc') id="desc" @endif rows="5" name="{{$row->productEavToEav->id}}"  @if( $row->productEavToEav->is_required == 0 ) ignore="ignore" @endif  datatype="{{$row->productEavToEav->valid_rule}}"  errormsg="{{$row->productEavToEav->errormsg}}" tipsrmsg="{{$row->productEavToEav->tipgs}}">@if( $row->productEavToEav->is_system == 1 ) {{str_replace( '【img】', $url, $flat->$name )}} @else {{str_replace( '【img】', $url, $flat->productFlatToFlatDetail->$name )}} @endif</textarea>
+                                <span class="Validform_checktip"></span>
+                            @endif
+                        </div>
+                    </div>
+                </div>
+            </div>
+        @endif
+    @endforeach
+@endforeach
+
+<!--可配属性-->
+@if( count($data['configure'])  )
+    <!--可配置信息-->
+    <h5 class="h5_bottom">{{$data['configure']['name']}}</h5>
+    <div class="div_contentlist">
+        @foreach( $data['configure']['value'] as $Keys=>$configure )
+            @if( isset($configure->productEavToEav->id)  )
+                <div class="simple-form-field plist">
+                    <div class="form-group">
+                        <label class="col-sm-3 control-label">
+                            <span class="ng-binding Father_Title" data-id="{{$configure->productEavToEav->name}}" data-value="{{$configure->productEavToEav->admin_label}}">{{$configure->productEavToEav->admin_label}}：</span>
+                        </label>
+                        <div class="col-sm-9 color_un">
+                            <div class="form-control-box Father_Item{{$Keys}}">
+                                @if( isset($flat->productFlatToFlatDetail->attribute_json) &&  $flat->productFlatToFlatDetail->attribute_json)
+                                <?php
+                                  //配置项数据
+                                  $jsonData = json_decode($flat->productFlatToFlatDetail->attribute_json);
+                                  //配置项的name
+                                  $EavName = isset($configure->productEavToEav->name)?$configure->productEavToEav->name:'';
+                                  //配置数据分类
+                                  $jsonValue = isset($jsonData[0]->$EavName)?$jsonData[0]->$EavName:'';
+                                  //配置项相信信息
+                                  $jsonContent= isset($jsonData[1])?$jsonData[1]:'';
+                                  //图片域名
+                                  $url = Config::get('tools.imagePath');
+                                ?>
+                                @foreach( Source_Eav_AttrbuteValue::where('attributeid', $configure->attbute_id)->orderBy('attributeid','asc')->get() as $keys=>$value )
+                                <label class="control-label cur-p m-r-10">
+                                     <input type="checkbox"  data-id="{{$value->attributeid}}" class="valid" @if(count($jsonValue) && is_array($jsonValue)) @if( in_array($value->value,$jsonValue) || in_array('[img]attribute/'.$configure->attbute_id.'/'.$value->images,$jsonValue) ) checked="checked" @endif @endif>
+                                     <span title="{{$value->text}}">
+                                         @if( $value->images )
+                                             <img src="{{getImagesUrl('attribute',$value->attributeid,$value->images)}}" data-value="{{'[img]attribute/'.$configure->attbute_id.'/'.$value->images}}"  data-v="{{$value->text}}" height="32" width="32">
+                                         @else
+                                             {{$value->value}}
+                                         @endif
+                                     </span>
+                                </label>
+                                @endforeach
+                                @endif
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            @endif
+        @endforeach
+    </div>
+
+    <!--可配置显示-->
+    <div class="simple-form-field">
+        <div class="form-group">
+            <label class="col-sm-3 control-label">
+                <span class="ng-binding"> </span>
+            </label>
+            <div class="col-sm-9 unber_x">
+                <div class="form-control-box">
+                    <div class="form-control-box" id="createTable">
+                        <!--渲染可配置信息-->
+                        <table class="table table-hover" style="border-bottom:0!important" id="process">
+                            @if( isset($jsonContent) && count($jsonContent) )
+                            @foreach( $jsonContent as $j=>$jrow )
+                                <tr>
+                                    @foreach( $jrow as $t=>$td )
+                                    <td>
+                                        @if( $t=='p' )
+                                            <input name="p[]" class="form-control w90" type="text"  maxlength="6" value="{{$td}}"> / 件
+                                        @elseif( $t=='v' )
+                                            <input name="p[]"  type="hidden" value="{{$td}}">
+                                        @else
+                                            @if( strstr($td,'[img]') )
+                                                <?php
+                                                  $row = explode('|',$td);
+                                                ?>
+                                                <img src="{{str_replace('[img]',$url,$row[0])}}" height="32" width="32">
+                                            @else
+                                                {{$td}}
+                                            @endif
+                                            <input name="{{$t}}[]" value="{{$td}}" type="hidden">
+                                        @endif
+                                    </td>
+                                    @endforeach
+                                </tr>
+                            @endforeach
+                            @endif
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+@endif

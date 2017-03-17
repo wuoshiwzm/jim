@@ -1,0 +1,238 @@
+<?php
+
+//用户积分管理
+class RefundMemberController extends CommonController
+{
+    private $user_id;
+    protected $layout = 'layouts.member.index';
+
+
+    protected function setupLayout()
+    {
+        if (!is_null($this->layout)) {
+            $this->layout = View::make($this->layout);
+        }
+    }
+
+    public function view($path, $data = [])
+    {
+        $this->layout->content = View::make($path, $data);
+    }
+
+    function __construct()
+    {
+        if (!Session::has('member')) {
+            return Redirect::to('member/login');
+        }
+        $userInfo = Session::get('member');
+        $this->user_id = $userInfo->id;
+    }
+
+    /**
+     * 我的退款
+     *
+     * @return Response
+     */
+    public function index()
+    {
+        //分页
+        $setPage = Input::get('setpage') ? Input::get('setpage') : self::$memberPage;
+        $data = Source_Order_OrderBack::where('user_id', $this->user_id);
+        $set['setpage'] = $setPage;
+
+
+        //搜索条件
+        if (!empty(Input::get('orderId'))) {
+            $orderId = Input::get('orderId');
+            $data = $data->where('order_sn', 'like', '%' . $orderId . '%');
+
+        }
+        if (!empty(Input::get('refundId'))) {
+            $refundId = Input::get('refundId');
+            $data = $data->where('back_sn', 'like', '%' . $refundId . '%');
+        }
+
+
+        $data = $data->paginate($setPage);
+        return $this->view('member.refund', compact('data', 'set'));
+
+    }
+
+
+    /**
+     * @param $orderId 订单id
+     * @param $orderItemId 订单商品id
+     * 提交退款
+     * url : '/refund/apply_refund/{order_id}/{order_item_id}'
+     */
+    public function applyRefund($orderId, $orderItemId)
+    {
+
+
+        $orderId = decode($orderId);
+        $orderItemId = decode($orderItemId);
+
+        $orderInfo = Order::getOrderById($orderId);
+        $orderItem = Order::getOrderItemById($orderItemId);
+
+        //退款原因
+        $orderBackReasons = OrderBack::getReason();
+
+        if ($orderItem->shipping_status == 3 || $orderItem->shipping_status == 2) {
+            //退货退款
+            return $this->view('member.order.apply_refund_money_goods', compact('orderItem', 'orderInfo', 'orderBackReasons'));
+        } else {
+            //退款
+            return $this->view('member.order.apply_refund_money', compact('orderItem', 'orderInfo', 'orderBackReasons'));
+        }
+
+    }
+
+
+    /**
+     * 存储退款信息  更新表 order_back 和 order_back_action
+     */
+    public function createRefund()
+    {
+
+        //$user = Session::get('member');
+
+        if (!Input::all())
+            return Redirect::back();
+
+        $input = trimValue(Input::all());
+        $input = array_except($input, ['_token', 'method']);
+
+        $orderId = Input::get('orderId');
+        $orderItemId = Input::get('orderItemId');
+
+        //判断是否已经提交过了退款
+        if (OrderBack::CheckItem($orderId, $orderItemId)) {
+            die('已经提交过此商品的提款');
+        }
+
+        $orderInfo = Order::getOrderById($orderId);
+        $orderItem = Order::getOrderItemById($orderItemId);
+
+        $product = Product::getProductById($orderItem->product_id);
+
+
+        $refund['back_sn'] = 'order_back' . getMicroTimestamp();
+        //退款的订单id
+        $refund['order_id'] = $orderId;
+        $refund['order_sn'] = $orderInfo->order_sn;
+        //退赛款的商品id
+        $refund['order_item_id'] = $orderItemId;
+        //1:只退款 2:退款退货
+        $refund['type'] = Input::get('type');
+        //method 退款方式 原路返回,退回余额 默认退回支付
+        $refund['method'] = '退款方式 原路返回';
+
+        $refund['p_entity_id'] = $orderItem->product_id;
+        $refund['p_sku'] = $orderItem->sku;
+        $refund['p_suppliers_id'] = $product->supplier;
+        $refund['p_mendian_id'] = 1;
+        $refund['is_delivery'] = Input::get('is_delivery');
+
+        $refund['user_id'] = $this->user_id;
+
+        //客户收货id 从order_item 处获取 订单id  order_item
+        $refund['shipping_id'] = $orderItem->shipping_id;
+        $refund['shipping_name'] = $orderItem->shipping_name;
+        $refund['shipping_status'] = $orderItem->shipping_status;
+
+
+        // 状态： 1 未确认 2 确认 3 未发货 4 运输中 5 已收货 6 退款
+        $refund['status'] = 1;
+        $refund['reason'] = Input::get('reason');
+        $refund['content'] = Input::get('content');
+        // 上传图片 - json
+        //$refund['image'] = Input::get('image');
+
+
+        $validator = OrderBack::validatorRefund($input);
+
+        if ($validator === true) {
+            $res = OrderBack::createRefund($refund);
+
+            if ($res) {
+                //添加成功
+                Event::fire('item.refund',$orderItem->id);
+                return Redirect::to('member/refund')->with('msg', '添加成功');
+
+            } else {
+                //添加失败
+                return back()->with('msg', '添加失败');
+            }
+
+        } else {
+            return back()->withErrors($validator);
+        }
+    }
+
+    /**
+     * 退款通过审核 如果是退货退款 提交退货物流信息
+     */
+    public function process($id = null)
+    {
+        $refundId = decode(trim($id));
+        $refund = Source_Order_OrderBack::find($refundId);
+        $orderItem = Source_Order_OrderItem::find($refund->order_item_id);
+        $orderInfo = Source_Order_OrderInfo::find($refund->order_id);
+
+        if (!$orderItem) {
+            die('无此投诉对应的商品！');
+        }
+        return $this->view('member.refund_process', compact('orderItem', 'orderInfo', 'refund'));
+
+
+        /*if ($id) {
+            $refundId = decode(trim($id));
+            $userAddress = Source_User_UserInfoAdd::where('user_id',$this->user_id)
+            ->where('status',1)->first();
+            //显示添加页面
+            return $this->view('member.refund_ship_back', compact('refundId', 'userAddress'));
+        }
+
+
+        //更新数据库信息
+        if (Input::all()) {
+            $input = trimValue(Input::all());
+
+            //退款的订单号
+            $refundId = decode($input['refundId']);
+
+            //地址与区拼接
+            $input['address'] = $input['address'] . Location::getAreaNameById($input['district']);
+
+            //排除退款订单号
+            $input = array_except($input, ['_token', 'refundId', 'district']);
+
+            $input['status'] = 4;
+
+
+            $validator = OrderBack::validatorShipBack($input);
+            if ($validator === true) {
+                $res = OrderBack::updateShipInfo($refundId, $input);
+
+                if ($res) {
+                    //添加成功
+                    return Redirect::to('member/refund')->with('msg', '添加成功');
+
+                } else {
+                    //添加失败
+                    return back()->with('msg', '添加失败');
+                }
+
+            } else {
+                return back()->withErrors($validator);
+            }
+
+
+        }*/
+
+
+    }
+
+
+}

@@ -1,0 +1,199 @@
+@section('title')
+    投诉维权
+@stop
+
+@section(('content'))
+
+    <div class="ge_admin_nei_right">
+        <div class="spinner">
+            <div class="double-bounce1"></div>
+            <div class="double-bounce2"></div>
+        </div>
+
+        <div class="table_div_h">
+            <h2>我的订单&nbsp;&nbsp;-&nbsp;&nbsp;<font>投诉维权</font></h2>
+        </div>
+        <!--订单切换-->
+
+
+        <div class="table_div">
+            <div class="order-pic">
+                <table cellpadding="0" cellspacing="0" class="order_tab">
+                    <tbody>
+                    <tr>
+                        <th colspan="2">
+                            <stong>订单信息</stong>
+                        </th>
+                    </tr>
+                    <tr>
+                        <td colspan="2">
+                            <dl>
+                                <dt><a href="##" target="_blank">
+                                        <img src="../images/04.jpg" class="goods-thumb" width="60" height="60"></a></dt>
+                                <dd><a href="##" target="_blank">
+                                        {{$orderItem->product_name}}</a></dd>
+                            </dl>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td class="order_tab_td">单价{{$orderItem->price}}元</td>
+                        <td>{{$orderItem->price}}元 X{{$orderItem->num}}(数量)</td>
+                    </tr>
+
+                    <tr>
+                        <td class="order_tab_td">小计</td>
+                        <td>{{$orderItem->row_total}}元</td>
+                    </tr>
+
+                    <tr>
+                        <td class="order_tab_td">物流</td>
+                        <td><font>{{$orderItem->shipping_id}}</font></td>
+                    </tr>
+
+                    <tr>
+                        <td class="order_tab_td">订单编号</td>
+                        <td><font>{{$orderInfo->order_sn}}</font></td>
+                    </tr>
+
+                    <tr>
+                        <td class="order_tab_td">运费</td>
+                        <td>¥{{$orderInfo->shipping_amount}}</td>
+                    </tr>
+
+                    <tr>
+                        <td class="order_tab_td">总优惠</td>
+                        <td>¥{{$orderInfo->total_amount - $orderInfo->pay_amount}}</td>
+                    </tr>
+
+                    <tr>
+                        <td class="order_tab_td">总计</td>
+                        <td><span>{{$orderInfo->pay_amount}}</span></td>
+                    </tr>
+
+                    <tr>
+                        <td class="order_tab_td">成交时间</td>
+                        <td>{{$orderInfo->created_at}}</td>
+                    </tr>
+
+                    </tbody>
+                </table>
+
+            </div>
+
+            <div class="order-an02">
+                <div class="layui-tab">
+                    <ul class="layui-tab-title">
+                        <li class="layui-this">我要投诉</li>
+                    </ul>
+                    <div class="layui-tab-content">
+                        <div class="layui-tab-item layui-show">
+                            <div class="admin_form">
+                                <form class="layui-form m-form form" action="{{url('member/feedback/create_feedback')}}"
+                                      method="post">
+                                    <input type="hidden" name="orderId" value="{{$orderInfo->id}}">
+                                    <input type="hidden" name="itemId" value="{{$orderItem->id}}">
+
+                                    {{Form::token()}}
+
+                                    <div class="layui-form-item">
+                                        <label class="layui-form-label">
+                                            <span class="red">*</span>投诉原因</label>
+                                        <div class="layui-input-inline">
+                                            <select name="reasonId" datatype="*"
+                                                    errormsg="请选择" tipsrmsg="请选择">
+                                                <option value="">请选原因</option>
+                                                @foreach($reasons as $reason)
+                                                    <option value="{{$reason->id}}">{{$reason->value}}</option>
+                                                @endforeach
+                                            </select>
+
+                                            <span class="Validform_checktip"></span>
+                                        </div>
+                                    </div>
+
+                                    <div class="simple-form-field">
+                                        <div class="form-group">
+                                            <label class="col-sm-4 control-label">
+                                                <span class="text-danger ng-binding">*</span>
+                                                <span class="ng-binding">投诉说明：</span>
+                                            </label>
+                                            <div class="col-sm-8">
+                                                <div class="form-control-box">
+                                                    <textarea type="text" class="form-control valid" name="content"
+                                                              placeholder="填写评价说明"
+                                                              datatype="*"
+                                                              errormsg="投诉说明" tipsrmsg="投诉说明"></textarea>
+                                                    <span class="Validform_checktip"></span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="simple-form-field">
+                                        <div class="form-group">
+                                            <label class="col-sm-4 control-label">
+                                                <span class="ng-binding">图片：</span>
+                                            </label>
+                                            <div class="col-sm-8">
+                                                <div class="form-control-box addimg">
+                                                    <a href="javascript:;">
+                                                        <img onclick="getImgTemplet( this,'feedback' )"
+                                                             src="/images/admin/addimg.png"
+                                                             width="100" height="100"></a>
+                                                    <input type="hidden" id="feedback" name="feedback"/>
+                                                </div>
+                                                <div class="help-block help-block-t">
+                                                    <div class="help-block help-block-t">
+                                                        单张图片不能超过3M，可多上传三张图片，支持JPG、BMP、GIF、PNG
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+
+                                    <div class="layui-form-item">
+                                        <div class="layui-input-block">
+                                            <button class="layui-btn">提交投诉</button>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+            </div>
+
+
+        </div>
+    </div>
+
+
+@stop
+@section('js')
+
+    <script>
+        layui.use('element', function () {
+            var element = layui.element(); //Tab的切换功能，切换事件监听等，需要依赖element模块
+
+        });
+
+        $(function () {
+            $('.star_ul a').hover(function () {
+                $(this).addClass('active-star');
+                $('.s_result').css('color', '#c00').html($(this).attr('title'))
+            }, function () {
+                $(this).removeClass('active-star');
+                $('.s_result').css('color', '#333').html('请打分')
+            });
+
+        })
+    </script>
+
+    <script type="text/javascript" src="{{asset('js/admin/group.js')}}"></script>
+
+
+@stop

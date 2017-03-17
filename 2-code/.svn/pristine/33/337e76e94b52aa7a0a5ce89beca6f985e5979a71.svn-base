@@ -1,0 +1,97 @@
+<?php
+
+/**
+ * 操作产品控制器
+ * Class GoodsController
+ */
+class GoodsController extends \Controller
+{
+
+    /**
+     * 生产token
+     */
+    public function getToken()
+    {
+        $ajax = Request::ajax();
+        if( $ajax )
+        {
+            $getHost = Input::get('host');
+            $host = $_SERVER['SERVER_NAME'];
+            if( $getHost == $host )
+            {
+                $token = csrf_token();
+                Session::put('goodstoken', $token);
+                return $token;
+            }
+        }
+        dd( false );
+    }
+
+    /**
+     * 加入购物车
+     */
+    public function collect()
+    {
+
+        //判断用户session是不存在
+        $user = Session::get('member');
+        if( $user == false )
+        {
+            //return 'no';
+        }
+
+        $sessionToken = Session::token();
+        $data = Input::get('data');
+
+        $where['user_id'] = 4;//Session::get('member')->id;
+        $where['entity_id'] = decode($data['entity_id']);
+        $user = Source_User_UserInfoCollect::where($where)->first();
+        if( $user == false )
+        {
+            $res = new Source_User_UserInfoCollect();
+            $res->user_id = $where['user_id'];
+            $res->entity_id = $where['entity_id'];
+            $res->is_show = 1;
+            $res->entity_name = $data['entity_name'];
+            $res->price = $data['price'];
+            $res->sku = $data['sku'];
+            $res->shop_id = 0;
+            $res->save();
+            return $res?'success':'fail';
+        }else
+        {
+            return 'success';
+        }
+
+
+        /*if( $sessionToken == $data['token'] )
+        {
+            $where['user_id'] = 4;//Session::get('member')->id;
+            $where['entity_id'] = decode($data['entity_id']);
+            $user = Source_User_UserInfoCollect::where($where)->first();
+            if( $user == false )
+            {
+                $res = new Source_User_UserInfoCollect();
+                $res->user_id = $where['user_id'];
+                $res->entity_id = $where['entity_id'];
+                $res->is_show = 1;
+                $res->entity_name = $data['entity_name'];
+                $res->price = $data['price'];
+                $res->sku = $data['sku'];
+                $res->shop_id = 0;
+                $res->save();
+                return 1;
+                return $res?true:false;
+            }else
+            {
+                return 2;
+                return true;
+            }
+        }else
+        {
+            return  $sessionToken .'--------'. $data['token'];
+        }*/
+
+    }
+
+}

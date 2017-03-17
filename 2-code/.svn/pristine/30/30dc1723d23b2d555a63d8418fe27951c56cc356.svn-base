@@ -1,0 +1,63 @@
+<?php
+/**
+ * Created by julijia_frontend.
+ * User: 王顶峰
+ * Email: dingfeng0509@vip.qq.com
+ * Date: 2016/10/12
+ * Time: 15:28
+ */?>
+
+<html>
+<head>
+    <style>
+        ul li{
+            margin-left: 35px;
+            list-style-type: none;
+        }
+        .left{float: left;top: 50px;width: 200px}
+        .right{ float: left;top: 50px;width: 450px;}
+        table{width: 600px;text-align: center}
+        .toolbar{ margin-top: 20px}
+        .toolbar div{ float: right}
+        .content{padding-top:20px}
+    </style>
+</head>
+<body style="margin: auto 0; width: 90%">
+    <?php echo $__env->make('admin.test.left', array_except(get_defined_vars(), array('__data', '__path')))->render(); ?>
+    <div class="right">
+        <div class="toolbar">
+            <label>属性集</label>
+            <div class="bar_optin">
+                <a href="/test/attbuteset/add">添加</a>
+            </div>
+        </div>
+        <div class="content">
+            <table>
+              <tbody>
+                <th>名称</th>
+                <th>类型</th>
+                <th>时间</th>
+                <th>操 作</th>
+                <?php foreach( $list as $val): ?>
+                    <tr>
+                        <td><?php echo $val->attribute_name; ?></td>
+                        <td>
+                            <?php if($val->type =="product"): ?>
+                                 产品
+                            <?php elseif($val->type =="order"): ?>
+                                订单
+                            <?php elseif($val->type =="customer"): ?>
+                                 客户
+                            <?php endif; ?>
+                        </td>
+                        <td><?php echo $val->created_at; ?></td>
+                        <td><a href="/test/attbuteset/edit?id=<?php echo encode($val->id); ?>">编辑</a></td>
+                    </tr>
+                <?php endforeach; ?>
+              </tbody>
+            </table>
+        </div>
+   </div>
+
+</body>
+</html>

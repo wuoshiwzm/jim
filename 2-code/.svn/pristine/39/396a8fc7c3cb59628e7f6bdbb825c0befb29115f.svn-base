@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta charset="utf-8">
+<title>退款详情</title>
+<meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport">
+<meta content="" name="description">
+<meta content="" name="author">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,Chrome=1">
+
+<!-- ================== BEGIN BASE CSS STYLE ================== -->
+<link type="text/css" rel="stylesheet" href="../css/iconfont.css">
+<link type="text/css" rel="stylesheet" href="../css/jquery.mCustomScrollbar.css">
+<link type="text/css" rel="stylesheet" href="../css/bootstrap.min.css">
+
+<link type="text/css" rel="stylesheet" href="../css/bootstrap-switch.min.css">
+<link type="text/css" rel="stylesheet" href="../css/loaders.css">
+<link type="text/css" rel="stylesheet" href="../css/common.css">
+<!-- ================== END BASE CSS STYLE ================== -->
+<!--[if lt IE 9]>
+      <script type="text/javascript" src="../js/html5shiv.min.js"></script>
+      <script type="text/javascript" src="../js/respond.min.js"></script>
+    <![endif]-->
+<!-- ================== BEGIN BASE JS ================== -->
+<script type="text/javascript" src="../js/jquery.js"></script>
+
+</head>
+<body class="pace-done">
+<link type="text/css" rel="stylesheet" href="../css/styles.css">
+
+<div class="page">
+	<div class="fixed-bar">
+	<div class="item-title">
+		<div class="subject">
+			<h3>
+				<span class="action">评价管理 -- 评价详情</span>
+			</h3>
+			
+			<h5>
+				<span class="action-span">
+					<a href="evaluation.html" class="btn btn-warning click-loading">
+						<i class="iconfont">&#xe6d4;</i>
+						返回评论列表
+					</a>
+				</span>
+			</h5>
+			
+		</div>
+	</div>
+</div>
+
+	<!--订单详情信息-->
+	<div class="order-info m-b-10">
+
+		<!--下单时间等-->
+<div class="order-info">
+		<div class="order-left">
+			<h3 style=" font-weight:bold;">相关商品交易信息</h3>
+			<div class="order-goods">
+				<div class="goodsPicBox pull-left m-r-10">
+					<a href="##" target="_blank">
+						<img src="../images/pic04.png" class="goods-thumb">
+					</a>
+				</div>
+				<div class="ng-binding refund-message">
+					<div class="name">
+						<a href="##" target="_blank" >测试宝贝</a>
+					</div>
+				</div>
+			</div>
+			<div class="refund-info">
+				<dl>
+					<dt>
+						<span class="letter-spacing">买家</span>
+						：
+					</dt>
+					<dd>
+						<span>王五</span>
+					</dd>
+				</dl>
+				<dl>
+					<dt>
+						<span>订单编号</span>
+						：
+					</dt>
+					<dd>
+						<span>
+							<a href="##" class="c-blue" >20161011862560</a>
+						</span>
+					</dd>
+				</dl>
+				<dl>
+					<dt>
+						<span class="letter-spacing">单价</span>
+						：
+					</dt>
+					<dd>
+						<span>￥7.00 * 1（数量）</span>
+					</dd>
+				</dl>
+				<dl>
+					<dt>
+						<span class="letter-spacing">快递</span>
+						：
+					</dt>
+					<dd>
+						<span>￥0.00</span>
+					</dd>
+				</dl>
+			</div>
+			
+		</div>
+		<div class="order-right">
+			<h3 style=" font-weight:bold;">评论详情</h3>
+			<div class="refund-operate">
+				<ul>
+					<li class="operate-steps">
+                        <i class="iconfont">&#xe6ff;</i>
+						<span>评论状态：已审核</span>
+					</li> 
+			    </ul>
+			</div>
+            
+            <h3 style=" font-weight:bold;">评论内容</h3>
+            <div class="refund-operate">
+				 <table id="table_list" class="table table-hover">
+			<thead>
+				<tr>
+					<th class="w150" style="cursor: pointer;">评价人</th>
+                    <th class="w150">评论时间</th>
+					<th class="text-c w150" style="cursor: pointer;">评价</th>
+					<th style="cursor: pointer;">评价内容</th>
+				</tr>
+			</thead>
+			<tbody>
+				<!--以下为循环内容-->
+
+				<tr class="order-tr" name="1">
+					<td>
+						<div class="ng-binding">
+							<span>
+								王五
+								<font class="c-blue">普通会员</font>
+							</span>
+						</div>
+					</td>
+                    <td>
+						2016-10-03 17:09:23
+					</td>
+					<!--icon-0为实星，icon-1为虚星-->
+					<td>
+						<div class="ng-binding">
+							<span class="text-c">
+								<a class="score-icon icon-0 m-r-5"></a>
+								好评
+							</span>
+							<span class="star-icon text-c">
+								<!---->
+								<!---->
+								<!---->
+								<i class="icon-0"></i>
+								<!---->
+								<!---->
+								<!---->
+								<i class="icon-0"></i>
+								<!---->
+								<!---->
+								<!---->
+								<i class="icon-0"></i>
+								<!---->
+								<!---->
+								<!---->
+								<i class="icon-0"></i>
+								<!---->
+								<!---->
+								<!---->
+								<i class="icon-1"></i>
+								<!---->
+								<!---->
+							</span>
+						</div>
+					</td>
+					<!--b_blue_5.gif为钻级用户，1为一个钻，以此类推；b_red_4.gif为红心级用户；s_cap_4.gif为冠级用户-->
+					
+					
+
+					<td>
+						华妃娘娘定制的黑人牙膏礼盒必须拿下。京东自营，让人信赖。感谢快递小哥在寒冷的冬日辛勤的付出，祝他们工作愉快，行车注意安全。
+					</td>
+				</tr>
+			</tbody>
+			</table>
+			</div>
+		</div>
+	    </div>
+	</div>
+	<!--商品信息-->
+	
+	
+	</div>
+    
+<div class="copyright">
+	<div class="text-c">
+		<p></p>
+		<p>
+			Copyright © 2016-2026 曼蒂税保 - 版权所有
+		</p>
+	</div>
+</div>
+<script type="text/javascript" src="../js/layer/layer.js"></script>
+<script type="text/javascript" src="../js/d_tan.js"></script>
+
+
+	
+
+</body></html>

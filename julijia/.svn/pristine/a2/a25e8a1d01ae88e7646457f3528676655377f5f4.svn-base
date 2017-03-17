@@ -1,0 +1,147 @@
+@section("title")
+    权限管理
+@stop
+@section("content")
+    <div class="page">
+        <div class="fixed-bar">
+            <div class="item-title">
+                <div class="subject">
+                    <h3>
+                        <span class="action">管理 - 权限管理</span>
+                    </h3>
+                </div>
+            </div>
+        </div>
+
+        <!--搜索-->
+        <div class="search-term m-b-10"><form id="SearchModel" name="SearchModel" action="{{url("/admin/suite/index")}}" method="get">
+                {{--<div class="simple-form-field">--}}
+                    {{--<div class="form-group">--}}
+                        {{--<label class="control-label">--}}
+                            {{--<span>名 称：</span>--}}
+                        {{--</label>--}}
+                        {{--<div class="form-control-wrap">--}}
+                            {{--<input id="searchmodel-keyword" class="form-control" name="keyword" placeholder="请输入名称" type="text">--}}
+                        {{--</div>--}}
+                    {{--</div>--}}
+                {{--</div>--}}
+
+                <div class="simple-form-field">
+                    {{--<input id="btn_search" value="查询" class="btn btn-primary m-r-5" type="submit">--}}
+                    <input id="btn_search" value="添加" class="btn btn-warning  m-r-5" onclick="location='{{url('/admin/navigation/add')}}'" type="button">
+                </div>
+
+            </form>
+        </div>
+        <!-- 工具栏（列表名称、列表显示项设置） -->
+
+        <div class="common-title">
+            <div class="ftitle">
+                <h3>权限列表</h3>
+                <h5>
+                    (&nbsp;共
+                    <span data-total-record="true"></span>
+                    条记录&nbsp;)
+                </h5>
+
+            </div>
+            <div class="operate">
+                <a class="reload" href="" data-toggle="tooltip" data-placement="auto bottom" title="" data-original-title="刷新数据">
+                    <i class="iconfont"></i>
+                </a>
+            </div>
+        </div>
+        <!--列表内容-->
+        <div class="table-responsive">
+            <table id="table_list" class="table table-hover">
+                <thead>
+                <tr>
+                    {{--<th class=" w100">排序<span class="sort"></span></th>--}}
+                    <th class="w100">编号</th>
+                    <th class="w100">权限名称</th>
+                    <th class="w150">连接地址</th>
+                    <th class="w100">排序</th>
+                    <th class="w100">状态</th>
+                    <th class="w100">是否为菜单</th>
+                    <th class="w100">图标</th>
+                    <th class="w100">创建时间</th>
+                    <th class="w100">修改时间</th>
+                    <th class="handle w100">操作</th>
+                </tr>
+                </thead>
+                <tbody>
+                @foreach($navigations as $navigation)
+                    <tr>
+                        <td>{{$navigation["navigation_id"]}}</td>
+                        <td>{{$navigation["str_padding"]}}{{$navigation["title"]}}</td>
+                        <td>{{$navigation["link"]}}</td>
+                        <td>
+                            {{$navigation["sort"]}}
+                        </td>
+                        <td>
+                            @if($navigation['status'] == 1)
+                                启用
+                            @else
+                                禁用
+                            @endif
+                        </td>
+                        <td>
+                            @if($navigation['is_show'] == 1)
+                                是
+                            @else
+                                否
+                            @endif
+                        </td>
+                        <td>
+                            <b class="iconfont iconfont_f10">
+                                {{$navigation["icon"]}}
+                            </b>
+                        </td>
+                        <td>{{$navigation["created_at"]}}</td>
+                        <td>{{$navigation["updated_at"]}}</td>
+                        <td class="handle">
+                            <a href="{{url("/admin/navigation/edit?".http_build_query(['id' =>$navigation["navigation_id"]]))}}">编辑</a>
+                            <span>|</span>
+                            <a href="javascript:void(0);" data-id="{{$navigation["navigation_id"]}}" class="offsale-goods delete">删除</a>
+                        </td>
+                    </tr>
+                @endforeach
+                </tbody>
+
+            </table>
+            {{--@include("admin.public.page",array('data'=>$groups,'set'=>$set))--}}
+        </div>
+    </div>
+@stop
+@section("footer_js")
+    <script type="text/javascript" src="{{url('js/admin/jquery.js')}}"></script>
+    <script type="text/javascript" src="{{url('js/admin/bootstrap.merge.min.js')}}"></script>
+    <script type="text/javascript" src="{{url('js/admin/bootstrap-switch.min.js')}}"></script>
+    <script type="text/javascript" src="{{url('js/admin/common.js')}}"></script>
+    <script type="text/javascript" src="{{url('js/public/layer/layer.js')}}"></script>
+    <script type="text/javascript" src="{{url('js/admin/d_tan.js')}}"></script>
+    <script>
+        $(".delete").click(function(){
+            var n_id = $(this).attr("data-id");
+            //询问框
+            layer.confirm('确定要删除？', {
+                title: ['删除', 'font-size:16px;'],
+                btn: ['确定','取消'] //按钮
+            }, function(){
+                $.post("/admin/navigation/delete",{"id":n_id},function(data){
+                    if (data.status == 1) {
+                        layer.msg('删除成功', {icon: 1});
+                        location.reload();
+                    }else {
+                        layer.msg('删除失败', {icon: 2});
+                    }
+                })
+
+            }, function(){
+                layer.msg('取消删除', {icon: 2});
+            });
+
+        })
+
+    </script>
+@stop

@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta charset="utf-8">
+<title>商品属性集 - 设置属性</title>
+<meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport">
+<meta content="" name="description">
+<meta content="" name="author">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,Chrome=1">
+
+<!-- ================== BEGIN BASE CSS STYLE ================== -->
+<link type="text/css" rel="stylesheet" href="../css/iconfont.css">
+<link type="text/css" rel="stylesheet" href="../css/jquery.mCustomScrollbar.css">
+<link type="text/css" rel="stylesheet" href="../css/bootstrap.min.css">
+
+<link type="text/css" rel="stylesheet" href="../css/bootstrap-switch.min.css">
+<link type="text/css" rel="stylesheet" href="../css/loaders.css">
+<link type="text/css" rel="stylesheet" href="../css/common.css">
+
+<!-- ================== END BASE CSS STYLE ================== -->
+<!--[if lt IE 9]>
+      <script type="text/javascript" src="../js/html5shiv.min.js"></script>
+      <script type="text/javascript" src="../js/respond.min.js"></script>
+    <![endif]-->
+<!-- ================== BEGIN BASE JS ================== -->
+<script type="text/javascript" src="../js/jquery.js"></script>
+
+
+</head>
+<body class="pace-done">
+	
+<div class="page page03">
+	<div class="fixed-bar">
+	<div class="item-title">
+		<div class="subject">
+			<h3>
+				<span class="action">商品属性集 - 设置属性</span>
+			</h3>
+            <h5>
+				<span class="action-span">
+					<a href="attbute_set.html" class="btn btn-warning click-loading">
+						<i class="iconfont">&#xe6d4;</i>
+						返回商品属性集列表
+					</a>
+				</span>
+			</h5>
+		</div>
+	</div>
+    </div>
+ 
+   <div class="table-content mt10 clearfix">
+
+     <form class="form-horizontal"  method="POST" >
+    
+     <!-- 属性值列表 -->
+     <div class="simple-form-field">
+            <menu id="nestable-menu"  class="form-group">
+              <button type="button" data-action="expand-all" class="btn btn-primary m-r-5" border="0">全部展开</button>
+              <button type="button" data-action="collapse-all"  class="btn btn-primary m-r-5" border="0">全部合并</button>
+            </menu>
+            <div class="cf nestable-lists">
+
+             <div class="dd" id="nestable">
+             <h2 class="yixuan">已选</h2>
+
+              <ol class="dd-list">
+
+                <li class="dd-item dd-collapsed" data-id="2"><button data-action="collapse" type="button" style="display: none;">Collapse</button><button data-action="expand" type="button" style="display: block;">Expand</button>
+
+                    <div class="dd-handle">一级分类</div>
+
+                    <ol class="dd-list" style="display: none;">
+
+                        <li class="dd-item" data-id="3"><div class="dd-handle">一级分类01</div></li>
+
+                        <li class="dd-item" data-id="4"><div class="dd-handle">一级分类02</div></li>
+
+                        <li class="dd-item dd-collapsed" data-id="5"><button data-action="collapse" type="button" style="display: none;">Collapse</button><button data-action="expand" type="button" style="display: block;">Expand</button>
+
+                            <div class="dd-handle">二级分类</div>
+
+                            <ol class="dd-list" style="display: none;">
+
+                                <li class="dd-item" data-id="6"><div class="dd-handle">二级分类01</div></li>
+
+                                <li class="dd-item" data-id="7"><div class="dd-handle">二级分类02</div></li>
+
+                                <li class="dd-item" data-id="8"><div class="dd-handle">二级分类03</div></li>
+
+                            </ol>
+
+                        </li>
+                    </ol>
+
+                </li>
+
+
+               </ol>
+
+             </div>
+             <div class="dd" id="nestable2">
+            <h2 class="yixuan">待选</h2>
+            <ol class="dd-list">
+
+                <li class="dd-item" data-id="13">
+
+                    <div class="dd-handle">电视</div>
+
+                </li>
+
+                <li class="dd-item" data-id="14">
+
+                    <div class="dd-handle">化妆品</div>
+
+                </li>
+
+                <li class="dd-item dd-collapsed" data-id="15"><button data-action="collapse" type="button" style="display: none;">Collapse</button><button data-action="expand" type="button" style="display: block;">Expand</button>
+
+                    <div class="dd-handle">Item 15</div>
+
+                    <ol class="dd-list" style="display: none;">
+
+                        <li class="dd-item" data-id="16"><div class="dd-handle"> </div></li>
+
+                        <li class="dd-item" data-id="17"><div class="dd-handle">Item 17</div></li>
+
+                        <li class="dd-item" data-id="18"><div class="dd-handle">Item 18</div></li>
+
+                    </ol>
+
+                </li>
+
+            </ol>
+
+        </div>
+        
+
+            </div>
+     </div>
+     
+     <div class="simple-form-field">
+			<div class="form-group">
+				<label for="text4" class="col-sm-4 control-label"></label>
+				<div class="col-xs-8">
+					<input type="button" id="btn_submit" value="保 存" class="btn btn-primary">
+				</div>
+			</div>
+	 </div>
+              
+     </form>
+   </div>
+	
+</div>
+
+	<div class="copyright">
+	<div class="text-c">
+		<p></p>
+		<p>
+			Copyright © 2016-2026 曼蒂税保 - 版权所有
+		</p>
+	</div>
+</div>
+
+<script type="text/javascript" src="../js/jquery.nestable.js"></script>
+<script>
+
+
+
+$(document).ready(function()
+
+{
+
+
+
+    var updateOutput = function(e)
+
+    {
+
+        var list   = e.length ? e : $(e.target),
+
+            output = list.data('output');
+
+        if (window.JSON) {
+
+            output.val(window.JSON.stringify(list.nestable('serialize')));//, null, 2));
+
+        } else {
+
+            output.val('JSON browser support required for this demo.');
+
+        }
+
+    };
+
+
+
+    // activate Nestable for list 1
+
+    $('#nestable').nestable({
+
+        group: 1
+
+    })
+
+    .on('change', updateOutput);
+
+
+
+    // activate Nestable for list 2
+
+    $('#nestable2').nestable({
+
+        group: 1
+
+    })
+
+    .on('change', updateOutput);
+
+
+
+    // output initial serialised data
+
+    updateOutput($('#nestable').data('output', $('#nestable-output')));
+
+    updateOutput($('#nestable2').data('output', $('#nestable2-output')));
+
+
+
+    $('#nestable-menu').on('click', function(e)
+
+    {
+
+        var target = $(e.target),
+
+            action = target.data('action');
+
+        if (action === 'expand-all') {
+
+            $('.dd').nestable('expandAll');
+
+        }
+
+        if (action === 'collapse-all') {
+
+            $('.dd').nestable('collapseAll');
+
+        }
+
+    });
+
+
+
+    $('#nestable3').nestable();
+
+
+
+});
+
+</script>
+</body></html>

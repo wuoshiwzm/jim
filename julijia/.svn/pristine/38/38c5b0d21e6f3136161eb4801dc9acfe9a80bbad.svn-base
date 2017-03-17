@@ -1,0 +1,619 @@
+<?php
+
+class AttbuteSeeder extends Seeder {
+
+	/**
+	 * Run the database seeds.
+	 *
+	 * @return void
+	 */
+	public function run()
+	{
+		 $sql  = array(
+			  // 商品名称
+			 array(
+				 'name'=>'name',
+				 'admin_label'=>'商品名称',
+				 'type'=>'varchar',
+				 'length'=>'100',
+				 'front_input'=>'text',
+				 'front_lable'=>'商品名称',
+				 'sort'=>'1',
+				 'is_system'=>'1',
+				 'is_hidden'=>'0',
+				 'is_required'=>'1',
+				 'is_index'=>'1',
+				 'is_fiter'=>'0',
+				 'valid_rule'=>'*',
+				 'errormsg'=>'请输入商品名称',
+				 'tipgs'=>'请输入商品名称',
+				 'default'=>'',
+				 'model'=>'',
+				 'created_at'=>TimeTools::getFullTime(),
+			 ),
+			  //价格
+			 array(
+				 'name'=>'price',
+				 'admin_label'=>'商品价格',
+				 'type'=>'decimal',
+				 'length'=>'8,2',
+				 'front_input'=>'text',
+				 'front_lable'=>'商品价格',
+				 'sort'=>'2',
+				 'is_system'=>'1',
+				 'is_hidden'=>'0',
+				 'is_required'=>'1',
+				 'is_index'=>'1',
+				 'is_fiter'=>'0',
+				 'valid_rule'=>'*',
+				 'errormsg'=>'请输入商品价格',
+				 'tipgs'=>'请输入商品价格',
+				 'default'=>'',
+				 'model'=>'',
+				 'created_at'=>TimeTools::getFullTime(),
+			 ),
+			 //供货价
+			 array(
+				 'name'=>'cost_price',
+				 'admin_label'=>'进货价',
+				 'type'=>'decimal',
+				 'length'=>'8,2',
+				 'front_input'=>'text',
+				 'front_lable'=>'进货价',
+				 'sort'=>'2',
+				 'is_system'=>'1',
+				 'is_hidden'=>'0',
+				 'is_required'=>'1',
+				 'is_index'=>'1',
+				 'is_fiter'=>'0',
+				 'valid_rule'=>'*',
+				 'errormsg'=>'请输入供货价',
+				 'tipgs'=>'请输入供货价',
+				 'default'=>'',
+				 'model'=>'',
+				 'created_at'=>TimeTools::getFullTime(),
+			 ),
+			 //促销价
+			 array(
+				  'name'=>'preferential_price',
+				  'admin_label'=>'优惠价',
+				  'type'=>'decimal',
+				  'length'=>'8,2',
+				  'front_input'=>'text',
+				  'front_lable'=>'优惠价',
+				  'sort'=>'2',
+				  'is_system'=>'1',
+				  'is_hidden'=>'0',
+				  'is_required'=>'1',
+				  'is_index'=>'1',
+				  'is_fiter'=>'0',
+				  'valid_rule'=>'*',
+				  'errormsg'=>'请输入商品优惠价格',
+				  'tipgs'=>'请输入商品优惠价格',
+				  'default'=>'',
+				  'model'=>'',
+				  'created_at'=>TimeTools::getFullTime(),
+			  ),
+			 //供应商
+			 array(
+				 'name'=>'supplier',
+				 'admin_label'=>'供应商',
+				 'type'=>'int',
+				 'length'=>'11',
+				 'front_input'=>'select',
+				 'front_lable'=>'供应商',
+				 'sort'=>'2',
+				 'is_system'=>'1',
+				 'is_hidden'=>'1',
+				 'is_required'=>'1',
+				 'is_index'=>'1',
+				 'is_fiter'=>'0',
+				 'valid_rule'=>'*',
+				 'errormsg'=>'请选择供应商',
+				 'tipgs'=>'请选择供应商',
+				 'default'=>'',
+				 'model'=>'Source_User_SupplierInfo',
+				 'created_at'=>TimeTools::getFullTime(),
+			 ),
+			 //门店
+			 array(
+				 'name'=>'shop',
+				 'admin_label'=>'线下门店',
+				 'type'=>'int',
+				 'length'=>'11',
+				 'front_input'=>'select',
+				 'front_lable'=>'线下门店',
+				 'sort'=>'100',
+				 'is_system'=>'1',
+				 'is_hidden'=>'1',
+				 'is_required'=>'1',
+				 'is_index'=>'1',
+				 'is_fiter'=>'0',
+				 'valid_rule'=>'*',
+				 'errormsg'=>'请选择门店',
+				 'tipgs'=>'请选择门店',
+				 'default'=>'',
+				 'model'=>'Source_User_ShopInfo',
+				 'created_at'=>TimeTools::getFullTime(),
+			 ),
+			 //优惠起始
+			 array(
+				 'name'=>'price_begin',
+				 'admin_label'=>'优惠价开始',
+				 'type'=>'timestamp',
+				 'length'=>'',
+				 'front_input'=>'time',
+				 'front_lable'=>'优惠价开始',
+				 'sort'=>'2',
+				 'is_system'=>'1',
+				 'is_hidden'=>'0',
+				 'is_required'=>'1',
+				 'is_index'=>'0',
+				 'is_fiter'=>'0',
+				 'valid_rule'=>'',
+				 'errormsg'=>'',
+				 'tipgs'=>'',
+				 'default'=>'',
+				 'model'=>'',
+				 'created_at'=>TimeTools::getFullTime(),
+			 ),
+			 //优惠结束
+			 array(
+				 'name'=>'price_end',
+				 'admin_label'=>'优惠价开始',
+				 'type'=>'timestamp',
+				 'length'=>'',
+				 'front_input'=>'time',
+				 'front_lable'=>'优惠价开始',
+				 'sort'=>'2',
+				 'is_system'=>'1',
+				 'is_hidden'=>'0',
+				 'is_required'=>'1',
+				 'is_index'=>'0',
+				 'is_fiter'=>'0',
+				 'valid_rule'=>'',
+				 'errormsg'=>'',
+				 'tipgs'=>'',
+				 'default'=>'',
+				 'model'=>'',
+				 'created_at'=>TimeTools::getFullTime(),
+			 ),
+			 //优惠结束
+			 array(
+				 'name'=>'sku',
+				 'admin_label'=>'商品编码sku',
+				 'type'=>'text',
+				 'length'=>'',
+				 'front_input'=>'input',
+				 'front_lable'=>'商品编码sku',
+				 'sort'=>'2',
+				 'is_system'=>'1',
+				 'is_hidden'=>'0',
+				 'is_required'=>'1',
+				 'is_index'=>'0',
+				 'is_fiter'=>'0',
+				 'valid_rule'=>'',
+				 'errormsg'=>'',
+				 'tipgs'=>'',
+				 'default'=>'',
+				 'model'=>'',
+				 'created_at'=>TimeTools::getFullTime(),
+			 ),
+			 //weight
+			 array(
+				 'name'=>'weight',
+				 'admin_label'=>'重量',
+				 'type'=>'text',
+				 'length'=>'4',
+				 'front_input'=>'input',
+				 'front_lable'=>'重量',
+				 'sort'=>'2',
+				 'is_system'=>'1',
+				 'is_hidden'=>'0',
+				 'is_required'=>'1',
+				 'is_index'=>'0',
+				 'is_fiter'=>'0',
+				 'valid_rule'=>'',
+				 'errormsg'=>'',
+				 'tipgs'=>'',
+				 'default'=>'',
+				 'model'=>'',
+				 'created_at'=>TimeTools::getFullTime(),
+			 ),
+			 //url_key
+			 array(
+				 'name'=>'url_key',
+				 'admin_label'=>'url地址',
+				 'type'=>'varchar',
+				 'length'=>'200',
+				 'front_input'=>'text',
+				 'front_lable'=>'url地址',
+				 'sort'=>'2',
+				 'is_system'=>'1',
+				 'is_hidden'=>'0',
+				 'is_required'=>'0',
+				 'is_index'=>'0',
+				 'is_fiter'=>'0',
+				 'valid_rule'=>'',
+				 'errormsg'=>'url地址',
+				 'tipgs'=>'',
+				 'default'=>'',
+				 'model'=>'',
+				 'created_at'=>TimeTools::getFullTime(),
+			 ),
+			 // meta keyword
+			 array(
+				 'name'=>'keysword',
+				 'admin_label'=>'关键字',
+				 'type'=>'varchar',
+				 'length'=>'200',
+				 'front_input'=>'text',
+				 'front_lable'=>'关键字',
+				 'sort'=>'2',
+				 'is_system'=>'1',
+				 'is_hidden'=>'0',
+				 'is_required'=>'0',
+				 'is_index'=>'0',
+				 'is_fiter'=>'0',
+				 'valid_rule'=>'',
+				 'errormsg'=>'请输入关键字',
+				 'tipgs'=>'请输入关键字',
+				 'default'=>'',
+				 'model'=>'',
+				 'created_at'=>TimeTools::getFullTime(),
+			 ),
+			 // meta_desc
+			 array(
+				 'name'=>'meta_desc',
+				 'admin_label'=>'关键字描述',
+				 'type'=>'varchar',
+				 'length'=>'300',
+				 'front_input'=>'text',
+				 'front_lable'=>'关键字描述',
+				 'sort'=>'2',
+				 'is_system'=>'1',
+				 'is_hidden'=>'0',
+				 'is_required'=>'0',
+				 'is_index'=>'0',
+				 'is_fiter'=>'0',
+				 'valid_rule'=>'',
+				 'errormsg'=>'请输入关键字',
+				 'tipgs'=>'请输入关键字',
+				 'default'=>'',
+				 'model'=>'',
+				 'created_at'=>TimeTools::getFullTime(),
+			 ),
+			 // base_image
+			 array(
+				 'name'=>'base_image',
+				 'admin_label'=>'图片',
+				 'type'=>'varchar',
+				 'length'=>'50',
+				 'front_input'=>'meida',
+				 'front_lable'=>'图片',
+				 'sort'=>'2',
+				 'is_system'=>'1',
+				 'is_hidden'=>'0',
+				 'is_required'=>'0',
+				 'is_index'=>'0',
+				 'is_fiter'=>'0',
+				 'valid_rule'=>'',
+				 'errormsg'=>'图片',
+				 'tipgs'=>'图片',
+				 'default'=>'',
+				 'model'=>'',
+				 'created_at'=>TimeTools::getFullTime(),
+			 ),
+			 // small_image
+			 array(
+				 'name'=>'small_image',
+				 'admin_label'=>'缩略图',
+				 'type'=>'varchar',
+				 'length'=>'50',
+				 'front_input'=>'meida',
+				 'front_lable'=>'缩略图',
+				 'sort'=>'2',
+				 'is_system'=>'1',
+				 'is_hidden'=>'0',
+				 'is_required'=>'0',
+				 'is_index'=>'0',
+				 'is_fiter'=>'0',
+				 'valid_rule'=>'',
+				 'errormsg'=>'缩略图',
+				 'tipgs'=>'缩略图',
+				 'default'=>'',
+				 'model'=>'',
+				 'created_at'=>TimeTools::getFullTime(),
+			 ),
+			 // thumbnail
+			 array(
+				 'name'=>'thumbnail',
+				 'admin_label'=>'焦点图',
+				 'type'=>'varchar',
+				 'length'=>'50',
+				 'front_input'=>'meida',
+				 'front_lable'=>'焦点图',
+				 'sort'=>'2',
+				 'is_system'=>'1',
+				 'is_hidden'=>'0',
+				 'is_required'=>'0',
+				 'is_index'=>'0',
+				 'is_fiter'=>'0',
+				 'valid_rule'=>'',
+				 'errormsg'=>'焦点图',
+				 'tipgs'=>'焦点图',
+				 'default'=>'',
+				 'model'=>'',
+				 'created_at'=>TimeTools::getFullTime(),
+			 ),
+			 // 库存
+			 array(
+				 'name'=>'kc_qty',
+				 'admin_label'=>'库存',
+				 'type'=>'int',
+				 'length'=>'8',
+				 'front_input'=>'input',
+				 'front_lable'=>'库存',
+				 'sort'=>'2',
+				 'is_system'=>'1',
+				 'is_hidden'=>'0',
+				 'is_required'=>'0',
+				 'is_index'=>'1',
+				 'is_fiter'=>'0',
+				 'valid_rule'=>'',
+				 'errormsg'=>'库存',
+				 'tipgs'=>'库存',
+				 'default'=>'',
+				 'model'=>'',
+				 'created_at'=>TimeTools::getFullTime(),
+			 ),
+			 //商品分组
+			 array(
+				 'name'=>'category_id',
+				 'admin_label'=>'商品分类',
+				 'type'=>'int',
+				 'length'=>'8',
+				 'front_input'=>'select',
+				 'front_lable'=>'商品分类',
+				 'sort'=>'2',
+				 'is_system'=>'1',
+				 'is_hidden'=>'0',
+				 'is_required'=>'0',
+				 'is_index'=>'1',
+				 'is_fiter'=>'0',
+				 'valid_rule'=>'*',
+				 'errormsg'=>'商品分类',
+				 'tipgs'=>'商品分类',
+				 'default'=>'',
+				 'model'=>'Source_Category_Category',
+				 'created_at'=>TimeTools::getFullTime(),
+			 ),
+			 //描述
+			 array(
+				 'name'=>'desc',
+				 'admin_label'=>'商品描述',
+				 'type'=>'text',
+				 'length'=>'8',
+				 'front_input'=>'texteare',
+				 'front_lable'=>'商品描述',
+				 'sort'=>'2',
+				 'is_system'=>'1',
+				 'is_hidden'=>'0',
+				 'is_required'=>'0',
+				 'is_index'=>'1',
+				 'is_fiter'=>'0',
+				 'valid_rule'=>'*',
+				 'errormsg'=>'请输入商品描述',
+				 'tipgs'=>'请输入商品描述',
+				 'default'=>'',
+				 'created_at'=>TimeTools::getFullTime(),
+			 ),
+		 );
+
+		 foreach ($sql as $val){
+			 DB::table('attribute')->insert($val);
+		 };
+
+
+
+   //选择显示项
+		 $visibility = array(
+				'name'=>'visibility',
+				'admin_label'=>'选择显示项',
+				'type'=>'int',
+				'length'=>'8',
+				'front_input'=>'select',
+				'front_lable'=>'选择显示项',
+				'sort'=>'2',
+				'is_system'=>'1',
+				'is_hidden'=>'0',
+				'is_required'=>'1',
+				'is_index'=>'1',
+				'is_fiter'=>'0',
+				'valid_rule'=>'',
+				'errormsg'=>'选择显示项',
+				'tipgs'=>'选择显示项',
+				'default'=>'',
+				'model'=>'',
+				'created_at'=>TimeTools::getFullTime(),
+		);
+		$id  =  DB::table('attribute')->insertGetId($visibility);
+		$visibility_list =array(
+			array(
+				'value'=>1,
+				'attributeid'=>$id,
+				'text'=>'分组',
+			),
+			array(
+				'value'=>2,
+				'attributeid'=>$id,
+				'text'=>'查询',
+			),
+			array(
+				'value'=>3,
+				'attributeid'=>$id,
+				'text'=>'分组,查询',
+			)
+		);
+		DB::table('attrute_type_value')->insert($visibility_list);
+
+
+		//status  单选
+		$status =  array(
+			'name'=>'status',
+			'admin_label'=>'状态',
+			'type'=>'int',
+			'length'=>'1',
+			'front_input'=>'radio',
+			'front_lable'=>'状态',
+			'sort'=>'2',
+			'is_system'=>'1',
+			'is_hidden'=>'0',
+			'is_required'=>'1',
+			'is_index'=>'1',
+			'is_fiter'=>'0',
+			'valid_rule'=>'',
+			'errormsg'=>'',
+			'tipgs'=>'',
+			'default'=>'',
+			'model'=>'',
+			'created_at'=>TimeTools::getFullTime(),
+		);
+		$iid    =  DB::table('attribute')->insertGetId($status);
+		 $lists  = array(
+			array(
+				'value'=>1,
+				'attributeid'=>$iid,
+				'text'=>'启用',
+			),
+			array(
+				'value'=>0,
+				'attributeid'=>$iid,
+				'text'=>'禁用',
+			),
+		);
+		DB::table('attrute_type_value')->insert($lists);
+
+		//推荐
+		$tuijian_id    =  DB::table('attribute')->insertGetId(
+			array(
+			'name'=>'tuijian',
+			'admin_label'=>'推荐',
+			'type'=>'int',
+			'length'=>'1',
+			'front_input'=>'radio',
+			'front_lable'=>'推荐',
+			'sort'=>'2',
+			'is_system'=>'1',
+			'is_hidden'=>'0',
+			'is_required'=>'1',
+			'is_index'=>'1',
+			'is_fiter'=>'0',
+			'valid_rule'=>'',
+			'errormsg'=>'',
+			'tipgs'=>'',
+			'default'=>'',
+			'model'=>'',
+			'created_at'=>TimeTools::getFullTime(),
+		));
+		DB::table('attrute_type_value')->insert(
+			array(
+				array(
+					'value'=>1,
+					'attributeid'=>$tuijian_id,
+					'value'=>'是',
+				),
+				array(
+					'value'=>0,
+					'attributeid'=>$tuijian_id,
+					'text'=>'否',
+				),
+			)
+		);
+
+
+		$list = DB::table('attribute')->where('is_system','1')->orderBy('sort','acs')->get();
+		foreach ($list as $val){
+			Schema::table('product_flat', function($table ) use ($val)
+			{
+				if(!Schema::hasColumn('product_flat',$val->name)){
+					if( $val->type =='int')
+					{
+						$is_required=  $val->is_required==1?true:false;
+						if($is_required){
+							$table->integer( $val->name);
+						}else{
+							$table->integer( $val->name)->nullable();
+						}
+
+						$is_index=  $val->is_index==1?true:false;
+						if($is_index){
+							$table->index($val->name);
+						}
+					}
+					if( $val->type =='varchar')
+					{
+						$is_required=  $val->is_required==1?true:false;
+						if($is_required){
+							$table->string($val->name,$val->length);
+						}else{
+							$table->string($val->name,$val->length)->nullable();
+						}
+						$is_index=  $val->is_index==1?true:false;
+						if($is_index){
+							$table->index($val->name);
+						}
+					}
+
+					if($val->type =='text')
+					{
+						$is_required=  $val->is_required==1?true:false;
+						if($is_required){
+							$table->text($val->name);
+						}else{
+							$table->text($val->name);
+						}
+						$is_index=  $val->is_index==1?true:false;
+						if($is_index){
+							$table->index($val->name);
+						}
+					}
+
+					if($val->type=='timestamp')
+					{
+						$is_required=  $val->is_required==1?true:false;
+						if($is_required){
+							$table->timestamp($val->name);
+						}else{
+							$table->timestamp($val->name)->nullable();
+						}
+						$is_index=  $val->is_index==1?true:false;
+						if($is_index){
+							$table->index($val->name);
+						}
+					}
+
+					if($val->type=='decimal')
+					{
+						$is_required=  $val->is_required==1?true:false;
+						 $snum = explode(',',$val->length);
+						if($is_required){
+							$table->decimal($val->name,$snum[0],$snum[1]);
+						}else{
+							$table->decimal($val->name,$snum[0],$snum[1])->nullable();
+						}
+						$is_index=  $val->is_index==1?true:false;
+						if($is_index){
+							$table->index($val->name);
+						}
+					}
+
+				}
+			});
+		}
+
+	}
+
+
+
+}

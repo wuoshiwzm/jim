@@ -1,0 +1,147 @@
+<?php
+/**
+ * Created by julijia_frontend.
+ * User: 王顶峰
+ * Email: dingfeng0509@vip.qq.com
+ * Date: 2016/11/18
+ * Time: 11:25
+ */?>
+@section('footer_js')
+    <script type="text/javascript" src="/js/public/My97DatePicker/WdatePicker.js"></script>
+@stop
+
+@section('content')
+    <div class="page">
+        <div class="fixed-bar">
+            <div class="item-title">
+                <div class="subject">
+                    <h3>
+                        <span class="action">客户</span>
+                    </h3>
+                </div>
+            </div>
+        </div>
+
+        <!--搜索-->
+        <div class="search-term m-b-10">
+            <form  action="/admin/report/customer" method="get">
+                <input type="hidden" name="_csrf" value="##">
+
+                <div class="simple-form-field">
+                    <div class="form-group">
+                        <label class="control-label">
+                            <span>注册时间：</span>
+                        </label>
+
+                        <div class="form-control-wrap">
+                            <input type="text" class="form-control w100" name="beg_time"  id="beg_time" onfocus="WdatePicker({dateFmt:'yyyy-MM-dd'})"  value="{{$set['beg_time']}}">
+                            至 <input type="text" class="form-control w100" name="end_time" id="end_time" onfocus="WdatePicker({dateFmt:'yyyy-MM-dd'})" value="{{$set['end_time']}}">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="simple-form-field">
+                    <div class="form-group">
+                        <label class="control-label">
+                            <span>真实姓名：</span>
+                        </label>
+                        <div class="form-control-wrap">
+                            <input type="text" id="name" class="form-control" name="name" value="{{$set['name']}}">
+                        </div>
+
+                    </div>
+                </div>
+
+
+                <div class="simple-form-field">
+                    <input type="submit" id="btn_search" value="查询" class="btn btn-primary m-r-5">
+                    <input type="button" id="export" value="导出结果" class="btn btn-primary m-r-5">
+                </div>
+
+            </form>
+        </div>
+
+        <div class="common-title">
+            <div class="ftitle">
+                <h3>客户列表</h3>
+
+                <h5>
+                    (&nbsp;共
+                    <span data-total-record="true">{{$count}}</span>
+                    条记录&nbsp;)
+                </h5>
+
+            </div>
+            <div class="operate">
+
+                <a class="reload" href="javascript:reload();" data-toggle="tooltip" data-placement="auto bottom" title="" data-original-title="刷新数据">
+                    <i class="iconfont">&#xe6fb;</i>
+                </a>
+
+            </div>
+        </div>
+        <!--列表内容-->
+        <div class="table-responsive">
+            <table id="table_list" class="table table-hover">
+                <thead>
+                <tr>
+                    <!--排序样式sort默认，asc升序，desc降序-->
+                    <th class="w80" style="cursor: pointer;">客户ID</th>
+                    <th class="w100" style="cursor: pointer;">账户名</th>
+                    <th class="w100" style="cursor: pointer;">昵称</th>
+                    <th class="w120" style="cursor: pointer;">真实姓名</th>
+                    <th class="w60" style="cursor: pointer;">性别</th>
+                    <th class="w200" style="cursor: pointer;">邮箱</th>
+                    <th class="w100"  style="cursor: pointer;">联系电话</th>
+                    <th class="w100"  style="cursor: pointer;">QQ/微信</th>
+                    <th class="w150"  style="cursor: pointer;">最后一登录时间</th>
+                </tr>
+                </thead>
+                <tbody>
+                <!--以下为循环内容-->
+                @if(count($list))
+                    @foreach( $list as $val)
+                        <tr>
+                            <td >{{$val->id}}</td>
+                            <td >{{$val->name}}</td>
+                            <td >{{$val->alias}}</td>
+                            <td >{{$val->real_name}}</td>
+                            <td >@if($val->sex ==1) 男  @else  女 @endif</td>
+                            <td >{{$val->email}}</td>
+                            <td >{{$val->mobile_phone}}</td>
+                            @if(!empty($val->qq)&& !empty($val->wechat))
+                                <td >{{$val->qq}}/{{$val->wechat}}</td>
+                                @elseif(!empty($val->qq))
+                                <td >{{$val->qq}}</td>
+                                @elseif(!empty($val->wechat))
+                                <td >{{$val->wechat}}</td>
+                                @else
+                                <td>--</td>
+                            @endif
+
+                            <td >{{$val->last_time}}</td>
+                        </tr>
+                    @endforeach
+                @else
+                    <tr>
+                        <td colspan="9">
+                            <p style="text-align: center">没有查询到数据</p>
+                        </td>
+                    </tr>
+                @endif
+                </tbody>
+            </table>
+            @include('admin.public.page',array('data'=>$list,'set'=>$set,'product'=>1))
+        </div>
+    </div>
+    <script>
+
+        $("#export").click(function () {
+             name = $("#name").val();
+             beg_time = $("#beg_time").val();
+             end_time = $("#end_time").val();
+            location='/admin/report/exportcustomer?name='+name+'&beg_time ='+beg_time+'&end_time='+end_time;
+        })
+    </script>
+@stop
+

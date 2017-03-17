@@ -1,0 +1,608 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta charset="utf-8">
+<title>填写商品详情</title>
+<meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport">
+<meta content="" name="description">
+<meta content="" name="author">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,Chrome=1">
+
+<!-- ================== BEGIN BASE CSS STYLE ================== -->
+<link type="text/css" rel="stylesheet" href="../css/iconfont.css">
+<link type="text/css" rel="stylesheet" href="../css/jquery.mCustomScrollbar.css">
+<link type="text/css" rel="stylesheet" href="../css/bootstrap.min.css">
+
+<link type="text/css" rel="stylesheet" href="../css/bootstrap-switch.min.css">
+<link type="text/css" rel="stylesheet" href="../css/loaders.css">
+<link type="text/css" rel="stylesheet" href="../css/common.css">
+<!-- ================== END BASE CSS STYLE ================== -->
+<!--[if lt IE 9]>
+      <script type="text/javascript" src="../js/html5shiv.min.js"></script>
+      <script type="text/javascript" src="../js/respond.min.js"></script>
+    <![endif]-->
+<!-- ================== BEGIN BASE JS ================== -->
+<script type="text/javascript" src="../js/jquery.js"></script>
+<script charset="utf-8" src="../js/kindeditor/kindeditor.js"></script>
+<script charset="utf-8"src="../js/kindeditor/lang/zh_CN.js"></script>
+
+
+</head>
+<body class="pace-done">
+	
+<link type="text/css" rel="stylesheet" href="../css/styles.css">
+
+
+<div class="page">
+	<div class="fixed-bar">
+	<div class="item-title">
+		<div class="subject">
+			<h3>
+				<span class="action">商品库管理 - 填写商品详情</span>
+			</h3>
+		</div>
+	</div>
+</div>
+ 
+	<div class="table-content m-t-15">
+		
+		<!--步骤-->
+		<ul class="add-goods-step">
+            <li id="step_1">
+                <i class="fa iconfont step">&#xe728;</i>
+                <h6>STEP.1</h6>
+                <h2>选择商品分类</h2>
+                <i class="fa fa-angle-right iconfont">&#xe657;</i>
+            </li>
+            <li id="step_2"  class="current">
+                <i class="fa fa-edit step iconfont" >&#xe68e;</i>
+                <h6>STEP.2</h6>
+                <h2>填写商品详情</h2>
+                <i class="fa fa-angle-right iconfont">&#xe657;</i>
+            </li>
+            <li id="step_3">
+                <i class="fa fa-image step iconfont">&#xe641;</i>
+                <h6>STEP.3</h6>
+                <h2>上传商品图片</h2>
+                <i class="fa fa-angle-right iconfont">&#xe657;</i>
+            </li>
+            <li id="step_4">
+                <i class="fa fa-check-square-o step iconfont">&#xe734;</i>
+                <h6>STEP.4</h6>
+                <h2>商品发布成功</h2>
+            </li>
+        </ul>
+
+		
+		<div class="content">
+			<div class="goods-info-two">
+				<form class="form-horizontal m-form" id="frm" accept-charset="UTF-8"  method="POST">
+				<h5 class="h5_bottom">商品基本信息</h5>
+				<div class="simple-form-field">
+					<div class="form-group">
+						<label for="text4" class="col-sm-3 control-label">
+							<span class="text-danger ng-binding">*</span>
+							<span class="ng-binding">商品分类：</span>
+						</label>
+						<div class="col-sm-9">
+							<label class="control-label pull-none" style="vertical-align: middle">家用电器 &gt; 厨房小电 &gt; 电烤箱</label>
+						</div>
+					</div>
+				</div>
+				<!-- 商品名称 -->
+				<div class="simple-form-field">
+                    <div class="form-group">
+                      <label class="col-sm-3 control-label">
+                      <span class="text-danger ng-binding">*</span>
+                      <span class="ng-binding">商品名称：</span>
+                      </label>
+                      <div class="col-sm-9">
+                          <div class="form-control-box">
+                              <input type="text" class="form-control"  ignore="ignore"  datatype="n"  errormsg="请输入" tipsrmsg="请输入" ><span class="Validform_checktip"></span>           
+                          </div>
+                          <div class="help-block help-block-t"><div class="help-block help-block-t">商品标题名称长度至少3个字符，最长60个字符</div></div>
+                      </div>
+                    </div>
+                </div>
+                
+				<!-- 供应商 -->
+				<div class="simple-form-field">
+                  <div class="form-group">
+                    <label class="col-sm-3 control-label">
+                    <span class="ng-binding">供应商：</span>
+                    </label>
+                    <div class="col-sm-9">
+                       <div class="form-control-box">
+                          <select class="form-control valid w200">
+                          <option value="0">中国联想集团</option>
+                          <option value="1">中国石油集团</option>
+                          <option value="2">华润万家</option>
+                          </select>
+		               </div>
+                    </div>
+                  </div>
+                </div>
+                
+                <!-- 线下门店 -->
+				<div class="simple-form-field">
+                  <div class="form-group">
+                    <label class="col-sm-3 control-label">
+                    <span class="ng-binding">线下门店：</span>
+                    </label>
+                    <div class="col-sm-9"> 
+                       <div class="form-control-box">
+                          <select class="form-control valid w200">
+                          <option value="0">北大明宫店</option>
+                          <option value="1">电视塔店</option>
+                          </select>
+		               </div>
+                    </div>
+                  </div>
+                </div>
+                
+                <div class="simple-form-field">
+                    <div class="form-group">
+                      <label class="col-sm-3 control-label">
+                      <span class="text-danger ng-binding">*</span>
+                      <span class="ng-binding">重量：</span>
+                      </label>
+                      <div class="col-sm-9">
+                          <div class="form-control-box">
+                              <input type="text" class="form-control"  ignore="ignore"  datatype="n"  errormsg="请输入" tipsrmsg="请输入" ><span class="Validform_checktip"></span>           
+                          </div>
+                      </div>
+                    </div>
+                </div>
+                
+                <!-- 线下门店 -->
+				<div class="simple-form-field">
+                  <div class="form-group">
+                    <label class="col-sm-3 control-label">
+                    <span class="ng-binding">商品状态：</span>
+                    </label>
+                    <div class="col-sm-9">
+                       <div class="form-control-box">
+                          <select class="form-control valid w200">
+                          <option value="0">上架</option>
+                          <option value="1">下架</option>
+                          </select>
+		               </div>
+                    </div>
+                  </div>
+                </div>
+                
+				<div class="simple-form-field">
+                  <div class="form-group">
+                    <label class="col-sm-3 control-label">
+                    <span class="text-danger ng-binding">*</span>
+                    <span class="ng-binding">价格：</span>
+                    </label>
+                     <div class="col-sm-9">
+                     <div class="form-control-box">
+                        <input type="text" class="form-control ipt pull-none m-r-10"  ignore="ignore"  datatype="n"  errormsg="请输入" tipsrmsg="请输入" >&nbsp;&nbsp;&nbsp;&nbsp;<label class="control-label"><span class="ng-binding">促销价：&nbsp;&nbsp;&nbsp;&nbsp;</span></label>
+                        <input type="text" class="form-control ipt pull-none m-r-10"  ignore="ignore"  datatype="n"  errormsg="请输入" tipsrmsg="请输入" >&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<label class="control-label"><span class="ng-binding">成本价：&nbsp;&nbsp;&nbsp;&nbsp;</span></label>
+                        <input type="text" class="form-control ipt pull-none m-r-10"  ignore="ignore"  datatype="n"  errormsg="请输入" tipsrmsg="请输入" ><span class="Validform_checktip"></span>         
+                     </div>
+                  </div>
+                  </div>
+                </div>
+                
+				<!-- 促销时间  -->
+				<div class="simple-form-field">
+                  <div class="form-group">
+                  <label class="col-sm-3 control-label">
+                  <span class="text-danger ng-binding">*</span>
+                  <span class="ng-binding">促销时间：</span>
+                  </label>
+                     <div class="col-sm-9">
+                      <div class="form-control-box">
+                         <input type="text" class="form-control ipt " >&nbsp;&nbsp;&nbsp;至&nbsp;&nbsp;&nbsp;<input type="text" class="form-control ipt pull-none w200" >
+                      </div>
+                     </div>
+                  </div>
+                </div>
+                
+                
+                <div class="simple-form-field">
+                  <div class="form-group">
+                    <label class="col-sm-3 control-label">
+                      <span class="ng-binding">批发价：</span>
+                    </label>
+                    <div class="col-sm-9">
+                      <div class="form-control-box">
+                        <select class="form-control valid w160">
+                          <option value="0">全部用户</option>
+                          <option value="1">vip会员用户</option>
+                          </select>
+                        &nbsp;&nbsp;&nbsp;购买&nbsp;&nbsp;&nbsp;<input type="text"  class="form-control ipt pull-none m-r-10" placeholder="数量">&nbsp;&nbsp;&nbsp;以上&nbsp;&nbsp;&nbsp;
+                        <input type="text" class="form-control ipt pull-none m-r-10" placeholder="价格" >
+                      </div>
+
+                    </div>
+                  </div>
+                </div>
+                
+                <div class="simple-form-field">
+                    <div class="form-group">
+                       <label class="col-sm-3 control-label">
+                        <span class="ng-binding">自定义url：</span>
+                       </label>
+                       <div class="col-sm-9">
+                          <div class="form-control-box">
+                           <input type="text"  class="form-control" >          
+                          </div>
+                       </div>
+                    </div>
+                </div>
+                
+                <div class="simple-form-field">
+                    <div class="form-group">
+                       <label class="col-sm-3 control-label">
+                        <span class="ng-binding">关键字：</span>
+                       </label>
+                       <div class="col-sm-9">
+                          <div class="form-control-box">
+                           <input type="text"  class="form-control" >          
+                          </div>
+                       </div>
+                    </div>
+                </div>
+            
+                <div class="simple-form-field">
+                    <div class="form-group">
+                       <label class="col-sm-3 control-label">
+                        <span class="ng-binding">关键字描述：</span>
+                       </label>
+                       <div class="col-sm-9">
+                          <div class="form-control-box">
+                             <textarea class="form-control valid"  rows="5" ></textarea>
+                          </div>
+                       </div>
+                    </div>
+                </div>
+                
+				<h5 class="h5_bottom">扩展属性</h5>
+				<div class="simple-form-field">
+                   <div class="form-group">
+                     <label class="col-sm-3 control-label">
+                     <span class="ng-binding">CPU：</span>
+                     </label>
+                     <div class="col-sm-9">
+                       <div class="form-control-box">
+                         <input type="text"  class="form-control" >          
+                       </div>
+                     </div>
+                </div>
+                
+                <div class="simple-form-field">
+                    <div class="form-group">
+                       <label class="col-sm-3 control-label">
+                        <span class="ng-binding">内存：</span>
+                       </label>
+                       <div class="col-sm-9">
+                          <div class="form-control-box">
+                           <input type="text"  class="form-control" >          
+                          </div>
+                       </div>
+                    </div>
+                </div>
+                
+                <div class="simple-form-field">
+                    <div class="form-group">
+                       <label class="col-sm-3 control-label">
+                        <span class="ng-binding">显卡：</span>
+                       </label>
+                       <div class="col-sm-9">
+                          <div class="form-control-box">
+                           <input type="text"  class="form-control" >          
+                          </div>
+                       </div>
+                    </div>
+                </div>
+                
+                <h5 class="h5_bottom">配置属性</h5>
+                <div class="simple-form-field">
+                    <div class="form-group">
+                       <label class="col-sm-3 control-label">
+                        <span class="ng-binding">颜色：</span>
+                       </label>
+                       <div class="col-sm-9">
+                          <div class="form-control-box">
+                             <label class="control-label cur-p m-r-10">
+							    <input type="checkbox"  class="valid">红色
+					    	 </label>  
+                               
+                             <label class="control-label cur-p m-r-10">
+							    <input type="checkbox"  class="valid">黄色
+					    	 </label>  
+                               
+                              <label class="control-label cur-p m-r-10">
+							    <input type="checkbox"  class="valid">蓝色
+					    	 </label>    
+                          </div>
+                       </div>
+                    </div>
+                </div>
+                
+                
+				<!-- 商品详情 -->
+				<div class="simple-form-field">
+                    <div class="form-group">
+                        <label for="text4" class="col-sm-3 control-label">
+                            <span class="ng-binding">商品描述：</span>
+                        </label>
+                        <div class="col-sm-9">
+                            <textarea class="form-control valid w800" id="pro_desc" rows="20" ></textarea>
+                        </div>
+                    </div>
+                </div>
+                
+                <h5 class="h5_bottom">配置属性</h5>
+                
+                <div class="simple-form-field">
+                    <div class="form-group">
+                       <label class="col-sm-3 control-label">
+                        <span class="ng-binding">颜色：</span>
+                       </label>
+                       <div class="col-sm-9 color_un">
+                          <div class="form-control-box">
+                             <label class="control-label cur-p m-r-10">
+							    <input type="checkbox"  class="valid"><span title="黑色"><img src="../images/color01.png"></span>
+					    	 </label>  
+                               
+                             <label class="control-label cur-p m-r-10">
+							    <input type="checkbox"  class="valid"><span title="白色"><img src="../images/color02.png"></span>
+					    	 </label>  
+                               
+                              <label class="control-label cur-p m-r-10">
+							    <input type="checkbox"  class="valid"><span title="红色"><img src="../images/color03.png"></span>
+					    	 </label> 
+                               
+                              <label class="control-label cur-p m-r-10">
+							    <input type="checkbox"  class="valid"><span title="蓝色"><img src="../images/color04.png"></span>
+					    	 </label>  
+                             
+                              <label class="control-label cur-p m-r-10">
+							    <input type="checkbox"  class="valid"><span title="绿色"><img src="../images/color05.png"></span>
+					    	 </label>  
+                             
+                              <label class="control-label cur-p m-r-10">
+							    <input type="checkbox"  class="valid"><span title="橙色"><img src="../images/color06.png"></span>
+					    	 </label>  
+                             
+                              <label class="control-label cur-p m-r-10">
+							    <input type="checkbox"  class="valid"><span title="黄色"><img src="../images/color07.png"></span>
+					    	 </label>   
+                          </div>
+                       </div>
+                    </div>
+                </div>
+                
+                <div class="simple-form-field">
+                    <div class="form-group">
+                       <label class="col-sm-3 control-label">
+                        <span class="ng-binding">尺寸：</span>
+                       </label>
+                       <div class="col-sm-9 unber_x">
+                          <div class="form-control-box">
+                             <label class="control-label cur-p m-r-10">
+							    <input type="checkbox"  class="valid"><span>S</span>
+					    	 </label>  
+                               
+                             <label class="control-label cur-p m-r-10">
+							    <input type="checkbox"  class="valid"><span>M</span>
+					    	 </label>  
+                               
+                              <label class="control-label cur-p m-r-10">
+							    <input type="checkbox"  class="valid"><span>L</span>
+					    	 </label> 
+                               
+                              <label class="control-label cur-p m-r-10">
+							    <input type="checkbox"  class="valid"><span>XL</span>
+					    	 </label>  
+                             
+                              <label class="control-label cur-p m-r-10">
+							    <input type="checkbox"  class="valid"><span>XS</span>
+					    	 </label>  
+                             
+                              <label class="control-label cur-p m-r-10">
+							    <input type="checkbox"  class="valid"><span>XXS</span>
+					    	 </label>  
+                             
+                              <label class="control-label cur-p m-r-10">
+							    <input type="checkbox"  class="valid"><span>XXL</span>
+					    	 </label>   
+                                                          
+                              <label class="control-label cur-p m-r-10">
+							    <input type="checkbox"  class="valid"><span>XXXL</span>
+					    	 </label>  
+                             
+                              <label class="control-label cur-p m-r-10">
+							    <input type="checkbox"  class="valid"><span>单一码</span>
+					    	 </label>  
+                             
+                              <label class="control-label cur-p m-r-10">
+							    <input type="checkbox"  class="valid"><span>4XL</span>
+					    	 </label>  
+                              
+                             <label class="control-label cur-p m-r-10">
+							    <input type="checkbox"  class="valid"><span>5XL</span>
+					    	 </label>  
+                             
+                              <label class="control-label cur-p m-r-10">
+							    <input type="checkbox"  class="valid"><span>6XL</span>
+					    	 </label>   
+                          </div>
+                       </div>
+                    </div>
+                </div>
+                
+                <div class="simple-form-field">
+                    <div class="form-group">
+                       <label class="col-sm-3 control-label">
+                        <span class="ng-binding"> </span>
+                       </label>
+                       <div class="col-sm-9 unber_x">
+                          <div class="form-control-box">
+                                <table id="table_list" class="table table-hover" style=" border-bottom:0!important">
+                                <tr>
+                                    
+                                    <td colspan="4">
+                                        <label >批量设置价格&nbsp;&nbsp;&nbsp;<input type="text" class="form-control w90" placeholder="0">&nbsp;&nbsp;<input type="button" id="btn_publish" value="确认" class="btn"></label>&nbsp;&nbsp;&nbsp;&nbsp;
+                                        <label >批量库存&nbsp;&nbsp;&nbsp;<input type="text" class="form-control w90" placeholder="0">&nbsp;&nbsp;<input type="button" id="btn_publish" value="确认" class="btn"></label>
+                                    </td>
+                                </tr>    
+                                </table>
+                                
+                                
+                                <table id="table_list" class="table table-hover">
+                                
+                                <thead>
+                                    <tr>
+                                        <th class="w60">颜色</th>
+                                        <th class="w60">尺寸</th>
+                                        <th class="w150">零售价(元)</th>
+                                        <th class="w150">添加后的属性</th>
+                                        <th class="w150">添加后的属性</th>
+                                    </tr>
+                                </thead>
+			
+                                
+                                <tr>
+                                    
+                                    <td>
+                                       <img src="../images/color01.png" width="24" height="24">
+                                    </td>
+                                    <td>
+                                       XXL
+                                    </td>
+                                    <td>
+                                      <input type="text" class="form-control w90" placeholder="0"> / 件
+                                    </td>
+                                     <td>
+                                      <input type="text" class="form-control w90" placeholder="0">
+                                    </td>
+                                    <td>
+                                      <input type="text" class="form-control w90" placeholder="0">
+                                    </td>
+
+                                </tr>		
+                                
+                                                                
+                                <tr>
+                                    
+                                    <td>
+                                       <img src="../images/color04.png" width="24" height="24">
+                                    </td>
+                                    <td>
+                                       6XL
+                                    </td>
+                                    <td>
+                                      <input type="text" class="form-control w90" placeholder="0" >/ 件
+                                    </td>
+                                     <td>
+                                      <input type="text" class="form-control w90" placeholder="0">
+                                    </td>
+                                    <td>
+                                      <input type="text" class="form-control w90" placeholder="0">
+                                    </td>
+
+                                </tr>
+                            </table>
+                          </div>
+                       </div>
+                    </div>
+                </div>
+				
+				
+				<div class="goods-next">
+					
+					<input type="button" id=" " value="上一步，选择商品分类" class="btn btn-primary m-r-10 btn-top"  onclick="location='add01.html'"><input type="button" id="btn_publish" value="下一步，上传商品图片" class="btn btn-primary"  onclick="location='add03.html'" >
+					
+					<!--不可点击状态的下一步-->
+					<!--<button class="btn btn-default">下一步，上传商品图片</button>-->
+				</div>
+            </form>
+			</div>
+		</div>
+	</div>
+</div>
+
+<div class="copyright">
+	<div class="text-c">
+		<p></p>
+		<p>
+			Copyright © 2016-2026 曼蒂税保 - 版权所有
+		</p>
+	</div>
+</div>
+<script type="text/javascript" src="../js/Validform_v5.3.2_min.js"></script>
+<script type="text/javascript" src="../js/rules.js"></script>
+<script type="text/javascript">
+//初始化验证//
+ 
+        
+		     $(".m-form").Validform({
+		         altercss:'Validform_skate',
+		         postonce:true,
+		         showAllError:true,
+		         postonce:true,
+		         tiptype:function(msg,o,cssctl){
+		             if(!o.obj.is("form")){//验证表单元素时o.obj为该表单元素，全部验证通过提交表单时o.obj为该表单对象;
+		                 var objtip=o.obj.parent().find(".Validform_checktip");
+		                 objtip.removeClass('Validform_skate');
+		                 cssctl(objtip,o.type);
+		                 objtip.text(msg);
+		             }else{
+		                 var objtip=o.obj.find("#msgdemo");
+		                 objtip.removeClass('Validform_skate');
+		                 cssctl(objtip,o.type);
+		                 objtip.text(msg);
+		             }
+		         },
+		     });
+		     $(".m-form").find('input').each(function() {
+		         $(this).focus(function () {
+		             if ($(this).val() == '') {
+		                 var msg = $(this).attr('tipsrmsg');
+		                 $(this).parent().find(".Validform_checktip").addClass('Validform_skate');
+		                 $(this).parent().find(".Validform_checktip").removeClass('Validform_wrong');
+		                 $(this).parent().find(".Validform_checktip").text(msg);
+		             } else {
+		                 $(this).parent().find(".Validform_checktip").removeClass('Validform_skate');
+		             }
+		         });
+		         $(this).blur(function () {
+		             if ($(this).val() == '') {
+		                 var msg = $(this).attr('errormsg');
+		                 $(this).parent().find(".Validform_checktip").removeClass('Validform_skate');
+		                 $(this).parent().find(".Validform_checktip").addClass('Validform_wrong');
+		                 $(this).parent().find(".Validform_checktip").text(msg);
+		             }
+		         });
+		     });
+
+        KindEditor.ready(function(K) {
+            K.create('#pro_desc', {
+                items: ['source', '|', 'fullscreen', 'undo', 'redo', 'print', 'cut', 'copy', 'paste',
+                    'plainpaste', 'wordpaste', '|', 'justifyleft', 'justifycenter', 'justifyright',
+                    'justifyfull', 'insertorderedlist', 'insertunorderedlist', 'indent', 'outdent', 'subscript',
+                    'superscript', '|', 'selectall', '-',
+                    'title', 'fontname', 'fontsize', '|', 'textcolor', 'bgcolor', 'bold',
+                    'italic', 'underline', 'strikethrough', 'removeformat', '|', 'image',
+                    'flash', 'media', 'advtable', 'hr', 'emoticons', 'link', 'unlink', '|', 'about'],
+                afterBlur: function () {
+                    this.sync();
+                },
+                afterChange: function () {
+                    var content = this.text()
+                    $("#jigou_desc").val(content);
+                }
+            });
+        });
+           
+//
+</script>
+
+
+
+</body></html>

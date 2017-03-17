@@ -1,0 +1,146 @@
+<?php
+/**
+ * Created by julijia_frontend.
+ * User: 王顶峰
+ * Email: dingfeng0509@vip.qq.com
+ * Date: 2016/11/18
+ * Time: 11:25
+ */?>
+@section('footer_js')
+    <script type="text/javascript" src="/js/public/My97DatePicker/WdatePicker.js"></script>
+@stop
+
+@section('content')
+    <div class="page">
+        <div class="fixed-bar">
+            <div class="item-title">
+                <div class="subject">
+                    <h3>
+                        <span class="action">订单统计</span>
+                    </h3>
+                </div>
+            </div>
+        </div>
+        <!--搜索-->
+        <div class="search-term m-b-10">
+            <form  action="/admin/report/order" method="get">
+                <div class="simple-form-field">
+                    <div class="form-group">
+                        <label class="control-label">
+                            <span>下单时间：</span>
+                        </label>
+
+                        <div class="form-control-wrap">
+                            <input type="text" class="form-control w100" id="beg_time"  name="beg_time" onfocus="WdatePicker({dateFmt:'yyyy-MM-dd'})" value="{{$set['beg_time']}}">
+                            至
+                            <input type="text" class="form-control w100" id="end_time"  name="end_time" onfocus="WdatePicker({dateFmt:'yyyy-MM-dd'})" value="{{$set['end_time']}}">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="simple-form-field">
+                    <div class="form-group">
+                        <label class="control-label">
+                            <span>状 态：</span>
+                        </label>
+                        <div class="form-control-wrap">
+                            <select  class="form-control"  name="status">
+                                <option value="" @if( $set['status'] =='') selected="selected"  @endif>全部</option>
+                                <option value="1" @if( $set['status'] ==1) selected="selected"  @endif>未付款</option>
+                                <option value="4" @if( $set['status'] ==4) selected="selected"  @endif>已付款</option>
+                                <option value="5" @if( $set['status'] ==5) selected="selected"  @endif>已发货</option>
+                                <option value="8" @if( $set['status']  ==8) selected="selected"  @endif>完成订单</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="simple-form-field">
+                    <div class="form-group">
+                        <label class="control-label">
+                            <span>订单编号：</span>
+                        </label>
+                        <div class="form-control-wrap">
+                            <input type="text" id="order_sn" class="form-control" name="order_sn" value="{{$set['order_sn']}}">
+                        </div>
+                    </div>
+                </div>
+                <div class="simple-form-field">
+                    <input type="submit" id="btn_search" value="查询" class="btn btn-primary m-r-5">
+                    <input type="button" id="export" value="导出结果" class="btn btn-primary m-r-5">
+                </div>
+
+            </form>
+        </div>
+
+        <div class="common-title">
+            <div class="ftitle">
+                <h3>订单列表</h3>
+                <h5>
+                    (&nbsp;共
+                    <span data-total-record="true">{{$count}}</span>
+                    条记录&nbsp;)
+                </h5>
+            </div>
+            <div class="operate">
+                <a class="reload" href="javascript:reload();" data-toggle="tooltip" data-placement="auto bottom" title="" data-original-title="刷新数据">
+                    <i class="iconfont">&#xe6fb;</i>
+                </a>
+            </div>
+        </div>
+        <!--列表内容-->
+        <div class="table-responsive">
+            <table id="table_list" class="table table-hover">
+                <thead>
+                <tr>
+                    <!--排序样式sort默认，asc升序，desc降序-->
+                    <th class="w100" style="cursor: pointer;">订单编号</th>
+                    <th class="w100" style="cursor: pointer;">订单来源</th>
+                    <th class="w150" style="cursor: pointer;">客户名称</th>
+                    <th class="w150" style="cursor: pointer;">客户电话</th>
+                    <th class="w150" style="cursor: pointer;">支付方式</th>
+                    <th class="w100"  style="cursor: pointer;">购买数量</th>
+                    <th class="w100"  style="cursor: pointer;">商品价格</th>
+                    <th class="w100"  style="cursor: pointer;">优惠金额</th>
+                    <th class="w100"  style="cursor: pointer;">支付金额</th>
+                    <th class="w100"  style="cursor: pointer;">下单时间</th>
+                </tr>
+                </thead>
+                <tbody>
+                <!--以下为循环内容-->
+                @if(count($list))
+                    @foreach( $list as $val)
+                        <tr>
+                            <td>{{$val->order_sn}}</td>
+                            <td>@if($val->source==1) PC站 @else WAP站  @endif</td>
+                            <td>{{isset($val->belongsToUser->name)?$val->belongsToUser->name:''}}</td>
+                            <td>{{$val->ship_phone}}</td>
+                            <td>@if($val->payment ==1 ) 支付宝  @elseif($val->payment==2) 微信支付 @endif</td>
+                            <td>{{$val->itemnum}}</td>
+                            <td>{{$val->cost_item}}</td>
+                            <td>{{$val->cost_freight}}</td>
+                            <td>{{$val->pay_amount}}</td>
+                            <td>{{TimeTools::getYMd($val->created_at)}}</td>
+                        </tr>
+                    @endforeach
+                @else
+                    <tr>
+                        <td colspan="10">
+                            <p style="text-align: center">没有查询到数据</p>
+                        </td>
+                    </tr>
+                 @endif
+                </tbody>
+            </table>
+            @include('admin.public.page',array('data'=>$list,'set'=>$set,'product'=>1))
+        </div>
+    </div>
+    <script>
+        $("#export").click(function () {
+            name = $("#order_sn").val();
+            beg_time = $("#beg_time").val();
+            end_time = $("#end_time").val();
+            location='/admin/report/exportorder?order_sn='+name+'&beg_time ='+beg_time+'&end_time='+end_time;
+        })
+    </script>
+@stop
+

@@ -1,0 +1,286 @@
+
+/********************* 公共样式 **************************/
+*{ margin: 0; padding: 0;}
+body{ margin: 0 auto; width:100%; font-family: "微软雅黑"; font-size: 12px;  background: #fff; color: #333;min-width: 1160px;}
+img{ border: none; border: 0;}
+dl,ul,li{ list-style-type: none; }
+a{ text-decoration: none;color:#333;}
+a:hover{ color:#c00; }
+.clear{ clear: both;}
+i{font-style: normal; }
+a:focus{outline:none;}
+
+
+
+/*   分页样式  */
+.shopping_nei  .pagination { 
+    display: inline-block; background:#fff; float: left; height: 30px; line-height: 30px; margin: 20px 10px 0px 0px; padding-left: 0;
+}
+
+.shopping_nei_order02 .list_fen .pagination{ margin:0px!important; width:976px; padding:0px 10px 40px 40px; }
+
+
+.shopping_nei .pagination li {
+    border:1px solid #eee; float: left; height: 30px; line-height: 24px; margin-right: 10px;
+  padding-left: 0; text-align: center; width: 30px;
+}
+
+.shopping_nei .pagination li span{
+	height: 30px;line-height: 30px;text-align: center; width: 30px;color:#000; 
+	}
+.shopping_nei .pagination li a ,.shopping_nei .pagination li.disabled span{
+	display:inline-block; height:30px; line-height:30px; text-align:center; width:30px; color: #666;
+}
+.shopping_nei .pagination li.active {
+    background-color: #f4f4f4; border-color: #eee; color: #000; cursor: default;}
+	
+.shopping_nei .pagination li:hover{
+	border:1px solid #eee; background-color: #f4f4f4;}
+	
+.shopping_nei .pagination li:hover a{
+	color:#000;}
+
+
+
+.shopping{ width:100%; height:auto; min-height:300px; background:#f0f0f0; padding-bottom:10px;}
+.shopping_nei{ width:1210px; height:auto; min-height:460px;  margin:0 auto; clear:both; padding-top:10px;}
+
+/*订单*/
+.shopping_nei_order .table_div{ background:#fff; width:100%;padding:0px 0px 22px 0px; margin-bottom:10px; display:inline-block;}
+.shopping_nei_order .table_div02{ padding:0px 0px 0px 0px; }
+.shopping_nei_order .layui-nav{ background:#fff; color:#666;}
+.shopping_nei_order .layui-nav .layui-nav-item a{  color:#333; padding:0 2px; }
+.shopping_nei_order .layui-nav .layui-nav-item{line-height:40px;margin-right:18px;}
+.shopping_nei_order .layui-nav .layui-this:after, .layui-nav-bar{ height:3px !important;}
+.layui-nav-bar{ top: 37px!important;}
+.layui-this a{ color:#d66969!important; font-weight:bold!important;}
+.shopping_nei_order .table_div_hd{ padding:6px 0px 10px 0px;}
+.shopping_nei_order .table_div_hd_table{ padding:6px 20px 10px 20px!important;}
+.shopping_nei_order .table_div_hd table{ width:100%;}
+.shopping_nei_order .table_div_hd table th{ text-align:center; background:#f5f5f5; height:32px; color:#333; font-weight:normal; font-size:12px; }
+.shopping_nei_order .table_div_hd table td{ text-align:center; background:#fff;font-size:12px; padding:10px; line-height:1.5; border-bottom:1px solid #eee; }
+.shopping_nei_order .table_div_hd table td dl{ text-align:left;height:60px; }
+.shopping_nei_order .table_div_hd table td dl dt{ width:80px; height:80px; margin-right:10px; float:left; overflow:hidden;border:1px solid #eee;}
+.shopping_nei_order .table_div_hd table td dl dt img{ width:80px; height:80px; float:left; }
+.shopping_nei_order .table_div_hd table td dl dd{  float:left; width:400px;height:56px; overflow:hidden;}
+.shopping_nei_order .table_div_hd table td dl dd a:hover{ color:#c00  ;transition:all 0.6s ease-in;}
+.shopping_nei_order .table_div_hd table td dl dd .layui-input{ width:140px;}
+
+.shopping_nei_order .table_div_hd table td .price_y { color:#999; text-decoration: line-through;}
+.shopping_nei_order .table_div_hd table td .wl { color:#09C; }
+.shopping_nei_order .table_div_hd table td dl .order_tab_color{ height:19px!important; color:#999; overflow:hidden;}
+
+.shopping_nei_order .table_div_hd table .operation a{ color:#333; display:block; padding:3px 0 3px; background:#f5f5f5; border:1px solid #ddd; width:85px; border-radius:2px; margin:0 auto; font-size:12px; }
+.shopping_nei_order .table_div_hd table .operation a:hover{ color:#e4393c;  background:#fff; border:1px solid #e4393c;  }
+.shopping_nei_order .table_div_hd table .operation .margin_top{ margin-top:10px!important;}
+
+.shopping_nei_order .table_div_hd table .order_ding{ text-align:left; background:#f5f5f5; margin-top:10px;}
+.shopping_nei_order .table_div_hd table .order_ding span a{font-size:12px; color:#09C; }
+.shopping_nei_order .table_div_hd table .order_ding span a:hover{ text-decoration:underline; color:#09C; }
+.shopping_nei_order .table_div_hd table .order_ding span font{  color:#C60; }
+.shopping_nei_order .table_div_hd table .order_ding span{ margin-right:14px; font-size:12px; color:#999; }
+
+.shopping_nei_order .table_div_hd .order_tab{ margin-top:14px;}
+
+.shopping_nei_order .table_div_h{ background:#fff; padding:16px 0px 16px 0px; margin-bottom:14px; min-height:16px; }
+.shopping_nei_order .table_div_h h2{ padding-left:22px; font-weight:bold; font-size:15px; float:left;}
+.shopping_nei_order .table_div_h h2 font{ font-weight:normal;}
+.shopping_nei_order .table_div_h .table_ok dt{ font-weight: bold; font-size:18px; text-align:left; }
+
+.table_div_h02 .table_ok{ padding:107px 0px 200px 440px!important;background:url(../images/ok.png) no-repeat 400px 100px;}
+.table_div_h02 .table_ok dt{ margin-bottom:20px;  }
+
+.table_div_h03 .table_ok{ padding:107px 0px 200px 440px;background:url(../images/no.png) no-repeat 400px 100px!important;}
+
+.table_div_h02 .table_ok .ok_t{ font-size:14px; color:#888; margin-top:4px;}
+.table_div_h02 .table_ok .ok_t font{ font-size:14px; color:#f30; margin-right:4px;}
+.table_div_h02 .table_ok dd a{ margin-right:10px; font-size:14px; color:#09C}
+.table_div_h02 .table_ok dd a:hover{ color:#dc4709;transition:all 0.6s ease-in; }
+
+.table_div_hd_table #paging{ float:right;margin-top:10px;}
+
+.shopping_nei_order .table_div_hd table .quan{ text-align:left;}
+.shopping_nei_order .table_div_hd table .quan a{ margin-right:10px;}
+.shopping_nei_order .table_div_hd table .checkbox{ margin:0 3px 0 0;}
+
+.price{  font-size:16px; font-weight:bold;}
+
+.padding_left{ padding:10px 10px 10px 0px !important;}
+
+.shopping_nei_order .jiesuan{ padding-top:20px; }
+.shopping_nei_order .jiesuan_left{ width:460px;float:left;}
+.shopping_nei_order .jiesuan_left dd{ width:200px; float:left;}
+.shopping_nei_order .jiesuan_left .order_btn{ margin-bottom:8px;}
+.shopping_nei_order .jiesuan_left dt{ width:100px; height:100px;float:left;}
+.shopping_nei_order .jiesuan_left dt img{ width:90px; height:90px;}
+
+.shopping_nei_order .jiesuan_center{ width:100px;float:left; height:100px;}
+.shopping_nei_order .jiesuan_center font{ font-size:15px; color:#e4393c; font-weight:bold; margin-right:6px;}
+
+.shopping_nei_order .jiesuan_right { float:right;}
+.shopping_nei_order .jiesuan_right li{ line-height:1.8;}
+.shopping_nei_order .jiesuan_right font{ width:120px; display:inline-block; float:left; text-align:right; font-size:14px;}
+.shopping_nei_order .jiesuan_right span{ width:90px; display:inline-block; float:left;font-size:14px; }
+
+.shopping_nei_order .jiesuan_btn { float:right;}
+.shopping_nei_order .jiesuan_btn .layui-btn { float:right; margin-left:20px;}
+
+.shopping_nei_order .jiesuan_right .jiesuan_right_li{ display:inline-block; padding-bottom:8px; border-bottom:1px solid #eee; margin-bottom:10px;}
+
+.shopping_nei_order .jiesuan_right .jiesuan_right_li span{ font-weight:bold; margin-top:3px;}
+.shopping_nei_order .jiesuan_right .jiesuan_right_li span font{ font-weight:bold;}
+.shopping_nei_order .jiesuan_right .jiesuan_right_li font i{ font-weight:bold; font-size:18px;}
+
+.table_div_map{ height:30px;}
+
+/*订单信息*/
+.shopping_nei_order .order_information{ width:266px; min-height:240px; float:left; border-right:1px solid #eee; margin:18px 0px 0px 18px; }
+.shopping_nei_order .order_information li strong{ padding-bottom:10px; }
+.shopping_nei_order .order_information li{ line-height:2;}
+.shopping_nei_order .order_information li font{ width:164px; display:inline-block; float:left;}
+.shopping_nei_order .order_information li span{ width:90px; display:inline-block; float:left; color:#888;}
+
+.shopping_nei_order .order_wuliu{ width:266px; min-height:240px; float:left; border-right:1px solid #eee; margin:18px 0px 0px 18px; }
+.shopping_nei_order .order_wuliu dt img{ width:100px; height:100px; border:6px solid #f0f0f0; }
+.shopping_nei_order .order_wuliu dt {  height:120px; }
+.shopping_nei_order .order_wuliu dl { padding:36px 20px 0px 0px; text-align:center;line-height:2;}
+.shopping_nei_order .order_wuliu dl dd span{ width:90px; display:inline-block; float:left; color:#888; text-align:left; margin-left:40px;}
+.shopping_nei_order .order_wuliu dl dd font{ width:104px; display:inline-block; float:left;text-align:left;}
+
+/*订单进度*/
+.shopping_nei_order .order_process{ width:266px; min-height:240px; float:left; border-right:1px solid #eee; margin:18px 0px 0px 18px; }
+.shopping_nei_order .order_process dt { font:700 24px/34px "Microsoft YaHei"; color:#71b247; height:100px; margin-top:10px;}
+.shopping_nei_order .order_process dl { padding:36px 20px 0px 0px; text-align:center;line-height:2;}
+.shopping_nei_order .order_process dl dd a{ color:#333; display:block; padding:3px 0 3px; background:#f5f5f5; border:1px solid #ddd; width:85px; border-radius:2px; margin:0 auto; font-size:12px; }
+.shopping_nei_order .order_process dl dd a:hover{ color:#e4393c;  background:#fff; border:1px solid #e4393c; }
+.shopping_nei_order .order_process dl dd{ color:#888;}
+
+/*快递号*/
+.order-an02 {width: 770px; margin:20px 0px 20px 20px; height:224px!important;overflow-y:scroll;  padding:10px 20px 16px 20px; background:#f7f7f7;float:left;}
+.order-an02 .content dl{ margin-bottom:10px; line-height:1.8;}
+.order-an02 .content dl dt{font-size:14px; color:#666; vertical-align: top;letter-spacing: normal;word-spacing: normal;display: inline-block; font-weight:normal;float:left; margin-right:18px; float:left; }
+.order-an02 .content dl dd { color: #333; width: 570px; float:left; font-size:14px; }
+.order-an02 .content .on dt{ color:#e4393c!important; font-weight:bold; }
+.order-an02 .content .on dd{ color:#e4393c!important;font-weight:bold; }
+
+/*发货进度条*/
+.order-step{ padding:110px 0px 0px 70px; float:left;}
+
+.order-step dl{ float:left; text-align:center; }
+.order-step_bg{ float:left; width:40px; background:url(../images/bg_dd.png) no-repeat -5px -38px; height:70px; }
+.order-step_bg_on{ background:url(../images/bg_dd.png) no-repeat -5px 30px!important;}
+.order-step dl .iconfont{ font-size:32px; color:#d7d7d7;}
+.order-step .current .iconfont{ color:#73b449;}
+
+.order-step dl .bg{ font-size:14px; color:#999;}
+.order-step dl .bg02{ font-size:12px; color:#aaa; margin-top:2px;}
+.order-step .current .bg{ color:#333 !important;}
+
+/*立即购买*/
+
+
+/*发货进度条*/
+.table_div .order-step02{ padding:20px 0px 0px 250px; float:left;}
+.table_div .order-step02 .current { float:left; width:220px; display:block; height:100px; text-align:center; padding-top:20px; position:relative; }
+.table_div .order-step02 .current dt { margin-bottom:14px;color:#333;}
+.table_div .order-step02 .current .bg{ width:32px; line-height:32px; height:32px; padding:8px; border-radius:44px; left:50%; margin-left:-24px!important;background:#eee; margin:0 auto; position:absolute; }
+.table_div .order-step02 .current .bg font{ width:32px; line-height:32px; height:32px;  display:block; background:#71b247; color:#fff; border-radius:32px; font-weight:bold; font-size:16px; z-index:999!important; position:absolute;font-size:18px;}
+
+.table_div .order-step02 .current .bg01{ width:220px; height:14px;  display:block; background:#eee; position:absolute; top:71px; z-index:0!important;}
+.table_div .order-step02 .current .bg02{ width:220px; height:6px;  display:block; background:#71b247; position:absolute; top:75px; z-index:100 !important;}
+
+
+.table_div .order-step02 dl { float:left; width:220px; display:block; height:100px; text-align:center; padding-top:20px; position:relative; }
+.table_div .order-step02 dl dt { margin-bottom:14px;font-size:14px; color:#999;}
+.table_div .order-step02 dl .bg{ width:32px; line-height:32px; height:32px; padding:8px; border-radius:44px; left:50%; margin-left:-24px!important;background:#eee; margin:0 auto; position:absolute; }
+.table_div .order-step02 dl .bg font{ width:32px; line-height:32px; height:32px;  display:block; background:#eee; color:#fff; border-radius:32px; font-weight:bold; font-size:16px; z-index:999!important; position:absolute; font-size:18px;}
+
+.table_div .order-step02 dl .bg01{ width:220px; height:14px;  display:block; background:#eee; position:absolute; top:71px; z-index:0!important;}
+.table_div .order-step02 dl .bg02{ width:220px; height:6px;  display:block; background:#eee; position:absolute; top:75px; z-index:100 !important;}
+
+.layui-form .shou_huo{ clear:both; padding:8px 30px 6px 30px;}
+.layui-form .shou_huo .layui-form-checkbox{ padding-right:0px; border:2px solid #ddd; height:34px; line-height:24px;  width:144px; font-size:14px; text-align:center; background:#fff;}
+.layui-form .shou_huo .layui-form-checkbox:hover{ border:2px solid #e4393c; }
+.layui-form .shou_huo .layui-form-checkbox .layui-icon{ display:none!important;}
+.layui-form .shou_huo .layui-form-checkbox span{background:#fff;color:#333;}
+.layui-form .shou_huo .layui-form-checked{ border:2px solid #e4393c; transition:all 0s ease-in!important; background:#fff url(../images/selected-icon.png) no-repeat right 18px;  }
+
+.layui-form .shou_huo li div{ font-size:14px; margin-right:10px;margin-left:4px; display:inline-block; float:left; line-height:40px; cursor:pointer;}
+.layui-form .shou_huo li div{ width:974px;}
+.layui-form .shou_huo li div a{ display:none;}
+.layui-form .shou_huo li{ height:42px !important; }
+.layui-form .shou_huo li:hover{ background:#f6f6f6; }
+.layui-form .shou_huo li:hover div a{ display:block;}
+.layui-form .shou_huo li div span{ margin-right:10px;margin-left:4px; }
+.layui-form .shou_huo li div .bg_span{ background:#999; color:#fff; padding:4px 6px;}
+.layui-form .shou_huo li { height:30px; }
+
+.jieshuan{ width:146px; font-size:18px; font-weight:bold;}
+.add_adress{ float:right; margin-right:16px; color:#005ea7; font-size:14px;}
+.add_adress:hover{  color:#dc4709;transition:all 0.6s ease-in; }
+
+.shou_adress { padding-left:32px; }
+.shou_adress a{  font-size:14px;}
+
+
+/*支付方式*/
+
+.layui-form .shou_zhifu{ clear:both; padding:8px 30px 6px 30px; height:54px;}
+.layui-form .shou_zhifu .layui-form-checkbox{ padding-right:0px; border:2px solid #ddd; height:50px;  width:156px; font-size:14px; text-align:center; background:#fff;}
+.layui-form .shou_zhifu .layui-form-checkbox:hover{ border:2px solid #e4393c; }
+.layui-form .shou_zhifu .layui-form-checkbox .layui-icon{ display:none!important;}
+.layui-form .shou_zhifu .layui-form-checkbox span{}
+.layui-form .shou_zhifu .layui-form-checked{ border:2px solid #e4393c; transition:all 0s ease-in!important; background:#fff url(../images/selected-icon.png) no-repeat right 34px;  }
+
+.layui-form .shou_zhifu li{ float:left; margin-right:10px;}
+
+.layui-form .shou_zhifu .zhifubao .layui-form-checkbox span{background:url(../images/zhifubao.png) no-repeat center 2px;color:#333; width:103px; height:46px; font-size:0px; text-indent:999px;}
+.layui-form .shou_zhifu .weixin .layui-form-checkbox span{background:url(../images/weixin.png) no-repeat center 0px;color:#333; width:103px; height:46px; font-size:0px; text-indent:999px;}
+
+.ding_jia .layui-textarea{ margin-top:6px; width:500px; height:80px;}
+
+.jiesuan_fu{ float:right;}
+.jiesuan_fu_fu{ padding:0px 0px 6px 0px!important;}
+.jiesuan_fu_fu .jiesuan_fu{ margin-right:20px}
+.jiesuan_fu_fu .jiesuan_fu h2{ font-weight:bold; font-size:15px; padding:20px; width:470px; float:left;  }
+.jiesuan_fu_fu .jiesuan_fu ul{ width:670px; float:right; padding-left:0px !important; }
+.jiesuan_right_li { float:right; }
+
+.jiesuan_fu ul{ float:right; padding-left:890px; padding-top:16px;}
+.jiesuan_fu ul li{ width:200px; font-size:14px; line-height:1.8; }
+.jiesuan_fu ul li span{ text-align:right; }
+.jiesuan_fu ul li font{ float:right;}
+.jiesuan_fu ul .jiesuan_right_li font{ font-weight:bold; font-size:18px;}
+.jiesuan_fu ul .jiesuan_right_li span{ margin-top:5px;  display:inline-block;}
+.jiesuan_fu div{ float:right; height:30px;}
+.jiesuan_fu div span{ margin-left:10px; margin-bottom:10px; color:#999;}
+
+
+.layui-form .w40b{ width:130px;}
+.layui-form .w80b{ width:410px;}
+
+.layui-form .w20b{ width:90px;}
+
+.layui-form .w30b{ width:30%;}
+
+.m_r_10{  margin-right:10px !important;}
+
+.layui-form .f_left{ float:left;}
+.layui-form .fize_ml{ font-size:16px;}
+.adress_form{ padding-top:30px; border:10px solid #ddd; width:800px; height:500px; font-size:14px;}
+
+
+.che_kong{ padding:130px 100px 130px 460px; font-size:14px; line-height:1.4; }
+.che_kong a{ color:#dc4709;}
+.che_kong dt{ background:#fff url(../images/wuche.jpg) no-repeat 8px 2px ; width:60px; height:40px; float:left;}
+.weixin .table_ok dt .guo{ color:#f30!important;}
+.weixin .table_ok dt .guo a{ color:#2ea7e7!important;}
+
+.weixin .table_ok{ padding:14px 30px 30px 30px; width:1000px; height:460px;background:url(../images/er_bg.jpg) no-repeat 130px 40px ; }
+.weixin .table_ok dt span{ font-size:13px!important; color:#666; margin-left:36px; font-weight:normal!important; }
+.weixin .table_ok dt span font{  color:#f30; margin:0px 5px; }
+.weixin .table_ok .ok_img{ width:300px; height:300px;}
+.weixin .table_ok .ok_img img{ width:300px; height:300px; padding:14px 10px 10px 112px;}
+.weixin .table_ok .ok_t{padding:114px 10px 10px 112px; font-size:16px;}
+.weixin .table_ok .ok_t a {color:#2ea7e7; font-weight:bold; }
+

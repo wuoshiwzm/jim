@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+	<meta http-equivmetahttp-equiv="x-ua-compatible" content="IE=7"/>
+	<meta name="viewport" content="width=device-width">
+	<title></title>
+	<style>
+	/* css 重置 */
+	*{margin:0; padding:0; list-style:none; }
+	.shengqing{ padding:20px 30px 0px 30px; font-family:"微软雅黑";}
+    .shengqing h1{ height:40px; line-height:34px; font-size:16px; color:##24A0D6; border-bottom:1px solid #24A0D6}
+	.shengqing ul { padding:20px; }
+	.shengqing ul li{ clear:both; }
+	.shengqing ul li font{  float:left; display:block; width:70px;}
+	 ul li .textarea{ height:120px;width:340px; padding:6px 10px; line-height:22px; font-size:16px; border:1px solid #ddd;float:left; margin-top:6px;}
+	.shengqing .button{  padding:0px 20px; color:#fff; height:36px; line-height:36px; background:#24A0D6; border:0; float:left;margin-top:6px;font-weight:bold; font-size:16px; margin-top:16px;}
+	
+
+	.shengqing ul li .txt{ height:30px;width:188px; padding:0 10px; line-height:30px; font-size:16px; border:1px solid #ddd;float:left; margin-top:6px;}
+    .shengqing ul li .txt2{ width:100px;}
+	
+	.ng-binding{ float:left;  margin-top:9px; width:74px;}
+	.ng-binding{ float:left;  width:74px;}
+	.button02{  padding:0px 20px; color:#666; height:36px; line-height:36px; background:#fff; border:1px solid #ddd; float:left;margin-top:6px;font-weight:bold; font-size:16px; margin-top:16px; margin-left:10px;}
+	.button02:hover{  border:1px solid #FF5722;color:#FF5722;  }
+
+	</style>
+</head>
+<body>
+ <!-- 相册轮换  -->
+<div class="shengqing">
+    <h1>退款审核</h1>
+    <form>
+	<ul>
+         <li style="padding-bottom:8px; font-size:14px; padding:4px 0px; height:30px;">
+             <span class="ng-binding">联 系 人：</span>
+             <input name="" type="text" placeholder="输入联系人" class="txt">
+         </li>
+         <li style="padding-bottom:8px; font-size:14px;padding:4px 0px; height:40px;">
+             <span class="ng-binding">联系电话：</span>
+             <input name="" type="text" placeholder="输入联系电话"  class="txt">
+         </li>
+         <li><textarea class="textarea" placeholder="输入地址"></textarea></li>
+         
+         <li style="padding-bottom:4px;padding-top:8px; font-size:14px;"><label> 
+             <span class="ng-binding02">审核确认：</span>
+             <label>
+                  <input type="checkbox" > 通过审核
+             </label>
+         </li>
+
+         <li><textarea class="textarea" placeholder="审核说明"></textarea></li>
+         
+         <li><input name="" type="button" value="确定审核及收货地址"  class="button"><input name="" type="button" value="取消审核"  class="button02"></li>
+	</ul>
+    </form>
+    
+</div>
+</body>
+
+
+</html> 

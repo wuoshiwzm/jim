@@ -1,0 +1,41 @@
+/**
+ * Created by Administrator on 2016/12/13 0013.
+ */
+
+//幻灯图
+jQuery(".home_news_pic").slide({mainCell:".bd ul",autoPlay:true,delayTime:300,interTime:6000});
+
+//分类导航
+jQuery("#nav").slide({  type:"menu", titCell:".mainCate", targetCell:".subCate", defaultPlay:false, returnDefault:true });
+
+//列表页导航特效
+$(function() {
+    var $t, leftX, newWidth;
+    $('.list_nav ul').append('<div class="block"></div>');
+    var $block = $('.block');
+    if($(".current").length )
+    {
+        $block.width($(".current").width()).css('left', $('.current a').position().left).data('rightLeft', $block.position().left).data('rightWidth', $block.width());
+    }
+    $('.list_nav ul li').find('a').hover(function() {
+        $t = $(this);
+        leftX = $t.position().left;
+        newWidth = $t.parent().width();
+        $block.stop().animate({
+            left: leftX,
+            width: newWidth
+        },300);
+    }, function() {
+        $block.stop().animate({
+            left: $block.data('rightLeft'),
+            width: $block.data('rightWidth')
+        },300)
+    })
+});
+
+new WOW().init();
+$(".qiang_div02 ul li:eq(0)").css("border-top","1px solid #92a9d3");
+$(".qiang_div02 ul li:eq(1)").css("border-top","1px solid #dfc444");
+$(".qiang_div02 ul li:eq(2)").css("border-top","1px solid #9bcb99");
+$(".qiang_div02 ul li:eq(3)").css("border-top","1px solid #dfc444");
+$(".qiang_div02 ul li:eq(4)").css("border-top","1px solid #92a9d3");

@@ -1,0 +1,70 @@
+<?php
+/**
+ * Created by julijia_frontend.
+ * User: 王顶峰
+ * Email: dingfeng0509@vip.qq.com
+ * Date: 2017/2/4
+ * Time: 12:16
+ * 运费模板
+ */?>
+
+
+@section('content')
+
+    <div class="page">
+        <div class="fixed-bar">
+            <div class="item-title">
+                <div class="subject">
+                    <h3>
+                        <span class="action">运费模板列表</span>
+                    </h3>
+                </div>
+            </div>
+        </div>
+        <!--搜索-->
+        <div class="search-term m-b-10">
+                <div class="simple-form-field">
+                    <input id="btn_search" value="新增模板" class="btn btn-primary m-r-5" type="button" onclick=" location.href='/admin/shipping/addtemplete'">
+                </div>
+        </div>
+
+        <div class="common-title">
+            <div class="ftitle">
+                <h3>记录列表</h3>
+                <h5>
+                    (&nbsp;共
+                    <span data-total-record="true">1</span>
+                    条记录&nbsp;)
+                </h5>
+            </div>
+            <div class="operate">
+                <a class="reload" href="javascript:reload();" data-toggle="tooltip" data-placement="auto bottom" title="" data-original-title="刷新数据">
+                    <i class="iconfont"></i>
+                </a>
+            </div>
+        </div>
+        <div class="table-responsive">
+            <table id="table_list" class="table table-hover">
+                <thead>
+                <tr>
+                    <!--排序样式sort默认，asc升序，desc降序-->
+                    <th class="w150" style="cursor: pointer;">会员名称</th>
+                    <th class="w250" style="cursor: pointer;">订单编号</th>
+                    <th class="w250" style="cursor: pointer;">下单时间</th>
+                    <th class="w250" style="cursor: pointer;">支付时间</th>
+                    <th class="w150" style="cursor: pointer;">订单来源</th>
+                    <th class="w250" style="cursor: pointer;">订单状态</th>
+                    <th class="w150" style="cursor: pointer;">金 额</th>
+                    <th class="w150 handle " style="cursor: pointer;">操 作</th>
+                </tr>
+                </thead>
+                <tbody>
+                <!--以下为循环内容-->
+                </tbody>
+            </table>
+
+          {{--  @include('admin.public.page',array('data'=>$res,'set'=>$set))--}}
+        </div>
+    </div>
+
+@stop

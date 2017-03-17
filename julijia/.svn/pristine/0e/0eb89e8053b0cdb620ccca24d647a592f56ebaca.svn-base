@@ -1,0 +1,183 @@
+<?php
+class Product
+{
+    /**
+     * @param $pid
+     * @return mixed
+     * 商品id
+     */
+    public function  GetProductEav($pid){
+
+        $dec =  DB::table('product_entity_decimal')->where('entity_id',$pid);
+        $int =  DB::table('product_entity_int')->where('entity_id',$pid);
+        $var =  DB::table('product_entity_varchar')->where('entity_id',$pid);
+        $text = DB::table('product_entity_text')->where('entity_id',$pid);
+        $list = DB::table('product_entity_timestamp')->where('entity_id',$pid)
+            ->union($var)->union($int)->union($dec)->union($text)
+            ->get();
+        return $list;
+    }
+
+
+    /**
+     * @param $setID
+     * @return array
+     * 添加产品from表单
+     */
+    static function getProductFrom( $setID )
+    {
+       // 1标准2 价格，3seo,4图片 5 可配置 6 描述
+        $arr = array();
+        $data = Source_Product_ProductEav::where('attbute_set_id',$setID)->with('productEavToEav')->get();
+        foreach ( $data as $k=>$row )
+        {
+            switch ( $row->group )
+            {
+                case "1":
+                    $arr[0]['name'] = '商品基本信息';
+                    $arr[0]['value'][] = $row;
+                    break;
+                case "2":
+                    $arr[1]['name'] = '商品价格';
+                    $arr[1]['value'][] = $row;
+                    break;
+                case "3":
+                    $arr[2]['name'] = '商品SEO优化';
+                    $arr[2]['value'][] = $row;
+                    break;
+                case "4":
+                    $arr[3]['name'] = '商品图片';
+                    $arr[3]['value'][] = $row;
+                    break;
+                case "5":
+                    $arr[5]['name'] = '商品描述';
+                    $arr[5]['value'][] = $row;
+                    break;
+            }
+        }
+        return $arr;
+    }
+
+
+    /**
+     * 添加产品
+     * @param $data
+     * @return bool
+     */
+    static function addGoods( $data )
+    {
+        $result = DB::transaction(function() use ( $data )
+        {
+            $eID = time();
+            $flat = array();
+            $flatDetail = array();
+            //添加
+            foreach ( $data as $key=>$row )
+            {
+               $res = Source_Eav_Attrbute::find( $key );
+               if( $res && $res->name != 'sku' )
+               {
+                   switch ( $res->type )
+                   {
+                       case 'varchar':
+                           $varchar['entity_id'] = $eID;
+                           $varchar['attbute_id'] = $key;
+                           $varchar['value'] = $row;
+                           Source_Product_ProductEntityVarchar::insert( $varchar );
+                           if( $res->is_system == 1 )
+                           {
+                               $flat[$res->name] = $row;
+
+                           }else
+                           {
+                               $flatDetail[$res->name] = $row;
+                           }
+                           break;
+                       case 'int':
+                           $int['entity_id'] = $eID;
+                           $int['attbute_id'] = $key;
+                           $int['value'] = $row;
+                           Source_Product_ProductEntityInt::insert( $int );
+                           if( $res->is_system == 1 )
+                           {
+                               $flat[$res->name] = $row;
+
+                           }else
+                           {
+                               $flatDetail[$res->name] = $row;
+                           }
+                           break;
+                       case 'decimal':
+                           $decimal['entity_id'] = $eID;
+                           $decimal['attbute_id'] = $key;
+                           $decimal['value'] = $row;
+                           Source_Product_ProductEntityDecimal::insert( $decimal );
+                           if( $res->is_system == 1 )
+                           {
+                               $flat[$res->name] = $row;
+
+                           }else
+                           {
+                               $flatDetail[$res->name] = $row;
+                           }
+                           break;
+                       case 'timestamp':
+                           $timestamp['entity_id'] = $eID;
+                           $timestamp['attbute_id'] = $key;
+                           $timestamp['value'] = $row;
+                           Source_Product_ProductEntityTimestamp::insert( $timestamp );
+                           if( $res->is_system == 1 )
+                           {
+                               $flat[$res->name] = $row;
+
+                           }else
+                           {
+                               $flatDetail[$res->name] = $row;
+                           }
+                           break;
+                   }
+               }
+
+               if( $res && $res->name == 'sku' )
+               {
+                   $sku = $row;
+               }
+            }
+
+            //实体表插入
+            $entity['type'] = 1;
+            $entity['entity_id'] = $eID;
+            $entity['entity_sku'] = isset($sku)?$sku:uniqid();
+            $entity['category_id'] = $data['category_id'];
+            $entity['shop_id'] = $data['shop'];
+            Source_Product_ProductEntity::insert( $entity );
+
+            //供应商表插入
+            $Supplier['entity_id'] = $eID;
+            $Supplier['supplier_id'] = $data['supplier_id'];
+            $Supplier['supplier_name'] = $data['supplier_name'];
+            Source_Product_ProductEntitySupplier::insert( $Supplier );
+
+            //库存
+            $Stock['entity_id'] = $eID;
+            $Stock['jingjie'] = $data['jingjie'];
+            $Stock['stock'] = $data['stock'];
+            Source_Product_ProductEntityStock::insert( $Stock );
+
+            $flat['entity_id'] = $flatDetail['entity_id'] = $eID;
+            //插入flat表
+            $flat['supplier'] = $data['supplier_id'];
+            $flat['shop'] = $data['shop'];
+            $flat['kc_qty'] = $data['stock'];
+            $flat['category_id'] = $data['category_id'];
+            Source_Product_ProductFlat::insert( $flat );
+            //插入flat扩展表
+            Source_Product_ProductFlatDetail::insert( $flatDetail );
+        });
+
+        if( is_null($result) )
+            return true;
+        else return false;
+    }
+
+}

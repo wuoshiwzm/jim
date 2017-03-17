@@ -1,0 +1,133 @@
+<?php
+
+/**
+ * Created by PhpStorm.
+ * User: Administrator
+ * Date: 2016/12/26 0026
+ * Time: 16:58
+ * 前台收藏加入购物车立即购买模型
+ */
+class keepAndCart
+{
+
+
+    /**
+     * @param $data
+     * @return bool|Source_User_UserInfoCollect
+     * 收藏
+     */
+    static function keep( $data, $user )
+    {
+        $where['user_id'] = $user->id;
+        $where['entity_id'] = decode($data['entity_id']);
+        $user = Source_User_UserInfoCollect::where($where)->first();
+        if( $user == false )
+        {
+            $productInfo = Source_Product_ProductFlat::where('entity_id',$where['entity_id'])->first();
+            if( $productInfo  )
+            {
+                $res = new Source_User_UserInfoCollect();
+                $res->user_id = $where['user_id'];
+                $res->entity_id = $productInfo->entity_id;
+                $res->is_show = 1;
+                $res->entity_name = $productInfo->name;
+                $res->price = $productInfo->price;
+                $res->sku = $productInfo->sku;
+                $res->shop_id = $productInfo->shop;
+                $res->save();
+                return $res;
+            }else
+            {
+                return false;
+            }
+        }else
+        {
+            return true;
+        }
+    }
+
+    /**
+     * @param $data
+     * @param $user
+     * @return bool
+     * 加入购物车
+     */
+    static function cart( $data, $user )
+    {
+
+        $where['user_id'] = $user->id;
+        $entity_id = decode($data['product_id']);
+        $arr = array();
+        if( isset($data['guige']) )
+        {
+            foreach ( $data['guige'] as $row )
+            {
+                if( $row )
+                {
+                    $str = explode('|',$row);
+                    $arr[$str[0]] = isset($str[1]) ? $str[1] : '';
+                }
+            }
+        }
+        $guige = json_encode( $arr );
+        $productInfo = Source_Product_ProductFlat::where('entity_id',$entity_id)->first();
+        if( $productInfo  )
+        {
+            $where['guige'] = $guige;
+            $where['product_id'] = $entity_id;
+            $where['user_id'] = isset(Session::get('member')->id)?Session::get('member')->id:'';
+            $res = Source_Cart_CartItem::where($where)->first();
+            if( $res )
+            {
+                //修改产品数量
+                $res->num = $res->num+(int)$data['num'];
+                //判断产品的真实库存
+                if( $productInfo->kc_qty < $res->num )
+                {
+                    return false;
+
+                }
+                $result = $res->save();
+                return $result ? true : false;
+            }else
+            {
+                //判断产品的真实库存
+                if( $productInfo->kc_qty < (int)$data['num'] )
+                {
+                    return false;
+                }
+                //新加购物车
+                $cartRow[ 'user_id' ] = $where['user_id'];
+                $cartRow[ 'product_id' ] = $entity_id;
+                $cartRow[ 'shop_id' ] = $productInfo->shop;
+                $cartRow[ 'category_id' ] = $productInfo->category_id;
+                $cartRow[ 'product_name' ] = $productInfo->name;
+                $cartRow[ 'product_status' ] = $productInfo->status;
+                $cartRow[ 'sku' ] = $productInfo->sku;
+                $cartRow[ 'price' ] = $data['newprice'];
+                //暂未确定的优惠信息
+                $cartRow[ 'discount' ] = '';
+                $cartRow[ 'weight' ] = $productInfo->weight;
+                $cartRow[ 'num' ] = (int)$data['num'];
+                $cartRow[ 'guige' ] = $guige;
+                $cartRow[ 'small_image' ] = $productInfo->small_image;
+                $cartRow[ 'source' ] = 1;
+                $cartRow[ 'remote_ip' ] = Request::ip();
+                $cartRow[ 'created_at' ] = date("Y-m-d H:i:s");
+                $result = Source_Cart_CartItem::insert( $cartRow );
+
+                //添加购物车数量
+                $cartCount = Session::get('cartCount');
+                $cartCount = $cartCount+1;
+                Session::put('cartCount', $cartCount);
+                return $result ? true : false;
+            }
+        }else
+        {
+            return false;
+        }
+    }
+
+
+
+}
