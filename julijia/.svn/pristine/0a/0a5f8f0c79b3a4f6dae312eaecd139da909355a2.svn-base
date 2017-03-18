@@ -1,0 +1,125 @@
+/* 订单详情 */
+
+
+.shopping{ width:100%; height:auto; min-height:300px; background:#f0f0f0; padding-bottom:10px;}
+.shopping_nei{ width:1140px; height:auto; min-height:460px;  margin:0 auto; clear:both; padding-top:10px;}
+
+/*订单*/
+.shopping_nei_order .table_div{ background:#fff; width:100%;padding:0px 0px 22px 0px; margin-bottom:10px; display:inline-block;}
+.shopping_nei_order .table_div02{ padding:0px 0px 0px 0px; }
+.shopping_nei_order .layui-nav{ background:#fff; color:#666;}
+.shopping_nei_order .layui-nav .layui-nav-item a{  color:#333; padding:0 2px; }
+.shopping_nei_order .layui-nav .layui-nav-item{line-height:40px;margin-right:18px;}
+.shopping_nei_order .layui-nav .layui-this:after, .layui-nav-bar{ height:3px !important;}
+.layui-nav-bar{ top: 37px!important;}
+.layui-this a{ color:#d66969!important; font-weight:bold!important;}
+.shopping_nei_order .table_div_hd{ padding:6px 0px 10px 0px;}
+.shopping_nei_order .table_div_hd_table{ padding:6px 20px 10px 20px!important;}
+.shopping_nei_order .table_div_hd table{ width:100%;}
+.shopping_nei_order .table_div_hd table th{ text-align:center; background:#f5f5f5; height:32px; color:#333; font-weight:normal; font-size:12px; }
+.shopping_nei_order .table_div_hd table td{ text-align:center; background:#fff;font-size:12px; padding:10px; line-height:1.5; border-bottom:1px solid #eee; }
+.shopping_nei_order .table_div_hd table td dl{ text-align:left;height:60px; }
+.shopping_nei_order .table_div_hd table td dl dt{ width:80px; height:80px; margin-right:10px; float:left; overflow:hidden;border:1px solid #eee;}
+.shopping_nei_order .table_div_hd table td dl dt img{ width:80px; height:80px; float:left; }
+.shopping_nei_order .table_div_hd table td dl dd{  float:left; width:400px;height:56px; overflow:hidden;}
+.shopping_nei_order .table_div_hd table td dl dd a:hover{ color:#c00  ;transition:all 0.6s ease-in;}
+.shopping_nei_order .table_div_hd table td dl dd .layui-input{ width:140px;}
+
+.shopping_nei_order .table_div_hd table td .price_y { color:#999; text-decoration: line-through;}
+.shopping_nei_order .table_div_hd table td .wl { color:#09C; }
+.shopping_nei_order .table_div_hd table td dl .order_tab_color{ height:19px!important; color:#999; overflow:hidden;}
+
+.shopping_nei_order .table_div_hd table .operation a{ color:#333; display:block; padding:3px 0 3px; background:#f5f5f5; border:1px solid #ddd; width:85px; border-radius:2px; margin:0 auto; font-size:12px; }
+.shopping_nei_order .table_div_hd table .operation a:hover{ color:#e4393c;  background:#fff; border:1px solid #e4393c;  }
+.shopping_nei_order .table_div_hd table .operation .margin_top{ margin-top:10px!important;}
+
+.shopping_nei_order .table_div_hd table .order_ding{ text-align:left; background:#f5f5f5; margin-top:10px;}
+.shopping_nei_order .table_div_hd table .order_ding span a{font-size:12px; color:#09C; }
+.shopping_nei_order .table_div_hd table .order_ding span a:hover{ text-decoration:underline; color:#09C; }
+.shopping_nei_order .table_div_hd table .order_ding span font{  color:#C60; }
+.shopping_nei_order .table_div_hd table .order_ding span{ margin-right:14px; font-size:12px; color:#999; }
+
+.shopping_nei_order .table_div_hd .order_tab{ margin-top:14px;}
+
+.shopping_nei_order .table_div_h{ background:#fff; padding:16px 0px 16px 0px; margin-bottom:14px; }
+.shopping_nei_order .table_div_h h2{ padding-left:22px; font-weight:bold; }
+.shopping_nei_order .table_div_h h2 font{ font-weight:normal;}
+
+.table_div_hd_table #paging{ float:right;margin-top:10px;}
+
+.shopping_nei_order .table_div_hd table .quan{ text-align:left;}
+.shopping_nei_order .table_div_hd table .quan a{ margin-right:10px;}
+.shopping_nei_order .table_div_hd table .checkbox{ margin:0 3px 0 0;}
+
+.price{  font-size:16px; font-weight:bold;}
+
+.padding_left{ padding:10px 10px 10px 0px !important;}
+
+.shopping_nei_order .jiesuan{ padding-top:20px; }
+.shopping_nei_order .jiesuan_left{ width:460px;float:left;}
+.shopping_nei_order .jiesuan_left dd{ width:200px; float:left;}
+.shopping_nei_order .jiesuan_left .order_btn{ margin-bottom:8px;}
+.shopping_nei_order .jiesuan_left dt{ width:100px; height:100px;float:left;}
+.shopping_nei_order .jiesuan_left dt img{ width:90px; height:90px;}
+
+.shopping_nei_order .jiesuan_center{ width:100px;float:left; height:100px;}
+.shopping_nei_order .jiesuan_center font{ font-size:15px; color:#e4393c; font-weight:bold; margin-right:6px;}
+
+.shopping_nei_order .jiesuan_right { float:right;}
+.shopping_nei_order .jiesuan_right li{ line-height:1.6;}
+.shopping_nei_order .jiesuan_right font{ width:120px; display:inline-block; float:left; text-align:right;}
+.shopping_nei_order .jiesuan_right span{ width:90px; display:inline-block; float:left}
+
+.shopping_nei_order .jiesuan_btn { float:right;}
+.shopping_nei_order .jiesuan_btn .layui-btn { float:right; margin-left:20px;}
+
+.shopping_nei_order .jiesuan_right .jiesuan_right_li{ display:inline-block; padding-bottom:8px; border-bottom:1px solid #eee; margin-bottom:10px;}
+
+.shopping_nei_order .jiesuan_right .jiesuan_right_li span{ font-weight:bold;}
+.shopping_nei_order .jiesuan_right .jiesuan_right_li span font{ font-weight:bold;}
+.shopping_nei_order .jiesuan_right .jiesuan_right_li font i{ font-weight:bold; font-size:18px;}
+
+.table_div_map{ height:30px;}
+
+/*订单信息*/
+.shopping_nei_order .order_information{ width:266px; min-height:240px; float:left; border-right:1px solid #eee; margin:18px 0px 0px 18px; }
+.shopping_nei_order .order_information li strong{ padding-bottom:10px; }
+.shopping_nei_order .order_information li{ line-height:2;}
+.shopping_nei_order .order_information li font{ width:164px; display:inline-block; float:left;}
+.shopping_nei_order .order_information li span{ width:90px; display:inline-block; float:left; color:#888;}
+
+.shopping_nei_order .order_wuliu{ width:266px; min-height:240px; float:left; border-right:1px solid #eee; margin:18px 0px 0px 18px; }
+.shopping_nei_order .order_wuliu dt img{ width:100px; height:100px; border:6px solid #f0f0f0; }
+.shopping_nei_order .order_wuliu dt {  height:120px; }
+.shopping_nei_order .order_wuliu dl { padding:36px 20px 0px 0px; text-align:center;line-height:2;}
+.shopping_nei_order .order_wuliu dl dd span{ width:90px; display:inline-block; float:left; color:#888; text-align:left; margin-left:40px;}
+.shopping_nei_order .order_wuliu dl dd font{ width:104px; display:inline-block; float:left;text-align:left;}
+
+/*订单进度*/
+.shopping_nei_order .order_process{ width:266px; min-height:240px; float:left; border-right:1px solid #eee; margin:18px 0px 0px 18px; }
+.shopping_nei_order .order_process dt { font:700 24px/34px "Microsoft YaHei"; color:#71b247; height:100px; margin-top:10px;}
+.shopping_nei_order .order_process dl { padding:36px 20px 0px 0px; text-align:center;line-height:2;}
+.shopping_nei_order .order_process dl dd a{ color:#333; display:block; padding:3px 0 3px; background:#f5f5f5; border:1px solid #ddd; width:85px; border-radius:2px; margin:0 auto; font-size:12px; }
+.shopping_nei_order .order_process dl dd a:hover{ color:#e4393c;  background:#fff; border:1px solid #e4393c; }
+.shopping_nei_order .order_process dl dd{ color:#888;}
+
+/*快递号*/
+.order-an02 {width: 770px; margin:20px 0px 20px 20px; height:224px!important;overflow-y:scroll;  padding:10px 20px 16px 20px; background:#f7f7f7;float:left;}
+.order-an02 .content dl{ margin-bottom:10px; line-height:1.8;}
+.order-an02 .content dl dt{font-size:14px; color:#666; vertical-align: top;letter-spacing: normal;word-spacing: normal;display: inline-block; font-weight:normal;float:left; margin-right:18px; float:left; }
+.order-an02 .content dl dd { color: #333; width: 570px; float:left; font-size:14px; }
+.order-an02 .content .on dt{ color:#e4393c!important; font-weight:bold; }
+.order-an02 .content .on dd{ color:#e4393c!important;font-weight:bold; }
+
+/*发货进度条*/
+.order-step{ padding:110px 0px 0px 50px; float:left;}
+
+.order-step dl{ float:left; text-align:center; }
+.order-step_bg{ float:left; width:40px; background:url(../images/bg_dd.png) no-repeat -5px -38px; height:70px; }
+.order-step_bg_on{ background:url(../images/bg_dd.png) no-repeat -5px 30px!important;}
+.order-step dl .iconfont{ font-size:32px; color:#d7d7d7;}
+.order-step .current .iconfont{ color:#73b449;}
+
+.order-step dl .bg{ font-size:14px; color:#999;}
+.order-step dl .bg02{ font-size:12px; color:#aaa; margin-top:2px;}
+.order-step .current .bg{ color:#333 !important;}

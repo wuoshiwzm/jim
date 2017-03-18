@@ -1,0 +1,78 @@
+@section('footer_js')
+    <link type="text/css" rel="stylesheet" href="{{url('js/public/jquery-easyui-1.5/themes/default/easyui.css')}}">
+    <link type="text/css" rel="stylesheet" href="{{url('js/public/jquery-easyui-1.5/thems/icon.css')}}">
+    <link type="text/css" rel="stylesheet" href="{{url('js/public/jquery-easyui-1.5/thems/tree.css')}}">
+    <script type="text/javascript" src="{{url('js/public/jquery-easyui-1.5/jquery.easyui.min.js')}}"></script>
+    <script>
+
+        $(function () {
+            $("#button").click(function () {
+                tree  = $("#selecteaav");
+                root  = tree.tree('getRoots');
+                pushdata = new Array();
+                for( var i =0 ; i<root.length;i++){
+                    clid  = root[i]['children'];
+
+                    for( var j =0 ; j<clid.length;j++){
+                        list = new Object()
+                        list.id= clid[j]['id'];
+                        list.text= clid[j]['text'];
+                        list.parent= root[i]['text'];
+                        list.setid= "{{$_GET['setid']}}";
+                        pushdata.push(list);
+                    }
+                }
+               $.post('/admin/producteav/abstoab/save',{setid:"{{$_GET['setid']}}",data:pushdata },function (index) {
+                   if(index =='0'){
+                       layer.alert('更新数据失败');
+                   }
+                   if(index =='1'){
+                       location.href ='/admin/product/abstoab?setid='+"{{$_GET['setid']}}";
+                   }
+               })
+            })
+        })
+    </script>
+@stop
+@section('content')
+    <div class="page page03">
+        <div class="fixed-bar">
+            <div class="item-title">
+                <div class="subject">
+                    <h3>
+                        <span class="action">商品属性集 - 设置属性</span>
+                    </h3>
+                    <h5>
+				<span class="action-span">
+					<a href="attbute_set.html" class="btn btn-warning click-loading">
+                        <i class="iconfont">&#xe6d4;</i>
+                           返回商品属性集列表
+                    </a>
+				</span>
+                    </h5>
+                </div>
+            </div>
+        </div>
+
+         <div class="table-content mt10 clearfix" style="width: 350px;float: left">
+             <div class="easyui-panel" style="padding:5px;width: 150px;">
+                 <ul  id="selecteaav"  class="easyui-tree" data-options="
+                 url:'/admin/product/attribute_data?setid={{$_GET['setid']}}'
+                 ,method:'get',
+                 animate:true,
+                 dnd:true">
+                 </ul>
+             </div>
+
+         </div>
+        <div class="easyui-panel" style="padding:5px;width: 150px ;float: right">
+            <ul class="easyui-tree" data-options="
+            url:'/admin/product/attribute_customerdata?setid={{$_GET['setid']}}',
+            method:'get',
+            animate:true,
+            dnd:true">
+            </ul>
+        </div>
+    </div>
+    <input type="button" value="提交"  id="button">
+@stop

@@ -1,0 +1,29 @@
+<?php
+/**
+ * Created by julijia_frontend.
+ * User: 王顶峰
+ * Email: dingfeng0509@vip.qq.com
+ * Date: 2017/2/4
+ * Time: 16:22
+ */?>
+<script>
+
+    function  addque(index) {
+      var  str = $(index).parents('.shippingcode').attr('value');
+       layer.open({
+            type: 2,
+            title:false,
+            shadeClose: true,
+            shade: 0.8,
+            area: ['650px', '550px'],
+            content: ['/admin/shipping/shippingquyu?code='+str,'no']
+        });
+    }
+
+    function  setEareQu(data,res,id) {
+        $('#ship'+id).children().find('span').text(res);
+        $('#ship'+id).children().find("input[name='xuanze[area]']").val(data);
+        $('#ship'+id).children().find("input[name='xuanze[code]']").val(id);
+        layer.closeAll();
+    }
+</script>

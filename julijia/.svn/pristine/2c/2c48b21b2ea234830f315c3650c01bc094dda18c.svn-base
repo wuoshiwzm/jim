@@ -1,0 +1,51 @@
+
+var wait=60;
+function time(o) {
+    if (wait == 0) {
+        o.removeAttribute("disabled");
+        o.value="点击获取验证码";
+        wait = 60;
+    } else {
+        o.setAttribute("disabled", true);
+        o.value="重新发送(" + wait + ")";
+        wait--;
+        setTimeout(function() {
+                time(o)
+            },
+            1000)
+    }
+}
+
+document.getElementById("reyzm").onclick=function(){
+
+    var token = $("input[name='_token']").val();
+    phone = $("#phone").val();
+    $.post('/member/send_resms' , {_token: token,phone:phone}, function (msg) {
+        layer.msg(msg);
+    }, "text");
+    time(this);
+}
+
+
+
+
+
+// function sendSms() {
+//     time(this);
+//     var token = $("input[name='_token']").val();
+//     phone = $("#phone").val();
+//         $.post('/member/send_sms' , {_token: token,phone:phone}, function (msg) {
+//                 layer.msg(msg);
+//         }, "text");
+// }
+
+
+
+// function sendReSms() {
+//     var token = $("input[name='_token']").val();
+//     phone = $("#phone").val();
+//    $.post('/member/send_resms' , {_token: token,phone:phone}, function (msg) {
+//         layer.msg(msg);
+//     }, "text");
+//
+// }

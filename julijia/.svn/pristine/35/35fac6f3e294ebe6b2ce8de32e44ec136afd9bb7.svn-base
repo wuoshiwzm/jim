@@ -1,0 +1,44 @@
+<?php
+
+class ShippingController extends CommonController
+{
+
+	public function __construct()
+	{
+		parent::__construct();
+	}
+
+	/**
+	 * 产品首页
+	 * @return Response
+	 */
+	public function getTemplete()
+	{
+		$this->view('admin.shipping.templete');
+
+	}
+	public function  getAddtemplete(){
+		$shiplist = Source_Shipping_Code::where('status','1')->get();
+		$this->view('admin.shipping.add',compact('shiplist'));
+	}
+
+
+	public function  getShippingquyu(){
+		$plist = Source_Area_Province::remember('provicelist','5000')->select('provinceID','province')->get();
+        $code =  Input::get('code');
+		if(isset($code)){
+			return view::make('admin.shipping.templete.quyu',compact('plist','code'));
+		}else{
+			return view::make('admin.shipping.templete.freequyu',compact('plist','code'));
+		}
+
+	}
+
+	public function  postSavetemplet(){
+		echo "<pre>";
+		var_dump(Input::get());
+		echo "</pre>";
+		dd();
+	}
+
+}

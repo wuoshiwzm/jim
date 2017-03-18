@@ -1,0 +1,208 @@
+<?php
+
+/**
+ * Created by PhpStorm.
+ * User: Administrator
+ * Date: 2016/12/30 0030
+ * Time: 17:08
+ */
+class AuctionBuyController extends \BaseController
+{
+    protected static $user;
+    public function __construct()
+    {
+        $ajax = Request::ajax();
+        $user = Session::get('member');
+        if( $ajax )
+        {
+            if( $user == false )
+            {
+                die('no');
+            }
+        }else
+        {
+            if( $user == false )
+            {
+                header( "Location:/member/login");
+                die();
+            }
+        }
+        self::$user = $user;
+        parent::__construct();
+    }
+
+
+
+    /**
+     *  -++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+     *
+     *    立即购买订单
+     *
+     *  -++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+     */
+
+
+
+    /**
+     * @return mixed
+     * 立即购买提交post转换get
+     */
+    public function purchase()
+    {
+        //判断token
+        $token = Session::token();
+        if( $token != Input::get('_token') )
+        {
+            return Redirect::back();
+        }
+        $data = Input::all();
+        $pid = $data['product_id'] ? $data['product_id'] :'';
+        $g = AuctionBuy::purchase( $data );
+        $num = encode($data['num']);
+        return Redirect::to( '/auction/buy_now.html?pid='.$pid.'&num='.$num.'&g='.$g );
+    }
+    /**
+     * @return mixed
+     * 立即购买
+     */
+    public function auctionBuyNow()
+    {
+        $data = Input::all();
+        $goodsData = AuctionBuy::buyNow( $data );
+        //产品信息
+        $goods = $goodsData['goods'];
+        //合计信息
+        $totaled = $goodsData['totaled '];
+        $uid = self::$user->id;
+        $address = Source_User_UserInfoAdd::where('user_id',$uid)->get();
+        $this->view('frontend.order.buynoworder',compact('address','goods','totaled'));
+    }
+
+    /**
+     *  立即下订单
+     */
+    public function nowOrderSave()
+    {
+        $data = Input::all();
+        $valid = AuctionBuy::validatorOrder( $data );
+        if( $valid  != true )
+        {
+            return Redirect::back();
+        }
+        $res = AuctionBuy::orderSave( $data );
+        if( $res == false )
+        {
+            return Redirect::back();
+        }
+    }
+
+
+    /**
+     *  -++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+     *
+     *    订单客户信息数据
+     *
+     *  -++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+     */
+
+
+    /**
+     * @return string
+     * 修改默认地址
+     */
+    public function defaultAddress()
+    {
+        $id = Input::get('id');
+        $token = Session::token();
+        if( $token != Input::get('token') )
+        {
+            return 'fail';
+        }
+        $uid = self::$user->id;
+        Source_User_UserInfoAdd::where( 'user_id', $uid )->update( ['status'=>0] );
+        $res = Source_User_UserInfoAdd::where( 'id', decode( $id ) )->update( ['status'=>1] );
+        if( $res )
+        {
+            $address = Source_User_UserInfoAdd::where('user_id',$uid)->get();
+            return View::make('frontend.order.addressload',compact('address'));
+        }
+    }
+
+    /**
+     * @return string
+     * 前台添加地址
+     */
+    public function saveAddress()
+    {
+        $data = Input::all();
+        if( $data )
+        {
+            $token =  Session::token();
+            if( $token != Input::get('_token') )
+            {
+                return '<script>parent.location.reload();var index = parent.layer.getFrameIndex(window.name);parent.layer.close(index);</script>';
+            }
+            $res = AuctionBuy::addAddress( $data, self::$user);
+            if( $res )
+            {
+                return '<script>parent.location.reload();var index = parent.layer.getFrameIndex(window.name);parent.layer.close(index);</script>';
+
+            }else
+            {
+                return '<script>parent.layer.msg(\'添加失败。。。\',{icon: 2} ); parent.location.reload();var index = parent.layer.getFrameIndex(window.name);parent.layer.close(index);</script>';
+            }
+        }else
+        {
+            $province = Source_Area_Province::select('id', 'province', 'provinceID')->get();
+            return View::make('frontend.order.saveaddress',compact('province'));
+        }
+    }
+
+    /**
+     * @return string
+     * 前台修改用户信息
+     */
+    public function editAddress()
+    {
+        $id = Input::get('id');
+        if( $id )
+        {
+            $province = Source_Area_Province::select('id', 'province', 'provinceID')->get();
+            $data =  Source_User_UserInfoAdd::find( decode( $id ) );
+            return View::make('frontend.order.saveaddress',compact('province','data'));
+
+        }else
+        {
+            $token =  Session::token();
+            if( $token != Input::get('_token') )
+            {
+                return '<script>parent.location.reload();var index = parent.layer.getFrameIndex(window.name);parent.layer.close(index);</script>';
+            }
+            $data = Input::all();
+            $res = AuctionBuy::editAddress( $data, self::$user);
+            if( $res )
+            {
+                return '<script>parent.location.reload();var index = parent.layer.getFrameIndex(window.name);parent.layer.close(index);</script>';
+
+            }else
+            {
+                return '<script>parent.layer.msg(\'修改失败。。。\',{icon: 2} ); parent.location.reload();var index = parent.layer.getFrameIndex(window.name);parent.layer.close(index);</script>';
+            }
+        }
+    }
+
+
+    /**
+     * -++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+     *
+     *  购物车订单确认
+     *
+     * -++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+     */
+
+    public function cartOrder()
+    {
+        
+    }
+
+}

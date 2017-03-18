@@ -1,0 +1,67 @@
+<?php
+
+/**
+ * Author:Tonychang
+ * Date: 2016-11-06
+ * Time: 21:24
+ * DES:评论控制器
+ */
+class CommentController extends CommonController
+{
+    /**
+     * 评论首页-审核通过的评价
+     */
+    public function getIndex()
+    {
+        //已审核的评论
+        $status = 1;
+        //订单编号
+        $order_sn = trim(Input::get("order_sn"));
+        //评论星级
+        $rank = (int)Input::get("rank");
+        //分页
+        $setPage = (int)Input::get("setpage",self::$adminPage);
+        $data = Review::getReview($order_sn,$status,$rank,$setPage);
+       
+        $set["order_sn"] = $order_sn;
+        $set['setpage'] = $setPage;
+        $set["rank"] = $rank;
+        $this->view("admin.order.comment",compact("comment","set","data"));
+    }
+    /**
+     * 待审核的评论
+     */
+    public function getChecking()
+    {
+        //待审核的评论
+        $status = 0;
+        //订单编号
+        $order_sn = trim(Input::get("order_sn"));
+        //评论星级
+        $rank = (int)Input::get("rank");
+        //分页
+        $setPage = (int)Input::get("setpage",self::$adminPage);
+        $data = Review::getReview($order_sn,$status,$rank,$setPage);
+        $set["order_sn"] = $order_sn;
+        $set['setpage'] = $setPage;
+        $set["rank"] = $rank;
+
+        $this->view("admin.order.checking",compact("comment","set","data"));
+    }
+
+    /**
+     * 查看评论详情
+     */
+    public function getDetail()
+    {
+        //todo缺少页面
+    }
+
+    /**
+     * 审核操作
+     */
+    public function postCheck()
+    {
+
+    }
+}

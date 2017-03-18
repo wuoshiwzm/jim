@@ -1,0 +1,98 @@
+<?php $httpUrl = Request::getRequestUri(); ?>
+<div class="g-header g-header02">
+    <div class="m-nav">
+        <div class="width_center">
+            <!--切换城市-->
+            <div class="m-city">
+                <a href="{{url()}}" >商城首页</a>
+            </div>
+            <!--/切换城市-->
+            <div class="login">
+                <div class="login_div">
+                    <span id="ge_login"><a href="" rel="nofollow">您还未登录</a></span>
+                    <span><a href="shop_login_d.html" rel="nofollow">登录</a></span>
+                    <span><a href="shop_login_zc.html" rel="nofollow">注册</a></span>
+                </div>
+            </div>
+            <div class="clear"></div>
+        </div>
+    </div>
+    <div class="top-content">
+        <div class="m-logo">
+            <a href="{{url()}}" ><img src="{{url('images/frontend/logo03.png')}}" /></a>
+            <h1>养老商城</h1>
+        </div>
+        <!-- 搜索 -->
+        <div class="list_nav_so">
+            <div class="er_so">
+                <form class="m-form">
+                    <input type="text" placeholder="找宝贝" class="input" />
+                    <input type="button" class="u-btn" value="搜索" />
+                    <div class="clear"></div>
+                </form>
+                <span><a href="##" class="color_red">制氧机</a><a href="##">代步车</a><a href="##" class="color_red">电动轮椅</a><a href="##">血糖仪</a><a href="##">血压计</a><a href="##">木制柺杖</a><a href="##">足浴盆</a></span>
+            </div>
+            <div class="er_che">
+                <div class="er_che_di">
+                    <font>0</font><a href="shop_che.html">我的购物车</a>
+                </div>
+            </div>
+        </div>
+        <!-- 主导航 -->
+        <div class="list_nav">
+            <ul>
+                <li @if( $httpUrl == '/' ) class="current" @endif ><a href="{{url()}}">首 页</a></li>
+                @foreach($publicCategory as $ckey=>$crow )
+                    @if( isset($crow['one']) )
+                    <li @if( strstr($httpUrl,$crow['one']->url) ) class="current" @endif><a href="{{url($crow['one']->url.'.html')}}">{{$crow['one']->name}}</a></li>
+                    @endif
+                @endforeach
+            </ul>
+        </div>
+        <div class="@yield('categoryCss')">
+        <div class="banner_left">
+            <div class="banner_left_h2">
+            <h2>商品分类</h2>
+            <ul id="nav">
+                @foreach($publicCategory as $ckey=>$crow )
+                <li class="mainCate">
+                    @if( isset($crow['one']) )
+                        <h3><font><img  src="{{getImagesUrl('category',$crow['one']->id,$crow['one']->icon)}}"></font><a href="{{url($crow['one']->url.'.html')}}">{{$crow['one']->name}}</a></h3>
+                    @endif
+                    @if( isset($crow['two']) )
+                        <p>
+                        @foreach( $crow['two'] as $twoKey=>$two )
+                            @if( $twoKey > 1 )
+                            <a href="{{url($two->url.'.html')}}">{{$two->name}}</a>
+                            @endif
+                        @endforeach
+                        </p>
+                    @endif
+                    <!--隐藏的菜单开始-->
+                    <div class="subCate" style="display: none;">
+                        @if( isset($crow['two']) )
+                        @foreach( $crow['two'] as $two )
+                            <h4>{{$two->name}}</h4>
+                            <ul>
+                                <li>
+                                @if( isset($crow['three']) )
+                                    @foreach( $crow['three'] as $three )
+                                        @if( $three->parent_id == $two->id)
+                                         <a href="{{url($three->url.'.html')}}">{{$three->name}}</a>
+                                        @endif
+                                    @endforeach
+                                @endif
+                                </li>
+                            </ul>
+                        @endforeach
+                        @endif
+                    </div>
+                    <!--隐藏的菜单结束-->
+                </li>
+                @endforeach
+            </ul>
+            </div>
+        </div>
+        </div>
+    </div>
+</div>

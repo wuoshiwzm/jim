@@ -1,0 +1,72 @@
+<?php
+/**
+ * Created by julijia_frontend.
+ * User: 王顶峰
+ * Email: dingfeng0509@vip.qq.com
+ * Date: 2016/12/23
+ * Time: 12:08
+ */
+class WechatController extends \BaseController
+{
+
+    /**
+     *  ajax 替换微信图片
+     */
+    public function index()
+    {
+        $order_sn = decode(Input::get('order_sn'));
+        $orderInfo = Source_Order_OrderInfo::where('order_sn',$order_sn)->select('order_sn','pay_amount','ship_name','ship_addr','ship_phone')->first();
+        $start = date("YmdHis");
+        $expire = date("YmdHis",time() + 60);
+        $notify = new NativePay();
+        $input = new WxPayUnifiedOrder();
+        $input->SetBody( '居利家商城订单' );
+        $input->SetAttach("居利家微信支付");
+        $input->SetOut_trade_no(WxPayConfig::MCHID.date("YmdHis"));
+        $input->SetTotal_fee( $orderInfo->pay_amount*100 );
+        $input->SetTime_start( $start );
+        $input->SetTime_expire( $expire );
+        $input->SetNotify_url("http://paysdk.weixin.qq.com/example/notify.php");
+        $input->SetTrade_type("NATIVE");
+        $input->SetProduct_id( $order_sn );//产品id为订单号
+        $result = $notify->GetPayUrl($input);
+        $url = $result["code_url"];
+        $methodType = Request::method();
+        if( $methodType == 'GET' )
+        {
+            $this->view('frontend.order.weixin',compact('url','orderInfo'));
+        }else
+        {
+            return '<img src="http://paysdk.weixin.qq.com/example/qrcode.php?data='.urlencode($url).'">';
+        }
+    }
+
+
+        public function notify(Request $request){
+            $streamData = isset($GLOBALS['HTTP_RAW_POST_DATA'])? $GLOBALS['HTTP_RAW_POST_DATA'] : ''; //拿到微信回调回来的信息判断支付成功没
+
+            if(empty($streamData)){
+                $streamData = file_get_contents('php://input');
+            }
+            if($streamData!=''){
+                $streamData=xmlToArray($streamData);
+                $Data=json_encode($streamData);
+                Log::debug('Alipay notify post data verification fail.', [ //写入服务器文档，你不加这个也行
+                    'data' => $Data.'xxxxxx'
+                ]);
+                if($streamData['return_code'] == 'SUCCESS' && $streamData['result_code'] == 'SUCCESS'){ //支付成功
+                    try { //开始事务
+                        //支付成功，你要干些什么都写这里，例如增加余额的操作什么的
+
+                    } catch (Exception $e) {
+                        //如果try里面的东西出现问题的话，进行数据库回滚
+                        throw $e;
+                    }
+
+                }
+            }else{
+                $ret = false; //支付失败
+            }
+        }
+
+}

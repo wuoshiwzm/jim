@@ -1,0 +1,33 @@
+<?php
+/**
+ * Created by PhpStorm.
+ * User: ������
+ * Date: 2016/5/18 0018
+ * Time: 11:36
+ */
+
+
+//�����¼�
+Event::listen('event_name', function($log)
+{});
+
+Event::listen('user.test', function()
+{
+    dd('cool!');
+});
+
+
+Event::listen('option.order', function($input)
+{
+    $orderinfo =   Source_Order_OrderInfo::find($input['orderid']);
+    $info  = new  Source_Order_OrderAction();
+    $info->order_id =$input['orderid'];
+    $info->order_status =$orderinfo->status;
+    $info->pay_status =$orderinfo->pay_status;
+    $info->option_id =$input['user']->id;
+    $info->option_name =$input['user']->name;
+    $info->remark =$input['content'];
+    $info->created_at =TimeTools::getFullTime();
+    $info->save();
+
+});

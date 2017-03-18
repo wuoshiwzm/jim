@@ -1,0 +1,269 @@
+<?php
+
+//用户退款管理
+class RefundMemberController extends CommonController
+{
+    private $user_id;
+    protected $layout = 'layouts.member.index';
+
+
+    protected function setupLayout()
+    {
+        if (!is_null($this->layout)) {
+            $this->layout = View::make($this->layout);
+        }
+    }
+
+    public function view($path, $data = [])
+    {
+        $this->layout->content = View::make($path, $data);
+    }
+
+    function __construct()
+    {
+        if (!Session::has('member')) {
+            return Redirect::to('member/login');
+        }
+        $userInfo = Session::get('member');
+        View::share('userinfo',$userInfo);
+
+        $codelist = Source_Shipping_Code::get();
+        View::share('shipplist',$codelist);
+        $this->user_id = $userInfo->id;
+    }
+
+    /**
+     * 我的退款
+     *
+     * @return Response
+     */
+    public function index()
+    {
+        //分页
+        $setPage = Input::get('setpage') ? Input::get('setpage') : self::$memberPage;
+        $data = Source_Order_OrderBack::where('user_id', $this->user_id);
+        $set['setpage'] = $setPage;
+
+
+        //搜索条件
+        if (!empty(Input::get('orderId'))) {
+            $orderId = Input::get('orderId');
+            $data = $data->where('order_sn', 'like', '%' . $orderId . '%');
+
+        }
+        if (!empty(Input::get('refundId'))) {
+            $refundId = Input::get('refundId');
+            $data = $data->where('back_sn', 'like', '%' . $refundId . '%');
+        }
+
+
+        $data = $data->paginate($setPage);
+        return $this->view('member.refund', compact('data', 'set'));
+
+    }
+
+
+    /**
+     * @param $orderId 订单id
+     * @param $orderItemId 订单商品id
+     * 提交退款
+     * url : '/refund/apply_refund/{order_id}/{order_item_id}'
+     */
+    public function applyRefund($orderId, $orderItemId)
+    {
+
+
+        $orderId = decode($orderId);
+        $orderItemId = decode($orderItemId);
+
+        $orderInfo = Order::getOrderById($orderId);
+        $orderItem = Order::getOrderItemById($orderItemId);
+
+        //退款原因
+        $orderBackReasons = OrderBack::getReason();
+
+        if ($orderItem->shipping_status == 3 || $orderItem->shipping_status == 2) {
+            //退货退款
+            return $this->view('member.order.apply_refund_money_goods', compact('orderItem', 'orderInfo', 'orderBackReasons'));
+        } else {
+            //退款
+            return $this->view('member.order.apply_refund_money', compact('orderItem', 'orderInfo', 'orderBackReasons'));
+        }
+
+    }
+
+
+    /**
+     * 存储退款信息  更新表 order_back 和 order_back_action
+     */
+    public function createRefund()
+    {
+
+        if (!Input::all())
+            return Redirect::back();
+
+        $input = trimValue(Input::all());
+        $input = array_except($input, ['_token', 'method']);
+
+        $orderId = Input::get('orderId');
+        $orderItemId = Input::get('orderItemId');
+
+        //判断是否已经提交过了退款
+        if (OrderBack::CheckItem($orderId, $orderItemId)) {
+            die('已经提交过此商品的提款');
+        }
+
+        $orderInfo = Order::getOrderById($orderId);
+        $orderItem = Order::getOrderItemById($orderItemId);
+
+        $product = Product::getProductById($orderItem->product_id);
+
+        $refund['back_sn'] = 'order_back' . getMicroTimestamp();
+        //退款的订单id
+        $refund['order_id'] = $orderId;
+        $refund['order_sn'] = $orderInfo->order_sn;
+        //退赛款的商品id
+        $refund['order_item_id'] = $orderItemId;
+        //1:只退款 2:退款退货
+        $refund['type'] = Input::get('type');
+        //method 退款方式 原路返回,退回余额 默认退回支付
+        $refund['method'] = '退款方式 原路返回';
+
+        $refund['p_entity_id'] = $orderItem->product_id;
+        $refund['p_sku'] = $orderItem->sku;
+        $refund['p_suppliers_id'] = $product->supplier;
+        $refund['p_mendian_id'] = 1;
+        $refund['is_delivery'] = Input::get('is_delivery');
+
+        $refund['user_id'] = $this->user_id;
+        $refund['price'] = Input::get('price');
+
+        //客户收货id 从order_item 处获取 订单id  order_item
+        $refund['shipping_id'] = $orderItem->shipping_id;
+        $refund['shipping_name'] = $orderItem->shipping_name;
+        $refund['shipping_status'] = $orderItem->shipping_status;
+        // 状态： 1 未确认 2 确认 3 未发货 4 运输中 5 已收货 6 退款
+        $refund['status'] = 1;
+        $refund['reason'] = Input::get('reason');
+        $refund['content'] = Input::get('desc');
+        // 上传多张图片并生成json
+        $imgArr = explode(';', Input::get('refund'));
+
+
+        $validator = OrderBack::validatorRefund($input);
+        $file = Input::get('refund');
+
+        if ($validator === true) {
+            $res = OrderBack::createRefund($refund, $file);
+            foreach ($imgArr as $k => &$i) {
+                if(empty($i)){
+                    unset($imgArr[$k]);
+                    continue;
+                }
+                $i = Config::get('tools.imagePath').'/refund/' . $res->id . '/' . $i;
+            }
+            $imgJson = json_encode($imgArr);
+            Source_Order_OrderBack::where('id',$res->id)->update(array('image'=>$imgJson));
+
+            if ($res) {
+                //添加成功
+                $backInfo['order_back_id'] = $res->id;
+                $backInfo['option_type'] = 1;
+                $backInfo['option_id'] = Session::get('member')->id;
+                $backInfo['option_name'] = Session::get('member')->name;
+                $backInfo['status'] = '提交退款/退货';
+                $backInfo['remark'] = '用户' . $backInfo['option_name'] . '新提交退款/退货，退货单号：' . $res->back_sn;
+                Event::fire('item.refund', array($backInfo));
+                return Redirect::to('member/refund')->with('msg', '添加成功');
+
+            } else {
+                //添加失败
+                return back()->with('msg', '添加失败');
+            }
+
+        } else {
+            return back()->withErrors($validator);
+        }
+    }
+
+    /**
+     * 退款通过审核 如果是退货退款 提交退货物流信息
+     */
+    public function process($id = null)
+    {
+        $refundId = decode(trim($id));
+        $refund = Source_Order_OrderBack::find($refundId);
+        $orderItem = Source_Order_OrderItem::find($refund->order_item_id);
+        $orderInfo = Source_Order_OrderInfo::find($refund->order_id);
+
+        if (!$orderItem) {
+            die('无此投诉对应的商品！');
+        }
+        return $this->view('member.refund_process', compact('orderItem', 'orderInfo', 'refund'));
+    }
+
+    /**
+     * @param $id
+     * 退款单发货
+     */
+    public function  sendhuo($id){
+        $refundId = decode(trim($id));
+        $info =  Source_Order_OrderBack::find($refundId);
+        if(!empty($info->invoice_no) || !empty($info->invoice_name)){
+            return Redirect::to('member/refund')->with('msg', '已经发货的单子不能重复发货');
+        }
+        return $this->view('member.order.refund.sendhuo', compact('info'));
+        
+    }
+
+    /**
+     * @return mixed
+     * 保存数据
+     */
+    public function  saveshop()
+    {
+        $input =  Input::get();
+        if($input['_token'] ==csrf_token()){
+            $refund  = Source_Order_OrderBack::find(decode($input['id']));
+
+
+            $refund->invoice_name =$input['invoice_name'];
+            $refund->invoice_no =$input['invoice_no'];
+            $refund->status =4;
+            $res =  $refund->save();
+//            dd($res);
+            if($res){
+                $backInfo['order_back_id'] = $refund->id;
+                $backInfo['option_type'] = 1;
+                $backInfo['option_id'] = Session::get('member')->id;
+                $backInfo['option_name'] = Session::get('member')->name;
+                $backInfo['status'] = '退货退款，客户已经发货';
+                $backInfo['remark'] = '用户' . $backInfo['option_name'] . '已经发货，退货单号：' . $input['invoice_no'];
+                Event::fire('item.refund', array($backInfo));
+                return Redirect::to('member/refund')->with('msg', '发货成功');
+            }
+        }
+        return Redirect::to('member/refund')->with('msg', '保存数据失败');
+    }
+
+    /**
+     * @param $id
+     */
+    public function shipping($id)
+    {
+       $info =  Source_Order_OrderBack::find(decode($id));
+       $invoice_no =  $info->invoice_no;
+       $invoice_name  =  $info->invoice_name;
+        if(isset($invoice_no)&&!empty($invoice_no)){
+            //调用物流接口
+            $val = new ShippingApi();
+            $data['shiptype'] =$invoice_name;
+            $data['shipno'] = $invoice_no;
+            $logistics_info = json_decode($val->getOrderTracesByJson($data));
+            $this->view("admin.order.ems",compact("logistics_info","item"));
+        }
+
+    }
+
+
+}

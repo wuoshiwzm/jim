@@ -1,0 +1,42 @@
+<?php
+/**
+ * Created by julijia_frontend.
+ * User: 王顶峰
+ * Email: dingfeng0509@vip.qq.com
+ * Date: 2017/2/4
+ * Time: 16:26
+ */?>
+
+<div style="border:1px solid #000;width: 650px">
+    <table class="table table-hover" style="border: 1px solid #eee;">
+        <thead>
+        <tr>
+            <th width="30%">运送到</th>
+            <th>选择快递方式</th>
+            <th width="35%">设置包邮条件</th>
+            <th>操作</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+            <td>未添加地区  <a>编辑</a></td>
+            <td>
+                <select name="fangshi">
+                    <option value="">请选择</option>
+                    <option value="EMS">EMS</option>
+                </select>
+            </td>
+            <td>
+                <select name="fangshi" style="margin-bottom: 5px">
+                    <option value="">请选择重量</option>
+                    <option value="weight_no">重量</option>
+                    <option value="bulk_no">体积</option>
+                    <option value="price">价格</option>
+                </select><br>
+                在<input type="text" class="w60" value="">内包邮
+            </td>
+            <td><a>添加</a>&nbsp;&nbsp;<a>删除</a></td>
+        </tr>
+        </tbody>
+    </table>
+</div>
