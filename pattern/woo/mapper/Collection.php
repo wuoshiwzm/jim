@@ -3,9 +3,12 @@ namespace woo\mapper;
 
 require_once("woo/domain/Collections.php");
 require_once("woo/mapper/Mapper.php");
+
 //迭代器
 abstract class Collection implements \Iterator
 {
+    protected $dofact;
+
     protected $mapper;
     protected $total = 0;
     protected $raw = array();
@@ -23,7 +26,7 @@ abstract class Collection implements \Iterator
         $this->mapper = $mapper;
     }
 
-    function add   (\woo\domain\DomainObject $object)
+    function add(\woo\domain\DomainObject $object)
     {
         $class = $this->targetClass();
         if (!($object instanceof $class)) {

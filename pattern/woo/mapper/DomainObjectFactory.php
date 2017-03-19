@@ -17,5 +17,5 @@ class VenueObjectFactory extends DomainObjectFactory{
         $obj->setName($array['name']);
         return $obj;
     }
-    
+
 }
