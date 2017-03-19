@@ -43,6 +43,7 @@ abstract class Collection implements \Iterator
 
     private function getRow($num)
     {
+        //延迟加载：
         $this->notifyAccess();
         if ($num >= $this->total || $num < 0) {
             return null;

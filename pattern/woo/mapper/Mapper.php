@@ -51,9 +51,11 @@ abstract class Mapper
         if($old){
             return $old;
         }
-
         //数据库操作
         $obj = $this->doCreateObject($array);
+        $this->addToMap($obj);
+        //objectwatcher :: clean()
+        $obj->markClean();
         return $obj;
     }
 

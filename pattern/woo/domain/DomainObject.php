@@ -60,5 +60,8 @@ abstract class DomainObject {
     function __clone() {
         $this->id = -1;
     }
+
+
+
 }
 ?>

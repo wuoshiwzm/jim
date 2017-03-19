@@ -30,6 +30,7 @@ class SpaceMapper extends Mapper
         return new SpaceCollection( $raw, $this );
     }
 
+    //$array['id'] $array['name'] $array['venue']:venue-Object-id
     protected function doCreateObject( array $array ) {
         $obj = new \woo\domain\Space( $array['id'] );
         $obj->setname( $array['name'] );
