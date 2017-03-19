@@ -3,6 +3,7 @@ namespace woo\mapper;
 
 
 use woo\domain\DomainObject;
+use woo\domain\ObjectWatcher;
 
 abstract class Mapper
 {
@@ -23,6 +24,13 @@ abstract class Mapper
 
     function find($id)
     {
+        //objectwatcher 调用
+        $old = $this->getFromMap($id);
+        if($old){
+            return $old;
+        }
+
+        //数据库操作
         $this->selectStmt()->execute(array($id));
         $array = $this->selectstmt()->fetch();
 
@@ -39,13 +47,20 @@ abstract class Mapper
 
     function createObject($array)
     {
+        $old = $this->getFromMap($array['id']);
+        if($old){
+            return $old;
+        }
+
+        //数据库操作
         $obj = $this->doCreateObject($array);
         return $obj;
     }
 
     function insert(\woo\domain\DomainObject $obj)
     {
-        $this->doInsert($obj);
+        $this->addToMap($obj);
+//        $this->doInsert($obj);
     }
 
     abstract function update(DomainObject $object);
@@ -53,6 +68,15 @@ abstract class Mapper
     protected abstract function doCreateObject(array $array);
     protected abstract function doInsert(DomainObject $object);
     protected abstract function selectStmt();
+
+    private function getFromMap($id){
+        return ObjectWatcher::exists($this->targetClass(),$id);
+    }
+
+    private function addToMap(DomainObject $obj){
+        return ObjectWatcher::add($obj);
+    }
+
 
 
 }

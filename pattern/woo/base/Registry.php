@@ -89,12 +89,12 @@ class ApplicationRegistry extends Registry {
         if ( file_exists( $path ) ) {
             clearstatcache();
             $mtime=filemtime( $path );
-//            var_dump($mtimes);
+
             if ( ! isset($this->mtimes[$key] ) ) { $this->mtimes[$key]=0; }
             if ( $mtime > $this->mtimes[$key] ) {
                 $data = file_get_contents( $path );
                 $this->mtimes[$key]=$mtime;
-//                die($data);
+
                 return ($this->values[$key]=unserialize( $data ));
             }
         }
