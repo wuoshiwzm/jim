@@ -23,16 +23,10 @@
       <file leaf-file-name="Mapper.php" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/woo/mapper/Mapper.php">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="553">
-              <caret line="80" column="0" selection-start-line="80" selection-start-column="0" selection-end-line="80" selection-end-column="0" />
+            <state relative-caret-position="1380">
+              <caret line="86" column="0" lean-forward="false" selection-start-line="86" selection-start-column="0" selection-end-line="86" selection-end-column="0" />
               <folding>
-                <element signature="e#146#516#0#PHP" expanded="false" />
-                <element signature="e#281#375#0#PHP" expanded="false" />
-                <element signature="e#522#1040#0#PHP" expanded="false" />
-                <element signature="e#833#892#0#PHP" expanded="false" />
-                <element signature="e#901#963#0#PHP" expanded="false" />
-                <element signature="e#1046#1364#0#PHP" expanded="false" />
-                <element signature="e#1370#1492#0#PHP" expanded="false" />
+                <marker date="1489972738516" expanded="true" signature="1926:1930" ph="{...}" />
               </folding>
             </state>
           </provider>
@@ -42,24 +36,16 @@
         <entry file="file://$PROJECT_DIR$/woo/mapper/SpaceMapper.php">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="212">
-              <caret line="28" column="42" selection-start-line="28" selection-start-column="42" selection-end-line="28" selection-end-column="42" />
+              <caret line="28" column="42" lean-forward="false" selection-start-line="28" selection-start-column="42" selection-end-line="28" selection-end-column="42" />
               <folding>
                 <element signature="e#354#987#0#PHP" expanded="false" />
                 <element signature="e#550#642#0#PHP" expanded="false" />
                 <element signature="e#672#772#0#PHP" expanded="false" />
-                <element signature="e#1165#1640#0#PHP" expanded="false" />
-                <element signature="e#1646#1723#0#PHP" expanded="false" />
-                <element signature="e#1729#2137#0#PHP" expanded="false" />
-                <element signature="e#1841#1946#0#PHP" expanded="false" />
-                <element signature="e#2147#2337#0#PHP" expanded="false" />
-                <element signature="e#2343#2406#0#PHP" expanded="false" />
-                <element signature="e#2412#2481#0#PHP" expanded="false" />
-                <element signature="e#2500#2690#0#PHP" expanded="false" />
-                <marker date="1489934534661" expanded="true" signature="488:518" ph="SELECT * FRO... space" />
-                <marker date="1489934534661" expanded="false" signature="600:640" ph="UPDATE space... " />
-                <marker date="1489934534661" expanded="false" signature="722:770" ph="INSERT into space... " />
-                <marker date="1489934534661" expanded="true" signature="839:858" ph="SELECT * FRO... space" />
-                <marker date="1489934534661" expanded="true" signature="945:978" ph="SELECT * FRO... space" />
+                <marker date="1489972738516" expanded="true" signature="488:518" ph="SELECT * FRO... space" />
+                <marker date="1489972738516" expanded="true" signature="600:640" ph="UPDATE space... " />
+                <marker date="1489972738516" expanded="true" signature="722:770" ph="INSERT into space... " />
+                <marker date="1489972738516" expanded="true" signature="839:858" ph="SELECT * FRO... space" />
+                <marker date="1489972738516" expanded="true" signature="945:978" ph="SELECT * FRO... space" />
               </folding>
             </state>
           </provider>
@@ -119,10 +105,10 @@
         <option value="$PROJECT_DIR$/woo/domain/DomainObject.php" />
         <option value="$PROJECT_DIR$/woo/domain/ObjectWatcher.php" />
         <option value="$PROJECT_DIR$/woo/mapper/Mapper.php" />
-        <option value="$PROJECT_DIR$/woo/mapper/SpaceMapper.php" />
         <option value="$PROJECT_DIR$/woo/mapper/DeferredEventCollection.php" />
         <option value="$PROJECT_DIR$/woo/domain/DomainObjectFactory.php" />
         <option value="$PROJECT_DIR$/woo/mapper/Collection.php" />
+        <option value="$PROJECT_DIR$/woo/mapper/SpaceMapper.php" />
       </list>
     </option>
   </component>
@@ -139,18 +125,11 @@
   <component name="ProjectFrameBounds">
     <option name="x" value="-8" />
     <option name="y" value="-8" />
-    <option name="width" value="1616" />
-    <option name="height" value="876" />
+    <option name="width" value="1382" />
+    <option name="height" value="744" />
   </component>
-  <component name="ProjectLevelVcsManager" settingsEditedManually="false">
-    <OptionsSetting value="true" id="Add" />
-    <OptionsSetting value="true" id="Remove" />
-    <OptionsSetting value="true" id="Checkout" />
-    <OptionsSetting value="true" id="Update" />
-    <OptionsSetting value="true" id="Status" />
-    <OptionsSetting value="true" id="Edit" />
+  <component name="ProjectLevelVcsManager">
     <ConfirmationsSetting value="2" id="Add" />
-    <ConfirmationsSetting value="0" id="Remove" />
   </component>
   <component name="ProjectView">
     <navigator currentView="ProjectPane" proportions="" version="1">
@@ -168,15 +147,8 @@
     </navigator>
     <panes>
       <pane id="Scratches" />
-      <pane id="Scope" />
       <pane id="ProjectPane">
         <subPane>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="pattern" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-          </PATH>
           <PATH>
             <PATH_ELEMENT>
               <option name="myItemId" value="pattern" />
@@ -239,6 +211,7 @@
           </PATH>
         </subPane>
       </pane>
+      <pane id="Scope" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -290,7 +263,7 @@
       <method />
     </configuration>
     <configuration default="true" type="js.build_tools.npm" factoryName="npm">
-      <command value="run-script" />
+      <command value="run" />
       <scripts />
       <node-interpreter value="project" />
       <envs />
@@ -347,6 +320,7 @@
       <workItem from="1489714615430" duration="7512000" />
       <workItem from="1489732230170" duration="8848000" />
       <workItem from="1489894415199" duration="14689000" />
+      <workItem from="1489973145831" duration="188000" />
     </task>
     <task id="LOCAL-00001" summary="tes">
       <created>1487570749451</created>
@@ -387,17 +361,16 @@
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="111404000" />
+    <option name="totallyTimeSpent" value="111592000" />
   </component>
   <component name="ToolWindowManager">
-    <frame x="-8" y="-8" width="1616" height="876" extended-state="6" />
-    <editor active="false" />
+    <frame x="-8" y="-8" width="1382" height="744" extended-state="6" />
+    <editor active="true" />
     <layout>
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.18123393" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.18381241" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="10" side_tool="true" content_ui="tabs" />
       <window_info id="Database" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
-      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3289689" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3289689" sideWeight="0.5" order="8" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="9" side_tool="false" content_ui="tabs" />
@@ -409,6 +382,7 @@
       <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
       <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
+      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3289689" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
     </layout>
@@ -459,56 +433,56 @@
     <entry file="file://$PROJECT_DIR$/woo/controller/AppController.php">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
-          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/woo/command/Command.php">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
-          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/woo/view/main.php">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
-          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/woo/view/ViewHelper.php">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="69">
-          <caret line="3" column="0" selection-start-line="3" selection-start-column="0" selection-end-line="3" selection-end-column="0" />
+          <caret line="3" column="0" lean-forward="false" selection-start-line="3" selection-start-column="0" selection-end-line="3" selection-end-column="0" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/test.php">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="207">
-          <caret line="14" column="31" selection-start-line="14" selection-start-column="31" selection-end-line="14" selection-end-column="31" />
+          <caret line="14" column="31" lean-forward="false" selection-start-line="14" selection-start-column="31" selection-end-line="14" selection-end-column="31" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/woo/view/addspace.php">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="69">
-          <caret line="3" column="0" selection-start-line="3" selection-start-column="0" selection-end-line="3" selection-end-column="0" />
+          <caret line="3" column="0" lean-forward="false" selection-start-line="3" selection-start-column="0" selection-end-line="3" selection-end-column="0" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/woo/controller/Controller.php">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="529">
-          <caret line="26" column="55" selection-start-line="26" selection-start-column="55" selection-end-line="26" selection-end-column="55" />
+          <caret line="26" column="55" lean-forward="false" selection-start-line="26" selection-start-column="55" selection-end-line="26" selection-end-column="55" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/woo/command/AddVenue.php">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="69">
-          <caret line="3" column="31" selection-start-line="3" selection-start-column="26" selection-end-line="3" selection-end-column="31" />
+          <caret line="3" column="31" lean-forward="false" selection-start-line="3" selection-start-column="26" selection-end-line="3" selection-end-column="31" />
         </state>
       </provider>
     </entry>
@@ -516,7 +490,7 @@
     <entry file="file://$PROJECT_DIR$/woo/base/111Registry.php">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
-          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
         </state>
       </provider>
     </entry>
@@ -524,28 +498,28 @@
     <entry file="file://$PROJECT_DIR$/woo/controller/Request.php">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
-          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/woo/controller/add_venue.php">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="115">
-          <caret line="5" column="31" selection-start-line="5" selection-start-column="31" selection-end-line="5" selection-end-column="31" />
+          <caret line="5" column="31" lean-forward="false" selection-start-line="5" selection-start-column="31" selection-end-line="5" selection-end-column="31" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/woo/controller/PageController.php">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="414">
-          <caret line="18" column="50" selection-start-line="18" selection-start-column="50" selection-end-line="18" selection-end-column="50" />
+          <caret line="18" column="50" lean-forward="false" selection-start-line="18" selection-start-column="50" selection-end-line="18" selection-end-column="50" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/woo/view/addvenue.php">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
-          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
         </state>
       </provider>
     </entry>
@@ -553,7 +527,7 @@
     <entry file="file://$PROJECT_DIR$/woo/controller/AddVenueController.php">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="416">
-          <caret line="40" column="0" selection-start-line="40" selection-start-column="0" selection-end-line="40" selection-end-column="0" />
+          <caret line="40" column="0" lean-forward="false" selection-start-line="40" selection-start-column="0" selection-end-line="40" selection-end-column="0" />
         </state>
       </provider>
     </entry>
@@ -563,21 +537,21 @@
     <entry file="file://$PROJECT_DIR$/woo/login/Observable.php">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="391">
-          <caret line="17" column="19" selection-start-line="17" selection-start-column="19" selection-end-line="17" selection-end-column="19" />
+          <caret line="17" column="19" lean-forward="false" selection-start-line="17" selection-start-column="19" selection-end-line="17" selection-end-column="19" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/Lglass/investor.txt">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="161">
-          <caret line="7" column="0" selection-start-line="7" selection-start-column="0" selection-end-line="7" selection-end-column="0" />
+          <caret line="7" column="0" lean-forward="false" selection-start-line="7" selection-start-column="0" selection-end-line="7" selection-end-column="0" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/woo/login/Login.php">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="256">
-          <caret line="13" column="0" selection-start-line="13" selection-start-column="0" selection-end-line="13" selection-end-column="0" />
+          <caret line="13" column="0" lean-forward="false" selection-start-line="13" selection-start-column="0" selection-end-line="13" selection-end-column="0" />
         </state>
       </provider>
     </entry>
@@ -585,7 +559,7 @@
     <entry file="file://$PROJECT_DIR$/index.php">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="117">
-          <caret line="38" column="0" selection-start-line="38" selection-start-column="0" selection-end-line="38" selection-end-column="0" />
+          <caret line="38" column="0" lean-forward="false" selection-start-line="38" selection-start-column="0" selection-end-line="38" selection-end-column="0" />
           <folding>
             <element signature="n#myIterator#0;n#!!top" expanded="false" />
           </folding>
@@ -599,7 +573,7 @@
     <entry file="file://$PROJECT_DIR$/woo/domain/Finders.php">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="391">
-          <caret line="17" column="40" selection-start-line="17" selection-start-column="40" selection-end-line="17" selection-end-column="40" />
+          <caret line="17" column="40" lean-forward="false" selection-start-line="17" selection-start-column="40" selection-end-line="17" selection-end-column="40" />
           <folding />
         </state>
       </provider>
@@ -607,7 +581,7 @@
     <entry file="file://$PROJECT_DIR$/woo/base/Request.php">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="347">
-          <caret line="47" column="5" selection-start-line="47" selection-start-column="5" selection-end-line="47" selection-end-column="5" />
+          <caret line="47" column="5" lean-forward="false" selection-start-line="47" selection-start-column="5" selection-end-line="47" selection-end-column="5" />
         </state>
       </provider>
     </entry>
@@ -615,7 +589,7 @@
     <entry file="file://$PROJECT_DIR$/woo/domain/Collections.php">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="133">
-          <caret line="7" column="10" selection-start-line="7" selection-start-column="10" selection-end-line="7" selection-end-column="10" />
+          <caret line="7" column="10" lean-forward="false" selection-start-line="7" selection-start-column="10" selection-end-line="7" selection-end-column="10" />
           <folding />
         </state>
       </provider>
@@ -623,7 +597,7 @@
     <entry file="file://$PROJECT_DIR$/woo/domain/Venue.php">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="253">
-          <caret line="26" column="20" selection-start-line="26" selection-start-column="20" selection-end-line="26" selection-end-column="20" />
+          <caret line="26" column="20" lean-forward="false" selection-start-line="26" selection-start-column="20" selection-end-line="26" selection-end-column="20" />
           <folding />
         </state>
       </provider>
@@ -631,39 +605,29 @@
     <entry file="file://$PROJECT_DIR$/woo/controller/ApplicationHelper.php">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="399">
-          <caret line="21" column="38" selection-start-line="21" selection-start-column="38" selection-end-line="21" selection-end-column="38" />
-          <folding />
+          <caret line="21" column="38" lean-forward="false" selection-start-line="21" selection-start-column="38" selection-end-line="21" selection-end-column="38" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/woo/base/Registry.php">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="266">
-          <caret line="95" column="43" selection-start-line="95" selection-start-column="43" selection-end-line="95" selection-end-column="43" />
-          <folding />
+          <caret line="95" column="43" lean-forward="false" selection-start-line="95" selection-start-column="43" selection-end-line="95" selection-end-column="43" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/woo/database/DB.php">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="425">
-          <caret line="65" column="0" selection-start-line="65" selection-start-column="0" selection-end-line="65" selection-end-column="0" />
-          <folding />
+          <caret line="65" column="0" lean-forward="false" selection-start-line="65" selection-start-column="0" selection-end-line="65" selection-end-column="0" />
         </state>
       </provider>
     </entry>
-    <entry file="jar://$APPLICATION_HOME_DIR$/plugins/php/lib/php.jar!/com/jetbrains/php/lang/psi/stubs/data/Core.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="238">
-          <caret line="340" column="9" selection-start-line="340" selection-start-column="9" selection-end-line="340" selection-end-column="9" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
+    <entry file="jar://$APPLICATION_HOME_DIR$/plugins/php/lib/php.jar!/com/jetbrains/php/lang/psi/stubs/data/Core.php" />
     <entry file="file://$PROJECT_DIR$/woo/domain/HelperFactory.php">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="238">
-          <caret line="13" column="20" selection-start-line="13" selection-start-column="20" selection-end-line="13" selection-end-column="20" />
+          <caret line="13" column="20" lean-forward="false" selection-start-line="13" selection-start-column="20" selection-end-line="13" selection-end-column="20" />
           <folding />
         </state>
       </provider>
@@ -671,7 +635,7 @@
     <entry file="file://$PROJECT_DIR$/woo/domain/ObjectWatcher.php">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="505">
-          <caret line="80" column="0" selection-start-line="80" selection-start-column="0" selection-end-line="80" selection-end-column="0" />
+          <caret line="80" column="0" lean-forward="false" selection-start-line="80" selection-start-column="0" selection-end-line="80" selection-end-column="0" />
           <folding>
             <element signature="e#243#285#0#PHP" expanded="false" />
             <element signature="e#291#461#0#PHP" expanded="false" />
@@ -690,7 +654,6 @@
             <element signature="e#1861#2182#0#PHP" expanded="false" />
             <element signature="e#1899#2018#0#PHP" expanded="false" />
             <element signature="e#2027#2114#0#PHP" expanded="false" />
-            <marker date="1489932050552" expanded="false" signature="323:460" ph="..." />
           </folding>
         </state>
       </provider>
@@ -698,30 +661,14 @@
     <entry file="file://$PROJECT_DIR$/woo/mapper/VenueMapper.php">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="200">
-          <caret line="29" column="5" selection-start-line="29" selection-start-column="5" selection-end-line="29" selection-end-column="5" />
-          <folding>
-            <element signature="e#409#464#0#PHP" expanded="false" />
-            <element signature="e#590#666#0#PHP" expanded="false" />
-            <element signature="e#696#770#0#PHP" expanded="false" />
-            <element signature="e#783#878#0#PHP" expanded="false" />
-            <element signature="e#1218#1299#0#PHP" expanded="false" />
-            <element signature="e#1305#1603#0#PHP" expanded="false" />
-            <element signature="e#1609#1796#0#PHP" expanded="false" />
-            <element signature="e#1802#1869#0#PHP" expanded="false" />
-            <element signature="e#1875#1948#0#PHP" expanded="false" />
-            <element signature="e#1965#1991#0#PHP" expanded="false" />
-            <marker date="1489814760433" expanded="false" signature="443:462" ph="SELECT * FRO... venue" />
-            <marker date="1489814760433" expanded="true" signature="528:558" ph="SELECT * FRO... venue" />
-            <marker date="1489814760433" expanded="false" signature="624:664" ph="UPDATE venue... " />
-            <marker date="1489814760433" expanded="false" signature="730:768" ph="INSERT into venue... " />
-          </folding>
+          <caret line="29" column="5" lean-forward="false" selection-start-line="29" selection-start-column="5" selection-end-line="29" selection-end-column="5" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/woo/domain/Space.php">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="380">
-          <caret line="27" column="6" selection-start-line="27" selection-start-column="6" selection-end-line="27" selection-end-column="6" />
+          <caret line="27" column="6" lean-forward="false" selection-start-line="27" selection-start-column="6" selection-end-line="27" selection-end-column="6" />
           <folding>
             <element signature="e#177#396#0#PHP" expanded="false" />
             <element signature="e#402#488#0#PHP" expanded="false" />
@@ -736,23 +683,16 @@
     <entry file="file://$PROJECT_DIR$/woo/mapper/Collections.php">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="114">
-          <caret line="6" column="0" selection-start-line="6" selection-start-column="0" selection-end-line="6" selection-end-column="0" />
+          <caret line="6" column="0" lean-forward="false" selection-start-line="6" selection-start-column="0" selection-end-line="6" selection-end-column="0" />
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="jar://$APPLICATION_HOME_DIR$/plugins/php/lib/php.jar!/com/jetbrains/php/lang/psi/stubs/data/PDO.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="447">
-          <caret line="1171" column="13" selection-start-line="1171" selection-start-column="13" selection-end-line="1171" selection-end-column="66" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
+    <entry file="jar://$APPLICATION_HOME_DIR$/plugins/php/lib/php.jar!/com/jetbrains/php/lang/psi/stubs/data/PDO.php" />
     <entry file="file://$PROJECT_DIR$/woo/domain/DomainObject.php">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="133">
-          <caret line="7" column="29" selection-start-line="7" selection-start-column="29" selection-end-line="7" selection-end-column="29" />
+          <caret line="7" column="29" lean-forward="false" selection-start-line="7" selection-start-column="29" selection-end-line="7" selection-end-column="29" />
           <folding>
             <element signature="e#172#1254#0#PHP" expanded="false" />
             <element signature="e#465#538#0#PHP" expanded="false" />
@@ -770,7 +710,7 @@
     <entry file="file://$PROJECT_DIR$/woo/mapper/EventMapper.php">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="276">
-          <caret line="34" column="22" selection-start-line="34" selection-start-column="22" selection-end-line="34" selection-end-column="22" />
+          <caret line="34" column="22" lean-forward="false" selection-start-line="34" selection-start-column="22" selection-end-line="34" selection-end-column="22" />
           <folding>
             <element signature="e#391#462#0#PHP" expanded="false" />
             <element signature="e#614#696#0#PHP" expanded="false" />
@@ -784,11 +724,6 @@
             <element signature="e#2194#2429#0#PHP" expanded="false" />
             <element signature="e#2435#2498#0#PHP" expanded="false" />
             <element signature="e#2504#2573#0#PHP" expanded="false" />
-            <marker date="1489814760431" expanded="false" signature="441:460" ph="SELECT * FRO... event" />
-            <marker date="1489814760431" expanded="true" signature="549:582" ph="SELECT * FRO... event" />
-            <marker date="1489814760431" expanded="false" signature="664:694" ph="SELECT * FRO... event" />
-            <marker date="1489814760431" expanded="false" signature="776:837" ph="UPDATE event... " />
-            <marker date="1489814760431" expanded="false" signature="919:1017" ph="INSERT into event... " />
           </folding>
         </state>
       </provider>
@@ -796,7 +731,7 @@
     <entry file="file://$PROJECT_DIR$/woo/mapper/DeferredEventCollection.php">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="247">
-          <caret line="13" column="23" selection-start-line="13" selection-start-column="23" selection-end-line="13" selection-end-column="23" />
+          <caret line="13" column="23" lean-forward="false" selection-start-line="13" selection-start-column="23" selection-end-line="13" selection-end-column="23" />
           <folding />
         </state>
       </provider>
@@ -804,7 +739,7 @@
     <entry file="file://$PROJECT_DIR$/woo/mapper/DomainObjectFactory.php">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="361">
-          <caret line="19" column="4" selection-start-line="19" selection-start-column="4" selection-end-line="19" selection-end-column="4" />
+          <caret line="19" column="4" lean-forward="false" selection-start-line="19" selection-start-column="4" selection-end-line="19" selection-end-column="4" />
           <folding />
         </state>
       </provider>
@@ -812,7 +747,7 @@
     <entry file="file://$PROJECT_DIR$/woo/mapper/Collection.php">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="171">
-          <caret line="9" column="22" selection-start-line="9" selection-start-column="22" selection-end-line="9" selection-end-column="22" />
+          <caret line="9" column="22" lean-forward="false" selection-start-line="9" selection-start-column="22" selection-end-line="9" selection-end-column="22" />
           <folding>
             <element signature="e#356#595#0#PHP" expanded="false" />
             <element signature="e#601#921#0#PHP" expanded="false" />
@@ -831,16 +766,10 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/woo/mapper/Mapper.php">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="553">
-          <caret line="80" column="0" selection-start-line="80" selection-start-column="0" selection-end-line="80" selection-end-column="0" />
+        <state relative-caret-position="1380">
+          <caret line="86" column="0" lean-forward="false" selection-start-line="86" selection-start-column="0" selection-end-line="86" selection-end-column="0" />
           <folding>
-            <element signature="e#146#516#0#PHP" expanded="false" />
-            <element signature="e#281#375#0#PHP" expanded="false" />
-            <element signature="e#522#1040#0#PHP" expanded="false" />
-            <element signature="e#833#892#0#PHP" expanded="false" />
-            <element signature="e#901#963#0#PHP" expanded="false" />
-            <element signature="e#1046#1364#0#PHP" expanded="false" />
-            <element signature="e#1370#1492#0#PHP" expanded="false" />
+            <marker date="1489972738516" expanded="true" signature="1926:1930" ph="{...}" />
           </folding>
         </state>
       </provider>
@@ -848,24 +777,16 @@
     <entry file="file://$PROJECT_DIR$/woo/mapper/SpaceMapper.php">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="212">
-          <caret line="28" column="42" selection-start-line="28" selection-start-column="42" selection-end-line="28" selection-end-column="42" />
+          <caret line="28" column="42" lean-forward="false" selection-start-line="28" selection-start-column="42" selection-end-line="28" selection-end-column="42" />
           <folding>
             <element signature="e#354#987#0#PHP" expanded="false" />
             <element signature="e#550#642#0#PHP" expanded="false" />
             <element signature="e#672#772#0#PHP" expanded="false" />
-            <element signature="e#1165#1640#0#PHP" expanded="false" />
-            <element signature="e#1646#1723#0#PHP" expanded="false" />
-            <element signature="e#1729#2137#0#PHP" expanded="false" />
-            <element signature="e#1841#1946#0#PHP" expanded="false" />
-            <element signature="e#2147#2337#0#PHP" expanded="false" />
-            <element signature="e#2343#2406#0#PHP" expanded="false" />
-            <element signature="e#2412#2481#0#PHP" expanded="false" />
-            <element signature="e#2500#2690#0#PHP" expanded="false" />
-            <marker date="1489934534661" expanded="true" signature="488:518" ph="SELECT * FRO... space" />
-            <marker date="1489934534661" expanded="false" signature="600:640" ph="UPDATE space... " />
-            <marker date="1489934534661" expanded="false" signature="722:770" ph="INSERT into space... " />
-            <marker date="1489934534661" expanded="true" signature="839:858" ph="SELECT * FRO... space" />
-            <marker date="1489934534661" expanded="true" signature="945:978" ph="SELECT * FRO... space" />
+            <marker date="1489972738516" expanded="true" signature="488:518" ph="SELECT * FRO... space" />
+            <marker date="1489972738516" expanded="true" signature="600:640" ph="UPDATE space... " />
+            <marker date="1489972738516" expanded="true" signature="722:770" ph="INSERT into space... " />
+            <marker date="1489972738516" expanded="true" signature="839:858" ph="SELECT * FRO... space" />
+            <marker date="1489972738516" expanded="true" signature="945:978" ph="SELECT * FRO... space" />
           </folding>
         </state>
       </provider>

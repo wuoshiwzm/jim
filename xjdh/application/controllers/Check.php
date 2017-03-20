@@ -25,12 +25,6 @@ class Check extends CI_Controller
      */
     public function index()
     {
-        $dbObj = $this->load->database('default', TRUE);
-        $dbObj->where('room_id', 4);
-        $dbObj->select('data_id,name,model');
-        $dbObj->group_by('model');
-        $res = $dbObj->get('device')->result();
-var_dump($res);die;
         $this->arrange();
     }
 
@@ -946,6 +940,17 @@ var_dump($res);die;
 
         $content = $this->load->view("check/process", $data, TRUE);
         $this->mp_master->Show_Portal($content, $scriptExtra, '审核进度', $data);
+
+    }
+
+    /**
+     *
+     * 局站设备故障记录
+     *
+     *
+     */
+    public function memo()
+    {
 
     }
 

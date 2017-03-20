@@ -133,7 +133,7 @@ class Oauth2 extends CI_Controller
                 return;
             }
             // Validate User Info
-            if (1 != User::ValidUser($this->input->post('user_id'), $this->input->post('password'), true)) {
+           if (1 != User::ValidUser($this->input->post('user_id'), $this->input->post('password'), true)) {
             	if(-4 == User::ValidUser($this->input->post('user_id'), $this->input->post('password'), true)){
             		$jsonRet = array();
             		$jsonRet['ret'] = 8;
@@ -176,5 +176,13 @@ class Oauth2 extends CI_Controller
             $jsonRet['response'] = '';
             echo json_encode($jsonRet);
         }
-    }
+    }           
+
+
+
+
+
+
+
+
 }

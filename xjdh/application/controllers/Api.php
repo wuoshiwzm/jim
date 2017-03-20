@@ -381,7 +381,8 @@ class Api extends CI_Controller
             if (($this->user->user_role == 'noc' ||
                     $this->user->user_role == 'member' ||
                     $this->user->user_role == 'operator') &&
-                !in_array($key, $devPrivilegeArr))
+                !in_array($key, $devPrivilegeArr)
+            )
                 continue;
             $devModelObj = new stdClass();
             $devModelObj->key = $key;
@@ -886,49 +887,6 @@ class Api extends CI_Controller
 
 
     /**
-     * 提交审核内容
-     * post方式传递参数：
-     * $typeID 上传问题的类型 1：提交局站工艺验收 2：提交机房设备验收
-     * $substationID 局站id;
-     * $roomID 机房id;
-     * $userID = 用户id;
-     * $questionID = 某一个问题的id 或   设备的id
-     * 图片 和之前一样
-     */
-    function CheckUpload()
-    {
-
-        //存储文件
-        $file_path = "./public/portal/Check_image/";
-        $fileName = $_FILES['uploadImg']['name'];
-        $fileTempName = $_FILES['uploadImg']['tmp_name'];
-        //图片上传
-        for ($i = 0; $i < count($fileName); $i++) {
-            move_uploaded_file($fileTempName[$i], $file_path . $fileName[$i]);
-        }
-        //文件过大
-        if ($fileTempName['size'] > "500000") {
-            $jsonRet['ret'] = 1;
-            $jsonRet['data'] = '';
-            echo json_encode('文件过大');
-            return;
-        }
-
-        if (empty($_FILES)) {
-            $fileName = ['null.jpg'];
-        };
-
-
-        $substationID = $this->input->post("substationID");
-        $roomID = is_null($this->input->post("roomID")) ? NULL : $this->input->post("roomID");
-        $questionID = $this->input->post("questionID");
-        $userID = $this->input->post("userID");
-        $typeID = $this->input->post("typeID");
-
-        $this->checkWrite($typeID, $substationID, $roomID, $questionID, $userID, $fileName);
-    }
-
-    /**
      * 获取问题/设备
      * $type 1 工艺验收 2 设备验收
      * $topicID $type为1时指局站id $type为2时指机房id 机房id;
@@ -939,26 +897,13 @@ class Api extends CI_Controller
         $topicID = is_null($this->input->get("topicID")) ? null : $this->input->get("topicID");
 
         $dbObj = $this->load->database('default', TRUE);
-        $tableName = '';
-        $search = '';
+        //工艺
         if ($type == 1) {
             //工艺 - 通过局站ID 获取对应的验收问题
-            $tableName = 'check_apply';
-            $search = 'substation_id';
-            $sourceTable = 'check_question';
-        } elseif ($type == 2) {
-            //设备 - 通过机房ID 获取对应的验收设备
-            $tableName = 'check_device';
-            $search = 'room_id';
-            $sourceTable = 'device';
-        }
-
-        $dbObj->where($search, $topicID);
-        $apply = $dbObj->get($tableName)->row_array();
-
-        //审核表里没有对应机房的信息，说明没有提交申请，获取所有问题
-        if (empty($apply)) {
-            if ($type == 1) {
+            $dbObj->where('substation_id', $topicID);
+            $apply = $dbObj->get('check_apply')->row_array();
+            if (empty($apply)) {
+                //审核表里没有对应机房的信息，说明没有提交申请，获取所有问题
                 //工艺
                 $res = $dbObj->get('check_question')->result();
 
@@ -966,55 +911,101 @@ class Api extends CI_Controller
                 $jsonRet['data'] = json_encode(['questionSubList' => $res]);
                 echo json_encode($jsonRet);
                 return;
-            } elseif ($type == 2) {
-
-                //设备
-                $dbObj->where('room_id', $topicID);
-                $dbObj->select('data_id,name');
-                $res = $dbObj->get('device')->result();
-
-                $jsonRet['ret'] = 0;
-                $jsonRet['data'] = json_encode(['questionDevList' => $res]);
-                echo json_encode($jsonRet);
-                return;
-            }
-        } else {
-            //审核表里有对应机房信息，说明提交了申请，获取已经提交的问题列表
-            $content = json_decode($apply['content']);
-            $questionIDs = [];
-            foreach ($content as $key => $c) {
-                $questionIDs[] = $key;
-            }
-            if ($type == 1) {
+            } else {
+                //审核表里有对应机房信息，说明提交了申请，获取已经提交的问题列表
+                $content = json_decode($apply['content']);
+                $questionIDs = [];
+                foreach ($content as $key => $c) {
+                    $questionIDs[] = $key;
+                }
+                //剔除已经回答的问题
                 $dbObj->where_not_in('id', $questionIDs);
                 $res = $dbObj->get('check_question')->result();
+
 
                 $jsonRet['ret'] = 0;
                 $jsonRet['data'] = json_encode(['questionSubList' => $res]);
                 echo json_encode($jsonRet);
                 return;
-            } elseif ($type == 2) {
-
-                $dbObj->where('room_id', $topicID);
-                $dbObj->where_not_in('data_id', $questionIDs);
-                $dbObj->select('data_id,name');
-                $res = $dbObj->get('device')->result();
-
-                $jsonRet['ret'] = 0;
-                $jsonRet['data'] = json_encode(['questionDevList' => $res]);
-                echo json_encode($jsonRet);
-                return;
             }
+        } //设备问题 - 获取设备类型-而不是设备列表
+        elseif ($type == 2) {
 
-            //所有问题已经都提交
-            if (empty($res)) {
-                $jsonRet['ret'] = 1;
-                $jsonRet['data'] = '';
-                echo json_encode($jsonRet);
-                return;
-            }
+            //设备 - 通过roomID 获取对应的验收问题
+            $room_id = $topicID;
+            $devList = $this->getDeviceList($room_id);
+
+            $jsonRet['ret'] = 0;
+            $jsonRet['data'] = json_encode($devList);
+            echo json_encode($jsonRet);
+            return;
         }
     }
+
+
+    /**
+     * @param $room_id
+     * @param string $model
+     * 获取对应机房的设备类型列表
+     */
+    private function getDeviceList($room_id)
+    {
+        $dbObj = $this->load->database('default', TRUE);
+        $dbObj->where('room_id', $room_id);
+        $apply = $dbObj->get('check_device')->row_array();
+
+        $questionIDs = [];
+
+        //审核表里没有对应机房的信息，说明没有提交申请，获取所有设备列表
+        if (!empty($apply)) {
+            //审核表里有对应机房的信息，说明已经提交了申请，过滤掉已经提交过的，
+            $content = json_decode($apply['content']);
+            foreach ($content as $key => $c) {
+                if ($key == 'ad') {
+                    $key = 'enviroment';
+                }
+                $questionIDs[] = $key;
+            }
+        }
+
+        $devList = array();
+        foreach (Constants::$devConfigList as $devConfig) {
+            //返回device-room-substation 关联表
+            $dataList = $this->mp_xjdh->Get_Room_Devs($room_id, $devConfig[0]);
+            if (count($dataList) && (!in_array($devConfig[2], $questionIDs) || empty($questionIDs))) {
+                $devObj = new stdClass();
+                $devObj->type = $devConfig[2];
+                $devObj->name = $devConfig[1];
+                if ($devConfig[2] == "enviroment") {
+                    $devObj->type = "ad";
+                } else if ($devConfig[2] == "smd_device") {
+                    foreach ($dataList as $dataObj) {
+                        $dataObj->data_id = $dataObj->device_no;
+                    }
+                } else if ($devConfig[2] == "door") {
+                    foreach ($dataList as $dataObj) {
+                        $canOpen = false;
+                        if ($this->user->user_role == 'admin') {
+                            $canOpen = true;
+                        } else if (in_array($this->user->user_role, array("city_admin", "operator"))) {
+                            if ($dataObj->city_code == $this->user->city_code)
+                                $canOpen = true;
+                        } else {
+                            $duObj = $this->mp_xjdh->Get_DoorUser($dataObj->data_id, $this->user->id);
+                            if (count($duObj) && $duObj->remote_control)
+                                $canOpen = true;
+                        }
+                        $dataObj->can_open = $canOpen ? 1 : 0;
+                    }
+                }
+                $devObj->devList = $dataList;
+                array_push($devList, $devObj);
+            }
+        }
+        //如果全都已经提交了，就更新状态，返回空值
+        return $devList;
+    }
+
 //    function getQuestion_expired($type, $topicID = null)
 //    {
 //        $type = is_null($this->input->get("type")) ? null : $this->input->get("type");
@@ -1243,6 +1234,136 @@ class Api extends CI_Controller
 
 
     /**
+     * 提交审核内容
+     * post方式传递参数：
+     * $typeID 上传问题的类型 1：提交局站工艺验收 2：提交机房设备验收
+     * $substationID 局站id;
+     * $roomID 机房id;
+     * $userID = 用户id;
+     * $questionID = 某一个问题的id 或   设备的id
+     * 图片 和之前一样
+     */
+    function CheckUpload()
+    {
+        //存储文件
+        $file_path = "./public/portal/Check_image/";
+        $fileName = $_FILES['uploadImg']['name'];
+        $fileTempName = $_FILES['uploadImg']['tmp_name'];
+        //图片上传
+        for ($i = 0; $i < count($fileName); $i++) {
+            move_uploaded_file($fileTempName[$i], $file_path . $fileName[$i]);
+        }
+        //文件过大
+        if ($fileTempName['size'] > "500000") {
+            $jsonRet['ret'] = 1;
+            $jsonRet['data'] = '';
+            echo json_encode('文件过大');
+            return;
+        }
+
+        if (empty($_FILES)) {
+            $fileName = ['null.jpg'];
+        };
+
+        $substationID = $this->input->post("substationID");
+        $roomID = is_null($this->input->post("roomID")) ? NULL : $this->input->post("roomID");
+        $questionID = $this->input->post("questionID");
+        $userID = $this->input->post("userID");
+        $typeID = $this->input->post("typeID");
+
+
+        $this->checkWrite($typeID, $substationID, $roomID, $questionID, $userID, $fileName);
+    }
+
+    /**
+     *  写入数据到content
+     * @param $tableName
+     * @param $data
+     */
+    private function checkWrite($typeID, $substationID, $roomID, $questionID, $userID, $fileName)
+    {
+        //工艺验收
+        if ($typeID == 1) {
+            $tableName = 'check_apply';
+        }
+
+        //设备验收
+        if ($typeID == 2) {
+            $tableName = 'check_device';
+        }
+
+        $dbObj = $this->load->database('default', TRUE);
+
+        if ($typeID == 1) {
+            $dbObj->where('substation_id', $substationID);
+        }
+        if ($typeID == 2) {
+            $dbObj->where('room_id', $roomID);
+        }
+        $res = $dbObj->get($tableName)->row_array();
+
+
+        //判断是否第一次上传，第一次上传新建一条check_apply数据
+        if (empty($res)) {
+            if ($typeID == 2) {
+                $dbObj->set('room_id', $roomID);
+            }
+            $dbObj->set('substation_id', $substationID);
+            $dbObj->set('user_id', $userID);
+            if($questionID == 'ad'){
+                $questionID = 'enviroment';
+            }
+            $dbObj->set('content', json_encode([
+                $questionID => $fileName,
+            ]));
+            $dbObj->insert($tableName);
+        }
+
+        //如果已经提交了审核，则不能提交
+        if ($res['is_apply'] == 1) {
+            $jsonRet['ret'] = 1;
+            $jsonRet['data'] = '已经提交了审核，不能再次提交';
+            echo json_encode($jsonRet);
+            return;
+        }
+
+        //如果不是第一次上传，就找到对应的信息， 在content字段追加数据
+        $applyContent = json_decode($res['content'], true);
+        if ($questionID == 'ad') {
+            $questionID = 'enviroment';
+        }
+        $applyContent[$questionID] = $fileName;
+        //工艺施工
+        if ($typeID == 1) {
+            $dbObj->where('substation_id', $substationID);
+            $dbObj->set('content', json_encode($applyContent));
+            $dbObj->update('check_apply');
+
+            //设备施工
+        }
+        elseif ($typeID == 2) {
+            $dbObj->where('room_id', $roomID);
+            $dbObj->set('content', json_encode($applyContent));
+            $dbObj->update('check_device');
+        }
+
+        //更新对应apply状态
+        if ($typeID == 1) {
+            $writable = $this->updateCheckAppply($typeID, $substationID);
+        }
+        if ($typeID == 2) {
+            $writable = $this->updateCheckAppply($typeID, $roomID);
+        }
+
+        if ($writable) {
+            $jsonRet['ret'] = 0;
+            $jsonRet['data'] = '';
+            echo json_encode($jsonRet);
+            return;
+        };
+    }
+
+    /**
      * 则更新此机房对应的check_apply表的is_apply字段为1
      */
     private function updateCheckAppply($typeID, $id)
@@ -1251,13 +1372,11 @@ class Api extends CI_Controller
         if ($typeID == 1) {
             $tableName = 'check_apply';
             $search = 'substation_id';
-
         }
         //设备验收
         if ($typeID == 2) {
             $tableName = 'check_device';
             $search = 'room_id';
-
         }
         $dbObj = $this->load->database('default', TRUE);
         $dbObj->where($search, $id);
@@ -1265,7 +1384,7 @@ class Api extends CI_Controller
         $content = json_decode($applyInfo['content']);
 
         //判断是否已经完成提交
-        //已经提交的id
+        //已经提交的问题id
         $questionIDs = [];
         foreach ($content as $key => $c) {
             $questionIDs[] = $key;
@@ -1290,15 +1409,27 @@ class Api extends CI_Controller
             }
         } //设备验收
         elseif ($typeID == 2) {
+
+            //获取设备类型对应的model数组
+            $model = [];
+            foreach ($questionIDs as &$qid) {
+                foreach (Constants::$devConfigList as $devConfig) {
+                    if ($qid == $devConfig[2]) {
+                        $model = array_merge($model, $devConfig[0]);
+                        break;
+                    }
+                }
+            }
             //获取还没有提交的设备数组
-            $dbObj->where('room_id', $id);
-            $dbObj->where_not_in('data_id', $questionIDs);
+            $dbObj->where('room_id', $id)
+                ->where_not_in('model', $model)
+                ->where('active', 1);
             $questionAvailable = $dbObj->get('device')->row_array();
         }
         //更新is_apply 字段为1
         if (empty($questionAvailable)) {
             //更新is_apply状态
-            $dbObj->where($search, $id);
+            $dbObj->where('room_id', $id);
             $dbObj->set('is_apply', 1);
             $dbObj->update($tableName);
         }
@@ -1352,93 +1483,6 @@ class Api extends CI_Controller
         $dbObj->update('check_arrange');
 
         return true;
-    }
-
-
-    /**
-     *  写入数据到content
-     * @param $tableName
-     * @param $data
-     */
-    private function checkWrite($typeID, $substationID, $roomID, $questionID, $userID, $fileName)
-    {
-
-        //工艺验收
-        if ($typeID == 1) {
-            $tableName = 'check_apply';
-        }
-
-        //设备验收
-        if ($typeID == 2) {
-            $tableName = 'check_device';
-        }
-
-        $dbObj = $this->load->database('default', TRUE);
-
-        if ($typeID == 1) {
-            $dbObj->where('substation_id', $substationID);
-        }
-        if ($typeID == 2) {
-            $dbObj->where('room_id', $roomID);
-        }
-        $res = $dbObj->get($tableName)->row_array();
-
-
-        //判断是否第一次上传，第一次上传新建一条check_apply数据
-        if (empty($res)) {
-            if ($typeID == 2) {
-                $dbObj->set('room_id', $roomID);
-            }
-            $dbObj->set('substation_id', $substationID);
-            $dbObj->set('user_id', $userID);
-            $dbObj->set('content', json_encode([
-                $questionID => $fileName,
-            ]));
-            $dbObj->insert($tableName);
-
-            $jsonRet['ret'] = 0;
-            $jsonRet['data'] = json_encode($fileName);
-            echo json_encode($jsonRet);
-            return;
-        }
-
-        //如果已经提交了审核，则不能提交
-        if ($res['is_apply'] == 1) {
-            $jsonRet['ret'] = 1;
-            $jsonRet['data'] = '已经提交了审核，不能再次提交';
-            echo json_encode($jsonRet);
-            return;
-        }
-
-        //如果不是第一次上传，就找到对应的信息， 在content字段追加数据
-        $applyContent = json_decode($res['content'], true);
-        $applyContent[$questionID] = $fileName;
-        //工艺施工
-        if ($typeID == 1) {
-            $dbObj->where('substation_id', $substationID);
-            $dbObj->set('content', json_encode($applyContent));
-            $dbObj->update('check_apply');
-
-            //设备施工
-        } elseif ($typeID == 2) {
-            $dbObj->where('room_id', $roomID);
-            $dbObj->set('content', json_encode($applyContent));
-            $dbObj->update('check_device');
-        }
-        //更新对应apply状态
-        if ($typeID == 1) {
-            $writable = $this->updateCheckAppply($typeID, $substationID);
-        }
-        if ($typeID == 2) {
-            $writable = $this->updateCheckAppply($typeID, $roomID);
-        }
-
-        if ($writable) {
-            $jsonRet['ret'] = 0;
-            $jsonRet['data'] = '';
-            echo json_encode($jsonRet);
-            return;
-        };
     }
 
 
@@ -1691,7 +1735,13 @@ class Api extends CI_Controller
             $contents = json_decode($res);
             foreach ($contents as $k => $con) {
                 $ans['device_id'] = $k;
-                $ans['device'] = $this->getDevContent($k);
+                foreach (Constants::$devConfigList as $devConfig) {
+                    if ($devConfig[2] == $k) {
+                        $ans['device'] = $devConfig[1];
+                        break;
+                    }
+                }
+//                $ans['device'] = $this->getDevContent($k);
                 $ans['content'] = $con;
                 $answer[] = $ans;
             }
@@ -1889,17 +1939,17 @@ class Api extends CI_Controller
 
         $substationID = $this->input->post("substationID");
         $userID = $this->input->post("userID");
-        $time = date('Y-m-d H:i:s',time());
+        $time = date('Y-m-d H:i:s', time());
 
         $dbObj = $this->load->database('default', TRUE);
 
-        $arr =[
-            'leader_id'=>$userID,
-            'substation_id'=>$substationID,
-            'photo'=>json_encode($fileName),
-            'created_at'=>$time
+        $arr = [
+            'leader_id' => $userID,
+            'substation_id' => $substationID,
+            'photo' => json_encode($fileName),
+            'created_at' => $time
         ];
-        $dbObj->insert('check_team',$arr);
+        $dbObj->insert('check_team', $arr);
 
         $jsonRet['ret'] = 0;
         $jsonRet['data'] = '';
