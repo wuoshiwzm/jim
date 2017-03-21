@@ -22,10 +22,16 @@ class Team extends CommonController
         $data['userObj'] = $this->userObj;
         $data['bcList'] = array();
 
-        $bcObj = new Breadcrumb();
-        $bcObj->title = '施工队管理';
-        $bcObj->url = site_url("check");
 
+        $bcObj = new Breadcrumb();
+        $bcObj->title = '审核工程';
+        $bcObj->url = site_url("check");
+        $bcObj->isLast = false;
+        array_push($data['bcList'], $bcObj);
+
+        $bcObj = new Breadcrumb();
+        $bcObj->title = '审核工程 - 施工队管理';
+        $bcObj->url = site_url("team");
         $bcObj->isLast = true;
         array_push($data['bcList'], $bcObj);
 
@@ -34,8 +40,24 @@ class Team extends CommonController
         $data['teams'] = $dbObj->get('check_team')->result();
         //调取视图
         $scriptExtra = '';
-        $scriptExtra .= '<script type="text/javascript" src="/public/js/bootbox.js"></script>';
         $scriptExtra .= '<script type="text/javascript" src="/public/portal/js/team.js"></script>';
+
+        $scriptExtra .= '<link rel="stylesheet" href="/public/css/easydialog.css"/>';
+        $scriptExtra .= '<script type="text/javascript" src="/public/portal/js/station_image_manage.js"></script>';
+        $scriptExtra .= '<script type="text/javascript" src="/public/portal/js/easydialog.js"></script>';
+        $scriptExtra .= '<script type="text/javascript" src="/public/portal/js/substation.js"></script>';
+
+        $scriptExtra .= '<link rel="stylesheet" href="/public/css/minimalist.css"/>';
+        $scriptExtra .= '<link rel="stylesheet" href="/public/css/jquery.fancybox.css"/>';
+        $scriptExtra .= '<script type="text/javascript" src="/public/js/flowplayer.min.js"></script>';
+        $scriptExtra .= '<script type="text/javascript" src="/public/js/flowplayer.hlsjs.min.js"></script>';
+        $scriptExtra .= '<script type="text/javascript" src="/public/js/jquery.fancybox.js"></script>';
+        $scriptExtra .= '<script type="text/javascript" src="/public/portal/js/player.js"></script>';
+
+        $scriptExtra .= '<script type="text/javascript" src="/public/portal/js/jqthumb.js"></script>';
+
+
+
         $content = $this->load->view('check/team', $data, TRUE);
         $this->mp_master->Show_Portal($content, $scriptExtra, '人员管理', $data);
     }

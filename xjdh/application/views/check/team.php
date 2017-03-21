@@ -65,11 +65,30 @@
                                     <?php echo $team->created_at ?>
                                 </td>
                                 <td>
-                                    <?php foreach (json_decode($team->photo) as $photo){?>
-                                        <img src="" alt="">
+
+
+                                    <ul class="dowebokList">
+                                        <?php foreach (json_decode($team->photo) as $k=>$img) { ?><a
+                                            <?php if($k>=3){echo "style='display:none'";}?>
+                                            rel="group" class="image"
+                                            href="/public/portal/Check_image/<?php echo $img ?>">
+                                            <img src="/public/portal/Check_image/<?php echo $img ?>"
+                                                 alt="" style="height: 150px;"/></a>
+                                        <?php } ?>
+                                    </ul>
+
+                                    <ul>
+                                    <?php foreach (json_decode($team->photo) as $k=>$photo){?><a
+                                        <?php if($k>=3){echo "style='display:none'";}?>
+                                        rel="group" class="image"
+                                        href="/public/portal/Check_image/<?php echo $photo ?>">
                                         <img src="/public/portal/Check_image/<?php echo $photo ?>"
                                              alt="" style="height: 150px;"/>
+                                    </a>
+                                        <img src="" alt="">
+
                                     <?php }?>
+                                    </ul>
                                 </td>
                                 <td>
 

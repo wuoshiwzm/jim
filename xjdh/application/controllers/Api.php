@@ -891,7 +891,7 @@ class Api extends CI_Controller
      * $type 1 工艺验收 2 设备验收
      * $topicID $type为1时指局站id $type为2时指机房id 机房id;
      */
-    function getQuestion($type, $topicID = null)
+    function getQuestion($type= null, $topicID = null)
     {
         $type = is_null($this->input->get("type")) ? null : $this->input->get("type");
         $topicID = is_null($this->input->get("topicID")) ? null : $this->input->get("topicID");
@@ -1098,7 +1098,7 @@ class Api extends CI_Controller
      * @param $roomID 机房ID
      * 获取城市对应的局站列表(包括已经审核和未审核)  或者 机房列表(包括已经审核和未审核)  或者设备列表(包括已经审核和未审核)
      */
-    function GetAppliedLocation($checkType, $applyType, $userID, $subID, $roomID)
+    function GetAppliedLocation($checkType= null, $applyType= null, $userID= null, $subID= null, $roomID= null)
     {
         $jsonRet['ret'] = 1;
         $jsonRet['data'] = '成功链接';
@@ -1178,7 +1178,7 @@ class Api extends CI_Controller
      * @param $locID
      * 根据checkID 返回目前已经编辑提交的申请的内容图片
      */
-    function GetApplyInfo($type, $locID)
+    function GetApplyInfo($type= null, $locID= null)
     {
         $dbObj = $this->load->database('default', TRUE);
         $type = is_null($this->input->get("type")) ? null : $this->input->get("type");
@@ -1310,7 +1310,7 @@ class Api extends CI_Controller
             }
             $dbObj->set('substation_id', $substationID);
             $dbObj->set('user_id', $userID);
-            if($questionID == 'ad'){
+            if ($questionID == 'ad') {
                 $questionID = 'enviroment';
             }
             $dbObj->set('content', json_encode([
@@ -1340,8 +1340,7 @@ class Api extends CI_Controller
             $dbObj->update('check_apply');
 
             //设备施工
-        }
-        elseif ($typeID == 2) {
+        } elseif ($typeID == 2) {
             $dbObj->where('room_id', $roomID);
             $dbObj->set('content', json_encode($applyContent));
             $dbObj->update('check_device');
@@ -1621,7 +1620,7 @@ class Api extends CI_Controller
      * $userID
      * 获取用户已经提交的局站
      */
-    public function getEditSubs($userID, $type, $locationType)
+    public function getEditSubs($userID= null, $type= null, $locationType= null)
     {
 
 
@@ -1699,7 +1698,7 @@ class Api extends CI_Controller
      * @param $id 工艺对应局站id 设备对应机房id
      * 获取用户已经提交的问题 对应局站(工艺)或机房(设备)
      */
-    public function getEditQuestions($type, $id)
+    public function getEditQuestions($type= null, $id= null)
     {
         $dbObj = $this->load->database('default', TRUE);
         $type = is_null($this->input->get("type")) ? null : $this->input->get("type");
@@ -1733,6 +1732,26 @@ class Api extends CI_Controller
 
             $answer = [];
             $contents = json_decode($res);
+
+            $dbObj = $this->load->database('default', TRUE);
+            $dbObj->where('room_id', $id);
+            $apply = $dbObj->get('check_device')->row_array();
+
+            $questionIDs = [];
+
+            //审核表里没有对应机房的信息，说明没有提交申请，获取所有设备列表
+            if (!empty($apply)) {
+                //审核表里有对应机房的信息，说明已经提交了申请，过滤掉已经提交过的，
+                $content = json_decode($apply['content']);
+                foreach ($content as $key => $c) {
+                    if ($key == 'ad') {
+                        $key = 'enviroment';
+                    }
+                    $questionIDs[] = $key;
+                }
+            }
+
+
             foreach ($contents as $k => $con) {
                 $ans['device_id'] = $k;
                 foreach (Constants::$devConfigList as $devConfig) {
@@ -1740,12 +1759,46 @@ class Api extends CI_Controller
                         $ans['device'] = $devConfig[1];
                         break;
                     }
+
+
+                    foreach (Constants::$devConfigList as $devConfig) {
+                        //返回device-room-substation 关联表
+                        $dataList = $this->mp_xjdh->Get_Room_Devs($id, $devConfig[0]);
+                        if (count($dataList) && in_array($devConfig[2], $questionIDs)) {
+                            $devObj = new stdClass();
+                            $devObj->type = $devConfig[2];
+                            $devObj->name = $devConfig[1];
+                            if ($devConfig[2] == "enviroment") {
+                                $devObj->type = "ad";
+                            } else if ($devConfig[2] == "smd_device") {
+                                foreach ($dataList as $dataObj) {
+                                    $dataObj->data_id = $dataObj->device_no;
+                                }
+                            } else if ($devConfig[2] == "door") {
+                                foreach ($dataList as $dataObj) {
+                                    $canOpen = false;
+                                    if ($this->user->user_role == 'admin') {
+                                        $canOpen = true;
+                                    } else if (in_array($this->user->user_role, array("city_admin", "operator"))) {
+                                        if ($dataObj->city_code == $this->user->city_code)
+                                            $canOpen = true;
+                                    } else {
+                                        $duObj = $this->mp_xjdh->Get_DoorUser($dataObj->data_id, $this->user->id);
+                                        if (count($duObj) && $duObj->remote_control)
+                                            $canOpen = true;
+                                    }
+                                    $dataObj->can_open = $canOpen ? 1 : 0;
+                                }
+                            }
+                            $devObj->devList = $dataList;
+                            $ans['devList'] = $devObj;
+                        }
+                    }
                 }
 //                $ans['device'] = $this->getDevContent($k);
                 $ans['content'] = $con;
                 $answer[] = $ans;
             }
-
             $jsonRet['ret'] = 0;
             $jsonRet['data'] = json_encode(['devContentList' => $answer]);
             echo json_encode($jsonRet);
@@ -1753,13 +1806,19 @@ class Api extends CI_Controller
         }
     }
 
+    public function getDevQuestion()
+    {
+
+    }
+
+
     /**
      * @param $type 1:工艺 2:设备
      * @param $id 工艺对应局站 设备对应机房
      * @param $questionID 工艺 验收为局站id 设备验收为设备id
      * 更新提交内容
      */
-    public function editQuestion($type, $id, $questionID)
+    public function editQuestion($type= null, $id= null, $questionID= null)
     {
         $questionID = $this->input->post("questionID");
         $id = $this->input->post("id");
@@ -1829,14 +1888,10 @@ class Api extends CI_Controller
         $dbObj = $this->load->database('default', TRUE);
         $content = $dbObj->where('data_id', $devID)->get('device')->row()->name;
         return $content;
-
     }
 
-    /**
-     *
-     * 管理员审核模块
-     *
-     */
+
+    //------------------------------管理员审核模块------------------------------//
     /**
      * @param $userID
      * 获取要审核的局站列表
@@ -1865,17 +1920,13 @@ class Api extends CI_Controller
     }
 
 
-    /**
-     *
-     * 施工队上传照片
-     *
-     */
 
+    //------------------------------施工队上传照片------------------------------//
     /**
      * @param $type 1：城市  2：局站
      * @param $id 当获取城市时不填 ，获取局站时填写城市id
      */
-    public function getLocations($type, $id)
+    public function getLocations($type= null, $id= null)
     {
         $dbObj = $this->load->database('default', TRUE);
         $type = $this->input->get('type') ? $this->input->get('type') : null;
@@ -1914,7 +1965,7 @@ class Api extends CI_Controller
      * @param $userID 督导ID
      * 上传施工队图片
      */
-    public function teamUpload($substationID, $userID)
+    public function teamUpload($substationID= null, $userID= null)
     {
         //存储文件
         $file_path = "./public/portal/Check_image/";
