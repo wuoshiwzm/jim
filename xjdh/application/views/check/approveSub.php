@@ -98,8 +98,8 @@
                                 <thead>
                                 <tr>
                                     <th>序号</th>
-                                    <th>问题</th>
-                                    <th>问题说明</th>
+                                    <th width="25%">问题</th>
+                                    <th width="30%">问题说明</th>
                                     <th>审核结果</th>
                                 </tr>
                                 </thead>

@@ -25,6 +25,12 @@ class Check extends CI_Controller
      */
     public function index()
     {
+        $dbObj = $this->load->database('default', TRUE);
+        $dbObj->select('id as room_id,name as room_name');
+        $dbObj->where('substation_id', 1);
+        $rooms = $dbObj->get('room')->result();
+
+        var_dump($rooms);die;
         $this->arrange();
     }
 
