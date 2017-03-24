@@ -165,9 +165,11 @@
                             class="active" <?php } ?>><a class="icon-user" href="#users"
                                                          data-original-title="人员管理"></a></li>
                     <?php } ?>
+                    <?php if (Author::allowRole(4, [4, 3, 2,1], User::GetCurrentUser()->check_role)) { ?>
                     <li <?php if (isset($actTab) && $actTab == '') { ?>
                         class="active" <?php } ?>><a class="icon-user" href="#check"
                                                      data-original-title="工程验收"></a></li>
+                    <?php } ?>
                 </ul>
             </div>
             <div class="responsive-leftbar">
@@ -511,10 +513,11 @@
                         </ul>
                     </div>
                 <?php } ?>
+                <?php if (Author::allowRole(4, [4, 3, 2], User::GetCurrentUser()->check_role)) { ?>
                 <div id="check" class="tab-pane">
                     <h4 class="side-head">工程验收</h4>
                     <ul class="metro-sidenav clearfix">
-                        <?php if (Author::allowRole(4, [4, 3, 2, 1], User::GetCurrentUser()->check_role)) { ?>
+                        <?php if (Author::allowRole(4, [4, 3, 2], User::GetCurrentUser()->check_role)) { ?>
                             <li><a class="orange"
                                    href="<?php echo site_url("check/arrange"); ?>"><i
                                             class="icon-user"></i><span>工程管理</span> </a></li>
@@ -524,7 +527,7 @@
                                    href="<?php echo site_url("check/people"); ?>"><i
                                             class="icon-user"></i><span>人员管理</span> </a></li>
                         <?php } ?>
-                        <?php if (Author::allowRole(4, [4, 3, 2, 1], User::GetCurrentUser()->check_role)) { ?>
+                        <?php if (Author::allowRole(4, [4, 3, 2], User::GetCurrentUser()->check_role)) { ?>
                             <li><a class="orange"
                                    href="<?php echo site_url("check/question"); ?>"><i
                                             class="icon-user"></i><span>问题管理</span> </a></li>
@@ -542,6 +545,8 @@
 
                     </ul>
                 </div>
+
+                <?php }?>
             </div>
         </div>
     </div>

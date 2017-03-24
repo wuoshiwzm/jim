@@ -25,12 +25,6 @@ class Check extends CI_Controller
      */
     public function index()
     {
-        $dbObj = $this->load->database('default', TRUE);
-        $dbObj->select('id as room_id,name as room_name');
-        $dbObj->where('substation_id', 1);
-        $rooms = $dbObj->get('room')->result();
-
-        var_dump($rooms);die;
         $this->arrange();
     }
 
@@ -113,6 +107,9 @@ class Check extends CI_Controller
         $dbObj = $this->load->database('default', TRUE);
         $dbObj->where('substation_id', $subID);
         $res = $dbObj->get('check_apply')->row();
+
+        $dbObj->where('substation_id', $subID);
+        $data['arrange'] = $dbObj->get('check_arrange')->row();
 
         //无任何信息
         if (is_null($res)) {
@@ -204,6 +201,9 @@ class Check extends CI_Controller
         }
 
 
+        $dbObj->where('substation_id', $subID);
+        $data['arrange'] = $dbObj->get('check_arrange')->row();
+
         $data['info'] = $this->getInfo($subID);
         $scriptExtra = '';
 
@@ -232,6 +232,7 @@ class Check extends CI_Controller
      */
     public function approveCase($subID)
     {
+
         $dbObj = $this->load->database('default', TRUE);
         $dbObj->where('substation_id', $subID);
         $apply = $dbObj->get('check_arrange')->row();
@@ -248,15 +249,16 @@ class Check extends CI_Controller
         }
         //一级审核未进行，则进行一级审核
         if (!$apply->check_jim) {
+
             $dbObj->where('substation_id', $subID);
             $dbObj->update('check_arrange', ['check_jim' => 1]);
             redirect('/check');
-            die('信息更新成功，请关闭窗口');
             return;
         }
         //二级审核
         $dbObj->where('substation_id', $subID);
         $dbObj->update('check_arrange', ['check_tel' => 1]);
+        redirect('/check');
         return;
     }
 

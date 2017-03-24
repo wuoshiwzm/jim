@@ -67,15 +67,6 @@
                                 <td>
 
 
-                                    <ul class="dowebokList">
-                                        <?php foreach (json_decode($team->photo) as $k=>$img) { ?><a
-                                            <?php if($k>=3){echo "style='display:none'";}?>
-                                            rel="group" class="image"
-                                            href="/public/portal/Check_image/<?php echo $img ?>">
-                                            <img src="/public/portal/Check_image/<?php echo $img ?>"
-                                                 alt="" style="height: 150px;"/></a>
-                                        <?php } ?>
-                                    </ul>
 
                                     <ul>
                                     <?php foreach (json_decode($team->photo) as $k=>$photo){?><a

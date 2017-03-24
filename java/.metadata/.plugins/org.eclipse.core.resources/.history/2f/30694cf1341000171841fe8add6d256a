@@ -1,0 +1,12 @@
+package testjava;
+
+import java.awt.Shape;
+
+public class helloworld {
+ 
+
+	public static void main(String[] args) {
+		GenericMemoryCell<Interger> m = new GenericMemoryCell<>();
+	}
+
+}

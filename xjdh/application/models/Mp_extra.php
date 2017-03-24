@@ -21,10 +21,21 @@ class Mp_extra extends CI_Model
         return $arrange = $dbObj->get('substation')->row();
     }
 
+    function Get_room_info($roomID){
+        $dbObj = $this->load->database('default', TRUE);
+        $dbObj->where('id',$roomID);
+        return $arrange = $dbObj->get('room')->row();
+    }
+
+    function Get_device_info($dataID){
+        $dbObj = $this->load->database('default', TRUE);
+        $dbObj->where('data_id',$dataID);
+        return $arrange = $dbObj->get('device')->row();
+    }
+
     function get_device_name($data_id){
         $dbObj = $this->load->database('default', TRUE);
         $dbObj->where('data_id',$data_id);
-        $dbObj->select('name');
         return $dbObj->get('device')->row()->name;
     }
 

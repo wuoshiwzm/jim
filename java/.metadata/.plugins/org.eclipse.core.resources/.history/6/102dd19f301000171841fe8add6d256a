@@ -1,0 +1,31 @@
+package testjava;
+
+import java.awt.Shape;
+
+public class helloworld {
+
+	public static Comparable findMax(Shape[] sh1) {
+		int maxIndex = 0;
+		for (int i = 1; i < sh1.length; i++) {
+			if (sh1[i].compareTo(sh1[maxIndex]) > 0) {
+				maxIndex = i;
+				System.out.println("dododo---Ð¡»ð³µ");
+			}
+		}
+		return sh1[maxIndex];
+	}
+
+	public static void main(String[] args) {
+		Shape [] sh1 = {
+				new Cirle(2.0),
+				new Square(3.0),
+				new Rectangle(3.0,4.0)
+		};
+		
+		String [] st1 ={"joe","leon","bill","zeke"};
+		System.out.println(findMax(sh1));
+		System.out.println(findMax(st1));
+
+	}
+
+}

@@ -22,17 +22,24 @@
                 </div>
             </div>
         </div>
-        <?php if ($info->is_apply == 1) { ?>
-            <h3>已提交</h3>
-            <form action="/check/unapproveCase" method="post">
-                <input type="hidden" name="subsID" value="<?php echo $info->substation_id ?>">
-                <textarea rows="8" class="15" name="suggestion">请输入需要整改内容 </textarea>
-                <button type="submit" class="btn  btn-info">审核不通过</button>
-            </form>
 
-        <?php } else { ?>
-            <h3>未提交</h3>
-        <?php } ?>
+        <!--        --><?php //if (($info->is_apply == 1) && ($arrange->check_tel !=1 ))  { ?>
+        <!--            <h3>已提交</h3>-->
+        <!--            <form action="/check/unapproveCase" method="post">-->
+        <!--                <input type="hidden" name="subsID" value="--><?php //echo $info->substation_id ?><!--">-->
+        <!--                <textarea rows="8" class="15" name="suggestion">请输入需要整改内容 </textarea>-->
+        <!--                <div>-->
+        <!--                    <button type="submit" class="btn  btn-info">审核不通过</button>-->
+        <!--                </div>-->
+        <!---->
+        <!--            </form>-->
+        <!---->
+        <!--        --><?php //}elseif($arrange->check_tel ==1 ){   ?>
+        <!--            <h3>已经通过审核 </h3>-->
+        <!---->
+        <!--        --><?php //} else { ?>
+        <!--            <h3>未提交</h3>-->
+        <!--        --><?php //} ?>
 
         <div class="row-fluid">
             <div class="span12">
@@ -69,7 +76,7 @@
                         <ul class="nav nav-tabs">
                             <li>
                                 <a href="/check/approveSub/<?php echo $info->substation_id ?>">
-                                    <i class="icon-tasks"></i>局站信息</a>
+                                    <i class="icon-tasks"></i>工艺信息</a>
                             </li>
 
                             <li class="active">
@@ -80,60 +87,67 @@
                         </ul>
                     </div>
 
-                    <!--机房审核-->
-                    <div class="widget-head bondi-blue">
-                        <h3>设备列表</h3>
-                    </div>
-                    <div class="widget-container">
-                        <table
-                                class="table table-bordered responsive table-striped table-sortable">
-                            <?php if (empty($cases)){ ?>
-                                目前还没有已验收的设备信息
-                            <?php } else{ ?>
-                            <thead>
-                            <tr>
-                                <th>设备名</th>
-                                <th>机房名</th>
-                                <th>上传图稿</th>
-                            </tr>
-                            </thead>
-                            <tbody>
-
-                            <?php foreach ($cases as $key => $room) { ?>
-                                <tr>
-                                    <td>
-                                        <?php echo $room['data_name']; ?>
-                                    </td>
-                                    <td>
-                                        <?php echo $room['room_id']; ?>
-                                    </td>
-                                    <td>
-                                        <?php echo $room['room_name']; ?>
-                                    </td>
-                                    <td>
-                                        <ul class="dowebokList">
-                                            <?php foreach ($room['data_pics']as $k=>$img) { ?>
-                                                <a
-                                                <?php if($k>=3){echo "style='display:none'";}?>
-                                                rel="group" class="image"
-                                                href="/public/portal/Check_image/<?php echo $img ?>">
-                                                <img src="/public/portal/Check_image/<?php echo $img ?>"
-                                                     alt="" style="height: 150px;"/></a>
-                                            <?php } ?>
-                                        </ul>
-                                    </td>
-                                </tr>
-                            <?php } ?>
-                            <?php } ?>
-
-                            </tbody>
-                        </table>
-                    </div>
-
 
                 </div>
             </div>
 
+        </div>
+        <hr>
+
+        <div class="row-fluid">
+            <div class="span12">
+                <!--机房审核-->
+                <div class="widget-head bondi-blue">
+                    <h3>设备列表</h3>
+                </div>
+                <div class="widget-container">
+                    <table
+                            class="table table-bordered responsive table-striped table-sortable">
+                        <?php if (empty($cases)){ ?>
+                            目前还没有已验收的设备信息
+                        <?php } else{ ?>
+                        <thead>
+                        <tr>
+                            <th>设备名</th>
+                            <th>机房名</th>
+                            <th>上传图稿</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+
+                        <?php foreach ($cases as $key => $room) { ?>
+                            <tr>
+                                <td>
+                                    <?php echo $room['data_name']; ?>
+                                </td>
+                                <td>
+                                    <?php echo $room['room_id']; ?>
+                                </td>
+                                <td>
+                                    <?php echo $room['room_name']; ?>
+                                </td>
+                                <td>
+                                    <ul class="dowebokList">
+                                        <?php foreach ($room['data_pics'] as $k => $img) { ?>
+                                            <a
+                                                <?php if ($k >= 3) {
+                                                    echo "style='display:none'";
+                                                } ?>
+                                                    rel="group" class="image"
+                                                    href="/public/portal/Check_image/<?php echo $img ?>">
+                                                <img src="/public/portal/Check_image/<?php echo $img ?>"
+                                                     alt="" style="height: 150px;"/></a>
+                                        <?php } ?>
+                                    </ul>
+                                </td>
+                            </tr>
+                        <?php } ?>
+                        <?php } ?>
+
+                        </tbody>
+                    </table>
+                </div>
+            </div>
         </div>
     </div>
 </div>

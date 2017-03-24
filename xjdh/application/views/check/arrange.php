@@ -21,8 +21,8 @@
                 </div>
             </div>
         </div>
-        <?php if ($checkRole == 4) { ?>
 
+        <?php if ($checkRole == 4) { ?>
             <!--安排督导验收局站-->
             <form class="form-horizontal" onsubmit="return checkForm()">
                 <div class="control-group">
@@ -54,10 +54,11 @@
 
             </form>
         <?php } ?>
+
         <br>
         <hr>
 
-
+        <div class="row-fluid ">
         <div class="span12">
             <div class="content-widgets light-gray">
                 <div class="widget-head bondi-blue">
@@ -158,106 +159,111 @@
                 </div>
             </div>
         </div>
-    </div>
+        </div>
 
 
-    <div class="row-fluid">
-        <div class="span12">
-            <div class="content-widgets light-gray">
-                <div class="widget-head bondi-blue">
-                    <h3>安排列表</h3>
-                </div>
-                <div class="widget-container">
-                    <table
-                            class="table table-bordered responsive table-striped table-sortable">
-                        <thead>
-                        <tr>
-                            <th>序号</th>
-                            <th>分公司</th>
-                            <th>区域</th>
-                            <th>吉姆督查</th>
-                            <th>局站</th>
-                            <th>吉姆督导</th>
-                            <th>分配时间</th>
-                            <th>验收时间</th>
-                            <th>电信督查</th>
-                            <th>验收状态</th>
-                            <th>审核状态</th>
-                            <th>操作</th>
-                            <!--<th>设备验证状态</th>-->
-                        </tr>
-                        </thead>
-                        <tbody>
-                        <?php foreach ($arranges as $arrange) { ?>
+        <div class="row-fluid">
+            <div class="span12">
+                <div class="content-widgets light-gray">
+                    <div class="widget-head bondi-blue">
+                        <h3>安排列表</h3>
+                    </div>
+                    <div class="widget-container">
+                        <table
+                                class="table table-bordered responsive table-striped table-sortable">
+                            <thead>
                             <tr>
-                                <td><?php echo $arrange->id; ?></td>
-                                <td> <?php echo $this->mp_extra->Get_substation_info($arrange->substation_id)->city?></td>
-                                <td> <?php echo $this->mp_extra->Get_substation_info($arrange->substation_id)->county?></td>
-<!--                                吉姆督查-->
-                                <td> <?php echo $this->mp_extra->get_user_fullname($arrange->check_jim_user_id); ?></td>
-<!--                                <td> 审核时间</td>-->
-                                <td><?php echo $this->mp_extra->Get_substation_info($arrange->substation_id)->name?></td>
-
-                                <td><?php echo $this->mp_extra->get_user_fullname($arrange->user_id); ?></td>
-<!--                                分配时间-->
-                                <td><?php echo $arrange->arrange_time; ?></td>
-<!--                                验收时间-->
-                                <td><?php echo $arrange->apply_time; ?></td>
-<!--                                电信督查-->
-                                <td><?php echo $this->mp_extra->get_user_fullname($arrange->check_tel_user_id); ?></td>
-                                <td>
-                                    <?php if ($arrange->status_check == 1) { ?>
-                                        <span class="label label-success">工艺验收通过</span><br>
-                                    <?php } ?>
-
-                                    <?php if ($arrange->status_device == 1) { ?>
-                                        <span class="label label-success">设备验收通过</span>
-                                    <?php } ?>
-                                </td>
-                                <td>
-                                    <?php if ($arrange->is_apply != 1) { ?>
-                                        <span class="label label-success">验收中</span><br>
-                                    <?php } ?>
-                                    <?php if ($arrange->is_apply == 1) { ?>
-                                        <span class="label label-success">已经提交审核</span><br>
-                                    <?php } ?>
-                                    <?php if ($arrange->check_jim == 1) { ?>
-                                        <span class="label label-success">已经通过吉姆审核</span><br>
-                                    <?php } ?>
-                                    <?php if ($arrange->check_tel == 1) { ?>
-                                        <span class="label label-success">已经通过电信审核</span>
-                                    <?php } ?>
-                                </td>
-                                <td>
-                                    <?php if ($checkRole == 4) { ?>
-                                        <input type="hidden" value="<?php echo $arrange->id; ?>">
-                                        <a type="button"
-                                           class="btn btn-info editArrange">编辑人员安排</a>
-                                    <?php } ?>
-                                    <?php if ((($checkRole == 2) && ($arrange->check_jim != 1))
-                                        || (($checkRole == 3) && (($arrange->check_tel != 1) && ($arrange->check_jim == 1)))
-                                        || ($checkRole == 4)
-                                    ) { ?>
-                                        <?php if($arrange->is_apply == 1) {?>
-                                            <a type="button"
-                                               href='<?php echo site_url('check/approveSub/' . $arrange->substation_id); ?>'
-                                               class="btn btn-success">审核工程</a>
-                                            <?php }elseif($arrange->is_apply != 1){?>
-                                            <a type="button"
-                                               href='<?php echo site_url('check/approveSub/' . $arrange->substation_id); ?>'
-                                               class="btn btn-info">查看审核信息</a>
-                                            <?php }?>
-                                    <?php } ?>
-                                </td>
-
+                                <th>序号</th>
+                                <th>分公司</th>
+                                <th>区域</th>
+                                <th>吉姆督查</th>
+                                <th>局站</th>
+                                <th>吉姆督导</th>
+                                <th>分配时间</th>
+                                <th>验收时间</th>
+                                <th>电信督查</th>
+                                <th>验收状态</th>
+                                <th>审核状态</th>
+                                <th>操作</th>
+                                <!--<th>设备验证状态</th>-->
                             </tr>
-                        <?php } ?>
-                        </tbody>
-                    </table>
+                            </thead>
+                            <tbody>
+                            <?php foreach ($arranges as $arrange) { ?>
+                                <tr>
+                                    <td><?php echo $arrange->id; ?></td>
+                                    <td> <?php echo $this->mp_extra->Get_substation_info($arrange->substation_id)->city?></td>
+                                    <td> <?php echo $this->mp_extra->Get_substation_info($arrange->substation_id)->county?></td>
+                                    <!--                                吉姆督查-->
+                                    <td> <?php echo $this->mp_extra->get_user_fullname($arrange->check_jim_user_id); ?></td>
+                                    <!--                                <td> 审核时间</td>-->
+                                    <td><?php echo $this->mp_extra->Get_substation_info($arrange->substation_id)->name?></td>
+
+                                    <td><?php echo $this->mp_extra->get_user_fullname($arrange->user_id); ?></td>
+                                    <!--                                分配时间-->
+                                    <td><?php echo $arrange->arrange_time; ?></td>
+                                    <!--                                验收时间-->
+                                    <td><?php echo $arrange->apply_time; ?></td>
+                                    <!--                                电信督查-->
+                                    <td><?php echo $this->mp_extra->get_user_fullname($arrange->check_tel_user_id); ?></td>
+                                    <td>
+                                        <?php if ($arrange->status_check == 1) { ?>
+                                            <span class="label label-success">工艺验收通过</span><br>
+                                        <?php } ?>
+
+                                        <?php if ($arrange->status_device == 1) { ?>
+                                            <span class="label label-success">设备验收通过</span>
+                                        <?php } ?>
+                                    </td>
+                                    <td>
+                                        <?php if ($arrange->is_apply != 1) { ?>
+                                            <span class="label label-success">验收中</span><br>
+                                        <?php } ?>
+                                        <?php if ($arrange->is_apply == 1) { ?>
+                                            <span class="label label-success">已经提交审核</span><br>
+                                        <?php } ?>
+                                        <?php if ($arrange->check_jim == 1) { ?>
+                                            <span class="label label-success">已经通过吉姆审核</span><br>
+                                        <?php } ?>
+                                        <?php if ($arrange->check_tel == 1) { ?>
+                                            <span class="label label-success">已经通过电信审核</span>
+                                        <?php } ?>
+                                    </td>
+                                    <td>
+                                        <?php if ($checkRole == 4) { ?>
+                                            <input type="hidden" value="<?php echo $arrange->id; ?>">
+                                            <a type="button"
+                                               class="btn btn-info editArrange">编辑人员安排</a>
+                                        <?php } ?>
+                                        <?php if ((($checkRole == 2) && ($arrange->check_jim != 1))
+                                            || (($checkRole == 3) && (($arrange->check_tel != 1) && ($arrange->check_jim == 1)))
+                                            || ($checkRole == 4)
+                                        ) { ?>
+                                            <?php if($arrange->is_apply == 1) {?>
+                                                <a type="button"
+                                                   href='<?php echo site_url('check/approveSub/' . $arrange->substation_id); ?>'
+                                                   class="btn btn-success">审核工程</a>
+                                            <?php }elseif($arrange->is_apply != 1){?>
+                                                <a type="button"
+                                                   href='<?php echo site_url('check/approveSub/' . $arrange->substation_id); ?>'
+                                                   class="btn btn-info">查看审核信息</a>
+                                            <?php }?>
+                                        <?php } ?>
+                                    </td>
+
+                                </tr>
+                            <?php } ?>
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
         </div>
+
     </div>
+
+
+
 </div>
 </div>
 

@@ -1261,7 +1261,7 @@ class Api extends CI_Controller
             return;
         }
 
-        if (empty($_FILES)) {
+        if (empty($_FILES) || is_null($_FILES)) {
             $fileName = ['null.jpg'];
         };
 
@@ -1340,8 +1340,7 @@ class Api extends CI_Controller
             $dbObj->update('check_apply');
 
             //设备施工
-        }
-        //设备施工
+        } //设备施工
         elseif ($typeID == 2) {
             $dbObj->where('room_id', $roomID);
             $dbObj->set('content', json_encode($applyContent));
@@ -1719,6 +1718,7 @@ class Api extends CI_Controller
                 $ans['content'] = $con;
                 $answer[] = $ans;
             }
+
             $jsonRet['ret'] = 0;
             $jsonRet['data'] = json_encode(['subContentList' => $answer]);
             echo json_encode($jsonRet);
@@ -1751,8 +1751,6 @@ class Api extends CI_Controller
                 }
             }
             foreach ($contents as $k => $con) {
-
-
                 foreach (Constants::$devConfigList as $devConfig) {
                     if ($devConfig[2] == $k) {
                         //返回device-room-substation 关联表
@@ -1838,6 +1836,10 @@ class Api extends CI_Controller
             echo json_encode('文件过大');
             return;
         }
+
+        if (empty($_FILES)) {
+            $fileName = ['null.jpg'];
+        };
 
         if ($type == 1) {
             $subID = $this->input->post("id");
@@ -1963,23 +1965,9 @@ class Api extends CI_Controller
 
         }//获取设备
         elseif ($type == 4) {
-            //过滤已经提交过的设备
-            $memoList = [];
-            $arr = $dbObj->where('room_id', $id)
-                ->get('check_memo')
-                ->result();
-
-
-
-            foreach ($arr as $a) {
-                $memoList[] = $a->data_id;
-            }
 
             $dbObj->select('data_id,name');
             $dbObj->where('room_id', $id);
-            if(!empty ($memoList)){
-                $dbObj ->where_not_in('data_id', $memoList);
-            }
             $devices = $dbObj->get('device')->result();
 
             $jsonRet['ret'] = 0;
@@ -2082,32 +2070,17 @@ class Api extends CI_Controller
         $roomID = $this->input->post('roomID') ? $this->input->post('roomID') : null;
         $deviceID = $this->input->post('deviceID') ? $this->input->post('deviceID') : null;
         $content = $this->input->post('content') ? $this->input->post('content') : null;
+        $record = $this->input->post('record') ? $this->input->post('record') : null;
 
-        //同一设备不能多次提交
-        $memoList = [];
-        $arr = $dbObj
-            ->select('data_id')
-            ->where('room_id', $roomID)
-            ->get('check_memo')
-            ->result();
-        foreach ($arr as $a) {
-            $memoList[] = $a->data_id;
-        }
-
-        if ((!empty($memoList)) && in_array($deviceID, $memoList)) {
-            $jsonRet['ret'] = 1;
-            $jsonRet['data'] = json_encode('已经添加过此设备');
-            echo json_encode($jsonRet);
-            return;
-        }
 
         $dbObj->set('user_id', $userID)
             ->set('substation_id', $subID)
             ->set('room_id', $roomID)
             ->set('data_id', $deviceID)
             ->set('content', $content)
-            ->set('pics',json_encode($fileName))
-            ->set('updated_at',date('Y-m-d H:i:s',time()))
+            ->set('record', $record)
+            ->set('pics', json_encode($fileName))
+            ->set('updated_at', date('Y-m-d H:i:s', time()))
             ->insert('check_memo');
 
         $jsonRet['ret'] = 0;
@@ -2116,17 +2089,109 @@ class Api extends CI_Controller
         return;
     }
 
-    public function updateMemo($memoID)
+    /**
+     * @param null $userID 用户ID
+     * @param null $subID 局站ID
+     * 获取用户的所有的故障信息 对应局站
+     */
+    public function getMemos($userID = null, $subID = null)
     {
+        $dbObj = $this->load->database('default', TRUE);
+        $userID = $this->input->get('userID') ? $this->input->get('userID') : null;
+        $subID = $this->input->get('subID') ? $this->input->get('subID') : null;
+
+        $memos = $dbObj->where('user_id', $userID)
+            ->where('active !=', 1)
+            ->where('substation_id', $subID)
+            ->get('check_memo')
+            ->result_array();
+
+        foreach ($memos as &$memo) {
+            $memo['substationName'] = $this->mp_extra->Get_substation_info($memo['substation_id'])->name;
+            $memo['roomName'] = $this->mp_extra->Get_room_info($memo['room_id'])->name;
+            $memo['deviceName'] = $this->mp_extra->Get_device_info($memo['data_id'])->name;
+        }
+
+        $jsonRet['ret'] = 0;
+        $jsonRet['data'] = json_encode(['memoList' => $memos]);
+        echo json_encode($jsonRet);
+        return;
+    }
+
+
+    /**
+     * @param null $userID
+     * 获取所有的故障局站
+     */
+    public function getMemoSubs($userID = null)
+    {
+        $dbObj = $this->load->database('default', TRUE);
+        $userID = $this->input->get('userID') ? $this->input->get('userID') : null;
+
+        $memos = $dbObj
+            ->where('user_id', $userID)
+            ->where('active !=', 1)
+            ->distinct('substation_id')
+            ->select('substation_id')
+            ->get('check_memo')
+            ->result_array();
+
+        foreach ($memos as &$memo) {
+            $memo['substationName'] = $this->mp_extra->Get_substation_info($memo['substation_id'])->name;
+        }
+
+        $jsonRet['ret'] = 0;
+        $jsonRet['data'] = json_encode(['substationList' => $memos]);
+        echo json_encode($jsonRet);
+        return;
+
 
     }
 
-    public function getMemos($userID = null)
+    /**
+     * @param $memoID
+     * 获取故障记录的内容
+     */
+    public function getMemo($memoID)
     {
+        $dbObj = $this->load->database('default', TRUE);
+        $userID = $this->input->get('userID') ? $this->input->get('userID') : null;
 
+        $memo = $dbObj->where('id', $memoID)
+            ->get('check_memo')->row();
+
+        $jsonRet['ret'] = 0;
+        $jsonRet['data'] = json_encode(['memoContent' => $memo]);
+        echo json_encode($jsonRet);
+        return;
     }
 
+    /**
+     * @param null $memoID 故障信息ID
+     * @param null $content 提交的内容
+     * @param null $active 是否已经解决，解决为1 否则为0
+     * 更改现有记录
+     */
+    public function updateMemo($memoID = null, $active = null)
+    {
+
+        $dbObj = $this->load->database('default', TRUE);
+        $memoID = $this->input->post('memoID') ? $this->input->post('memoID') : null;
+        $active = $this->input->post('active') ? $this->input->post('active') : null;
+
+
+        if ($active == 1) {
+            $dbObj->where('id', $memoID);
+            $dbObj->set('active', $active);
+            $dbObj->update('check_memo');
+        }
+
+        $jsonRet['ret'] = 0;
+        $jsonRet['data'] = json_encode('更新成功');
+        echo json_encode($jsonRet);
+        return;
+    }
 
 }
 
-?>
+

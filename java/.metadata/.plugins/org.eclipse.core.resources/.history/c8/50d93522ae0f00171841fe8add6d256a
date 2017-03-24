@@ -1,0 +1,28 @@
+package testjava;
+
+public class helloworld {
+	
+	public static Comparable findMax(Comparable [] arr){
+		int maxIndex = 0;
+		for (int i = 1; i < arr.length; i++) {
+			
+		}
+	}
+
+	public static void main(String[] args) {
+		 MemoryCell m = new MemoryCell();
+		 
+		 m.write(new Integer(3213512));
+		 
+		 Integer wrapperVal = (Integer) m.read();
+
+		 int val = wrapperVal.intValue();
+		 
+		 System.out.println("Contents are:"+val);
+		 
+	}
+
+ 
+
+}
+
