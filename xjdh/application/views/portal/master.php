@@ -532,7 +532,7 @@
                                    href="<?php echo site_url("check/question"); ?>"><i
                                             class="icon-user"></i><span>问题管理</span> </a></li>
                         <?php } ?>
-                        <?php if (Author::allowRole(4, 4, User::GetCurrentUser()->check_role)) { ?>
+                        <?php if (Author::allowRole(4, [4,3,2], User::GetCurrentUser()->check_role)) { ?>
                             <li><a class="orange"
                                    href="<?php echo site_url("team"); ?>"><i
                                             class="icon-user"></i><span>施工队管理</span> </a></li>

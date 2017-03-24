@@ -25,6 +25,7 @@ class Check extends CI_Controller
      */
     public function index()
     {
+
         $this->arrange();
     }
 
@@ -116,10 +117,12 @@ class Check extends CI_Controller
             $data['cases'] = [];
         } else {
             //获取审核问题内容
-            $contents = json_decode($res->content);
+            $contents = json_decode($res->content,true);
+            ksort($contents);
             $data['cases'] = [];
 
             foreach ($contents as $key => $content) {
+
                 $dbObj = $this->load->database('default', TRUE);
                 $dbObj->where('id', $key);
                 $res = $dbObj->get('check_question')->row();
@@ -190,7 +193,7 @@ class Check extends CI_Controller
                 foreach ($contents as $key => $content) {
                     array_push($data['cases'], [
                         'data_id' => $key,
-                        'data_name' => $this->mp_extra->get_device_name($key),
+                        'data_name' => $this->mp_extra->get_device_type_name($key),
                         'data_pics' => $content,
                         'room_id' => $r->room_id,
                         'room_name' => $this->mp_xjdh->Get_room_name($r->room_id)->name,
@@ -446,7 +449,7 @@ class Check extends CI_Controller
         $bcObj = new Breadcrumb();
 
         //权限判断与显示
-        if (Author::allowRole(5, [3, 4], $check_role)) {
+        if (Author::allowRole(5, [3, 4,2], $check_role)) {
             //获取督导的数据
             $bcObj->title = '审核工程 - 安排督导';
             $bcObj->url = site_url("check/arrange");
@@ -717,7 +720,8 @@ class Check extends CI_Controller
 
         $dbObj = $this->load->database('default', TRUE);
         $check_role = $this->userObj->check_role;
-        if ($check_role != 4) {
+
+        if (!Author::allowRole(4, [2, 3, 4], $this->userObj->check_role)) {
             redirect('/check');
         }
         //提交结果 - 安排督导角色
@@ -954,7 +958,6 @@ class Check extends CI_Controller
     /**
      *
      * 局站设备故障记录
-     *
      *
      */
     public function memo()

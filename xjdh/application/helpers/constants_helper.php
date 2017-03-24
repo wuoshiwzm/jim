@@ -19,7 +19,8 @@ class Constants{
             array(array('liebert-ups'),"UPS设备", "liebert-ups"),
             array(array('liebert-pex','datamate3000','canatal','ug40'),"专用空调", "ac"),
             array(array('motor_battery'),'油机启动电池',"motor_battery"),
-            array(array('mec10','meaccess4000x','amf25','motivator'),'柴油发电机组',"engine"),
+            array(array('mec10','meaccess4000x','amf25'),'柴油发电机组',"engine"),
+        //,'motivator','venv'
     );
     
     static $pmBusConfig = array(

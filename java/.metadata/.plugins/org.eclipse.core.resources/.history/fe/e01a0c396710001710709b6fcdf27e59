@@ -1,0 +1,17 @@
+package testjava;
+
+
+
+public class helloworld {
+
+	public static void main(String[] args) {
+
+		long start = System.currentTimeMillis(); // 获取开始时间
+
+		int n = 500;
+		n++;
+	 
+		long end = System.currentTimeMillis(); // 获取结束时间
+		System.out.println("程序运行时间： " + (end - start) + "ms");
+	}
+}

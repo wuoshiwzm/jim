@@ -2100,6 +2100,7 @@ class Api extends CI_Controller
         $userID = $this->input->get('userID') ? $this->input->get('userID') : null;
         $subID = $this->input->get('subID') ? $this->input->get('subID') : null;
 
+
         $memos = $dbObj->where('user_id', $userID)
             ->where('active !=', 1)
             ->where('substation_id', $subID)
@@ -2117,7 +2118,6 @@ class Api extends CI_Controller
         echo json_encode($jsonRet);
         return;
     }
-
 
     /**
      * @param null $userID

@@ -68,4 +68,13 @@ class Mp_extra extends CI_Model
         return $dbObj->get('room')->row();
     }
 
+    function get_device_type_name($data_type){
+        foreach (Constants::$devConfigList as $a){
+            if($a[2] == $data_type){
+                return $a[1];
+            }
+        }
+        return '无此设备类型';
+    }
+
 }

@@ -1,0 +1,23 @@
+package testjava;
+
+
+
+public class helloworld {
+
+	public static void main(String[] args) {
+		output(-4539872316.211212512);		
+	}
+	static void output(double num) {
+		// 整数部分'
+	
+		long digit = (long) Math.abs(num);
+		
+		if(digit < 1) {
+
+			system.out.print("0");
+
+		}
+				
+		System.out.println(num);
+	}
+}
