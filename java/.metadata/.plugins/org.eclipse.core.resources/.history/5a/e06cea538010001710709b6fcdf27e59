@@ -1,0 +1,17 @@
+package testjava;
+processFile( SomeFile );
+
+public class test03_24_00 {
+
+	public static void main(String[] args) {
+		
+	}
+	
+	public static int ones( int n ){
+		if(n<2){
+			return 2;
+		}else{
+			ones(n/2);
+		}
+	}
+}

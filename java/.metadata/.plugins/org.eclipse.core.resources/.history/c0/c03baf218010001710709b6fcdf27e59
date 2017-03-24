@@ -1,0 +1,8 @@
+package testjava;
+
+public class test03_24_00 {
+
+	public static void main(String[] args) {
+		processFile( SomeFile );
+	}
+}
