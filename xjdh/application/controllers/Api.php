@@ -971,7 +971,7 @@ class Api extends CI_Controller
         $devList = array();
         foreach (Constants::$devConfigList as $devConfig) {
             //返回device-room-substation 关联表
-            $dataList = $this->mp_xjdh->Get_Room_Devs($room_id, $devConfig[0]);
+            $dataList = $this->mp_extra->Get_Room_Devs($room_id, $devConfig[0]);
             if (count($dataList) && (!in_array($devConfig[2], $questionIDs) || empty($questionIDs))) {
                 $devObj = new stdClass();
                 $devObj->type = $devConfig[2];
@@ -1338,8 +1338,6 @@ class Api extends CI_Controller
             $dbObj->where('substation_id', $substationID);
             $dbObj->set('content', json_encode($applyContent));
             $dbObj->update('check_apply');
-
-            //设备施工
         } //设备施工
         elseif ($typeID == 2) {
             $dbObj->where('room_id', $roomID);
@@ -1393,6 +1391,7 @@ class Api extends CI_Controller
         $questionAvailable = [];
         //工艺施工
         if ($typeID == 1) {
+
             $dbObj->where_not_in('id', $questionIDs);
             $questionAvailable = $dbObj->get('check_question')->result_array();
             //更新arrange表
@@ -1407,7 +1406,10 @@ class Api extends CI_Controller
                 $dbObj->set('is_apply', 1);
                 $dbObj->update('check_arrange');
             }
-        } //设备验收
+        }
+
+
+        //设备验收
         elseif ($typeID == 2) {
 
             //获取设备类型对应的model数组
@@ -1423,9 +1425,11 @@ class Api extends CI_Controller
             //获取还没有提交的设备数组
             $dbObj->where('room_id', $id)
                 ->where_not_in('model', $model)
+                ->where_not_in('model',['motivator','venv'])
                 ->where('active', 1);
             $questionAvailable = $dbObj->get('device')->row_array();
         }
+
         //更新is_apply 字段为1
         if (empty($questionAvailable)) {
             //更新is_apply状态
@@ -1732,7 +1736,6 @@ class Api extends CI_Controller
             $dbObj->select('content');
             $res = $dbObj->get('check_device')->row()->content;
 
-
             $devs = [];
             $contents = json_decode($res);
 
@@ -1754,7 +1757,7 @@ class Api extends CI_Controller
                 foreach (Constants::$devConfigList as $devConfig) {
                     if ($devConfig[2] == $k) {
                         //返回device-room-substation 关联表
-                        $dataList = $this->mp_xjdh->Get_Room_Devs($id, $devConfig[0]);
+                        $dataList = $this->mp_extra->Get_Room_Devs($id, $devConfig[0]);
                         if (count($dataList) && in_array($devConfig[2], $questionIDs)) {
                             $devObj = new stdClass();
                             $devObj->type = $devConfig[2];
@@ -1792,7 +1795,6 @@ class Api extends CI_Controller
                                 }
                             }
                             $devObj->name = $name;
-
                             array_push($devs, $devObj);
                         }
                         break;

@@ -513,7 +513,7 @@
                         </ul>
                     </div>
                 <?php } ?>
-                <?php if (Author::allowRole(4, [4, 3, 2], User::GetCurrentUser()->check_role)) { ?>
+                <?php if (Author::allowRole(4, [4, 3, 2,1], User::GetCurrentUser()->check_role)) { ?>
                 <div id="check" class="tab-pane">
                     <h4 class="side-head">工程验收</h4>
                     <ul class="metro-sidenav clearfix">
@@ -542,6 +542,13 @@
                                    href="<?php echo site_url("check/process"); ?>"><i
                                             class="icon-user"></i><span>施工进度</span> </a></li>
                         <?php } ?>
+
+                        <?php if (Author::allowRole(4, [1,4], User::GetCurrentUser()->check_role)) { ?>
+                            <li><a class="orange"
+                                   href="<?php echo site_url("check/upload"); ?>"><i
+                                            class="icon-user"></i><span>上传工艺审核</span> </a></li>
+                        <?php } ?>
+
 
                     </ul>
                 </div>

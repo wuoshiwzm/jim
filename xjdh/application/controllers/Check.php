@@ -117,7 +117,7 @@ class Check extends CI_Controller
             $data['cases'] = [];
         } else {
             //获取审核问题内容
-            $contents = json_decode($res->content,true);
+            $contents = json_decode($res->content, true);
             ksort($contents);
             $data['cases'] = [];
 
@@ -449,7 +449,7 @@ class Check extends CI_Controller
         $bcObj = new Breadcrumb();
 
         //权限判断与显示
-        if (Author::allowRole(5, [3, 4,2], $check_role)) {
+        if (Author::allowRole(5, [3, 4, 2], $check_role)) {
             //获取督导的数据
             $bcObj->title = '审核工程 - 安排督导';
             $bcObj->url = site_url("check/arrange");
@@ -801,6 +801,172 @@ class Check extends CI_Controller
         echo 'true';
     }
 
+    /**
+     *
+     * 督导上传模块
+     *
+     */
+
+    public function upload()
+    {
+
+        if (!Author::allowRole(4, [1, 4], $this->userObj->check_role)) {
+            redirect('/check');
+        }
+
+        $data = array();
+        $data['userObj'] = $this->userObj;
+        $data['bcList'] = array();
+
+        //导航栏
+        $bcObj = new Breadcrumb();
+        $bcObj->title = '审核工程';
+        $bcObj->url = site_url("check");
+        $bcObj->isLast = false;
+        array_push($data['bcList'], $bcObj);
+
+        $bcObj = new Breadcrumb();
+        $bcObj->title = '审核工程 - 选择验收单位';
+        $bcObj->url = site_url("check/upload");
+        $bcObj->isLast = true;
+        array_push($data['bcList'], $bcObj);
+
+
+        //工艺
+        $applySubArr = [];
+
+        $dbObj = $this->load->database('default', TRUE);
+
+        //没有可以提交的局站
+
+        $where = "user_id =".$this->userObj->id." AND(status_check!=1 OR status_device!=1)";
+        $availableSub = $dbObj
+            ->where($where)
+            ->get('check_arrange')->result();
+        if(empty($availableSub)){
+            //die('no data waiting for applied!');
+        }
+
+        //获取用户的安排局站
+        $applySubs = $dbObj->where('user_id', $this->userObj->id)
+            ->where('status_check !=', 1)
+            ->get('check_arrange')
+            ->result();
+        foreach ($applySubs as $sub) {
+            $applySubArr[] = $sub->substation_id;
+        }
+        $data['subs'] = $applySubArr;
+
+        //设备验收
+        //安排的局站
+        $deviceSubs = [];
+        $devSubs = $dbObj->where('user_id', $this->userObj->id)
+            ->where('status_device !=', 1)
+            ->get('check_arrange')
+            ->result();
+        foreach ($devSubs as $sub) {
+            $deviceSubs[] = $sub->substation_id;
+        }
+
+        //已经提交了信息的机房信息
+        $appliedDevRooms = [];
+        $devRooms = $dbObj->where('user_id', $this->userObj->id)
+            ->where('is_apply', 1)
+            ->get('check_device')
+            ->result();
+        foreach ($devRooms as $r) {
+            $appliedDevRooms[] = $r->room_id;
+        }
+        //获取可以提交的的机房
+        if(empty($deviceSubs)){
+            $data['rooms'] = [];
+        }else{
+            $dbObj-> where_in('substation_id', $deviceSubs);
+            if (!empty($appliedDevRooms)) {
+                $dbObj->where_not_in('id', $appliedDevRooms);
+            }
+            $data['rooms'] = $dbObj->get('room')->result();
+        }
+
+        $scriptExtra = '';
+        $scriptExtra .= '<script type="text/javascript" src="/public/js/highcharts/highcharts.js"></script>';
+
+        $content = $this->load->view("check/upload", $data, TRUE);
+        $this->mp_master->Show_Portal($content, $scriptExtra, '审核进度', $data);
+    }
+
+    //上传工艺审核
+    public function upload_apply($subID)
+    {
+        //权限判断与显示
+        if (!Author::allowRole(4, [1, 4], $this->userObj->check_role)) {
+            redirect('/check');
+        }
+        $dbObj = $this->load->database('default',TRUE);
+
+        $data = array();
+        $data['userObj'] = $this->userObj;
+        $data['bcList'] = array();
+
+        //导航栏
+        $bcObj = new Breadcrumb();
+        $bcObj->title = '审核工程';
+        $bcObj->url = site_url("check");
+        $bcObj->isLast = false;
+        array_push($data['bcList'], $bcObj);
+
+        $bcObj = new Breadcrumb();
+        $bcObj->title = '提交验收';
+        $bcObj->url = site_url("check/upload");
+        $bcObj->isLast = false;
+        array_push($data['bcList'], $bcObj);
+
+        $bcObj = new Breadcrumb();
+        $bcObj->title = '工艺审核';
+        $bcObj->url = site_url("");
+        $bcObj->isLast = true;
+        array_push($data['bcList'], $bcObj);
+
+        //已经提交过的问题
+        $answeredQues=[];
+
+
+        $answer = $dbObj->where('substation_id',$subID)->get('check_apply')->row()->content;
+        $answer = json_decode($answer,true);
+
+        foreach($answer as $k=>$ans){
+            $answeredQues[] = $k;
+        }
+
+        if(!empty($answeredQues)){
+            $dbObj->where_not_in('id',$answeredQues);
+        }
+        $data['questions'] = $dbObj->get('check_question')->result();
+        $data['subID'] = $subID;
+        $scriptExtra = '';
+        $scriptExtra .= '<script type="text/javascript" src="/public/layer/layer.js"></script>';
+
+        $content = $this->load->view("check/upload_apply", $data, TRUE);
+        $this->mp_master->Show_Portal($content, $scriptExtra, '审核进度', $data);
+    }
+
+    //上传设备审核
+    public function upload_device($roomID)
+    {
+        die($roomID);
+        die('upload_device');
+    }
+
+    //上传图稿
+    public function upload_img($type,$topicID){
+        //上传图片
+
+        //页面跳转
+        $data['type'] = $type;
+        $data['topicID'] = $topicID;
+       $this->load->view("img_upload/img_upload",$data);
+    }
+
 
     /**
      *
@@ -946,7 +1112,6 @@ class Check extends CI_Controller
 
         $scriptExtra = '';
         $scriptExtra .= '<script type="text/javascript" src="/public/js/highcharts/highcharts.js"></script>';
-//        $scriptExtra .= '<link rel="stylesheet" href="/public/js/jstree/themes/default/style.min.css"/>';
 
         $data['checks'] = $checks;
 

@@ -120,9 +120,9 @@
                                 <td>
                                     <?php echo $room['data_name']; ?>
                                 </td>
-                                <td>
-                                    <?php echo $room['room_id']; ?>
-                                </td>
+<!--                                <td>-->
+<!--                                    --><?php //echo $room['room_id']; ?>
+<!--                                </td>-->
                                 <td>
                                     <?php echo $room['room_name']; ?>
                                 </td>

@@ -26,7 +26,7 @@ class Author
      * @return bool
      * 权限过滤
      */
-    function allowRole($type, $roleAllow = null, $roleApply = null)
+    static function allowRole($type, $roleAllow = null, $roleApply = null)
     {
 
         //1: role

@@ -21,6 +21,12 @@ class Mp_extra extends CI_Model
         return $arrange = $dbObj->get('substation')->row();
     }
 
+    function getSubstationByRoom($roomID){
+        $dbObj = $this->load->database('default', TRUE);
+        $dbObj->where('id',$roomID);
+        return $substation = $dbObj->get('room')->row();
+    }
+
     function Get_room_info($roomID){
         $dbObj = $this->load->database('default', TRUE);
         $dbObj->where('id',$roomID);
@@ -77,4 +83,49 @@ class Mp_extra extends CI_Model
         return '无此设备类型';
     }
 
+    function Get_Room_Devs($room_id, $model)
+    {
+        $dbObj = $this->load->database('default', TRUE);
+        //first we need to filter out smd_device
+        if (is_array($model) && in_array("smd_device", $model)) {
+            $dbObj->join('room', 'room.id=smd_device.room_id');
+            $dbObj->join('substation', 'substation.id=room.substation_id', 'left');
+            $dbObj->where('smd_device.room_id', $room_id);
+            $dbObj->where('active', true);
+            $dbObj->select("smd_device.*,substation.city_code");
+            $ret = $dbObj->get('smd_device')->result();
+            //echo $dbObj->last_query();
+            return $ret;
+        } else {
+            //
+            $dbObj->join('room', 'room.id=device.room_id');
+            $dbObj->join('substation', 'substation.id=room.substation_id', 'left');
+            $dbObj->where('device.room_id', $room_id);
+            $dbObj->where_not_in('device.model',['motivator','venv']);
+            $dbObj->where('active', true);
+            if (is_array($model)) {
+                $dbObj->where_in('model', $model);
+            } else {
+                $dbObj->where('model', $model);
+            }
+            $dbObj->order_by('dev_group', 'ASC');
+            $dbObj->order_by('name', 'ASC');
+            $dbObj->select('device.*,substation.city_code,room.substation_id');
+            $ret = $dbObj->get('device')->result();
+            //echo $dbObj->last_query();
+            return $ret;
+        }
+    }
+
+    function getArrangeBySub($subID){
+        $dbObj = $this->load->database('default', TRUE);
+        $res = $dbObj->where('substation_id',$subID)->get('check_arrange')->row();
+        return $res;
+    }
+
+    function getArrangeByRoom($roomID){
+        $dbObj = $this->load->database('default', TRUE);
+        $res = $dbObj->where('room_id',$roomID)->get('check_device')->row();
+        return $res;
+    }
 }
