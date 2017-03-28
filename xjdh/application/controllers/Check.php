@@ -1159,7 +1159,7 @@ class Check extends CI_Controller
     }
 
     /**
-     * 则更新此机房对应的check_apply表的is_apply字段为1
+     * 则更新对应的check_apply表的is_apply字段 和 check_arrange 字段
      */
     private function updateCheckAppply($typeID, $id)
     {
@@ -1175,8 +1175,8 @@ class Check extends CI_Controller
         }
         $dbObj = $this->load->database('default', TRUE);
         $dbObj->where($search, $id);
-        $applyInfo = $dbObj->get($tableName)->row_array();
-        $content = json_decode($applyInfo['content']);
+        $applyInfo = $dbObj->get($tableName)->row();
+        $content = json_decode($applyInfo->content);
 
         //判断是否已经完成提交
         //已经提交的问题id
@@ -1230,18 +1230,25 @@ class Check extends CI_Controller
         //更新is_apply 字段为1
         if (empty($questionAvailable)) {
             //更新is_apply状态
-            $dbObj->where('room_id', $id);
+            if($typeID ==1){
+                $dbObj->where('substation_id', $id);
+            }elseif ($typeID ==2){
+                $dbObj->where('room_id', $id);
+            }
             $dbObj->set('is_apply', 1);
             $dbObj->update($tableName);
+
+            //更新check_arrange表
+            if($typeID ==1){
+                $subID = $id;
+            }elseif ($typeID ==2){
+                $dbObj->where('room_id', $id);
+                $dbObj->where('id', $id);
+                $subID = $room = $dbObj->get('room')->row()->substation_id;
+            }
+            $this->updateStatusDevice($subID);
         }
 
-        //更新check_arrange表
-        if (($typeID == 2) && (empty($questionAvailable))) {
-            $dbObj->where('id', $id);
-            $dbObj->select('substation_id');
-            $room = $dbObj->get('room')->row();
-            $this->updateStatusDevice($room->substation_id);
-        }
         return true;
     }
 
@@ -1254,22 +1261,36 @@ class Check extends CI_Controller
         $dbObj = $this->load->database('default', TRUE);
         $rarr = [];
 
+        //获取局站所有机房
         $dbObj->where('substation_id', $subID);
         $rids = $dbObj->get('room')->result();
         //机房id数组
         foreach ($rids as $rid) {
             $rarr[] = $rid->id;
         }
+
         //还有机房没有提交任何信息
-        $dbObj->where_not_in('room_id', $rarr);
-        $dbObj->where('substation_id', $subID);
-        $res1 = $dbObj->get('check_device')->result_array();
-        //还有机房提交了信息但没有提交完成
-        $dbObj->where_in('room_id', $rarr);
-        $dbObj->where('is_apply !=', 1);
-        $res2 = $dbObj->get('check_device')->result_array();
+        $roomApplied=[];
+//        $dbObj->where_not_in('room_id', $rarr);
+        $dbObj->where('substation_id', $subID)
+            ->where('is_apply !=',1);
+        $res1 = $dbObj->get('check_device')->result();
+        $result = TRUE;
+        if (!empty($res1)){
+            foreach($res1 as $re1){
+                $roomApplied[] =  $re1->room_id;
+            }
+        }
+        foreach ($rarr as $room){
+            if(!in_array($room->id,$roomApplied)){
+                $result = FALSE;
+                break;
+            }
+        }
+
+
         //没有机房还没提交
-        if (empty($res1) && empty($res2)) {
+        if (!$result) {
             //更新status_device
             $dbObj->set('status_device', 1);
             $dbObj->where('substation_id', $subID);
