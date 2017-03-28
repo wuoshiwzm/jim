@@ -8,7 +8,7 @@
  * License: http://www.plupload.com/license
  * Contributing: http://www.plupload.com/contributing
  */
-
+die('test');
 #!! IMPORTANT: 
 #!! this file is just an example, it doesn't incorporate any security checks and 
 #!! is not recommended to be used in production environment as it is. Be sure to 

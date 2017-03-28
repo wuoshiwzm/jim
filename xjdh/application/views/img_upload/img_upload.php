@@ -1,24 +1,139 @@
-
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>PHP无刷新多图片预览上传功能 - 素材牛素材演示</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <title>上传图片</title>
     <style type="text/css">
-        ul,li{list-style: none;padding:0;margin:0}
-        .btn{-webkit-border-radius:3px;-moz-border-radius:3px;-ms-border-radius:3px;-o-border-radius:3px;border-radius:3px;
-            background-color: #ff8400;color: #fff;display: inline-block;height: 28px;line-height: 28px;text-align: center;
-            width: 72px;transition: background-color 0.2s linear 0s;border:none;cursor:pointer;margin:0 0 20px;}
-        .demo{width:700px;margin:0 auto;}
-        .progress{border:1px solid #ddd;}
-        .btn:hover{background-color: #e95a00;text-decoration: none}
-        .ul_pics li{float:left;width:160px;height:160px;border:1px solid #ddd;padding:2px;text-align: center;margin:0 5px 5px 0;}
-        .ul_pics li .img{width: 160px;height: 140px;display: table-cell;vertical-align: middle;}
-        .ul_pics li img{max-width: 160px;max-height: 140px;vertical-align: middle;}
-        .progress{position:relative;padding: 1px; border-radius:3px; margin:60px 0 0 0;}
-        .bar {background-color: green; display:block; width:0%; height:20px; border-radius:3px; }
-        .percent{position:absolute; height:20px; display:inline-block;top:3px; left:2%; color:#fff }
-        .demo p{margin: 3px 0;font-size:12px;color:#666;}
+        ul, li {
+            list-style: none;
+            padding: 0;
+            margin: 0
+        }
+
+        .btn {
+            -webkit-border-radius: 3px;
+            -moz-border-radius: 3px;
+            -ms-border-radius: 3px;
+            -o-border-radius: 3px;
+            border-radius: 3px;
+            background-color: #ff8400;
+            color: #fff;
+            display: inline-block;
+            height: 28px;
+            line-height: 28px;
+            text-align: center;
+            width: 72px;
+            transition: background-color 0.2s linear 0s;
+            border: none;
+            cursor: pointer;
+            margin: 0 0 20px;
+        }
+
+        .btn_submit {
+            -webkit-border-radius: 3px;
+            -moz-border-radius: 3px;
+            -ms-border-radius: 3px;
+            -o-border-radius: 3px;
+            border-radius: 3px;
+            background-color: #0ec6f8;
+            color: #fff;
+            display: inline-block;
+            height: 28px;
+            line-height: 28px;
+            text-align: center;
+            width: 72px;
+            transition: background-color 0.2s linear 0s;
+            border: none;
+            cursor: pointer;
+            margin: 0 0 20px;
+        }
+
+        .btn_close {
+            -webkit-border-radius: 3px;
+            -moz-border-radius: 3px;
+            -ms-border-radius: 3px;
+            -o-border-radius: 3px;
+            border-radius: 3px;
+            background-color: #d40402;
+            color: #fff;
+            display: inline-block;
+            height: 28px;
+            line-height: 28px;
+            text-align: center;
+            width: 72px;
+            transition: background-color 0.2s linear 0s;
+            border: none;
+            cursor: pointer;
+            margin: 0 0 20px;
+        }
+
+        .demo {
+            width: 700px;
+            margin: 0 auto;
+        }
+
+        .progress {
+            border: 1px solid #ddd;
+        }
+
+        .btn:hover {
+            background-color: #e95a00;
+            text-decoration: none
+        }
+
+        .ul_pics li {
+            float: left;
+            width: 160px;
+            height: 160px;
+            border: 1px solid #ddd;
+            padding: 2px;
+            text-align: center;
+            margin: 0 5px 35px 0;
+        }
+
+        .ul_pics li .img {
+            width: 160px;
+            height: 160px;
+            display: table-cell;
+            vertical-align: middle;
+        }
+
+        .ul_pics li img {
+            max-width: 160px;
+            max-height: 140px;
+            vertical-align: middle;
+        }
+
+        .progress {
+            position: relative;
+            padding: 1px;
+            border-radius: 3px;
+            margin: 60px 0 0 0;
+        }
+
+        .bar {
+            background-color: green;
+            display: block;
+            width: 0%;
+            height: 20px;
+            border-radius: 3px;
+        }
+
+        .percent {
+            position: absolute;
+            height: 20px;
+            display: inline-block;
+            top: 3px;
+            left: 2%;
+            color: #fff
+        }
+
+        .demo p {
+            margin: 3px 0;
+            font-size: 12px;
+            color: #666;
+        }
     </style>
 
 </head>
@@ -27,13 +142,24 @@
 
 <div class="container">
     <div class="demo">
-        <a class="btn" id="btn">上传图片</a> 最大500KB，支持jpg，gif，png格式。
+
+        <hr>
+        <a class="btn" id="btn">选择图片</a>
+        <a class="btn" onclick="del_img()">重新上传</a>
+        <a class="btn_close" onclick="del_img()">关闭窗口</a>
+
+        最大2048KB，支持jpg，gif，png格式。
+
         <ul id="ul_pics" class="ul_pics clearfix"></ul>
     </div>
 
 
     <script type="text/javascript" src="/public/img_upload/jquery.js"></script>
     <script type="text/javascript" src="/public/img_upload/plupload.full.min.js"></script>
+<!--    layer-->
+    <script type="text/javascript" src="/public/layer/layer.js"></script>
+<!--    ajax上传-->
+    <script type="text/javascript" src="/public/js/validform/validform.js"></script>
 
     <script type="text/javascript">
         var uploader = new plupload.Uploader({ //创建实例的构造方法
@@ -48,7 +174,7 @@
             silverlight_xap_url: 'plupload/Moxie.xap',
             //silverlight文件地址
             filters: {
-                max_file_size: '500kb',
+                max_file_size: '2048kb',
                 //最大上传文件大小（格式100b, 10kb, 10mb, 1gb）
                 mime_types: [ //允许文件上传类型
                     {
@@ -59,36 +185,68 @@
             multi_selection: true,
             //true:ctrl多文件上传, false 单文件上传
             init: {
-                FilesAdded: function(up, files) { //文件上传前
+                FilesAdded: function (up, files) { //文件上传前
                     if ($("#ul_pics").children("li").length > 30) {
                         alert("您上传的图片太多了！");
                         uploader.destroy();
                     } else {
                         var li = '';
                         plupload.each(files,
-                            function(file) { //遍历文件
+                            function (file) { //遍历文件
                                 li += "<li id='" + file['id'] + "'><div class='progress'><span class='bar'></span><span class='percent'>0%</span></div></li>";
                             });
                         $("#ul_pics").append(li);
                         uploader.start();
                     }
                 },
-                UploadProgress: function(up, file) { //上传中，显示进度条
+                UploadProgress: function (up, file) { //上传中，显示进度条
                     $("#" + file.id).find('.bar').css({
                         "width": file.percent + "%"
                     }).find(".percent").text(file.percent + "%");
                 },
-                FileUploaded: function(up, file, info) { //文件上传成功的时候触发
+                FileUploaded: function (up, file, info) { //文件上传成功的时候触发
                     var data = JSON.parse(info.response);
-                    $("#" + file.id).html("<div class='img'><img src='" + data.pic + "'/></div><p>" + data.name + "</p>");
+                    $("#" + file.id).html("<div class='imgs'><div class='img'>" +
+                        "<img  src='/public/portal/Check_image/" + data.name + "'/></div><p>"
+//                        + "<button class='del_img' onclick=del_img("+"'"+ data.name+"')"+
+//                    ">删除</button>"
+                        + "</p></div>");
+
+                    $("#img_zone").append("<input type='hidden'  name='pics[]' value='"
+                        + data.name + "'></input>");
+                    //上传FORM创建
                 },
-                Error: function(up, err) { //上传出错的时候触发
+                Error: function (up, err) { //上传出错的时候触发
                     alert(err.message);
                 }
             }
         });
+
+        function del_img() {
+            $('.ul_pics li').remove();
+            $("#img_zone").empty();
+        }
         uploader.init();
+
+
     </script>
 </div>
+<div class="demo"  >
+<form action="/check/upload_img" class="upload_img" method="post">
+    <input type="hidden" name="typeID" value="<?php echo $typeID ?>"><br>
+    <input type="hidden" name="topicID" value="<?php echo $topicID  ?>"><br>
+    <input type="hidden" name="questionID" value="<?php echo $questionID  ?>">
+    <div id="img_zone">
+
+    </div>
+    <input type="submit" class="btn_submit" value="确认提交">
+
+</form>
+
+</div>
+
 </body>
+<script>
+
+</script>
 </html>

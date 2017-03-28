@@ -128,4 +128,5 @@ class Mp_extra extends CI_Model
         $res = $dbObj->where('room_id',$roomID)->get('check_device')->row();
         return $res;
     }
+
 }

@@ -45,7 +45,10 @@
                             <tbody>
                             <?php foreach ($questions as $question) { ?>
                                 <tr>
-                                    <td><?php echo $question->id ?></td>
+                                    <td >
+                                        <input class="questionID" type="hidden" value="<?php echo $question->id ?>">
+                                        <?php echo $question->id ?>
+                                    </td>
                                     <td><?php echo $question->content ?></td>
                                     <td>
                                         <?php echo $question->desc ?>
@@ -53,22 +56,8 @@
 
 
                                     <td>
-                                        <button class="uploadImg" onclick="newWindow()">通过验收</button>
-
-                                        <script>
-                                            function newWindow() {
-                                                layer.open({
-                                                    type: 2,
-                                                    title: 'layer mobile页',
-                                                    shadeClose: true,
-                                                    shade: 0.8,
-                                                    area: ['55%', '65%'],
-                                                    content: '/check/upload_img/1/<?php echo $subID?>'
-                                                });
-                                            }
-
-
-                                        </script>
+                                        <button class="uploadImg" onclick="newWindow(<?php echo $question->id ?>)">
+                                            通过验收</button>
                                     </td>
                                 </tr>
                             <?php } ?>
@@ -83,3 +72,17 @@
 
     </div>
 </div>
+
+<script>
+    function newWindow($questionID) {
+
+        layer.open({
+            type: 2,
+            title: 'layer mobile页',
+            shadeClose: true,
+            shade: 0.8,
+            area: ['55%', '65%'],
+            content: '/check/upload_img/1/<?php echo $subID?>/'+$questionID
+        });
+    }
+</script>

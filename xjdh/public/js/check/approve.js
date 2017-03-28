@@ -51,8 +51,6 @@ $(".update").bind("click",function () {
     var content = $(this).parent().parent().find(".content").val();
     var desc = $(this).parent().parent().find(".desc").val();
 
-
-
     if(content==''){
         alert('一个填写问题内容必填');
     }else{

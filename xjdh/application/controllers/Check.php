@@ -839,11 +839,11 @@ class Check extends CI_Controller
 
         //没有可以提交的局站
 
-        $where = "user_id =".$this->userObj->id." AND(status_check!=1 OR status_device!=1)";
+        $where = "user_id =" . $this->userObj->id . " AND(status_check!=1 OR status_device!=1)";
         $availableSub = $dbObj
             ->where($where)
             ->get('check_arrange')->result();
-        if(empty($availableSub)){
+        if (empty($availableSub)) {
             //die('no data waiting for applied!');
         }
 
@@ -857,7 +857,7 @@ class Check extends CI_Controller
         }
         $data['subs'] = $applySubArr;
 
-        //设备验收
+        //-----------------------------设备验收----------------------------//
         //安排的局站
         $deviceSubs = [];
         $devSubs = $dbObj->where('user_id', $this->userObj->id)
@@ -878,15 +878,16 @@ class Check extends CI_Controller
             $appliedDevRooms[] = $r->room_id;
         }
         //获取可以提交的的机房
-        if(empty($deviceSubs)){
+        if (empty($deviceSubs)) {
             $data['rooms'] = [];
-        }else{
-            $dbObj-> where_in('substation_id', $deviceSubs);
+        } else {
+            $dbObj->where_in('substation_id', $deviceSubs);
             if (!empty($appliedDevRooms)) {
                 $dbObj->where_not_in('id', $appliedDevRooms);
             }
             $data['rooms'] = $dbObj->get('room')->result();
         }
+
 
         $scriptExtra = '';
         $scriptExtra .= '<script type="text/javascript" src="/public/js/highcharts/highcharts.js"></script>';
@@ -902,7 +903,7 @@ class Check extends CI_Controller
         if (!Author::allowRole(4, [1, 4], $this->userObj->check_role)) {
             redirect('/check');
         }
-        $dbObj = $this->load->database('default',TRUE);
+        $dbObj = $this->load->database('default', TRUE);
 
         $data = array();
         $data['userObj'] = $this->userObj;
@@ -928,18 +929,18 @@ class Check extends CI_Controller
         array_push($data['bcList'], $bcObj);
 
         //已经提交过的问题
-        $answeredQues=[];
+        $answeredQues = [];
 
 
-        $answer = $dbObj->where('substation_id',$subID)->get('check_apply')->row()->content;
-        $answer = json_decode($answer,true);
+        $answer = $dbObj->where('substation_id', $subID)->get('check_apply')->row()->content;
+        $answer = json_decode($answer, true);
 
-        foreach($answer as $k=>$ans){
+        foreach ($answer as $k => $ans) {
             $answeredQues[] = $k;
         }
 
-        if(!empty($answeredQues)){
-            $dbObj->where_not_in('id',$answeredQues);
+        if (!empty($answeredQues)) {
+            $dbObj->where_not_in('id', $answeredQues);
         }
         $data['questions'] = $dbObj->get('check_question')->result();
         $data['subID'] = $subID;
@@ -953,18 +954,335 @@ class Check extends CI_Controller
     //上传设备审核
     public function upload_device($roomID)
     {
-        die($roomID);
-        die('upload_device');
+
+        //权限判断与显示
+        if (!Author::allowRole(4, [1, 4], $this->userObj->check_role)) {
+            redirect('/check');
+        }
+        $dbObj = $this->load->database('default', TRUE);
+
+        $data = array();
+        $data['userObj'] = $this->userObj;
+        $data['bcList'] = array();
+
+        //导航栏
+        $bcObj = new Breadcrumb();
+        $bcObj->title = '审核工程';
+        $bcObj->url = site_url("check");
+        $bcObj->isLast = false;
+        array_push($data['bcList'], $bcObj);
+
+        $bcObj = new Breadcrumb();
+        $bcObj->title = '提交验收';
+        $bcObj->url = site_url("check/upload");
+        $bcObj->isLast = false;
+        array_push($data['bcList'], $bcObj);
+
+        $bcObj = new Breadcrumb();
+        $bcObj->title = '设备审核';
+        $bcObj->url = site_url("");
+        $bcObj->isLast = true;
+        array_push($data['bcList'], $bcObj);
+
+
+        $data['questions'] = $this->getDeviceList($roomID);;
+        $data['roomID'] = $roomID;
+
+        $scriptExtra = '';
+        $scriptExtra .= '<script type="text/javascript" src="/public/layer/layer.js"></script>';
+        //var_dump($data['questions']);die;
+        $content = $this->load->view("check/upload_device", $data, TRUE);
+        $this->mp_master->Show_Portal($content, $scriptExtra, '审核进度', $data);
     }
 
-    //上传图稿
-    public function upload_img($type,$topicID){
-        //上传图片
+    //获取设备列表
+    private function getDeviceList($roomID)
+    {
+        $dbObj = $this->load->database('default', TRUE);
+        $dbObj->where('room_id', $roomID);
+        $apply = $dbObj->get('check_device')->row_array();
+
+        $questionIDs = [];
+        //var_dump(empty($apply));die;
+        //审核表里没有对应机房的信息，说明没有提交申请，获取所有设备列表
+        if (!empty($apply)) {
+            //审核表里有对应机房的信息，说明已经提交了申请，过滤掉已经提交过的，
+            $content = json_decode($apply['content']);
+            foreach ($content as $key => $c) {
+                if ($key == 'ad') {
+                    $key = 'enviroment';
+                }
+                $questionIDs[] = $key;
+            }
+        }
+
+        $devList = array();
+        foreach (Constants::$devConfigList as $devConfig) {
+            //返回device-room-substation 关联表
+            $dataList = $this->mp_extra->Get_Room_Devs($roomID, $devConfig[0]);
+            if (count($dataList) && (!in_array($devConfig[2], $questionIDs) || empty($questionIDs))) {
+                $devObj = new stdClass();
+                $devObj->type = $devConfig[2];
+                $devObj->name = $devConfig[1];
+                if ($devConfig[2] == "enviroment") {
+//                    $devObj->type = "ad";
+                } else if ($devConfig[2] == "smd_device") {
+                    foreach ($dataList as $dataObj) {
+                        $dataObj->data_id = $dataObj->device_no;
+                    }
+                } else if ($devConfig[2] == "door") {
+                    foreach ($dataList as $dataObj) {
+                        $canOpen = false;
+                        if ($this->user->user_role == 'admin') {
+                            $canOpen = true;
+                        } else if (in_array($this->user->user_role, array("city_admin", "operator"))) {
+                            if ($dataObj->city_code == $this->user->city_code)
+                                $canOpen = true;
+                        } else {
+                            $duObj = $this->mp_xjdh->Get_DoorUser($dataObj->data_id, $this->user->id);
+                            if (count($duObj) && $duObj->remote_control)
+                                $canOpen = true;
+                        }
+                        $dataObj->can_open = $canOpen ? 1 : 0;
+                    }
+                }
+                $devObj->devList = $dataList;
+                array_push($devList, $devObj);
+            }
+        }
+
+
+        //如果全都已经提交了，就更新状态，返回空值
+        return $devList;
+    }
+
+    //
+    /**
+     * @param null $type 1:局站验收 工艺  2：机房验收 设备类型
+     * @param null $topicID 对应局站ID 或 机房ID
+     * @param null $questionID 问题ID
+     * 上传图稿页面
+     */
+    public function upload_img($typeID = null, $topicID = null, $questionID = null)
+    {
+        $post = $this->input->post();
+        //上传图稿
+        if (!empty($post)) {
+            $typeID = $post['typeID'];
+            $topicID = $post['topicID'];
+            $questionID = $post['questionID'];
+
+            $pics = $post['pics'];
+            $dbObj = $this->load->database('default', TRUE);
+
+            //工艺验收
+            if ($typeID == 1) {
+                $tableName = 'check_apply';
+            }
+
+            //设备验收
+            if ($typeID == 2) {
+                $tableName = 'check_device';
+            }
+
+            if ($typeID == 1) {
+                $dbObj->where('substation_id', $topicID);
+            }
+            if ($typeID == 2) {
+                $dbObj->where('room_id', $topicID);
+            }
+            $res = $dbObj->get($tableName)->row_array();
+
+            //如果已经提交了审核，则不能提交
+            if ($res['is_apply'] == 1) {
+                echo "已经提交过，不能重复提交！";
+                return;
+            }
+
+            //判断是否第一次上传，第一次上传新建一条check_apply数据
+            if (empty($res)) {
+                if ($typeID == 2) {
+                    $dbObj->set('room_id', $topicID);
+                    $dbObj->set('substation_id',
+                        $this->mp_extra->getSubstationByRoom($topicID)->substation_id);
+                } elseif ($typeID == 1) {
+                    $dbObj->set('substation_id', $topicID);
+                }
+
+                $dbObj->set('user_id', $this->userObj->id);
+                if ($questionID == 'ad') {
+                    $questionID = 'enviroment';
+                }
+                $dbObj->set('content', json_encode([
+                    $questionID => $pics,
+                ]));
+                $dbObj->insert($tableName);
+            }else{
+                //如果不是第一次上传，就找到对应的信息， 在content字段追加数据
+                $applyContent = json_decode($res['content'], true);
+
+                $applyContent[$questionID] = $pics;
+                //工艺施工
+                if ($typeID == 1) {
+                    $dbObj->where('substation_id', $topicID);
+                    $dbObj->set('content', json_encode($applyContent));
+                    $dbObj->update('check_apply');
+                } //设备施工
+                elseif ($typeID == 2) {
+                    $dbObj->where('room_id', $topicID);
+                    $dbObj->set('content', json_encode($applyContent));
+                    $dbObj->update('check_device');
+                }
+            }
+
+            //更新对应apply状态
+
+                $writable = $this->updateCheckAppply($typeID, $topicID);
+
+            if ($writable) {
+                $jsonRet['ret'] = 0;
+                $jsonRet['data'] = '';
+                echo json_encode($jsonRet);
+                return;
+            };
+
+        }
 
         //页面跳转
-        $data['type'] = $type;
+        $data['typeID'] = $typeID;
         $data['topicID'] = $topicID;
-       $this->load->view("img_upload/img_upload",$data);
+        $data['questionID'] = $questionID;
+        echo $typeID . "< >" . $topicID . "< >" . $questionID;
+
+
+        $this->load->view("img_upload/img_upload", $data);
+    }
+
+    /**
+     * 则更新此机房对应的check_apply表的is_apply字段为1
+     */
+    private function updateCheckAppply($typeID, $id)
+    {
+        //施工工艺验收
+        if ($typeID == 1) {
+            $tableName = 'check_apply';
+            $search = 'substation_id';
+        }
+        //设备验收
+        if ($typeID == 2) {
+            $tableName = 'check_device';
+            $search = 'room_id';
+        }
+        $dbObj = $this->load->database('default', TRUE);
+        $dbObj->where($search, $id);
+        $applyInfo = $dbObj->get($tableName)->row_array();
+        $content = json_decode($applyInfo['content']);
+
+        //判断是否已经完成提交
+        //已经提交的问题id
+        $questionIDs = [];
+        foreach ($content as $key => $c) {
+            $questionIDs[] = $key;
+        }
+
+        $questionAvailable = [];
+        //工艺施工
+        if ($typeID == 1) {
+
+            $dbObj->where_not_in('id', $questionIDs);
+            $questionAvailable = $dbObj->get('check_question')->result_array();
+            //更新arrange表
+            if (empty($questionAvailable)) {
+                $dbObj->where('substation_id', $id);
+                $dbObj->set('status_check', 1);
+                $dbObj->update('check_arrange');
+
+                //更新check_arrange表的is_apply字段
+                $dbObj->where('status_device', 1);
+                $dbObj->where('status_check', 1);
+                $dbObj->set('is_apply', 1);
+                $dbObj->update('check_arrange');
+            }
+        }
+
+
+        //设备验收
+        elseif ($typeID == 2) {
+
+            //获取设备类型对应的model数组
+            $model = [];
+            foreach ($questionIDs as &$qid) {
+                foreach (Constants::$devConfigList as $devConfig) {
+                    if ($qid == $devConfig[2]) {
+                        $model = array_merge($model, $devConfig[0]);
+                        break;
+                    }
+                }
+            }
+            //获取还没有提交的设备数组
+            $dbObj->where('room_id', $id)
+                ->where_not_in('model', $model)
+                ->where_not_in('model',['motivator','venv'])
+                ->where('active', 1);
+            $questionAvailable = $dbObj->get('device')->row_array();
+        }
+
+        //更新is_apply 字段为1
+        if (empty($questionAvailable)) {
+            //更新is_apply状态
+            $dbObj->where('room_id', $id);
+            $dbObj->set('is_apply', 1);
+            $dbObj->update($tableName);
+        }
+
+        //更新check_arrange表
+        if (($typeID == 2) && (empty($questionAvailable))) {
+            $dbObj->where('id', $id);
+            $dbObj->select('substation_id');
+            $room = $dbObj->get('room')->row();
+            $this->updateStatusDevice($room->substation_id);
+        }
+        return true;
+    }
+
+    /**
+     * @param $subID局站ID
+     * 更新局站对应的status_device属性
+     */
+    private function updateStatusDevice($subID)
+    {
+        $dbObj = $this->load->database('default', TRUE);
+        $rarr = [];
+
+        $dbObj->where('substation_id', $subID);
+        $rids = $dbObj->get('room')->result();
+        //机房id数组
+        foreach ($rids as $rid) {
+            $rarr[] = $rid->id;
+        }
+        //还有机房没有提交任何信息
+        $dbObj->where_not_in('room_id', $rarr);
+        $dbObj->where('substation_id', $subID);
+        $res1 = $dbObj->get('check_device')->result_array();
+        //还有机房提交了信息但没有提交完成
+        $dbObj->where_in('room_id', $rarr);
+        $dbObj->where('is_apply !=', 1);
+        $res2 = $dbObj->get('check_device')->result_array();
+        //没有机房还没提交
+        if (empty($res1) && empty($res2)) {
+            //更新status_device
+            $dbObj->set('status_device', 1);
+            $dbObj->where('substation_id', $subID);
+            $dbObj->update('check_arrange');
+        }
+
+        //更新check_arrange表的is_apply字段
+        $dbObj->where('status_device', 1);
+        $dbObj->where('status_check', 1);
+        $dbObj->set('is_apply', 1);
+        $dbObj->update('check_arrange');
+
+        return true;
     }
 
 
