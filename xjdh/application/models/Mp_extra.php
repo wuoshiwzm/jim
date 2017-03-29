@@ -119,7 +119,9 @@ class Mp_extra extends CI_Model
 
     function getArrangeBySub($subID){
         $dbObj = $this->load->database('default', TRUE);
-        $res = $dbObj->where('substation_id',$subID)->get('check_arrange')->row();
+        $res = $dbObj->where('substation_id',$subID)
+            ->get('check_arrange')
+            ->row();
         return $res;
     }
 
@@ -128,5 +130,42 @@ class Mp_extra extends CI_Model
         $res = $dbObj->where('room_id',$roomID)->get('check_device')->row();
         return $res;
     }
+
+    //判断工艺问题是否已经提交部分
+    function checkApplied($subID){
+        $dbObj = $this->load->database('default', TRUE);
+        $res = $dbObj->where('substation_id',$subID)
+            ->get('check_apply')
+            ->row();
+        return $res;
+    }
+
+    //判断设备问题是否已经提交部分
+    function deviceApplied($roomID){
+        $dbObj = $this->load->database('default', TRUE);
+        $res = $dbObj->where('room_id',$roomID)
+            ->get('check_device')
+            ->row();
+        return $res;
+    }
+
+    //获取设备类型的中文名称
+    function getDeviceTypeName($typeName){
+        foreach (Constants::$devConfigList as $devConfig){
+            if($devConfig[2] == $typeName){
+                return $devConfig[1];
+            }
+        }
+    }
+
+    //获取问题内容 通过问题ID
+    function getQuestionContent($questionID){
+        $dbObj = $this->load->database('default', TRUE);
+        $res = $dbObj->where('id',$questionID)
+            ->get('check_question')
+            ->row();
+        return $res;
+    }
+
 
 }

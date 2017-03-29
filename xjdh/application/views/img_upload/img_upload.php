@@ -144,12 +144,13 @@
     <div class="demo">
 
         <hr>
-        <a class="btn" id="btn">选择图片</a>
+        <a class="btn" id="btn">选择图片</a>最大2048KB，支持jpg，gif，png格式。
         <a class="btn" onclick="del_img()">重新上传</a>
-        <a class="btn_close" onclick="del_img()">关闭窗口</a>
-
-        最大2048KB，支持jpg，gif，png格式。
-
+<div>
+    <?php if($success == 1){?>
+        <h6>***已经上传成功，您可以重新上传，这将会覆盖之前上传的图片，或者关闭窗口</h6>
+    <?php }?>
+</div>
         <ul id="ul_pics" class="ul_pics clearfix"></ul>
     </div>
 

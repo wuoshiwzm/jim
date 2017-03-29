@@ -826,7 +826,7 @@ class Check extends CI_Controller
         array_push($data['bcList'], $bcObj);
 
         $bcObj = new Breadcrumb();
-        $bcObj->title = '审核工程 - 选择验收单位';
+        $bcObj->title = '选择验收单位';
         $bcObj->url = site_url("check/upload");
         $bcObj->isLast = true;
         array_push($data['bcList'], $bcObj);
@@ -834,15 +834,14 @@ class Check extends CI_Controller
 
         //工艺
         $applySubArr = [];
-
         $dbObj = $this->load->database('default', TRUE);
 
         //没有可以提交的局站
-
         $where = "user_id =" . $this->userObj->id . " AND(status_check!=1 OR status_device!=1)";
         $availableSub = $dbObj
             ->where($where)
-            ->get('check_arrange')->result();
+            ->get('check_arrange')
+            ->result();
         if (empty($availableSub)) {
             //die('no data waiting for applied!');
         }
@@ -890,7 +889,6 @@ class Check extends CI_Controller
 
 
         $scriptExtra = '';
-        $scriptExtra .= '<script type="text/javascript" src="/public/js/highcharts/highcharts.js"></script>';
 
         $content = $this->load->view("check/upload", $data, TRUE);
         $this->mp_master->Show_Portal($content, $scriptExtra, '审核进度', $data);
@@ -942,7 +940,8 @@ class Check extends CI_Controller
         if (!empty($answeredQues)) {
             $dbObj->where_not_in('id', $answeredQues);
         }
-        $data['questions'] = $dbObj->get('check_question')->result();
+        $ques = $dbObj->order_by('id')->get('check_question')->result();
+        $data['questions'] = $ques;
         $data['subID'] = $subID;
         $scriptExtra = '';
         $scriptExtra .= '<script type="text/javascript" src="/public/layer/layer.js"></script>';
@@ -1056,14 +1055,14 @@ class Check extends CI_Controller
         return $devList;
     }
 
-    //
+
     /**
      * @param null $type 1:局站验收 工艺  2：机房验收 设备类型
      * @param null $topicID 对应局站ID 或 机房ID
      * @param null $questionID 问题ID
      * 上传图稿页面
      */
-    public function upload_img($typeID = null, $topicID = null, $questionID = null)
+    public function upload_img($typeID = null, $topicID = null, $questionID = null, $success = null)
     {
         $post = $this->input->post();
         //上传图稿
@@ -1073,6 +1072,9 @@ class Check extends CI_Controller
             $questionID = $post['questionID'];
 
             $pics = $post['pics'];
+            if(empty($pics)){
+                $pics = ['null.jpg'];
+            }
             $dbObj = $this->load->database('default', TRUE);
 
             //工艺验收
@@ -1113,15 +1115,20 @@ class Check extends CI_Controller
                 if ($questionID == 'ad') {
                     $questionID = 'enviroment';
                 }
+
                 $dbObj->set('content', json_encode([
                     $questionID => $pics,
                 ]));
                 $dbObj->insert($tableName);
-            }else{
+            } else {
                 //如果不是第一次上传，就找到对应的信息， 在content字段追加数据
                 $applyContent = json_decode($res['content'], true);
+                if(isset($applyContent[$questionID])){
+                    $applyContent[$questionID] =  $pics;
+                }else{
+                    $applyContent[$questionID] =  $pics;
+                }
 
-                $applyContent[$questionID] = $pics;
                 //工艺施工
                 if ($typeID == 1) {
                     $dbObj->where('substation_id', $topicID);
@@ -1137,23 +1144,21 @@ class Check extends CI_Controller
 
             //更新对应apply状态
 
-                $writable = $this->updateCheckAppply($typeID, $topicID);
+            $writable = $this->updateCheckAppply($typeID, $topicID);
 
             if ($writable) {
-                $jsonRet['ret'] = 0;
-                $jsonRet['data'] = '';
-                echo json_encode($jsonRet);
-                return;
+                echo "成功";
             };
-
+            $success = 1;
+            redirect('/check/upload_img/' . $typeID . '/' . $topicID . '/' . $questionID . '/' . $success);
         }
 
         //页面跳转
         $data['typeID'] = $typeID;
         $data['topicID'] = $topicID;
         $data['questionID'] = $questionID;
-        echo $typeID . "< >" . $topicID . "< >" . $questionID;
-
+        $data['success'] = $success;
+        //echo " typeID: ".$typeID . " topicID: " . $topicID . " questionID " . $questionID." success: ".$success;
 
         $this->load->view("img_upload/img_upload", $data);
     }
@@ -1203,10 +1208,7 @@ class Check extends CI_Controller
                 $dbObj->set('is_apply', 1);
                 $dbObj->update('check_arrange');
             }
-        }
-
-
-        //设备验收
+        } //设备验收
         elseif ($typeID == 2) {
 
             //获取设备类型对应的model数组
@@ -1222,7 +1224,7 @@ class Check extends CI_Controller
             //获取还没有提交的设备数组
             $dbObj->where('room_id', $id)
                 ->where_not_in('model', $model)
-                ->where_not_in('model',['motivator','venv'])
+                ->where_not_in('model', ['motivator', 'venv'])
                 ->where('active', 1);
             $questionAvailable = $dbObj->get('device')->row_array();
         }
@@ -1230,19 +1232,19 @@ class Check extends CI_Controller
         //更新is_apply 字段为1
         if (empty($questionAvailable)) {
             //更新is_apply状态
-            if($typeID ==1){
+            if ($typeID == 1) {
                 $dbObj->where('substation_id', $id);
-            }elseif ($typeID ==2){
+            } elseif ($typeID == 2) {
                 $dbObj->where('room_id', $id);
             }
             $dbObj->set('is_apply', 1);
             $dbObj->update($tableName);
 
             //更新check_arrange表
-            if($typeID ==1){
+            if ($typeID == 1) {
                 $subID = $id;
-            }elseif ($typeID ==2){
-                $dbObj->where('room_id', $id);
+            } elseif ($typeID == 2) {
+
                 $dbObj->where('id', $id);
                 $subID = $room = $dbObj->get('room')->row()->substation_id;
             }
@@ -1270,19 +1272,19 @@ class Check extends CI_Controller
         }
 
         //还有机房没有提交任何信息
-        $roomApplied=[];
+        $roomApplied = [];
 //        $dbObj->where_not_in('room_id', $rarr);
         $dbObj->where('substation_id', $subID)
-            ->where('is_apply !=',1);
+            ->where('is_apply !=', 1);
         $res1 = $dbObj->get('check_device')->result();
         $result = TRUE;
-        if (!empty($res1)){
-            foreach($res1 as $re1){
-                $roomApplied[] =  $re1->room_id;
+        if (!empty($res1)) {
+            foreach ($res1 as $re1) {
+                $roomApplied[] = $re1->room_id;
             }
         }
-        foreach ($rarr as $room){
-            if(!in_array($room->id,$roomApplied)){
+        foreach ($rarr as $room) {
+            if (!in_array($room->id, $roomApplied)) {
                 $result = FALSE;
                 break;
             }
@@ -1304,6 +1306,180 @@ class Check extends CI_Controller
         $dbObj->update('check_arrange');
 
         return true;
+    }
+
+    /**
+     *
+     * 督导修改模块
+     *
+     */
+    /*
+     * 修改总页面
+     */
+    public function editUpload()
+    {
+        if (!Author::allowRole(4, [1, 4], $this->userObj->check_role)) {
+            redirect('/check');
+        }
+
+        $data = array();
+        $data['userObj'] = $this->userObj;
+        $data['bcList'] = array();
+
+        //导航栏
+        $bcObj = new Breadcrumb();
+        $bcObj->title = '审核工程';
+        $bcObj->url = site_url("check");
+        $bcObj->isLast = false;
+        array_push($data['bcList'], $bcObj);
+
+        $bcObj = new Breadcrumb();
+        $bcObj->title = '修改验收信息';
+        $bcObj->url = site_url("check/editUpload");
+        $bcObj->isLast = true;
+        array_push($data['bcList'], $bcObj);
+
+        //工艺
+        $dbObj = $this->load->database('default', TRUE);
+
+        $subs = $dbObj->where('user_id', $this->userObj->id)
+            ->where('is_apply !=', 1)
+            ->get('check_apply')
+            ->result();
+
+        //设备
+        $rooms = $dbObj->where('user_id', $this->userObj->id)
+            ->where('is_apply !=', 1)
+            ->get('check_device')
+            ->result();
+
+        $data['subs'] = $subs;
+        $data['rooms'] = $rooms;
+
+        $scriptExtra = '';
+
+        $content = $this->load->view("check/edit_upload", $data, TRUE);
+        $this->mp_master->Show_Portal($content, $scriptExtra, '审核进度', $data);
+
+    }
+
+    /**
+     * @param $subID 修改工艺审核
+     */
+    public function editApply($subID)
+    {
+        //权限判断与显示
+        if (!Author::allowRole(4, [1, 4], $this->userObj->check_role)) {
+            redirect('/check');
+        }
+        $dbObj = $this->load->database('default', TRUE);
+
+        $data = array();
+        $data['userObj'] = $this->userObj;
+        $data['bcList'] = array();
+
+        //导航栏
+        $bcObj = new Breadcrumb();
+        $bcObj->title = '审核工程';
+        $bcObj->url = site_url("check");
+        $bcObj->isLast = false;
+        array_push($data['bcList'], $bcObj);
+
+        $bcObj = new Breadcrumb();
+        $bcObj->title = '修改验收';
+        $bcObj->url = site_url("check/editUpload");
+        $bcObj->isLast = false;
+        array_push($data['bcList'], $bcObj);
+
+        $bcObj = new Breadcrumb();
+        $bcObj->title = '修改工艺审核';
+        $bcObj->url = site_url("");
+        $bcObj->isLast = true;
+        array_push($data['bcList'], $bcObj);
+
+        //已经回答的问题的id数组
+        $answeredQues = [];
+        $answer = $dbObj->where('substation_id', $subID)
+            ->get('check_apply')
+            ->row()
+            ->content;
+        $answer = json_decode($answer, true);
+        ksort($answer);
+        foreach ($answer as $k => $ans) {
+            $answeredQues[] = $k;
+        }
+        ksort($answer);
+        if (!empty($answeredQues)) {
+            $data['questions'] = $answer;
+        }else{
+            $data['questions'] = NULL;
+        }
+
+        $data['subID'] = $subID;
+
+        $scriptExtra = '';
+        $scriptExtra .= '<script type="text/javascript" src="/public/layer/layer.js"></script>';
+
+        $scriptExtra .= '<link rel="stylesheet" href="/public/css/jquery.fancybox.css"/>';
+        $scriptExtra .= '<script type="text/javascript" src="/public/js/jquery.fancybox.js"></script>';
+        $scriptExtra .= '<script type="text/javascript" src="/public/portal/js/player.js"></script>';
+
+        $content = $this->load->view("check/edit_apply", $data, TRUE);
+        $this->mp_master->Show_Portal($content, $scriptExtra, '审核修改', $data);
+    }
+
+    /**
+     * @param $roomID
+     * 修改设备审核
+     */
+    public function editDevice($roomID){
+        //权限判断与显示
+        if (!Author::allowRole(4, [1, 4], $this->userObj->check_role)) {
+            redirect('/check');
+        }
+        $dbObj = $this->load->database('default', TRUE);
+
+        $data = array();
+        $data['userObj'] = $this->userObj;
+        $data['bcList'] = array();
+
+        //导航栏
+        $bcObj = new Breadcrumb();
+        $bcObj->title = '审核工程';
+        $bcObj->url = site_url("check");
+        $bcObj->isLast = false;
+        array_push($data['bcList'], $bcObj);
+
+        $bcObj = new Breadcrumb();
+        $bcObj->title = '修改验收';
+        $bcObj->url = site_url("check/editUpload");
+        $bcObj->isLast = false;
+        array_push($data['bcList'], $bcObj);
+
+        $bcObj = new Breadcrumb();
+        $bcObj->title = '修改设备审核';
+        $bcObj->url = site_url("");
+        $bcObj->isLast = true;
+        array_push($data['bcList'], $bcObj);
+
+        //已经回答的问题的id数组
+        $dbObj->where_in('room_id', $roomID);
+        $ques = $dbObj->get('check_device')->row()->content;
+        $data['questions'] = json_decode($ques,TRUE);
+        $data['roomID'] = $roomID;
+
+//        var_dump($data['questions']);die;
+
+        $scriptExtra = '';
+        $scriptExtra .= '<script type="text/javascript" src="/public/layer/layer.js"></script>';
+
+        $scriptExtra .= '<link rel="stylesheet" href="/public/css/jquery.fancybox.css"/>';
+        $scriptExtra .= '<script type="text/javascript" src="/public/js/jquery.fancybox.js"></script>';
+        $scriptExtra .= '<script type="text/javascript" src="/public/portal/js/player.js"></script>';
+
+
+        $content = $this->load->view("check/edit_device", $data, TRUE);
+        $this->mp_master->Show_Portal($content, $scriptExtra, '审核修改', $data);
     }
 
 

@@ -43,7 +43,6 @@
         <?php } ?>
 
 
-
         <div class="row-fluid">
             <div class="span12">
                 <div class="content-widgets light-gray">
@@ -90,7 +89,6 @@
                     </div>
 
 
-
                 </div>
             </div>
 
@@ -135,14 +133,6 @@
                                                 href="/public/portal/Check_image/<?php echo $img ?>">
                                                 <img src="/public/portal/Check_image/<?php echo $img ?>"
                                                      alt="" style="height: 150px;"/></a>
-
-
-                                                <!--                                                    <input type="hidden" class="img_path"-->
-                                                <!--                                                           value="/public/portal/Check_image/--><?php //echo $img ?><!--">-->
-                                                <!--                                                    <img src="/public/portal/Check_image/--><?php //echo $img ?><!--"-->
-                                                <!--                                                         style="height: 150px;"-->
-                                                <!--                                                         class="approveImg">-->
-
                                             <?php } ?>
                                         </ul>
                                     </td>

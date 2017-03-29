@@ -38,6 +38,7 @@
                                 <th width="8%">问题id</th>
                                 <th width="15%">设备类型</th>
                                 <th>包含设备</th>
+                                <th>实时数据页面（截图）</th>
                                 <th width="9%">操作</th>
                             </tr>
                             </thead>
@@ -58,6 +59,11 @@
                                                 <?php echo $this->mp_extra->get_device_name($dev->data_id); ?>
                                             </span>
                                         <?php } ?>
+                                    </td>
+                                    <td>
+                                        <!--                                        跳转实时数据页面-->
+                                        <a href="/portal/realtimedata/<?php echo $roomID . '/' . $question->type ?>"
+                                           target="_blank">实时数据页面</a>
                                     </td>
                                     <td>
                                         <button class="uploadImg" onclick="newWindow('<?php echo $question->type ?>')">
@@ -83,11 +89,18 @@
 
         layer.open({
             type: 2,
-            title: '上传审核图片',
+            title: '上传验收图片',
             shadeClose: true,
             shade: 0.8,
             area: ['55%', '65%'],
-            content: '/check/upload_img/2/<?php echo $roomID?>/' + $questionID
+            content: '/check/upload_img/2/<?php echo $roomID?>/' + $questionID,
+            btn: ['关闭'],
+            btnclass: ['btn btn-primary', 'btn btn-danger'],
+            yes: function () {
+                window.parent.location.reload();
+            }, cancel: function () {
+                window.parent.location.reload();
+            }
         });
     }
 </script>

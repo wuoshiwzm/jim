@@ -57,7 +57,7 @@
 
                                     <td>
                                         <button class="uploadImg" onclick="newWindow(<?php echo $question->id ?>)">
-                                            通过验收</button>
+                                            上传验收图片</button>
                                     </td>
                                 </tr>
                             <?php } ?>
@@ -78,11 +78,18 @@
 
         layer.open({
             type: 2,
-            title: 'layer mobile页',
+            title: '上传验收图片',
             shadeClose: true,
             shade: 0.8,
             area: ['55%', '65%'],
-            content: '/check/upload_img/1/<?php echo $subID?>/'+$questionID
+            content: '/check/upload_img/1/<?php echo $subID?>/'+$questionID,
+            btn: ['关闭'],
+            btnclass: ['btn btn-primary', 'btn btn-danger'],
+            yes: function () {
+                window.parent.location.reload();
+            }, cancel: function () {
+                window.parent.location.reload();
+            }
         });
     }
 </script>

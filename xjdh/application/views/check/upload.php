@@ -48,7 +48,7 @@
                                     <td><?php echo $sub ?></td>
                                     <td><?php echo $this->mp_extra->Get_substation_info($sub)->name ?></td>
                                     <td>
-                                        <?php if (!empty($this->mp_extra->getArrangeBySub($sub))) { ?>
+                                        <?php if (!empty($this->mp_extra->checkApplied($sub))) { ?>
                                             已经部分提交
                                         <?php } else { ?>
                                             未提交
@@ -97,13 +97,13 @@
 
                                     <td><?php echo $this->mp_extra->Get_substation_info($this->mp_extra->getSubstationByRoom($room->id)->substation_id)->name ?></td>
                                     <td>
-                                        <?php if (!empty($this->mp_extra->getArrangeByRoom($room->id))) { ?>
+                                        <?php if (!empty($this->mp_extra->deviceApplied($room->id))) { ?>
                                             已经部分提交
                                         <?php } else { ?>
                                             未提交
                                         <?php } ?>
                                     </td>
-                                    <td><a href="/check/upload_device/<?php echo $room->id?>">提交审核结果</a></td>
+                                    <td><a href="/check/upload_device/<?php echo $room->id?>">提交验收结果</a></td>
                                 </tr>
                             <?php } ?>
                             <?php } ?>
