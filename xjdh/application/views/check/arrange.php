@@ -9,12 +9,16 @@
                                         class="icon-angle-right"></i></span></li>
                         <?php foreach ($bcList as $bcObj) { ?>
                             <?php if ($bcObj->isLast) { ?>
-                                <li class="active"><?php echo htmlentities($bcObj->title, ENT_COMPAT, "UTF-8"); ?></li>
+                                <li class="active">
+                                    <?php echo htmlentities($bcObj->title, ENT_COMPAT, "UTF-8"); ?>
+                                </li>
                             <?php } else { ?>
-                                <li><a href='<?php echo htmlentities($bcObj->url, ENT_COMPAT, "UTF-8"); ?>'>
+                                <li>
+                                    <a href='<?php echo htmlentities($bcObj->url, ENT_COMPAT, "UTF-8"); ?>'>
                                         <?php echo htmlentities($bcObj->title, ENT_COMPAT, "UTF-8"); ?>
                                     </a>
-                                    <span class="divider"><i class="icon-angle-right"></i></span></li>
+                                    <span class="divider"><i class="icon-angle-right"></i></span>
+                                </li>
                             <?php } ?>
                         <?php } ?>
                     </ul>
