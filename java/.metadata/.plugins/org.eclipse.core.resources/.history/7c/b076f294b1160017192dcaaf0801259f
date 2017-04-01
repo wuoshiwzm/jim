@@ -1,8 +1,0 @@
-package testjava;
-
-public class Josephus {
-
-	//目前的土豆在的位置
-static int current = 0;
-	public static 
-}
