@@ -1,0 +1,12 @@
+package testjava;
+
+public class Josephus {
+
+	//目前的土豆在的位置
+static int current = 0;
+
+//计算已经退出的人的位置
+	public static void pop(){
+		
+	}
+}

@@ -167,5 +167,16 @@ class Mp_extra extends CI_Model
         return $res;
     }
 
+    //获取城市对应的局站列表 数组
+    function getSubsList($cityCode){
+        $subs =[];
+        $dbObj = $this->load->database('default', TRUE);
+        $res = $dbObj->where('city_code',$cityCode)->get('substation')->result();
+        foreach ($res as $re){
+            $subs[] = $re->id;
+        }
+        return $subs;
+    }
+
 
 }

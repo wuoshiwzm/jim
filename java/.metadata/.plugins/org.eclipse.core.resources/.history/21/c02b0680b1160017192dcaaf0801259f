@@ -1,0 +1,6 @@
+package testjava;
+
+public class Josephus {
+static current = 0;
+	public static 
+}

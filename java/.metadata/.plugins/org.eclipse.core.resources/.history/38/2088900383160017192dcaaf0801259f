@@ -1,0 +1,9 @@
+package testjava;
+
+import java.util.Collection;
+
+public class printTest<E> implements Collection<E> {
+
+	
+
+}

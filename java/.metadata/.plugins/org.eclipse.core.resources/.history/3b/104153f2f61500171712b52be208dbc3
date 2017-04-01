@@ -1,0 +1,12 @@
+package testjava;
+
+
+
+
+public class Test {
+
+	public Test(){
+		
+	}
+ 
+}

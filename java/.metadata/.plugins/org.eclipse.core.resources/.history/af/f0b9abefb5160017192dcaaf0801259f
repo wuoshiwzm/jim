@@ -1,0 +1,39 @@
+package testjava;
+
+public class Josephus {
+
+	// 目前的土豆在的位置
+	static int current = 0;
+	// 每次圈轮的个数
+	static int circle = 5;
+	static int[] queue = new int[100];
+	static {
+		for (int i = 0; i < queue.length; i++) {
+			queue[i] = 1;
+		}
+	}
+
+	// 计算已经退出的人的位置
+	public static void pop() {
+		int next = 0;
+		
+		for(int i=0;i<circle;i++){
+			int index;
+			if((next+1)>queue.length){
+				
+			}
+			//下一个不为0的位置
+			while (true) {
+				//超界则循环
+			 
+				 
+			}
+			next++;
+		}
+	}
+
+	public static void main(String[] args) {
+
+	}
+
+}

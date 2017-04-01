@@ -1,0 +1,12 @@
+package testjava;
+
+import java.awt.List;
+
+public class exercise3_4<AnyType> extends List {
+
+	public static <AnyType extends Comparable<? super AnyType>> 
+	void union(List<AnyType> L1, List<AnyType> L2,
+			List<AnyType> Result) {
+	}
+
+}

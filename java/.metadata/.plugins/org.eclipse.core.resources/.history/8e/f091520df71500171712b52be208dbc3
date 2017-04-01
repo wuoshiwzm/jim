@@ -1,0 +1,14 @@
+package testjava;
+
+
+
+
+public class Test {
+private int[] stack ;
+private int top;
+	
+	public Test(){
+		stack = new int[1000];
+	}
+ 
+}

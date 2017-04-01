@@ -89,7 +89,7 @@ $autoload['drivers'] = array();
 */
 
 $autoload['helper'] =
-    array('url','user','defines','constants','util','realtime','device','author','ltest');
+    array('url','user','defines','constants','util','realtime','device','author','t');
 
 
 /*

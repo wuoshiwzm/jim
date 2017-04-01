@@ -1,0 +1,7 @@
+package testjava;
+
+import java.util.Collection;
+
+public class printTest implements Collection<AnyType>{
+
+}

@@ -1,0 +1,28 @@
+package testjava;
+
+public class Josephus {
+
+	// 目前的土豆在的位置
+	static int current = 0;
+	static int[] queue = new int[100];
+	static{
+		for(int i=0;i<queue.length;i++ ){
+			queue[i] = i;
+		}
+	}
+
+	// 计算已经退出的人的位置
+	public static void pop() {
+
+	}
+	
+	public static void main(String[] args) {
+		for(int i=0;i<queue.length;i++ ){
+		 
+			System.out.println(queue[i]);
+		}
+	}
+	 
+	
+	
+}

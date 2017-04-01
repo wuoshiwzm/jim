@@ -1,0 +1,13 @@
+package testjava;
+
+
+
+
+public class Test {
+private int[] stack ;
+	
+	public Test(){
+		
+	}
+ 
+}

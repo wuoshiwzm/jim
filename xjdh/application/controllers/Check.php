@@ -134,22 +134,10 @@ class Check extends CI_Controller
 
         $data['info'] = $this->getInfo($subID);
         $scriptExtra = '';
-
-        $scriptExtra .= '<link rel="stylesheet" href="/public/css/easydialog.css"/>';
-        $scriptExtra .= '<script type="text/javascript" src="/public/portal/js/station_image_manage.js"></script>';
-        $scriptExtra .= '<script type="text/javascript" src="/public/portal/js/easydialog.js"></script>';
-        $scriptExtra .= '<script type="text/javascript" src="/public/portal/js/substation.js"></script>';
-
-        $scriptExtra .= '<link rel="stylesheet" href="/public/css/minimalist.css"/>';
         $scriptExtra .= '<link rel="stylesheet" href="/public/css/jquery.fancybox.css"/>';
-        $scriptExtra .= '<script type="text/javascript" src="/public/js/flowplayer.min.js"></script>';
-        $scriptExtra .= '<script type="text/javascript" src="/public/js/flowplayer.hlsjs.min.js"></script>';
         $scriptExtra .= '<script type="text/javascript" src="/public/js/jquery.fancybox.js"></script>';
         $scriptExtra .= '<script type="text/javascript" src="/public/portal/js/player.js"></script>';
 
-        $scriptExtra .= '<script type="text/javascript" src="/public/portal/js/jqthumb.js"></script>';
-//        $scriptExtra = '<script src="/public/layer/layer.js"></script>';
-//        $scriptExtra .= '<script src="/public/js/check/approve.js"></script>';
         $content = $this->load->view("check/approveSub", $data, TRUE);
         $this->mp_master->Show_Portal($content, $scriptExtra, '审核', $data);
     }
@@ -1072,7 +1060,7 @@ class Check extends CI_Controller
             $questionID = $post['questionID'];
 
             $pics = $post['pics'];
-            if(empty($pics)){
+            if (empty($pics)) {
                 $pics = ['null.jpg'];
             }
             $dbObj = $this->load->database('default', TRUE);
@@ -1123,10 +1111,10 @@ class Check extends CI_Controller
             } else {
                 //如果不是第一次上传，就找到对应的信息， 在content字段追加数据
                 $applyContent = json_decode($res['content'], true);
-                if(isset($applyContent[$questionID])){
-                    $applyContent[$questionID] =  $pics;
-                }else{
-                    $applyContent[$questionID] =  $pics;
+                if (isset($applyContent[$questionID])) {
+                    $applyContent[$questionID] = $pics;
+                } else {
+                    $applyContent[$questionID] = $pics;
                 }
 
                 //工艺施工
@@ -1411,7 +1399,7 @@ class Check extends CI_Controller
         ksort($answer);
         if (!empty($answeredQues)) {
             $data['questions'] = $answer;
-        }else{
+        } else {
             $data['questions'] = NULL;
         }
 
@@ -1432,7 +1420,8 @@ class Check extends CI_Controller
      * @param $roomID
      * 修改设备审核
      */
-    public function editDevice($roomID){
+    public function editDevice($roomID)
+    {
         //权限判断与显示
         if (!Author::allowRole(4, [1, 4], $this->userObj->check_role)) {
             redirect('/check');
@@ -1465,7 +1454,7 @@ class Check extends CI_Controller
         //已经回答的问题的id数组
         $dbObj->where_in('room_id', $roomID);
         $ques = $dbObj->get('check_device')->row()->content;
-        $data['questions'] = json_decode($ques,TRUE);
+        $data['questions'] = json_decode($ques, TRUE);
         $data['roomID'] = $roomID;
 
 //        var_dump($data['questions']);die;
@@ -1500,6 +1489,8 @@ class Check extends CI_Controller
         if (!Author::allowRole(4, [2, 3, 4], $this->userObj->check_role)) {
             redirect('/check');
         }
+        $range = $this->input->post('dateRange');
+
 
         $data = array();
         $data['userObj'] = $this->userObj;
@@ -1524,14 +1515,31 @@ class Check extends CI_Controller
 
         //从第一天安排验收起到目前的日期数组
         $minTime = $dbObj->select_min('arrange_time')->get('check_arrange')->row()->arrange_time;
-        $res = $dbObj->where('arrange_time', $minTime)->get('check_arrange')->row();
-        $dateStart = date('Y-m-d', strtotime($res->arrange_time));
-        $dateEnd = date('Y-m-d', strtotime("now"));
+        $maxTime = 'now';
+        if(!empty($range)){
+
+            $data['timeSearch'] = $range;
+            $range = explode('至',$range);
+//            t::f($range[1]<date("Y-m-d",strtotime("now")));
+            if($range[0]>$minTime){
+                $minTime = $range[0];
+            }
+            if($range[1]<date("Y-m-d",strtotime("now"))){
+                $maxTime = $range[1];
+            }
+        }
+
+        $dateStart = date('Y-m-d', strtotime($minTime));
+//        $dateEnd = date('Y-m-d', strtotime($maxTime));
+        $dateEnd = date('Y-m-d', strtotime($maxTime));
+
         for ($i = $dateStart; $i <= $dateEnd; $i = date('Y-m-d', strtotime($i) + 3600 * 24)) {
             $checks[] = ['date' => $i];
         }
 
-        //生成包含验收数据的数组
+        /**
+         * 拆线图 以局站统计
+         **/
         foreach ($checks as &$check) {
             /**
              * 当天及之前安排的局站总数
@@ -1583,7 +1591,7 @@ class Check extends CI_Controller
                 $dbObj->where('arrange_time <', date('Y-m-d H:i:s', strtotime($check['date']) + 3600 * 24));
             }
 
-            $check['uncheck'] = $dbObj->count_all_results('check_arrange');
+            $check['unapply'] = $dbObj->count_all_results('check_arrange');
 
 
             /**
@@ -1622,17 +1630,112 @@ class Check extends CI_Controller
 
         }
 
-        //以地州为单位表格数据
+        /**
+         * 表格 以市为单位统计
+         **/
 
+        //生成城市列表
+        $cities = [];
+        $dbObj->from('check_arrange');
+        $dbObj->join('substation', 'check_arrange.substation_id = substation.id');
+        $dbObj->select(
+            '
+            substation.city as cityname,
+            substation.city_code as city_code,
+            '
+        );
+        $dbObj->group_by('substation.city');
+        $res = $dbObj->get()->result();
+        foreach ($res as $re) {
+            $temp = [];
+            $temp['cityname'] = $re->cityname;
+            $temp['city_code'] = $re->city_code;
+            $cities[] = $temp;
+        }
+
+        //城市列表内插入数据
+        foreach ($cities as &$city) {
+            $cityCode = $city['city_code'];
+            $subsList = $this->mp_extra->getSubsList($cityCode);
+            //已经安排局站数组
+            $subs = [];
+            $res = $dbObj->where_in('substation_id', $subsList)
+                ->get('check_arrange')->result();
+            foreach ($res as $re) {
+                $subs[] = $re->substation_id;
+            }
+            //已经提交局站数组
+            $applies = [];
+            $res = $dbObj->where_in('substation_id', $subs)
+                ->get('check_apply')->result();
+            foreach ($res as $re) {
+                $applies[] = $re->substation_id;
+            }
+            $res = $dbObj->where_in('substation_id', $subs)
+                ->get('check_device')->result();
+            foreach ($res as $re) {
+                if (!in_array($re->substation_id, $applies)) {
+                    $applies[] = $re->substation_id;
+                }
+            }
+
+            //已安排验收局站(个)
+            $total = $dbObj->where_in('substation_id', $subs)
+                ->count_all_results('check_arrange');
+            $city['total'] = $total;
+            //待验收局站(个)
+            $unapply = [];
+            foreach ($subs as $subID) {
+                if (!in_array($subID, $applies)) {
+                    $unapply[] = $subID;
+                }
+            }
+            $unapply = count($unapply);
+            $city['unapply'] = $unapply;
+            //已验收局站(个)
+            $is_apply = $dbObj->where_in('substation_id', $subs)
+                ->where('status_device', 1)
+                ->where('status_check', 1)
+                ->where('is_apply', 1)
+                ->count_all_results('check_arrange');
+            $city['is_apply'] = $is_apply;
+
+            //待审核局站(个)
+            $uncheck = $dbObj->where_in('substation_id', $subs)
+                ->where('status_device', 1)
+                ->where('status_check', 1)
+                ->where('is_apply', 1)
+                ->where('check_jim !=', 1)
+                ->where('check_tel !=', 1)
+                ->count_all_results('check_arrange');
+            $city['uncheck'] = $uncheck;
+
+            //吉姆已审核局站(个)
+            $check_jim = $dbObj->where_in('substation_id', $subs)
+                ->where('check_jim', 1)
+                ->count_all_results('check_arrange');
+            $city['check_jim'] = $check_jim;
+
+            //电信已审核局站(个)
+            $check_tel = $dbObj->where_in('substation_id', $subs)
+                ->where('check_jim', 1)
+                ->count_all_results('check_arrange');
+            $city['check_tel'] = $check_tel;
+
+        }
+        $data['cities'] = $cities;
 
         $scriptExtra = '';
+        //时期选择
+        $scriptExtra .= '<script type="text/javascript" src="/public/js/moment.min.js"></script>';
+        $scriptExtra .= '<link rel="stylesheet" href="/public/css/daterangepicker-bs2.css"/>';
+        $scriptExtra .= '<script type="text/javascript" src="/public/js/daterangepicker.js"></script>';
+        $scriptExtra .= '<script type="text/javascript" src="/public/portal/js/powermeter_history.js"></script>';
+
         $scriptExtra .= '<script type="text/javascript" src="/public/js/highcharts/highcharts.js"></script>';
-
         $data['checks'] = $checks;
-
         $content = $this->load->view("check/process", $data, TRUE);
         $this->mp_master->Show_Portal($content, $scriptExtra, '审核进度', $data);
-
     }
 
     /**

@@ -1,0 +1,37 @@
+package testjava;
+
+//import java.awt.List;
+import java.util.List;
+import java.util.ListIterator;
+
+public class exercise3_4 {
+
+	public static <AnyType extends Comparable<? super AnyType>> 
+	void union(List<AnyType> L1, List<AnyType> L2, List<AnyType> Result) {
+
+		ListIterator<AnyType> iterL1 = L1.listIterator();
+		ListIterator<AnyType> iterL2 = L2.listIterator();
+		
+		AnyType itemL1=null, itemL2=null;
+		
+		if(iterL1.hasNext() && iterL2.hasNext()){
+			itemL1 = iterL1.next();
+			itemL2 = iterL2.next();
+		}
+		
+		while ( itemL1 != null && itemL2 != null ){
+			int compareResult = itemL1.compareTo(itemL2);
+		}
+		
+	}
+	
+	public static void main(String[] args) {
+		Object o = new Object();
+		Object o2 = new Object();
+		Object o3 = new Object();
+		System.out.println(o.hashCode());
+		System.out.println(o2.hashCode());
+		System.out.println(o3.hashCode());
+	}
+
+}
