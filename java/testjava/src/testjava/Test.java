@@ -14,13 +14,14 @@ public class Test {
 		if (top == -1) {
 			System.out.println("empty stack , cannot pop!");
 			return;
+			
 		}
 		top--;
 	}
 
 	public static void main(String[] args) {
 //		push(12);
-//		pop();
+		pop();
 //		push(123);
 //		push(1234);
 //

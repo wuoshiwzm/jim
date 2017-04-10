@@ -5,17 +5,11 @@ package testjava;
 public class test03_24_00 {
 
 	public static void main(String[] args) {
-		
-		
 		long startTime=System.currentTimeMillis();   //获取开始时间  
 		fib(40000000);  //测试的代码段  
 		long endTime=System.currentTimeMillis(); //获取结束时间  
 		System.out.println("  ");
 		System.out.println("程序运行时间： "+(startTime-endTime)+"ms");   
-		
-	
-
-		
 	}
 	
 	//计算斐波那数
