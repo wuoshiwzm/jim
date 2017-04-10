@@ -458,7 +458,9 @@ class Check extends CI_Controller
                 $testArr[] = $k->substation_id;
             }
 
-            $dbObj->where_not_in('substation_id', $testArr);
+            if(!empty($testArr)){
+                $dbObj->where_not_in('substation_id', $testArr);
+            }
             $res = $dbObj->get('check_arrange')->result();
 
             foreach ($res as $k) {
@@ -489,15 +491,20 @@ class Check extends CI_Controller
             //3' >  待验完成 - 提交
             //4' > 吉姆督查核查完成
             //5' > 电信督查核查完成
+
             if (!empty($checkStatus)) {
                 switch ($checkStatus) {
                     case 1:
                         $dbObj->where('is_apply !=', 1);
-                        $dbObj->where_in('substation_id', $emptyCheck);
+                        if(!empty($emptyCheck)){
+                            $dbObj->where_in('substation_id', $emptyCheck);
+                        }
                         break;
                     case 2:
                         $dbObj->where('is_apply !=', 1);
-                        $dbObj->where_not_in('substation_id', $emptyCheck);
+                        if(!empty($emptyCheck)){
+                            $dbObj->where_in('substation_id', $emptyCheck);
+                        }
                         break;
                     case 3:
                         $dbObj->where('is_apply', 1);
@@ -513,6 +520,7 @@ class Check extends CI_Controller
                         break;
                 }
             }
+
             //吉姆督导验收时间
             if (!empty($dateRangeApply)) {
                 $dateRangeArr = explode('至', $dateRangeApply);
@@ -538,6 +546,8 @@ class Check extends CI_Controller
                 $dbObj->where('check_tel_time >=', $dateRangeArr[0]);
             }
 
+            $data['arranges'] = $dbObj->order_by('arrange_time','DESC')->get('check_arrange')->result();
+
             $arrangeSubs = [];
             $res = $dbObj->select('substation_id')
                 ->get('check_arrange')
@@ -546,9 +556,13 @@ class Check extends CI_Controller
                 $arrangeSubs[] = $r->substation_id;
             }
 
-            $dbObj->order_by('arrange_time', 'DESC');
-            $data['arranges'] = $dbObj->get('check_arrange')->result();
-            $data['subs'] = $dbObj->where_not_in('id', $arrangeSubs)->get('substation')->result();
+            //$dbObj->order_by('arrange_time', 'DESC');
+
+
+            if(!empty($arrangeSubs)){
+                $dbObj->where_not_in('id', $arrangeSubs);
+            }
+            $data['subs'] = $dbObj->get('substation')->result();
             $dbObj->where('check_role', 1);
             $data['users'] = $dbObj->get('user')->result();
             $data['allUsers'] = $dbObj->get('user')->result();
@@ -591,7 +605,6 @@ class Check extends CI_Controller
             redirect('check/arrange');
         }
 
-
         //提交结果 - 安排督导角色
         $roleUser = $this->input->get('roleUser');
         $role = $this->input->get('role');
@@ -601,8 +614,6 @@ class Check extends CI_Controller
             $dbObj->update('user');
             redirect('check/arrange');
         }
-
-
     }
 
     /**

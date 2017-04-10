@@ -1,0 +1,89 @@
+// AvlTree class
+//
+// CONSTRUCTION: with no initializer
+//
+// ******************PUBLIC OPERATIONS*********************
+// void insert( x )       --> Insert x
+// void remove( x )       --> Remove x (unimplemented)
+// boolean contains( x )  --> Return true if x is present
+// boolean remove( x )    --> Return true if x was present
+// Comparable findMin( )  --> Return smallest item
+// Comparable findMax( )  --> Return largest item
+// boolean isEmpty( )     --> Return true if empty; else false
+// void makeEmpty( )      --> Remove all items
+// void printTree( )      --> Print tree in sorted order
+// ******************ERRORS********************************
+// Throws UnderflowException as appropriate
+
+/**
+ * Implements an AVL tree.
+ * Note that all "matching" is based on the compareTo method.
+ * @author Mark Allen Weiss
+ */
+
+package testjava;
+
+public class AvlTree<AnyType extends Comparable<? super AnyType>> {
+	/** The tree root. */
+	private AvlNode<AnyType> root;
+
+	/**
+	 * Construct the tree.
+	 */
+	public AvlTree() {
+		root = null;
+	}
+
+	/**
+	 * Insert into the tree; duplicates are ignored.
+	 * 
+	 * @param x
+	 *            the item to insert.
+	 */
+	public void insert(AnyType x) {
+		root = insert(x, root);
+	}
+
+	public void remove(AnyType x) {
+		root = remove(x, root);
+	}
+
+	private AvlNode<AnyType> remove(AnyType x, AvlNode<AnyType> t) {
+		if (t == null)
+			return t;
+
+		int compareResult = x.compareTo(t.element);
+
+		if (compareResult < 0) {
+			t.left = remove(x, t.left);
+		} else if (compareResult > 0) {
+			t.right = remove(x, t.right);
+		} else if (t.left != null && t.right != null) {
+			t.element = findMin(t.right).element;
+			t.right = remove(t.element, t.right);
+		} else {
+			t = (t.left != null) ? t.left : t.right;
+		}
+		
+		return balance(t);
+	}
+	
+	
+	private static class AvlNode<AnyType>{
+		AvlNode(AnyType theElement){
+			this(theElement,null,null);
+		}
+		AvlNode(AnyType theElement, AvlNode<AnyType> lt,AvlNode<AnyType> rt){
+			element = theElement;
+			left = lt;
+			right = rt;
+			height = 0;
+		}
+		
+		AnyType element;
+		AvlNode<AnyType> left;
+		AvlNode<AnyType> right;
+		int height;
+	}
+	
+}

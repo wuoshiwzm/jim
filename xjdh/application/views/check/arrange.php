@@ -193,6 +193,7 @@
                             </tr>
                             </thead>
                             <tbody>
+
                             <?php foreach ($arranges as $arrange) { ?>
                                 <tr>
                                     <td><?php echo $arrange->id; ?></td>

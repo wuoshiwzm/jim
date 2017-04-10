@@ -1,0 +1,44 @@
+// AvlTree class
+//
+// CONSTRUCTION: with no initializer
+//
+// ******************PUBLIC OPERATIONS*********************
+// void insert( x )       --> Insert x
+// void remove( x )       --> Remove x (unimplemented)
+// boolean contains( x )  --> Return true if x is present
+// boolean remove( x )    --> Return true if x was present
+// Comparable findMin( )  --> Return smallest item
+// Comparable findMax( )  --> Return largest item
+// boolean isEmpty( )     --> Return true if empty; else false
+// void makeEmpty( )      --> Remove all items
+// void printTree( )      --> Print tree in sorted order
+// ******************ERRORS********************************
+// Throws UnderflowException as appropriate
+
+/**
+ * Implements an AVL tree.
+ * Note that all "matching" is based on the compareTo method.
+ * @author Mark Allen Weiss
+ */
+
+package testjava;
+
+public class AvlTree {
+	 /**
+     * Construct the tree.
+     */
+    public AvlTree( )
+    {
+        root = null;
+    }
+    
+    /**
+     * Insert into the tree; duplicates are ignored.
+     * @param x the item to insert.
+     */
+    public void insert( AnyType x )
+    {
+        root = insert( x, root );
+    }
+
+}

@@ -13,7 +13,7 @@ class Constants{
             array(array('psma-ac','psma-rc','psma-dc','m810g-rc','m810g-dc','m810g-ac','m500f-ac','m500f-dc','m500f-rc',
                         'psm15a-ac','psm15a-dc','psm15a-rc','psma9-ac','psma9-dc','psma9-rc',
                     'zxdu58-b121v21-rc','zxdu58-b121v21-dc','zxdu58-b121v21-ac','zxdu58-b121v22-rc','zxdu58-b121v22-dc','zxdu58-b121v22-ac','zxdu58-s301-ac','zxdu58-s301-dc','zxdu58-s301-rc',
-                    'smu06c-rc','smu06c-dc','smu06c-ac','m520s-ac','m520s-rc','m520s-dc','m522s-ac','m522s-rc','m522s-dc','cuc0609h-ac','cuc0609h-dc','cuc0609h-rc','dk04','dk04c','psm-6'), "开关电源", "sps"),
+                    'smu06c-rc','smu06c-dc','smu06c-ac','m520s-ac','m520s-rc','m520s-dc','m522s-ac','m522s-rc','m522s-dc','cuc0609h-ac','cuc0609h-dc','cuc0609h-rc','dk04','dk04c','dk09','psm-6'), "开关电源", "sps"),
             array(array('camera'), "视频监控", "camera"),
             array(array('DoorXJL',"EmersonDoor"), "门禁系统", "door"),
             array(array('liebert-ups'),"UPS设备", "liebert-ups"),

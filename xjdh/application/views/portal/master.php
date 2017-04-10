@@ -169,9 +169,13 @@
 <!--局站验收-->
                         <?php if (Author::allowRole(4, [4, 3, 2,1], User::GetCurrentUser()->check_role)) { ?>
                             <li <?php if (isset($actTab) && $actTab == '') { ?>
-                                class="active" <?php } ?>><a class="icon-user" href="#check"
+                                class="active" <?php } ?>><a class="icon-legal" href="#check"
                                                              data-original-title="工程验收"></a></li>
                         <?php } ?>
+<!--                        DK-->
+                        <li <?php if (isset($actTab) && $actTab == '') { ?>
+                            class="active" <?php } ?>><a class="icon-signal" href="#kd"
+                                                         data-original-title="工程验收"></a></li>
 
 
 
@@ -505,41 +509,41 @@
                             <h4 class="side-head">工程验收</h4>
                             <ul class="metro-sidenav clearfix">
                                 <?php if (Author::allowRole(4, [4, 3, 2], User::GetCurrentUser()->check_role)) { ?>
-                                    <li><a class="orange"
+                                    <li><a class="bondi-blue"
                                            href="<?php echo site_url("check/arrange"); ?>"><i
-                                                    class="icon-user"></i><span>工程管理</span> </a></li>
+                                                    class="icon-wrench"></i><span>工程管理</span> </a></li>
                                 <?php } ?>
                                 <?php if (Author::allowRole(4, 4, User::GetCurrentUser()->check_role)) { ?>
-                                    <li><a class="orange"
+                                    <li><a class="bondi-blue"
                                            href="<?php echo site_url("check/people"); ?>"><i
                                                     class="icon-user"></i><span>人员管理</span> </a></li>
                                 <?php } ?>
                                 <?php if (Author::allowRole(4, [4, 3, 2], User::GetCurrentUser()->check_role)) { ?>
-                                    <li><a class="orange"
+                                    <li><a class="bondi-blue"
                                            href="<?php echo site_url("check/question"); ?>"><i
-                                                    class="icon-user"></i><span>问题管理</span> </a></li>
+                                                    class="icon-question-sign"></i><span>问题管理</span> </a></li>
                                 <?php } ?>
                                 <?php if (Author::allowRole(4, [4,3,2], User::GetCurrentUser()->check_role)) { ?>
-                                    <li><a class="orange"
+                                    <li><a class="bondi-blue"
                                            href="<?php echo site_url("team"); ?>"><i
-                                                    class="icon-user"></i><span>施工队管理</span> </a></li>
+                                                    class="icon-group"></i><span>施工队管理</span> </a></li>
                                 <?php } ?>
                                 <?php if (Author::allowRole(4, [4,3,2], User::GetCurrentUser()->check_role)) { ?>
-                                    <li><a class="orange"
+                                    <li><a class="bondi-blue"
                                            href="<?php echo site_url("check/process"); ?>"><i
-                                                    class="icon-user"></i><span>施工进度</span> </a></li>
+                                                    class="icon-calendar"></i><span>施工进度</span> </a></li>
                                 <?php } ?>
 
                                 <?php if (Author::allowRole(4, [1,4], User::GetCurrentUser()->check_role)) { ?>
-                                    <li><a class="orange"
+                                    <li><a class="bondi-blue"
                                            href="<?php echo site_url("check/upload"); ?>"><i
-                                                    class="icon-user"></i><span>上传审核照片</span> </a></li>
+                                                    class="icon-camera"></i><span>上传审核照片</span> </a></li>
                                 <?php } ?>
 
                                 <?php if (Author::allowRole(4, [1,4], User::GetCurrentUser()->check_role)) { ?>
-                                    <li><a class="orange"
+                                    <li><a class="bondi-blue"
                                            href="<?php echo site_url("check/editUpload"); ?>"><i
-                                                    class="icon-user"></i><span>修改审核照片</span> </a></li>
+                                                    class="icon-edit"></i><span>修改审核照片</span> </a></li>
                                 <?php } ?>
 
 
@@ -547,8 +551,16 @@
                         </div>
 
                     <?php }?>
+<!--                    KD数据-->
 
-
+                        <div id="kd" class="tab-pane">
+                            <h4 class="side-head">测试数据</h4>
+                            <ul class="metro-sidenav clearfix">
+                                    <li><a class="bondi-blue"
+                                           href="<?php echo site_url("dk/235"); ?>"><i
+                                                    class="icon-wrench"></i><span>测试数据</span> </a></li>
+                            </ul>
+                        </div>
 
                 </div>
 			</div>

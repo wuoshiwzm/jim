@@ -3334,7 +3334,6 @@ class Portal extends CI_Controller
             				{
             					case "sps":
             						{
-            						    
             						    if(Util::endsWith($dataObj->model, "ac"))
             						    {        
             						        $tData = array_merge($data, Constants::$pmBusConfig[$dataObj->model]);

@@ -31,8 +31,9 @@ $(document).ready(function() {
 			model : model,
 			access_token : typeof(accessToken) == "undefined" ? "":accessToken
 		}, function(ret){
+
 			for(var spIndex = 0 ; spIndex < ret.spsList.length ; spIndex++){
-				var obj = ret.spsList[spIndex];				
+				var obj = ret.spsList[spIndex];
 				$('#' + obj.data_id +'-update_datetime').html(obj.update_datetime);
 				if(!obj.isEmpty){
 					var model = dataIdModel[obj.data_id];
@@ -40,7 +41,69 @@ $(document).ready(function() {
 					{
 						$("#" + obj.data_id + "-alert").show();
 					}
-					if(model == "dk04"){
+
+                    if(model == "dk09"){
+                        $("#dk09-" + obj.data_id + "-field0").text(obj.SysV);
+                        // $("#dk04-" + obj.data_id + "-field1").text(obj.ILoad);
+                        // $("#dk04-" + obj.data_id + "-field2").text(obj.IBat1);
+                        // $("#dk04-" + obj.data_id + "-field3").text(obj.IBat2);
+                        // $("#dk04-" + obj.data_id + "-field4").text(obj.IBat3);
+                        // $("#dk04-" + obj.data_id + "-field5").text(obj.IBat4);
+                        // $("#dk04-" + obj.data_id + "-field6").text(obj.VAcSys);
+                        // $("#dk04-" + obj.data_id + "-field7").text(obj.I1AcSys);
+                        // $("#dk04-" + obj.data_id + "-field8").text(obj.I2AcSys);
+                        // $("#dk04-" + obj.data_id + "-field9").text(obj.Btemp1);
+                        // $("#dk04-" + obj.data_id + "-field10").text(obj.Btemp2);
+                        // $("#dk04-" + obj.data_id + "-field11").text(obj.Btemp3);
+                        // $("#dk04-" + obj.data_id + "-field12").text(obj.Btemp4);
+                        // $("#dk04-" + obj.data_id + "-field13").text(obj.Atemp);
+                        if($('#' + obj.data_id + '-sps-rc-2 tbody').children().length == 0){
+                            var columnsCount = $('#' + obj.data_id + '-sps-rc-2 thead>tr>th').length;
+                            var trObj = $('<tr></tr>');
+                            for(var j = 0; j < columnsCount; j++)
+                            {
+                                trObj.append('<td><span class="label label-success"></span></td>');
+                            }
+                            var columnsCount3 = $('#' + obj.data_id + '-sps-rc-3 thead>tr>th').length;
+                            var trObj3 = $('<tr></tr>');
+                            for(var j = 0; j < columnsCount3; j++)
+                            {
+                                trObj3.append('<td><span class="label label-success"></span></td>');
+                            }
+                            for(var j = 0 ; j < obj.number; j++)
+                            {
+                                var tTrObj = trObj.clone();
+                                tTrObj.find("td:eq(0)").text('整流模块'+ (j+1));
+                                $('#' + obj.data_id + '-sps-rc-2 tbody').append(tTrObj);
+                                var tTrObj3 = trObj3.clone();
+                                tTrObj3.find("td:eq(0)").text('整流模块'+ (j+1));
+                                $('#' + obj.data_id + '-sps-rc-3 tbody').append(tTrObj3);
+                            }
+                        }
+                        for(var j = 0 ; j < obj.number; j++)
+                        {
+                            var pTr = $('#' + obj.data_id + '-sps-rc-2 tbody>tr').eq(j);
+                            pTr.find("td:eq(1)").text(obj.Iout[j]);
+                            pTr.find("td:eq(2)").text(obj.channelParam[j].FloatV);
+                            pTr.find("td:eq(3)").text(obj.channelParam[j].EQV);
+                            pTr.find("td:eq(4)").text(obj.channelParam[j].Vhi);
+                            pTr.find("td:eq(5)").text(obj.channelParam[j].V1o);
+                            pTr.find("td:eq(6)").text(obj.channelParam[j].HVSD);
+                            pTr.find("td:eq(7)").text(obj.channelParam[j].I1im);
+                            pTr.find("td:eq(8)").text(obj.channelParam[j].AdjV);
+                            pTr.find("td:eq(9)").text(obj.channelParam[j].SecEnable);
+
+                            pTr = $('#' + obj.data_id + '-sps-rc-3 tbody>tr').eq(j);
+                            for(var z = 0; z < obj.channel[j].length; z++)
+                            {
+                                pTr.find("td:eq(" + (z+1) + ")>span").text(obj.channel[j][z]);
+                                set_label_class(pTr.find("td:eq(" + (z+1) + ")>span"), obj.channel[j][z]);
+                            }
+                        }
+					}
+					else if(model == "dk04")
+					{
+					alert(obj);
 						$("#dk04-" + obj.data_id + "-field0").text(obj.SysV);
 						$("#dk04-" + obj.data_id + "-field1").text(obj.ILoad);
 						$("#dk04-" + obj.data_id + "-field2").text(obj.IBat1);
@@ -90,7 +153,7 @@ $(document).ready(function() {
 							pTr.find("td:eq(7)").text(obj.channelParam[j].I1im);
 							pTr.find("td:eq(8)").text(obj.channelParam[j].AdjV);
 							pTr.find("td:eq(9)").text(obj.channelParam[j].SecEnable);
-							
+
 							pTr = $('#' + obj.data_id + '-sps-rc-3 tbody>tr').eq(j);
 							for(var z = 0; z < obj.channel[j].length; z++)
 							{
@@ -151,7 +214,7 @@ $(document).ready(function() {
 							pTr.find("td:eq(1)").text(obj.smr_volts[j]);
 							pTr.find("td:eq(2)").text(obj.Iout[j]);
 							pTr.find("td:eq(3)").text(obj.temp[j]);
-							
+
 							pTr = $('#' + obj.data_id + '-sps-rc-4 tbody>tr').eq(j);
 							for(var z = 0; z < obj.channel[j].length; z++)
 							{
@@ -172,7 +235,7 @@ $(document).ready(function() {
 						$('#' + obj.data_id +'-ic_alert').html(obj.ic_alert);
 						set_label_class($('#' + obj.data_id +'-ic_alert'), obj.ic_alert);
 						if(obj.airlock_count)
-						{						
+						{
 							if($('#' + obj.data_id + '-lastTr').next().length == 0){
 								var index = parseInt($('#' + obj.data_id + '-lastTr>td:eq(0)').text());
 								for(var i=0;i <obj.airlock_count;i++){
@@ -205,7 +268,7 @@ $(document).ready(function() {
 								tTrObj.find("td:eq(0)").text('交流通道'+ (j+1));
 								$('#' + obj.data_id + '-sps-ac-2 tbody').append(tTrObj);
 							}
-							
+
 							columnsCount = $('#' + obj.data_id + '-sps-ac-3 thead>tr>th').length;
 							var trObj = $('<tr></tr>');
 							for(var j = 0; j < columnsCount; j++){
@@ -231,7 +294,7 @@ $(document).ready(function() {
 								trObj.find("td:eq(" + (i+5) + ")").text(channelObj.p40_41[i]);
 							}
 							trObj = trObj.next();
-							
+
 							alertTrObj.find("td:eq(1)>span").text(channelObj.alert_a);
 							set_label_class(alertTrObj.find("td:eq(1)>span"), channelObj.alert_a);
 							alertTrObj.find("td:eq(2)>span").text(channelObj.alert_b);
@@ -240,7 +303,7 @@ $(document).ready(function() {
 							set_label_class(alertTrObj.find("td:eq(3)>span"), channelObj.alert_c);
 							alertTrObj.find("td:eq(4)>span").text(channelObj.alert_f);
 							set_label_class(alertTrObj.find("td:eq(4)>span"), channelObj.alert_f);
-							
+
 							for(var i=0; i < channelObj.p40_44.length; i++)
 							{
 								alertTrObj.find("td:eq(" + (i+5) + ")>span").text(channelObj.p40_44[i]);
@@ -259,7 +322,7 @@ $(document).ready(function() {
 						$('#'+ obj.data_id +'-channel_count').html(obj.channel_count);
 						//$('#'+ obj.data_id + '-sps-rc-2>tbody').empty();
 						//$('#'+ obj.data_id + '-sps-rc-3>tbody').empty();
-						
+
 						if($('#'+ obj.data_id + '-sps-rc-2>tbody').children().length == 0)
 						{
 							var columnsCount = $('#' + obj.data_id + '-sps-rc-2>thead>tr>th').length;
@@ -274,7 +337,7 @@ $(document).ready(function() {
 								tTrObj.find("td:eq(0)").text('整流模块'+ (j+1));
 								$('#' + obj.data_id + '-sps-rc-2 tbody').append(tTrObj);
 							}
-							
+
 							columnsCount = $('#' + obj.data_id + '-sps-rc-3>thead>tr>th').length;
 							var trObj = $('<tr></tr>');
 							for(var j = 0; j < columnsCount; j++)
@@ -288,13 +351,13 @@ $(document).ready(function() {
 								$('#' + obj.data_id + '-sps-rc-3 tbody').append(tTrObj);
 							}
 						}
-						
+
 						var trObj = $('#' + obj.data_id + '-sps-rc-2 tbody>tr:eq(0)');
 						var alertTrObj = $('#' + obj.data_id + '-sps-rc-3 tbody>tr:eq(0)');
 						for(var j = 0 ; j < obj.channelList.length ; j++)
 						{
 							var channelObj = obj.channelList[j];
-							
+
 							trObj.find("td:eq(1)").text(channelObj.out_i);
 							var tdOffset = 2;
 							for(var i=0; i < $('#' + obj.data_id + '-sps-rc-2>thead>tr>th.p41_41').length; i++)
@@ -309,7 +372,7 @@ $(document).ready(function() {
 								trObj.find("td:eq(" + tdOffset++ + ")").text(channelObj.p41_43[i]);
 							}
 							trObj = trObj.next();
-							
+
 							alertTrObj.find("td:eq(1)>span").text(channelObj.fault);
 							set_label_class(alertTrObj.find("td:eq(1)>span"), channelObj.fault);
 							tdOffset = 2;
@@ -317,7 +380,7 @@ $(document).ready(function() {
 							{
 								alertTrObj.find("td:eq(" + tdOffset + ")>span").text(channelObj.p41_44[i]);
 								set_label_class(alertTrObj.find("td:eq(" + tdOffset++ + ")>span"), channelObj.p41_44[i]);
-							}							
+							}
 							alertTrObj = alertTrObj.next();
 						}
 					}else if(model.search(/-dc$/) != -1)
@@ -342,7 +405,7 @@ $(document).ready(function() {
 								$('#'+ obj.data_id +'-n' + j).text(obj.channel[j]);
 							}
 						}
-						
+
 						for(var i=0; i < obj.p.length; i++)
 						{
 							if(i < obj.p_count)
@@ -351,18 +414,18 @@ $(document).ready(function() {
 							}else{
 								$('#' + obj.data_id + '-dc_p' + i).parent().remove();
 							}
-							
+
 						}
-						
+
 						$('#'+ obj.data_id +'-alert_v').html(obj.alert_v);
 						if(model == "zxdu58-b121v21-dc")
-						{							
+						{
 							//extra
 							$('#' + obj.data_id + '-has_report').text(obj.has_report);
 							$('#' + obj.data_id + '-test_end').text(obj.test_end);
 							$('#' + obj.data_id + '-duration_minutes').text(obj.duration_minutes);
 							$('#' + obj.data_id + '-discharge_capacity').text(obj.discharge_capacity);
-							
+
 						}
 						if($("#" + obj.data_id + "-sps-dc-2 tbody").children().length == 0)
 						{
@@ -376,14 +439,14 @@ $(document).ready(function() {
 									trObj.append('<td>'+ (i*6+2) +'</td>');
 								}else{
 									trObj.append('<td></td>');
-								}								
+								}
 								trObj.append('<td><span class="label label-success"></span></td>');
 								if((i*6+3) <= obj.alert_m_count)
 								{
 									trObj.append('<td>'+ (i*6+3) +'</td>');
 								}else{
 									trObj.append('<td></td>');
-								}	
+								}
 								trObj.append('<td><span class="label label-success"></span></td>');
 								if((i*6+4) <= obj.alert_m_count)
 								{
@@ -446,7 +509,7 @@ $(document).ready(function() {
 							$("#" + obj.data_id + "-alert_p" + i).text(obj.alert_p[i]);
 							set_label_class($("#" + obj.data_id + "-alert_p" + i),obj.alert_p[i]);
 						}
-						
+
 						var j = 0;
 						$('#' + obj.data_id + '-sps-dc-1>tbody>tr').each(function(){
 							$(this).find("td:eq(0)").text(j+1);

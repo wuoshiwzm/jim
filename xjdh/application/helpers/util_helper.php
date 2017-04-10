@@ -16,7 +16,6 @@ class Util
         if ($length == 0) {
             return true;
         }
-    
         return (substr($haystack, -$length) === $needle);
     }
     static function Is_date ($str)
