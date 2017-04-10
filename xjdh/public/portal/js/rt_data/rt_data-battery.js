@@ -24,6 +24,13 @@ $(document).ready(function(){
 			for(var i = 0 ; i < length ; i++)
 			{
 				var obj = ret.batList[i];
+				if(!obj.status)
+				{
+					$("#" + obj.data_id + "-status").show();
+					$("#" + obj.data_id + "-status>span").text(obj.last_update);
+				}else{
+					$("#" + obj.data_id + "-status").hide();
+				}
 				$('#device-'+ obj.data_id +' .group_v').html(obj.group_v +'V');
 				$('#device-'+ obj.data_id +' .update_datetime').html(obj.update_datetime);
 				if(obj.group_i != undefined)

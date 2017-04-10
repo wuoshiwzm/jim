@@ -12,6 +12,8 @@
 					更新时间：<span class="update_datetime" style='font-size: 20px;'><?php echo date('Y-m-d H:i:s');?></span>
 				</h5></li>
 		</ul>
+	</div>
+</div>	
 <?php }else{?>
 <div class="row-fluid ">
 			<div class="span3">

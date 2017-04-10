@@ -131,7 +131,7 @@
 									<td class="center" op="<?php echo htmlentities($configObj->op,ENT_COMPAT,"UTF-8"); ?>"><?php echo htmlentities($configObj->op,ENT_COMPAT,"UTF-8");?></td>
 									<td class="center"><?php echo htmlentities($configObj->value,ENT_COMPAT,"UTF-8");?></td>
 									<td class="center"><?php echo htmlentities($configObj->msg,ENT_COMPAT,"UTF-8");?></td>
-									<td class="center"><?php echo htmlentities($configObj->time,ENT_COMPAT,"UTF-8");?></td>									
+									<td class="center"><?php echo htmlentities($configObj->timeout,ENT_COMPAT,"UTF-8");?></td>									
 									<td class="center">
 										<div class="btn-toolbar row-action">
 											<div class="btn-group">

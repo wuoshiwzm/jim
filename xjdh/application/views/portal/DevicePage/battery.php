@@ -5,6 +5,9 @@ var No2 = <?php echo json_encode(json_decode($dataObj->extra_para)->No2);?>;
 //-->
 var type = <?php echo json_encode($type); ?>
 </script>
+<div class="alert"  id="<?php echo $dataObj->data_id;?>-status" style="display:none;">
+	<i class="icon-exclamation-sign"></i><strong>警告！</strong> 设备数据异常，当前显示最后一次数据。最后数据时间：<span></span>
+</div>
 <div class='row-fluid'>
 				<h4>性能指标</h4>
 		      <?php if(in_array($userObj->user_role, array("admin","city_admin"))){ ?>
@@ -65,7 +68,7 @@ var type = <?php echo json_encode($type); ?>
 						<td class="group_v"></td>
 						<td class="update_datetime"><?php echo date('Y-m-d H:i:s');?></td>
 						<?php if(in_array($userObj->user_role, array("admin","city_admin"))){ ?>
-						<td class="hasThreshold"><button data_id='<?php echo $dataObj->data_id;?>'
+						<td class="hasThreshold"><button data_id='<?php echo $dataObj->data_id;?>'  model='<?php echo $dataObj->model;?>' 
 									field="group_voltage" class="btn btn-warning setThreshold">设置阀值</button></td>
 					    <?php } ?>
 					</tr>
@@ -103,7 +106,7 @@ var type = <?php echo json_encode($type); ?>
 						<?php if(in_array($userObj->user_role, array("admin","city_admin"))){ ?>
 						<button
 								data_id='<?php echo $dataObj->data_id;?>'
-								field="battery_<?php echo $j;?>_value"
+								field="battery_<?php echo $j;?>_value" model='<?php echo $dataObj->model;?>' 
 								class="btn btn-warning setThreshold">设置阀值</button>
 					    <?php } ?>
 					    </td>
@@ -113,7 +116,7 @@ var type = <?php echo json_encode($type); ?>
 						<?php if(in_array($userObj->user_role, array("admin","city_admin"))){ ?>
 						<button
 								data_id='<?php echo $dataObj->data_id;?>'
-								field="battery_<?php echo $j+1;?>_value"
+								field="battery_<?php echo $j+1;?>_value" model='<?php echo $dataObj->model;?>' 
 								class="btn btn-warning setThreshold">设置阀值</button>
 					     <?php } ?></td>
 						<td><?php echo$row[$j+2];?></td>
@@ -122,7 +125,7 @@ var type = <?php echo json_encode($type); ?>
 						<?php if(in_array($userObj->user_role, array("admin","city_admin"))){ ?>
 						<button
 								data_id='<?php echo $dataObj->data_id;?>'
-								field="battery_<?php echo $j+2;?>_value"
+								field="battery_<?php echo $j+2;?>_value" model='<?php echo $dataObj->model;?>' 
 								class="btn btn-warning setThreshold">设置阀值</button>
 						<?php } ?></td>
 						<td><?php echo $row[$j+3];?></td>
@@ -131,7 +134,7 @@ var type = <?php echo json_encode($type); ?>
 						<?php if(in_array($userObj->user_role, array("admin","city_admin"))){ ?>
 						<button
 								data_id='<?php echo $dataObj->data_id;?>'
-								field="battery_<?php echo $j+3;?>_value"
+								field="battery_<?php echo $j+3;?>_value" model='<?php echo $dataObj->model;?>' 
 								class="btn btn-warning setThreshold">设置阀值</button>
 						<?php } ?></td>
 					</tr>
@@ -170,25 +173,25 @@ var type = <?php echo json_encode($type); ?>
 						<td bat_num='<?php echo $j;?>'><span></span>&nbsp;</td>
 						<td class="hasThreshold"><button
 								data_id='<?php echo $dataObj->data_id;?>'
-								field="battery_<?php echo $j;?>_value"
+								field="battery_<?php echo $j;?>_value" model='<?php echo $dataObj->model;?>' 
 								class="btn btn-warning setThreshold">设置阀值</button></td>
 						<td><?php echo $row[$j+1];?></td>
 						<td bat_num='<?php echo $j+1;?>'><span></span>&nbsp;</td>
 						<td class="hasThreshold"><button
 								data_id='<?php echo $dataObj->data_id;?>'
-								field="battery_<?php echo $j+1;?>_value"
+								field="battery_<?php echo $j+1;?>_value" model='<?php echo $dataObj->model;?>' 
 								class="btn btn-warning setThreshold">设置阀值</button></td>
 						<td><?php echo$row[$j+2];?></td>
 						<td bat_num='<?php echo $j+2;?>'><span></span>&nbsp;</td>
 						<td class="hasThreshold"><button
 								data_id='<?php echo $dataObj->data_id;?>'
-								field="battery_<?php echo $j+2;?>_value"
+								field="battery_<?php echo $j+2;?>_value" model='<?php echo $dataObj->model;?>' 
 								class="btn btn-warning setThreshold">设置阀值</button></td>
 						<td><?php echo $row[$j+3];?></td>
 						<td bat_num='<?php echo $j+3;?>'><span></span>&nbsp;</td>
 						<td class="hasThreshold"><button
 								data_id='<?php echo $dataObj->data_id;?>'
-								field="battery_<?php echo $j+3;?>_value"
+								field="battery_<?php echo $j+3;?>_value" model='<?php echo $dataObj->model;?>' 
 								class="btn btn-warning setThreshold">设置阀值</button></td>
 					</tr>
 			                  <?php }?>                  
@@ -221,30 +224,30 @@ var type = <?php echo json_encode($type); ?>
                    <tr >		
 						<td>1</td>
 						<td bat_num='0'><span></span>&nbsp;</td>
-						<td class="hasThreshold"><?php if(in_array($userObj->user_role, array("admin","city_admin"))){ ?><button data_id='<?php echo $dataObj->data_id;?>' field="battery_0_value" class="btn btn-warning setThreshold">设置阀值</button><?php } ?></td>
+						<td class="hasThreshold"><?php if(in_array($userObj->user_role, array("admin","city_admin"))){ ?><button data_id='<?php echo $dataObj->data_id;?>' model='<?php echo $dataObj->model;?>'  field="battery_0_value" class="btn btn-warning setThreshold">设置阀值</button><?php } ?></td>
 						<td>2</td>
 						<td bat_num='1'><span></span>&nbsp;</td>
-						<td class="hasThreshold"><?php if(in_array($userObj->user_role, array("admin","city_admin"))){ ?><button data_id='<?php echo $dataObj->data_id;?>' field="battery_1_value" class="btn btn-warning setThreshold">设置阀值</button><?php } ?></td>
+						<td class="hasThreshold"><?php if(in_array($userObj->user_role, array("admin","city_admin"))){ ?><button data_id='<?php echo $dataObj->data_id;?>' model='<?php echo $dataObj->model;?>'  field="battery_1_value" class="btn btn-warning setThreshold">设置阀值</button><?php } ?></td>
 						<td>3</td>
 						<td bat_num='2'><span></span>&nbsp;</td>
-						<td class="hasThreshold"><?php if(in_array($userObj->user_role, array("admin","city_admin"))){ ?><button data_id='<?php echo $dataObj->data_id;?>' field="battery_2_value" class="btn btn-warning setThreshold">设置阀值</button><?php } ?></td>
+						<td class="hasThreshold"><?php if(in_array($userObj->user_role, array("admin","city_admin"))){ ?><button data_id='<?php echo $dataObj->data_id;?>' model='<?php echo $dataObj->model;?>'  field="battery_2_value" class="btn btn-warning setThreshold">设置阀值</button><?php } ?></td>
 						<td>4</td>
 						<td bat_num='3'><span></span>&nbsp;</td>
-						<td class="hasThreshold"><?php if(in_array($userObj->user_role, array("admin","city_admin"))){ ?><button data_id='<?php echo $dataObj->data_id;?>' field="battery_3_value" class="btn btn-warning setThreshold">设置阀值</button><?php } ?></td>
+						<td class="hasThreshold"><?php if(in_array($userObj->user_role, array("admin","city_admin"))){ ?><button data_id='<?php echo $dataObj->data_id;?>' model='<?php echo $dataObj->model;?>'  field="battery_3_value" class="btn btn-warning setThreshold">设置阀值</button><?php } ?></td>
 					</tr>
 					<tr>		
 						<td>21</td>
 						<td bat_num='20'><span></span>&nbsp;</td>
-						<td class="hasThreshold"><?php if(in_array($userObj->user_role, array("admin","city_admin"))){ ?><button data_id='<?php echo $dataObj->data_id;?>' field="battery_20_value" class="btn btn-warning setThreshold">设置阀值</button><?php } ?></td>
+						<td class="hasThreshold"><?php if(in_array($userObj->user_role, array("admin","city_admin"))){ ?><button data_id='<?php echo $dataObj->data_id;?>'  model='<?php echo $dataObj->model;?>' field="battery_20_value" class="btn btn-warning setThreshold">设置阀值</button><?php } ?></td>
 						<td>22</td>
 						<td bat_num='21'><span></span>&nbsp;</td>
-						<td class="hasThreshold"><?php if(in_array($userObj->user_role, array("admin","city_admin"))){ ?><button data_id='<?php echo $dataObj->data_id;?>' field="battery_21_value" class="btn btn-warning setThreshold">设置阀值</button><?php } ?></td>
+						<td class="hasThreshold"><?php if(in_array($userObj->user_role, array("admin","city_admin"))){ ?><button data_id='<?php echo $dataObj->data_id;?>'  model='<?php echo $dataObj->model;?>' field="battery_21_value" class="btn btn-warning setThreshold">设置阀值</button><?php } ?></td>
 						<td>23</td>
 						<td bat_num='22'><span></span>&nbsp;</td>
-						<td class="hasThreshold"><?php if(in_array($userObj->user_role, array("admin","city_admin"))){ ?><button data_id='<?php echo $dataObj->data_id;?>' field="battery_22_value" class="btn btn-warning setThreshold">设置阀值</button><?php } ?></td>
+						<td class="hasThreshold"><?php if(in_array($userObj->user_role, array("admin","city_admin"))){ ?><button data_id='<?php echo $dataObj->data_id;?>'  model='<?php echo $dataObj->model;?>' field="battery_22_value" class="btn btn-warning setThreshold">设置阀值</button><?php } ?></td>
 						<td>24</td>
 						<td bat_num='23'><span></span>&nbsp;</td>
-						<td class="hasThreshold"><?php if(in_array($userObj->user_role, array("admin","city_admin"))){ ?><button data_id='<?php echo $dataObj->data_id;?>' field="battery_23_value" class="btn btn-warning setThreshold">设置阀值</button><?php } ?></td>
+						<td class="hasThreshold"><?php if(in_array($userObj->user_role, array("admin","city_admin"))){ ?><button data_id='<?php echo $dataObj->data_id;?>'  model='<?php echo $dataObj->model;?>' field="battery_23_value" class="btn btn-warning setThreshold">设置阀值</button><?php } ?></td>
 					</tr>
                                         </tbody>
 					</table>
@@ -273,30 +276,30 @@ var type = <?php echo json_encode($type); ?>
 					<tr>		
 						<td>1</td>
 						<td bat_num='0'><span></span>&nbsp;</td>
-						<td class="hasThreshold"><?php if(in_array($userObj->user_role, array("admin","city_admin"))){ ?><button data_id='<?php echo $dataObj->data_id;?>' field="battery_0_value" class="btn btn-warning setThreshold">设置阀值</button><?php } ?></td>
+						<td class="hasThreshold"><?php if(in_array($userObj->user_role, array("admin","city_admin"))){ ?><button data_id='<?php echo $dataObj->data_id;?>'  model='<?php echo $dataObj->model;?>' field="battery_0_value" class="btn btn-warning setThreshold">设置阀值</button><?php } ?></td>
 						<td>2</td>
 						<td bat_num='1'><span></span>&nbsp;</td>
-						<td class="hasThreshold"><?php if(in_array($userObj->user_role, array("admin","city_admin"))){ ?><button data_id='<?php echo $dataObj->data_id;?>' field="battery_1_value" class="btn btn-warning setThreshold">设置阀值</button><?php } ?></td>
+						<td class="hasThreshold"><?php if(in_array($userObj->user_role, array("admin","city_admin"))){ ?><button data_id='<?php echo $dataObj->data_id;?>'  model='<?php echo $dataObj->model;?>' field="battery_1_value" class="btn btn-warning setThreshold">设置阀值</button><?php } ?></td>
 						<td>3</td>
 						<td bat_num='2'><span></span>&nbsp;</td>
-						<td class="hasThreshold"><?php if(in_array($userObj->user_role, array("admin","city_admin"))){ ?><button data_id='<?php echo $dataObj->data_id;?>' field="battery_2_value" class="btn btn-warning setThreshold">设置阀值</button><?php } ?></td>
+						<td class="hasThreshold"><?php if(in_array($userObj->user_role, array("admin","city_admin"))){ ?><button data_id='<?php echo $dataObj->data_id;?>'  model='<?php echo $dataObj->model;?>' field="battery_2_value" class="btn btn-warning setThreshold">设置阀值</button><?php } ?></td>
 						<td>4</td>
 						<td bat_num='3'><span></span>&nbsp;</td>
-						<td class="hasThreshold"><?php if(in_array($userObj->user_role, array("admin","city_admin"))){ ?><button data_id='<?php echo $dataObj->data_id;?>' field="battery_3_value" class="btn btn-warning setThreshold">设置阀值</button><?php } ?></td>
+						<td class="hasThreshold"><?php if(in_array($userObj->user_role, array("admin","city_admin"))){ ?><button data_id='<?php echo $dataObj->data_id;?>'  model='<?php echo $dataObj->model;?>' field="battery_3_value" class="btn btn-warning setThreshold">设置阀值</button><?php } ?></td>
 					</tr>
 					<tr>		
 						<td>21</td>
 						<td bat_num='20'><span></span>&nbsp;</td>
-						<td class="hasThreshold"><?php if(in_array($userObj->user_role, array("admin","city_admin"))){ ?><button data_id='<?php echo $dataObj->data_id;?>' field="battery_20_value" class="btn btn-warning setThreshold">设置阀值</button><?php } ?></td>
+						<td class="hasThreshold"><?php if(in_array($userObj->user_role, array("admin","city_admin"))){ ?><button data_id='<?php echo $dataObj->data_id;?>'  model='<?php echo $dataObj->model;?>' field="battery_20_value" class="btn btn-warning setThreshold">设置阀值</button><?php } ?></td>
 						<td>22</td>
 						<td bat_num='21'><span></span>&nbsp;</td>
-						<td class="hasThreshold"><?php if(in_array($userObj->user_role, array("admin","city_admin"))){ ?><button data_id='<?php echo $dataObj->data_id;?>' field="battery_21_value" class="btn btn-warning setThreshold">设置阀值</button><?php } ?></td>
+						<td class="hasThreshold"><?php if(in_array($userObj->user_role, array("admin","city_admin"))){ ?><button data_id='<?php echo $dataObj->data_id;?>'  model='<?php echo $dataObj->model;?>' field="battery_21_value" class="btn btn-warning setThreshold">设置阀值</button><?php } ?></td>
 						<td>23</td>
 						<td bat_num='22'><span></span>&nbsp;</td>
-						<td class="hasThreshold"><?php if(in_array($userObj->user_role, array("admin","city_admin"))){ ?><button data_id='<?php echo $dataObj->data_id;?>' field="battery_22_value" class="btn btn-warning setThreshold">设置阀值</button><?php } ?></td>
+						<td class="hasThreshold"><?php if(in_array($userObj->user_role, array("admin","city_admin"))){ ?><button data_id='<?php echo $dataObj->data_id;?>'  model='<?php echo $dataObj->model;?>' field="battery_22_value" class="btn btn-warning setThreshold">设置阀值</button><?php } ?></td>
 						<td>24</td>
 						<td bat_num='23'><span></span>&nbsp;</td>
-						<td class="hasThreshold"><?php if(in_array($userObj->user_role, array("admin","city_admin"))){ ?><button data_id='<?php echo $dataObj->data_id;?>' field="battery_23_value" class="btn btn-warning setThreshold">设置阀值</button><?php } ?></td>
+						<td class="hasThreshold"><?php if(in_array($userObj->user_role, array("admin","city_admin"))){ ?><button data_id='<?php echo $dataObj->data_id;?>'  model='<?php echo $dataObj->model;?>' field="battery_23_value" class="btn btn-warning setThreshold">设置阀值</button><?php } ?></td>
 					</tr>                  
 			            </tbody>
 					</table>
@@ -324,41 +327,41 @@ var type = <?php echo json_encode($type); ?>
                                         <tr>		
 						<td>1</td>
 						<td bat_num='0'><span></span>&nbsp;</td>
-						<td class="hasThreshold"><?php if(in_array($userObj->user_role, array("admin","city_admin"))){ ?><button data_id='<?php echo $dataObj->data_id;?>' field="battery_0_value" class="btn btn-warning setThreshold">设置阀值</button><?php } ?></td>
+						<td class="hasThreshold"><?php if(in_array($userObj->user_role, array("admin","city_admin"))){ ?><button data_id='<?php echo $dataObj->data_id;?>'  model='<?php echo $dataObj->model;?>' field="battery_0_value" class="btn btn-warning setThreshold">设置阀值</button><?php } ?></td>
 						<td>2</td>
 						<td bat_num='1'><span></span>&nbsp;</td>
-						<td class="hasThreshold"><?php if(in_array($userObj->user_role, array("admin","city_admin"))){ ?><button data_id='<?php echo $dataObj->data_id;?>' field="battery_1_value" class="btn btn-warning setThreshold">设置阀值</button><?php } ?></td>
+						<td class="hasThreshold"><?php if(in_array($userObj->user_role, array("admin","city_admin"))){ ?><button data_id='<?php echo $dataObj->data_id;?>'  model='<?php echo $dataObj->model;?>' field="battery_1_value" class="btn btn-warning setThreshold">设置阀值</button><?php } ?></td>
 						<td>3</td>
 						<td bat_num='2'><span></span>&nbsp;</td>
-						<td class="hasThreshold"><?php if(in_array($userObj->user_role, array("admin","city_admin"))){ ?><button data_id='<?php echo $dataObj->data_id;?>' field="battery_2_value" class="btn btn-warning setThreshold">设置阀值</button><?php } ?></td>
+						<td class="hasThreshold"><?php if(in_array($userObj->user_role, array("admin","city_admin"))){ ?><button data_id='<?php echo $dataObj->data_id;?>'  model='<?php echo $dataObj->model;?>' field="battery_2_value" class="btn btn-warning setThreshold">设置阀值</button><?php } ?></td>
 						<td>4</td>
 						<td bat_num='3'><span></span>&nbsp;</td>
-						<td class="hasThreshold"><?php if(in_array($userObj->user_role, array("admin","city_admin"))){ ?><button data_id='<?php echo $dataObj->data_id;?>'field="battery_3_value" class="btn btn-warning setThreshold">设置阀值</button><?php } ?></td>
+						<td class="hasThreshold"><?php if(in_array($userObj->user_role, array("admin","city_admin"))){ ?><button data_id='<?php echo $dataObj->data_id;?>' model='<?php echo $dataObj->model;?>' field="battery_3_value" class="btn btn-warning setThreshold">设置阀值</button><?php } ?></td>
 					</tr>
 					<tr>		
 						<td>5</td>
 						<td bat_num='4'><span></span>&nbsp;</td>
-						<td class="hasThreshold"><?php if(in_array($userObj->user_role, array("admin","city_admin"))){ ?><button data_id='<?php echo $dataObj->data_id;?>' field="battery_4_value" class="btn btn-warning setThreshold">设置阀值</button><?php } ?></td>
+						<td class="hasThreshold"><?php if(in_array($userObj->user_role, array("admin","city_admin"))){ ?><button data_id='<?php echo $dataObj->data_id;?>'  model='<?php echo $dataObj->model;?>' field="battery_4_value" class="btn btn-warning setThreshold">设置阀值</button><?php } ?></td>
 						<td>6</td>
 						<td bat_num='5'><span></span>&nbsp;</td>
-						<td class="hasThreshold"><?php if(in_array($userObj->user_role, array("admin","city_admin"))){ ?><button data_id='<?php echo $dataObj->data_id;?>' field="battery_5_value" class="btn btn-warning setThreshold">设置阀值</button><?php } ?></td>
+						<td class="hasThreshold"><?php if(in_array($userObj->user_role, array("admin","city_admin"))){ ?><button data_id='<?php echo $dataObj->data_id;?>'  model='<?php echo $dataObj->model;?>' field="battery_5_value" class="btn btn-warning setThreshold">设置阀值</button><?php } ?></td>
 						<td>7</td>
 						<td bat_num='6'><span></span>&nbsp;</td>
-						<td class="hasThreshold"><?php if(in_array($userObj->user_role, array("admin","city_admin"))){ ?><button data_id='<?php echo $dataObj->data_id;?>' field="battery_6_value" class="btn btn-warning setThreshold">设置阀值</button><?php } ?></td>
+						<td class="hasThreshold"><?php if(in_array($userObj->user_role, array("admin","city_admin"))){ ?><button data_id='<?php echo $dataObj->data_id;?>'  model='<?php echo $dataObj->model;?>' field="battery_6_value" class="btn btn-warning setThreshold">设置阀值</button><?php } ?></td>
 						<td>8</td>
 						<td bat_num='7'><span></span>&nbsp;</td>
-						<td class="hasThreshold"><?php if(in_array($userObj->user_role, array("admin","city_admin"))){ ?><button data_id='<?php echo $dataObj->data_id;?>' field="battery_7_value" class="btn btn-warning setThreshold">设置阀值</button><?php } ?></td>
+						<td class="hasThreshold"><?php if(in_array($userObj->user_role, array("admin","city_admin"))){ ?><button data_id='<?php echo $dataObj->data_id;?>'  model='<?php echo $dataObj->model;?>' field="battery_7_value" class="btn btn-warning setThreshold">设置阀值</button><?php } ?></td>
 					</tr>
 					<tr>		
 						<td>9</td>
 						<td bat_num='8'><span></span>&nbsp;</td>
-						<td class="hasThreshold"><?php if(in_array($userObj->user_role, array("admin","city_admin"))){ ?><button data_id='<?php echo $dataObj->data_id;?>' field="battery_8_value" class="btn btn-warning setThreshold">设置阀值</button><?php } ?></td>
+						<td class="hasThreshold"><?php if(in_array($userObj->user_role, array("admin","city_admin"))){ ?><button data_id='<?php echo $dataObj->data_id;?>'  model='<?php echo $dataObj->model;?>' field="battery_8_value" class="btn btn-warning setThreshold">设置阀值</button><?php } ?></td>
 						<td>10</td>
 						<td bat_num='9'><span></span>&nbsp;</td>
-						<td class="hasThreshold"><?php if(in_array($userObj->user_role, array("admin","city_admin"))){ ?><button data_id='<?php echo $dataObj->data_id;?>' field="battery_9_value" class="btn btn-warning setThreshold">设置阀值</button><?php } ?></td>
+						<td class="hasThreshold"><?php if(in_array($userObj->user_role, array("admin","city_admin"))){ ?><button data_id='<?php echo $dataObj->data_id;?>'  model='<?php echo $dataObj->model;?>' field="battery_9_value" class="btn btn-warning setThreshold">设置阀值</button><?php } ?></td>
 						<td>11</td>
 						<td bat_num='10'><span></span>&nbsp;</td>
-						<td class="hasThreshold"><?php if(in_array($userObj->user_role, array("admin","city_admin"))){ ?><button data_id='<?php echo $dataObj->data_id;?>' field="battery_10_value" class="btn btn-warning setThreshold">设置阀值</button><?php } ?></td>
+						<td class="hasThreshold"><?php if(in_array($userObj->user_role, array("admin","city_admin"))){ ?><button data_id='<?php echo $dataObj->data_id;?>'  model='<?php echo $dataObj->model;?>' field="battery_10_value" class="btn btn-warning setThreshold">设置阀值</button><?php } ?></td>
                                                 <td></td><td></td><td></td>
 					</tr>
 					</tbody>
@@ -384,41 +387,41 @@ var type = <?php echo json_encode($type); ?>
 					<tr>		
 						<td>1</td>
 						<td bat_num='0'><span></span>&nbsp;</td>
-						<td class="hasThreshold"><?php if(in_array($userObj->user_role, array("admin","city_admin"))){ ?><button data_id='<?php echo $dataObj->data_id;?>' field="battery_0_value" class="btn btn-warning setThreshold">设置阀值</button><?php } ?></td>
+						<td class="hasThreshold"><?php if(in_array($userObj->user_role, array("admin","city_admin"))){ ?><button data_id='<?php echo $dataObj->data_id;?>'  model='<?php echo $dataObj->model;?>' field="battery_0_value" class="btn btn-warning setThreshold">设置阀值</button><?php } ?></td>
 						<td>2</td>
 						<td bat_num='1'><span></span>&nbsp;</td>
-						<td class="hasThreshold"><?php if(in_array($userObj->user_role, array("admin","city_admin"))){ ?><button data_id='<?php echo $dataObj->data_id;?>' field="battery_1_value" class="btn btn-warning setThreshold">设置阀值</button><?php } ?></td>
+						<td class="hasThreshold"><?php if(in_array($userObj->user_role, array("admin","city_admin"))){ ?><button data_id='<?php echo $dataObj->data_id;?>'  model='<?php echo $dataObj->model;?>' field="battery_1_value" class="btn btn-warning setThreshold">设置阀值</button><?php } ?></td>
 						<td>3</td>
 						<td bat_num='2'><span></span>&nbsp;</td>
-						<td class="hasThreshold"><?php if(in_array($userObj->user_role, array("admin","city_admin"))){ ?><button data_id='<?php echo $dataObj->data_id;?>' field="battery_2_value" class="btn btn-warning setThreshold">设置阀值</button><?php } ?></td>
+						<td class="hasThreshold"><?php if(in_array($userObj->user_role, array("admin","city_admin"))){ ?><button data_id='<?php echo $dataObj->data_id;?>'  model='<?php echo $dataObj->model;?>' field="battery_2_value" class="btn btn-warning setThreshold">设置阀值</button><?php } ?></td>
 						<td>4</td>
 						<td bat_num='3'><span></span>&nbsp;</td>
-						<td class="hasThreshold"><?php if(in_array($userObj->user_role, array("admin","city_admin"))){ ?><button data_id='<?php echo $dataObj->data_id;?>'field="battery_3_value" class="btn btn-warning setThreshold">设置阀值</button><?php } ?></td>
+						<td class="hasThreshold"><?php if(in_array($userObj->user_role, array("admin","city_admin"))){ ?><button data_id='<?php echo $dataObj->data_id;?>' model='<?php echo $dataObj->model;?>' field="battery_3_value" class="btn btn-warning setThreshold">设置阀值</button><?php } ?></td>
 					</tr>
 					<tr>		
 						<td>5</td>
 						<td bat_num='4'><span></span>&nbsp;</td>
-						<td class="hasThreshold"><?php if(in_array($userObj->user_role, array("admin","city_admin"))){ ?><button data_id='<?php echo $dataObj->data_id;?>' field="battery_4_value" class="btn btn-warning setThreshold">设置阀值</button><?php } ?></td>
+						<td class="hasThreshold"><?php if(in_array($userObj->user_role, array("admin","city_admin"))){ ?><button data_id='<?php echo $dataObj->data_id;?>' model='<?php echo $dataObj->model;?>'  field="battery_4_value" class="btn btn-warning setThreshold">设置阀值</button><?php } ?></td>
 						<td>6</td>
 						<td bat_num='5'><span></span>&nbsp;</td>
-						<td class="hasThreshold"><?php if(in_array($userObj->user_role, array("admin","city_admin"))){ ?><button data_id='<?php echo $dataObj->data_id;?>' field="battery_5_value" class="btn btn-warning setThreshold">设置阀值</button><?php } ?></td>
+						<td class="hasThreshold"><?php if(in_array($userObj->user_role, array("admin","city_admin"))){ ?><button data_id='<?php echo $dataObj->data_id;?>'  model='<?php echo $dataObj->model;?>' field="battery_5_value" class="btn btn-warning setThreshold">设置阀值</button><?php } ?></td>
 						<td>7</td>
 						<td bat_num='6'><span></span>&nbsp;</td>
-						<td class="hasThreshold"><?php if(in_array($userObj->user_role, array("admin","city_admin"))){ ?><button data_id='<?php echo $dataObj->data_id;?>' field="battery_6_value" class="btn btn-warning setThreshold">设置阀值</button><?php } ?></td>
+						<td class="hasThreshold"><?php if(in_array($userObj->user_role, array("admin","city_admin"))){ ?><button data_id='<?php echo $dataObj->data_id;?>'  model='<?php echo $dataObj->model;?>' field="battery_6_value" class="btn btn-warning setThreshold">设置阀值</button><?php } ?></td>
 						<td>8</td>
 						<td bat_num='7'><span></span>&nbsp;</td>
-						<td class="hasThreshold"><?php if(in_array($userObj->user_role, array("admin","city_admin"))){ ?><button data_id='<?php echo $dataObj->data_id;?>' field="battery_7_value" class="btn btn-warning setThreshold">设置阀值</button><?php } ?></td>
+						<td class="hasThreshold"><?php if(in_array($userObj->user_role, array("admin","city_admin"))){ ?><button data_id='<?php echo $dataObj->data_id;?>'  model='<?php echo $dataObj->model;?>' field="battery_7_value" class="btn btn-warning setThreshold">设置阀值</button><?php } ?></td>
 					</tr>
 					<tr>		
 						<td>9</td>
 						<td bat_num='8'><span></span>&nbsp;</td>
-						<td class="hasThreshold"><?php if(in_array($userObj->user_role, array("admin","city_admin"))){ ?><button data_id='<?php echo $dataObj->data_id;?>' field="battery_8_value" class="btn btn-warning setThreshold">设置阀值</button><?php } ?></td>
+						<td class="hasThreshold"><?php if(in_array($userObj->user_role, array("admin","city_admin"))){ ?><button data_id='<?php echo $dataObj->data_id;?>'  model='<?php echo $dataObj->model;?>' field="battery_8_value" class="btn btn-warning setThreshold">设置阀值</button><?php } ?></td>
 						<td>10</td>
 						<td bat_num='9'><span></span>&nbsp;</td>
-						<td class="hasThreshold"><?php if(in_array($userObj->user_role, array("admin","city_admin"))){ ?><button data_id='<?php echo $dataObj->data_id;?>' field="battery_9_value" class="btn btn-warning setThreshold">设置阀值</button><?php } ?></td>
+						<td class="hasThreshold"><?php if(in_array($userObj->user_role, array("admin","city_admin"))){ ?><button data_id='<?php echo $dataObj->data_id;?>'  model='<?php echo $dataObj->model;?>' field="battery_9_value" class="btn btn-warning setThreshold">设置阀值</button><?php } ?></td>
 						<td>11</td>
 						<td bat_num='10'><span></span>&nbsp;</td>
-						<td class="hasThreshold"><?php if(in_array($userObj->user_role, array("admin","city_admin"))){ ?><button data_id='<?php echo $dataObj->data_id;?>' field="battery_10_value" class="btn btn-warning setThreshold">设置阀值</button><?php } ?></td>
+						<td class="hasThreshold"><?php if(in_array($userObj->user_role, array("admin","city_admin"))){ ?><button data_id='<?php echo $dataObj->data_id;?>'  model='<?php echo $dataObj->model;?>' field="battery_10_value" class="btn btn-warning setThreshold">设置阀值</button><?php } ?></td>
 						<td></td><td></td><td></td>
 					</tr>              
 			            </tbody>
@@ -458,7 +461,7 @@ var type = <?php echo json_encode($type); ?>
 						<?php if(in_array($userObj->user_role, array("admin","city_admin"))){ ?>
 						<button
 								data_id='<?php echo $dataObj->data_id;?>'
-								field="battery_<?php echo $j;?>_value"
+								field="battery_<?php echo $j;?>_value" model='<?php echo $dataObj->model;?>' 
 								class="btn btn-warning setThreshold">设置阀值</button>
 						<?php } ?></td>
 						<td><?php echo $j+2;?></td>
@@ -467,7 +470,7 @@ var type = <?php echo json_encode($type); ?>
 						<?php if(in_array($userObj->user_role, array("admin","city_admin"))){ ?>
 						<button
 								data_id='<?php echo $dataObj->data_id;?>'
-								field="battery_<?php echo $j+1;?>_value"
+								field="battery_<?php echo $j+1;?>_value" model='<?php echo $dataObj->model;?>' 
 								class="btn btn-warning setThreshold">设置阀值</button>
 						<?php } ?></td>
 						<td><?php echo $j+3;?></td>
@@ -476,7 +479,7 @@ var type = <?php echo json_encode($type); ?>
 						<?php if(in_array($userObj->user_role, array("admin","city_admin"))){ ?>
 						<button
 								data_id='<?php echo $dataObj->data_id;?>'
-								field="battery_<?php echo $j+2;?>_value"
+								field="battery_<?php echo $j+2;?>_value" model='<?php echo $dataObj->model;?>' 
 								class="btn btn-warning setThreshold">设置阀值</button>
 								<?php } ?></td>
 						<td><?php echo $j+4;?></td>
@@ -485,7 +488,7 @@ var type = <?php echo json_encode($type); ?>
 						<?php if(in_array($userObj->user_role, array("admin","city_admin"))){ ?>
 						<button
 								data_id='<?php echo $dataObj->data_id;?>'
-								field="battery_<?php echo $j+3;?>_value"
+								field="battery_<?php echo $j+3;?>_value" model='<?php echo $dataObj->model;?>' 
 								class="btn btn-warning setThreshold">设置阀值</button>
 					       <?php } ?></td>
 					</tr>

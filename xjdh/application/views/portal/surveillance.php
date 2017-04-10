@@ -5,16 +5,20 @@
 </style>
 <script src="/public/js/jquery-1.11.2.min.js"></script>
 <script type="text/javascript">
+var index = <?php echo $index; ?>;
 var devList = <?php echo json_encode($devList); ?>;
 var number = <?php echo $number; ?>;
 var second = <?php echo $second; ?>;
+var wan = <?php echo $wan ? 1 : 0; ?>;
 </script>
 <script src="/public/portal/js/surveillance.js"></script>
 </head>
 <body>
 <div>
 <div style="float:left;width:20vh;height:100%;line-height:3vh;font-size: 2vh;">
-<form method="get">
+<form method="get" id="videoForm">
+<input type="hidden" name="wan" value="<?php echo $wan; ?>" />
+<input type="hidden" id="index" name="index" value="<?php echo $index; ?>" />
 <div>
 <label>视频个数:</label>
 <select name="number" style="line-height:3vh;font-size: 2vh;">

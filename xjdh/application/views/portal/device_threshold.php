@@ -1,10 +1,7 @@
 <script type="text/javascript">
-var modelList = <?php echo json_encode(Defines::$gDevModel); ?>;
-var aa=<?php echo json_encode($aa);?>;
-var parkey=<?php echo json_encode($parkey);?>;
-var selSubstation=<?php echo json_encode($selSubstation);?>;
-var selCity=<?php echo json_encode($selCity);?>;
-var gDeviceThresholdParam = <?php echo json_encode(Defines::$gDeviceThresholdParams);?>;
+var city_code = "<?php echo $selCity; ?>";
+var county_code= "<?php echo $selCounty; ?>";
+var substation_id = "<?php echo $selSubstation;?>";
 </script>
 <div class="main-wrapper">
 	<div class="container-fluid">
@@ -76,20 +73,36 @@ var gDeviceThresholdParam = <?php echo json_encode(Defines::$gDeviceThresholdPar
 								        <?php }?>
 									</select>
 								</div>
-								<label class="control-label" style="float: left;">所属局站</label>
-								<div class="controls" style="margin-left: 20px; float: left;">
-									<select class="chzn-select" data-placeholder="选择局站"
-										name='selSubstation' id='selSubstation'>
-										<option value=''>所有区域</option>
-									    <?php foreach ($substation as $substationObj){?>
-									    
-									   <option <?php if($substationObj->id == $selSubstation){?>
-											selected="selected" <?php }?>
-											value="<?php echo $substationObj->id;?>"><?php echo htmlentities($substationObj->name,ENT_COMPAT,"UTF-8");?></option>	
-									   
-									    <?php }?>	
-									</select>
-								</div>
+								
+							</div>
+							<div class="control-group">
+    							<label class="control-label" style="float: left;">所属局站</label>
+    								<div class="controls" style="margin-left: 20px; float: left;">
+    									<select class="chzn-select" data-placeholder="选择局站"
+    										name='selSubstation' id='selSubstation'>
+    										<option value=''>所有区域</option>
+    									    <?php foreach ($substation as $substationObj){?>
+    									    
+    									   <option <?php if($substationObj->id == $selSubstation){?>
+    											selected="selected" <?php }?>
+    											value="<?php echo $substationObj->id;?>"><?php echo htmlentities($substationObj->name,ENT_COMPAT,"UTF-8");?></option>	
+    									   
+    									    <?php }?>	
+    									</select>
+    								</div>
+    							<label class="control-label" style="float: left;">设备类型</label>
+    								<div class="controls" style="margin-left: 20px; float: left;">
+    									<select class="chzn-select" data-placeholder="选择设备"
+    										name='selModel' id='selModel'>
+    										<option value=''>请选择设备</option>
+    										<?php foreach(Defines::$gDevModel as $model=>$label){ ?>
+    										<option <?php if($selModel == $model){?>
+    											selected="selected" <?php }?>
+    											value="<?php echo $model;?>"><?php echo $label; ?></option>	
+    									   
+    									    <?php }?>	
+    									</select>
+    								</div>
 							</div>
 							<div class="form-actions">
 								<button class="btn btn-success" name="action" value="search"
@@ -120,7 +133,7 @@ var gDeviceThresholdParam = <?php echo json_encode(Defines::$gDeviceThresholdPar
 		<?php }?>
 		<div class="row-fluid">
 			<div class="span12">
-				<div class="switch-board gray">批量设置阀值会作用到所有同类型的设备上。</div>
+				<div class="switch-board gray">批量设置阈值会作用到所有同类型的设备上。</div>
 				<div class="content-widgets light-gray">
 					<div class="widget-container">
 						<div class="row-fluid">
@@ -148,12 +161,8 @@ var gDeviceThresholdParam = <?php echo json_encode(Defines::$gDeviceThresholdPar
 								&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 								<button type="button" class="btn btn-primary"
 									id="btnAddDeviceVar">添加设备数据变量</button>
-
 							</div>
-
-
 						</div>
-
 					</div>
 					<br />
 					<div class="row-fluid">
@@ -228,21 +237,20 @@ var gDeviceThresholdParam = <?php echo json_encode(Defines::$gDeviceThresholdPar
 		<div class="modal-content">
 			<div class="modal-body modal-lg">
 				<h4>设置完毕，请点击"保存"按钮对所有修改进行保存</h4>
-				<p>阀值类型：上限：当采样值增加大于上限触发。下限：当采样值减少小于下限时触发。阀值：采样值等于阀值时候触发。</p>
+				<p>阈值类型：上限：当采样值增加大于上限触发。下限：当采样值减少小于下限时触发。阈值：采样值等于阈值时候触发。</p>
 				<div class="row-fluid">
 					<div class="span6">
-					   <h4>上级告警规则</h4>选中即可应用与本告警规则集合
+					   <h4>上级告警规则</h4>点击"<i class="icon-cloud-download"></i>"即可应用与本告警规则集合
 				    </div>
 				</div>
 				<table
 					class="paper-table table table-paper table-striped table-sortable">
 					<thead>
-						<tr>
-						   <th></th>						    
+						<tr>				    
 							<th>序号</th>
-							<th>所属分公司/区域/局站</th>
-							<th>阀值类型</th>
-							<th>阀值</th>
+							<th>分公司-区域-局站</th>
+							<th>阈值类型</th>
+							<th>阈值</th>
 							<th>告警级别</th>
 							<th>信号名称</th>
 							<th>信号ID</th>
@@ -252,7 +260,7 @@ var gDeviceThresholdParam = <?php echo json_encode(Defines::$gDeviceThresholdPar
 							<th>操作</th>
 						</tr>
 					</thead>
-					<tbody id="tbHighRule">
+					<tbody id="tbParentRule">
 					</tbody>
 				</table>
 				<div class="row-fluid">
@@ -266,8 +274,9 @@ var gDeviceThresholdParam = <?php echo json_encode(Defines::$gDeviceThresholdPar
 					<thead>
 						<tr>
 							<th>序号</th>
-							<th>阀值类型</th>
-							<th>阀值</th>
+							<th>引用状态</th>
+							<th>阈值类型</th>
+							<th>阈值</th>
 							<th>告警级别</th>
 							<th>信号名称</th>
 							<th>信号ID</th>

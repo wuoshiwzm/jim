@@ -1,4 +1,4 @@
-﻿<!DOCTYPE HTML>
+<!DOCTYPE HTML>
 <html xmlns="http://www.w3.org/1999/xhtml"  xml:lang="zh-CN" lang="zh-CN">
 <head>
 <meta http-equiv="content-type" content="text/html;charset=utf-8">
@@ -166,15 +166,10 @@
 							class="active" <?php }?>><a class="icon-user" href="#users"
 							data-original-title="人员管理"></a></li>
 							<?php }?>
-<!--局站验收-->
-                        <?php if (Author::allowRole(4, [4, 3, 2,1], User::GetCurrentUser()->check_role)) { ?>
-                            <li <?php if (isset($actTab) && $actTab == '') { ?>
-                                class="active" <?php } ?>><a class="icon-user" href="#check"
-                                                             data-original-title="工程验收"></a></li>
-                        <?php } ?>
 
-
-
+                        <li style="display:none;" <?php if(isset($actTab) && $actTab == ''){ ?>
+                            class="active" <?php }?>><a class="icon-user" href="#check"
+                                                        data-original-title="工程验收"></a></li>
                     </ul>
 				</div>
 				<div class="responsive-leftbar">
@@ -304,14 +299,13 @@
 								href="<?php echo site_url("portal/door_report"); ?>"><i
 									class="icon-file-alt"></i><span> 门禁报表</span> </a></li>
 						   <?php if(User::IsUserHasPermission($userObj->id, "视频移动侦测记录")||in_array($userObj->user_role,array('operator','city_admin','admin'))) { ?>
-							<li> <a
+							<li style="display:none;"> <a
 								class="dark-yellow" href="/portal/camera_motion"><i
 									class="icon-lock"></i><span>视频移动侦测记录</span> </a></li>
 							<?php } ?>
 							<li><a class="orange"
 								href="<?php echo site_url("portal/opendoor_report"); ?>"><i
 									class="icon-file-alt"></i><span>开门记录报表</span> </a></li>
-						   
 						</ul>
 					</div>
 					<div id="motor" class="tab-pane">
@@ -459,8 +453,6 @@
 						</ul>
 					</div>
 					<?php }?>
-
-
 					<?php }?>
 					<?php if(User::IsUserHasFirst($userObj->id, "人员管理")) { ?>
 					<div id="users" class="tab-pane">
@@ -499,56 +491,30 @@
 						</ul>
 					 </div>
 				   <?php }?>
-<!--                    工程验收-->
-                    <?php if (Author::allowRole(4, [4, 3, 2,1], User::GetCurrentUser()->check_role)) { ?>
-                        <div id="check" class="tab-pane">
-                            <h4 class="side-head">工程验收</h4>
-                            <ul class="metro-sidenav clearfix">
-                                <?php if (Author::allowRole(4, [4, 3, 2], User::GetCurrentUser()->check_role)) { ?>
-                                    <li><a class="orange"
-                                           href="<?php echo site_url("check/arrange"); ?>"><i
-                                                    class="icon-user"></i><span>工程管理</span> </a></li>
-                                <?php } ?>
-                                <?php if (Author::allowRole(4, 4, User::GetCurrentUser()->check_role)) { ?>
-                                    <li><a class="orange"
-                                           href="<?php echo site_url("check/people"); ?>"><i
-                                                    class="icon-user"></i><span>人员管理</span> </a></li>
-                                <?php } ?>
-                                <?php if (Author::allowRole(4, [4, 3, 2], User::GetCurrentUser()->check_role)) { ?>
-                                    <li><a class="orange"
-                                           href="<?php echo site_url("check/question"); ?>"><i
-                                                    class="icon-user"></i><span>问题管理</span> </a></li>
-                                <?php } ?>
-                                <?php if (Author::allowRole(4, [4,3,2], User::GetCurrentUser()->check_role)) { ?>
-                                    <li><a class="orange"
-                                           href="<?php echo site_url("team"); ?>"><i
-                                                    class="icon-user"></i><span>施工队管理</span> </a></li>
-                                <?php } ?>
-                                <?php if (Author::allowRole(4, [4,3,2], User::GetCurrentUser()->check_role)) { ?>
-                                    <li><a class="orange"
-                                           href="<?php echo site_url("check/process"); ?>"><i
-                                                    class="icon-user"></i><span>施工进度</span> </a></li>
-                                <?php } ?>
 
-                                <?php if (Author::allowRole(4, [1,4], User::GetCurrentUser()->check_role)) { ?>
-                                    <li><a class="orange"
-                                           href="<?php echo site_url("check/upload"); ?>"><i
-                                                    class="icon-user"></i><span>上传审核照片</span> </a></li>
-                                <?php } ?>
+                    <div id="check" class="tab-pane" style="display:none;">
+                        <h4 class="side-head">工程验收</h4>
+                        <ul class="metro-sidenav clearfix">
+                            <li><a class="orange"
+                                   href="<?php echo site_url("check/arrange"); ?>"><i
+                                            class="icon-user"></i><span>工程管理</span> </a></li>
+                            <li><a class="orange"
+                                   href="<?php echo site_url("check/people"); ?>"><i
+                                            class="icon-user"></i><span>人员管理</span> </a></li>
 
-                                <?php if (Author::allowRole(4, [1,4], User::GetCurrentUser()->check_role)) { ?>
-                                    <li><a class="orange"
-                                           href="<?php echo site_url("check/editUpload"); ?>"><i
-                                                    class="icon-user"></i><span>修改审核照片</span> </a></li>
-                                <?php } ?>
+                            <li><a class="orange"
+                                   href="<?php echo site_url("check/question"); ?>"><i
+                                            class="icon-user"></i><span>问题管理</span> </a></li>
 
+                            <li><a class="orange"
+                                   href="<?php echo site_url("team"); ?>"><i
+                                            class="icon-user"></i><span>施工队管理</span> </a></li>
 
-                            </ul>
-                        </div>
-
-                    <?php }?>
-
-
+                            <li><a class="orange"
+                                   href="<?php echo site_url("team"); ?>"><i
+                                            class="icon-user"></i><span>施工队报道</span> </a></li>
+                        </ul>
+                    </div>
 
                 </div>
 			</div>

@@ -1,3 +1,6 @@
+<div class="alert"  id="<?php echo $dataObj->data_id;?>-status" style="display:none;">
+	<i class="icon-exclamation-sign"></i><strong>警告！</strong> 设备数据异常，当前显示最后一次数据。最后数据时间：<span></span>
+</div>
 <div class="alert"  id="<?php echo $dataObj->data_id;?>-alert" style="display:none;">
 	<button type="button" class="close" data-dismiss="alert">×</button>
 	<i class="icon-exclamation-sign"></i><strong>警告！</strong>  协议未完全匹配，个别数据可能无效!

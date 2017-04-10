@@ -172,12 +172,6 @@
                                 class="active" <?php } ?>><a class="icon-legal" href="#check"
                                                              data-original-title="工程验收"></a></li>
                         <?php } ?>
-<!--                        DK-->
-                        <li <?php if (isset($actTab) && $actTab == '') { ?>
-                            class="active" <?php } ?>><a class="icon-signal" href="#kd"
-                                                         data-original-title="工程验收"></a></li>
-
-
 
                     </ul>
 				</div>

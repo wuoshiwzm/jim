@@ -137,12 +137,12 @@
 									   <?php }?>
 									</select>
 								</div>
-								<label class="control-label"  id='group' style="float: left; display: none;">所属分组<span id='must' style="display: none;"><font size=4 color=red>&nbsp;*</font></span></label>
+								<label class="control-label"  id='group' style="float: left;">所属分组<span id='must' style=""><font size=4 color=red>&nbsp;*</font></span></label>
 									<div class="controls" style="margin-left: 20px; float: left;">
-										<input type="text"  name='devgroup' id='devgroup' style="display: none;" <?php if(count($devObj)){?>
+										<input type="text"  name='devgroup' id='devgroup' style="" <?php if(count($devObj)){?>
 										value="<?php echo htmlentities($devObj->dev_group,ENT_COMPAT,"UTF-8");?>" <?php }?>/>
 									</div>
-									<span class="help-block error" id='text1'   style="display: none;">
+									<span class="help-block error" id='text1'   style="">
 															&nbsp;&nbsp;注：请输入电源分组名，以区分交、直、整流屏电源。
 									</span>
 							</div>

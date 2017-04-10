@@ -91,7 +91,6 @@
 									<th>A相电流</th>
 									<th>B相电流</th>
 									<th>C相电流</th>
-									<th>合相电流</th>
 									<th>A相电能</th>
 									<th>B相电能</th>
 									<th>C相电能</th>
@@ -112,7 +111,6 @@
 									<td><?php echo number_format($powerDataObj->iaRms,3);?></td>
 									<td><?php echo number_format($powerDataObj->ibRms,3);?></td>
 									<td><?php echo number_format($powerDataObj->icRms,3);?></td>
-									<td><?php echo number_format($powerDataObj->itRms,3);?></td>
 									<td><?php echo number_format($powerDataObj->epa,3);?></td>
 									<td><?php echo number_format($powerDataObj->epb,3);?></td>
 									<td><?php echo number_format($powerDataObj->epc,3);?></td>

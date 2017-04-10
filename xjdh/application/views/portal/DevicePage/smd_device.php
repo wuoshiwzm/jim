@@ -7,6 +7,7 @@
 			<th>设备名称</th>
 			<th>激活状态</th>
 			<th>通信状态</th>
+			<th>最后数据时间</th>
 		</tr>
 	</thead>
 	<tbody>
@@ -19,21 +20,20 @@
 			model<?php echo $dataObj->data_id;?>='<?php echo $dataObj->model;?>'
 			id='device-<?php echo $dataObj->data_id;?>'>
 			<td><?php echo $index++;?></td>
-			<td><?php if($dataObj->model == 'venv' || $dataObj->model == 'vcamera'){
-						echo ' ';
-					}else{
-						echo '开关量DI-' . $dataObj->port;
-					}?></td>
+			<td><?php echo '开关量DI-' . $dataObj->port; ?></td>
 			<td><a class='dev-info' data_id='<?php echo $dataObj->data_id;?>'
 				model='<?php echo $dataObj->model;?>'><?php echo htmlentities($dataObj->name, ENT_COMPAT, "UTF-8");?></a></td>
 			<td><a href='#'><?php if($dataObj->active){?><span
 											class="label label-success dev-lock">已激活</span><?php }else{?><span
 											class="label label-warning dev-unlock">未激活</span><?php }?></a></td>
 			<td></td>
+			<td></td>
 		</tr>
 		<?php }?>
               <?php } ?>
-              <?php foreach ($aiList as $dataObj){ ?>
+              <?php foreach ($aiList as $dataObj){
+                  if(in_array($dataObj->model, array('venv','vcamera')))
+                      continue; ?>
                <?php if($dataObj->active){?>
                   <tr class='rt-data' data_type='aidi'
 			data_id='<?php echo $dataObj->data_id;?>'
@@ -45,6 +45,7 @@
 			<td><a href='#'><?php if($dataObj->active){?><span
 											class="label label-success dev-lock">已激活</span><?php }else{?><span
 											class="label label-warning dev-unlock">未激活</span><?php }?></a></td>
+			<td></td>
 			<td></td>
 		</tr>
 		<?php }?>
@@ -61,6 +62,7 @@
 			<td><a href='#'><?php if($dataObj->active){?><span
 											class="label label-success dev-lock">已激活</span><?php }else{?><span
 											class="label label-warning dev-unlock">未激活</span><?php }?></a></td>
+			<td></td>
 			<td></td>
 		</tr>
 		<?php }?>

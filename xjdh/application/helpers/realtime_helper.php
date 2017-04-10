@@ -1,5 +1,5 @@
 <?php
-if (! defined('BASEPATH'))
+if (!defined('BASEPATH'))
     exit('No direct script access allowed');
 
 class Realtime
@@ -9,31 +9,29 @@ class Realtime
      */
     static function _GetPMBus40_43Msg($v, $model = '')
     {
-        switch($v)
-        {
+        switch ($v) {
             case 0:
                 return "闭合";
             case 1:
                 return "断开";
         }
-        return "无状态".dechex($v);
+        return "无状态" . dechex($v);
     }
+
     static function _GetPMBus41_44Msg($v, $model = '')
     {
-        switch($v)
-        {
+        switch ($v) {
             case 0:
                 return "正常";
             case 1:
                 return "故障";
         }
-        return "未知告警".dechex($v);
+        return "未知告警" . dechex($v);
     }
 
     static function _GetPMBusCheckMsg($v, $model = '')
     {
-        switch($v)
-        {
+        switch ($v) {
             case 0:
                 return "正常";
             case 1:
@@ -49,10 +47,8 @@ class Realtime
             default:
                 break;
         }
-        if($model == "psma-ac")
-        {
-            switch($v)
-            {
+        if ($model == "psma-ac") {
+            switch ($v) {
                 case 0xe0:
                     return "交流输入不平衡";
                 case 0xe1:
@@ -65,33 +61,30 @@ class Realtime
                     return "未知告警";
             }
         }
-        return "无效状态".dechex($v);
+        return "无效状态" . dechex($v);
     }
-    
+
     static function _CheckAlertMap($value, $rules)
     {
-        if(isset($rules))
-        {
-            if(isset($rules[0][$value]))
-            {
+        if (isset($rules)) {
+            if (isset($rules[0][$value])) {
                 return $rules[0][$value];
             }
-            return $rules[1].dechex($value);
+            return $rules[1] . dechex($value);
         }
         //default handler
-        if($value == 0)
-        {
+        if ($value == 0) {
             return "正常";
-        }else if($value == 1)
-        {
+        } else if ($value == 1) {
             return "故障";
         }
         return "无效";
     }
-    static function _GetPMBusPowerAC($model,$memData, $airlock_number, $p40_43_number, $p40_41_number, $p40_44_number)
-    {    
+
+    static function _GetPMBusPowerAC($model, $memData, $airlock_number, $p40_43_number, $p40_41_number, $p40_44_number)
+    {
         $dataObj = new stdClass();
-        $acLen = (18+ $airlock_number + 1 + $p40_43_number + 3 + 7);
+        $acLen = (18 + $airlock_number + 1 + $p40_43_number + 3 + 7);
         $acChannelLen = (16 + 6 + 4 * $p40_41_number + $p40_44_number);
         if (strlen($memData) >= $acLen) {
             $dataObj->isEmpty = false;
@@ -100,53 +93,47 @@ class Realtime
             $dataObj->data_id = $v[1];
             $v = unpack('f*', substr($memData, 4, 3 * 4));
             $dataObj->ia = number_format($v[1], 2);
-            if(abs($dataObj->ia - (-0.1)) < 0.1)
-            {
+            if (abs($dataObj->ia - (-0.1)) < 0.1) {
                 $dataObj->ia = "未监测";
             }
             $dataObj->ib = number_format($v[2], 2);
-            if(abs($dataObj->ib - (-0.1)) < 0.1)
-            {
+            if (abs($dataObj->ib - (-0.1)) < 0.1) {
                 $dataObj->ib = "未监测";
             }
             $dataObj->ic = number_format($v[3], 2);
-            if(abs($dataObj->ic - (-0.1)) < 0.1)
-            {
+            if (abs($dataObj->ic - (-0.1)) < 0.1) {
                 $dataObj->ic = "未监测";
             }
             $v = unpack('C', substr($memData, 4 + 3 * 4, 1));
             $dataObj->channel_count = $v[1];
             $v = unpack('C', substr($memData, 4 + 3 * 4 + 1, 1));
             $dataObj->airlock_count = $v[1];
-            assert($dataObj->airlock_count == $airlock_number , "airlock不相等");
+            assert($dataObj->airlock_count == $airlock_number, "airlock不相等");
             $v = unpack('C*', substr($memData, 4 + 3 * 4 + 1 + 1, $airlock_number));
             $dataObj->airlock_status = array();
-            foreach($v as $k)
-            {
+            foreach ($v as $k) {
                 array_push($dataObj->airlock_status, Realtime::_GetPMBusCheckMsg($k));
             }
             $v = unpack('C', substr($memData, 4 + 3 * 4 + 1 + 1 + $airlock_number, 1));
             $dataObj->p40_43_count = $v[1];
-            if($dataObj->p40_43_count != $p40_43_number)
-            {
-                $dataObj->isMatch =false;
+            if ($dataObj->p40_43_count != $p40_43_number) {
+                $dataObj->isMatch = false;
             }
             $v = unpack('C*', substr($memData, 4 + 3 * 4 + 1 + 1 + $airlock_number + 1, $p40_43_number));
             $dataObj->p40_43 = array();
             $p40_43_index = -1;
-            foreach(Constants::$pmBusConfig[$model]['p40_43_label'] as $key=>$show)
-            {
+            foreach (Constants::$pmBusConfig[$model]['p40_43_label'] as $key => $show) {
                 $p40_43_index++;
-                if($show){
-                    $dataObj->p40_43[] = Realtime::_CheckAlertMap($v[$p40_43_index+1], Constants::$pmBusConfig[$model]['p40_43_rules'][$p40_43_index]);
+                if ($show) {
+                    $dataObj->p40_43[] = Realtime::_CheckAlertMap($v[$p40_43_index + 1], Constants::$pmBusConfig[$model]['p40_43_rules'][$p40_43_index]);
                 }
             }
-            
+
             $v = unpack('C*', substr($memData, 4 + 3 * 4 + 1 + 1 + $airlock_number + 1 + $p40_43_number, 3));
-            $dataObj->ia_alert = Realtime::_GetPMBusCheckMsg($v[1],$model);
-            $dataObj->ib_alert = Realtime::_GetPMBusCheckMsg($v[2],$model);
-            $dataObj->ic_alert = Realtime::_GetPMBusCheckMsg($v[3],$model);
-            
+            $dataObj->ia_alert = Realtime::_GetPMBusCheckMsg($v[1], $model);
+            $dataObj->ib_alert = Realtime::_GetPMBusCheckMsg($v[2], $model);
+            $dataObj->ic_alert = Realtime::_GetPMBusCheckMsg($v[3], $model);
+
             $v = unpack('v', substr($memData, 4 + 3 * 4 + 1 + 1 + $airlock_number + 1 + $p40_43_number + 3, 2));
             $year = $v[1];
             $v = unpack('C*', substr($memData, 4 + 3 * 4 + 1 + 1 + $airlock_number + 1 + $p40_43_number + 3 + 2, 5));
@@ -155,8 +142,8 @@ class Realtime
             $dataObj->channelList = array();
             // total length
             //echo $acChannelLen." ".$dataObj->channel_count ." ". $acLen. " ".strlen($memData);
-            if (strlen($memData) == ($acLen + ($dataObj->channel_count * $acChannelLen)) ) {
-                for ($i = 0; $i < $dataObj->channel_count; $i ++) {
+            if (strlen($memData) == ($acLen + ($dataObj->channel_count * $acChannelLen))) {
+                for ($i = 0; $i < $dataObj->channel_count; $i++) {
                     $channelObj = new stdClass();
                     $channelData = substr($memData, $acLen + $i * $acChannelLen, $acChannelLen);
                     $v = unpack('f*', substr($channelData, 0, 4 * 4));
@@ -166,44 +153,38 @@ class Realtime
                     $channelObj->f = number_format($v[4], 2);
                     $v = unpack('C', substr($channelData, 4 * 4, 1));
                     $channelObj->p40_41_count = $v[1];
-                    if($channelObj->p40_41_count != $p40_41_number)
-                    {
-                        $dataObj->isMatch =false;
+                    if ($channelObj->p40_41_count != $p40_41_number) {
+                        $dataObj->isMatch = false;
                     }
-                    $v = unpack('f*', substr($channelData, 4 * 4 + 1, 4*$p40_41_number));
+                    $v = unpack('f*', substr($channelData, 4 * 4 + 1, 4 * $p40_41_number));
                     $channelObj->p40_41 = array();
-                    foreach($v as $val)
-                    {
-                        if(abs($val - (-0.1)) < 0.1)
-                        {
+                    foreach ($v as $val) {
+                        if (abs($val - (-0.1)) < 0.1) {
                             $channelObj->p40_41[] = "未监测";
-                        }else{
+                        } else {
                             $channelObj->p40_41[] = number_format($val, 2);
                         }
                     }
-                    
-                    $v = unpack('C*', substr($channelData, 4 * 4 + 1 + 4*$p40_41_number, 5));
-                    $channelObj->alert_a = Realtime::_GetPMBusCheckMsg($v[1],$model);
-                    $channelObj->alert_b = Realtime::_GetPMBusCheckMsg($v[2],$model);
-                    $channelObj->alert_c = Realtime::_GetPMBusCheckMsg($v[3],$model);
-                    $channelObj->alert_f = Realtime::_GetPMBusCheckMsg($v[4],$model);
+
+                    $v = unpack('C*', substr($channelData, 4 * 4 + 1 + 4 * $p40_41_number, 5));
+                    $channelObj->alert_a = Realtime::_GetPMBusCheckMsg($v[1], $model);
+                    $channelObj->alert_b = Realtime::_GetPMBusCheckMsg($v[2], $model);
+                    $channelObj->alert_c = Realtime::_GetPMBusCheckMsg($v[3], $model);
+                    $channelObj->alert_f = Realtime::_GetPMBusCheckMsg($v[4], $model);
                     $channelObj->p40_44_count = $v[5];
-                    $v = unpack('C*', substr($channelData, 4 * 4 + 1 + 4*$p40_41_number + 5, $p40_44_number));
+                    $v = unpack('C*', substr($channelData, 4 * 4 + 1 + 4 * $p40_41_number + 5, $p40_44_number));
                     $channelObj->p40_44 = array();
-                    if($channelObj->p40_44_count == $p40_44_number)
-                    {  
+                    if ($channelObj->p40_44_count == $p40_44_number) {
                         $p40_44_index = -1;
-                        foreach(Constants::$pmBusConfig[$model]['p40_44_label'] as $key=>$show)
-                        {
+                        foreach (Constants::$pmBusConfig[$model]['p40_44_label'] as $key => $show) {
                             $p40_44_index++;
-                            if($show){
-                                $channelObj->p40_44[] = Realtime::_CheckAlertMap($v[$p40_44_index+1], Constants::$pmBusConfig[$model]['p40_44_rules'][$p40_44_index]);
+                            if ($show) {
+                                $channelObj->p40_44[] = Realtime::_CheckAlertMap($v[$p40_44_index + 1], Constants::$pmBusConfig[$model]['p40_44_rules'][$p40_44_index]);
                             }
                         }
-                    }else{
-                        foreach(Constants::$pmBusConfig[$model]['p40_44_label'] as $key=>$show)
-                        {
-                            if($show){
+                    } else {
+                        foreach (Constants::$pmBusConfig[$model]['p40_44_label'] as $key => $show) {
+                            if ($show) {
                                 $channelObj->p40_44[] = "未监测";
                             }
                         }
@@ -217,13 +198,13 @@ class Realtime
         }
         return $dataObj;
     }
-    static function _GetPMBusPowerRC($model,$memData, $p42_46_number, $p42_46_size, $p41_41_number, $p41_43_number, $p41_44_number)
+
+    static function _GetPMBusPowerRC($model, $memData, $p42_46_number, $p42_46_size, $p41_41_number, $p41_43_number, $p41_44_number)
     {
         $dataObj = new stdClass();
-        $rcLen = ( 4 * 9 + $p42_46_size + 2 + 7);
+        $rcLen = (4 * 9 + $p42_46_size + 2 + 7);
         $rcChannelLen = (1 + $p41_41_number) * 4 + 7 + $p41_43_number + $p41_44_number;
-        if(strlen($memData) >= $rcLen)
-        {
+        if (strlen($memData) >= $rcLen) {
             $dataObj->isEmpty = false;
             $dataObj->isMatch = true;
             $dataObj->msg = "";
@@ -239,305 +220,276 @@ class Realtime
             $dataObj->out_v_low = number_format($v[7], 2);
             $v = unpack('C', substr($memData, 4 + 7 * 4, 1));
             $dataObj->param_num = $v[1];
-            if($model == "smu06c-dc")
-            {
-                
-            }else{
-                $v = unpack('f*', substr($memData, 4 + 7*4 + 1, $p42_46_size));
+            if ($model == "smu06c-dc") {
+
+            } else {
+                $v = unpack('f*', substr($memData, 4 + 7 * 4 + 1, $p42_46_size));
                 $dataObj->param = array_values($v);
             }
-            
-            $v = unpack('f', substr($memData, 4 + 7*4 + 1 + $p42_46_size, 4));
+
+            $v = unpack('f', substr($memData, 4 + 7 * 4 + 1 + $p42_46_size, 4));
             $dataObj->out_v = number_format($v[1], 2);
-            $v = unpack('C', substr($memData,  4 + 7*4 + 1 + $p42_46_size + 4, 1));
+            $v = unpack('C', substr($memData, 4 + 7 * 4 + 1 + $p42_46_size + 4, 1));
             $dataObj->channel_count = $v[1];
-            $v = unpack('v', substr($memData, 4 + 7*4 + 1 + $p42_46_size + 4 + 1, 2));
+            $v = unpack('v', substr($memData, 4 + 7 * 4 + 1 + $p42_46_size + 4 + 1, 2));
             $year = $v[1];
-            $v = unpack('C*', substr($memData, 4 + 7*4 + 1 + $p42_46_size + 4 + 1 + 2, 5));
+            $v = unpack('C*', substr($memData, 4 + 7 * 4 + 1 + $p42_46_size + 4 + 1 + 2, 5));
             $dataObj->update_datetime = date('Y-m-d H:i:s', strtotime($year . '-' . $v[1] . '-' . $v[2] . ' ' . $v[3] . ':' . $v[4] . ':' . $v[5]));
             $dataObj->channelList = array();
             if (strlen($memData) == $rcLen + $rcChannelLen * $dataObj->channel_count) {
-                for ($i = 0; $i < $dataObj->channel_count; $i ++) {
+                for ($i = 0; $i < $dataObj->channel_count; $i++) {
                     $channelObj = new stdClass();
                     $channelData = substr($memData, $rcLen + $rcChannelLen * $i, $rcChannelLen);
                     $v = unpack('f', substr($channelData, 0, 4));
                     $channelObj->out_i = number_format($v[1], 2);
                     $v = unpack('C', substr($channelData, 4, 1));
                     $channelObj->p41_41_count = $v[1];
-                    if($channelObj->p41_41_count != $p41_41_number)
-                    {
+                    if ($channelObj->p41_41_count != $p41_41_number) {
                         $dataObj->isMatch = false;
-                        $dataObj->msg .= "p41_41_count not equal ".$p41_41_number;
+                        $dataObj->msg .= "p41_41_count not equal " . $p41_41_number;
                     }
-                    $v = unpack('f*', substr($channelData, 4 + 1, 4*$p41_41_number));
+                    $v = unpack('f*', substr($channelData, 4 + 1, 4 * $p41_41_number));
                     $channelObj->p41_41 = array();
-                    
+
                     $p41_41_index = 0;
-                    foreach(Constants::$pmBusConfig[$model]['p41_41_label'] as $key=>$show)
-                    {
+                    foreach (Constants::$pmBusConfig[$model]['p41_41_label'] as $key => $show) {
                         $p41_41_index++;
-                        if($show)
-                        {
+                        if ($show) {
                             $channelObj->p41_41[] = number_format($v[$p41_41_index], 2);
                         }
                     }
-                    $v = unpack('C*', substr($channelData, 4 + 1 + 4*$p41_41_number, 4));
-                    if(in_array($model, array("zxdu58-b121v21-rc","zxdu58-s301-rc")))
-                    {
-                        if($v[1] == 0)
-                        {
+                    $v = unpack('C*', substr($channelData, 4 + 1 + 4 * $p41_41_number, 4));
+                    if (in_array($model, array("zxdu58-b121v21-rc", "zxdu58-s301-rc"))) {
+                        if ($v[1] == 0) {
                             $channelObj->shutdown = "关机";
-                        }else if($v[1] == 1){
+                        } else if ($v[1] == 1) {
                             $channelObj->shutdown = "开机";
-                        }else{
+                        } else {
                             $channelObj->shutdown = "未知";
                         }
-                    }else// if($model == "psma-rc")
+                    } else// if($model == "psma-rc")
                     {
-                        if($v[1] == 0)
-                        {
+                        if ($v[1] == 0) {
                             $channelObj->shutdown = "开机";
-                        }else if($v[1] == 1){
+                        } else if ($v[1] == 1) {
                             $channelObj->shutdown = "关机";
-                        }else{
+                        } else {
                             $channelObj->shutdown = "未知";
                         }
                     }
-                    if($v[2] == 0)
-                    {
+                    if ($v[2] == 0) {
                         $channelObj->i_limit = "限流";
-                    }else if($v[2] == 1){
+                    } else if ($v[2] == 1) {
                         $channelObj->i_limit = "不限流";
-                    }else{
+                    } else {
                         $channelObj->i_limit = "未知";
                     }
-                    if($v[3] == 0)
-                    {
+                    if ($v[3] == 0) {
                         $channelObj->charge = "浮充";
-                    }else if($v[3] == 1){
+                    } else if ($v[3] == 1) {
                         $channelObj->charge = "均充";
-                    }else if($v[3] == 2){
+                    } else if ($v[3] == 2) {
                         $channelObj->charge = "测试";
-                    }else if($v[3] == 2){
+                    } else if ($v[3] == 2) {
                         $channelObj->charge = "交流停电";
-                    }else{
+                    } else {
                         $channelObj->charge = "未知";
                     }
                     $channelObj->p41_43_count = $v[4];
-                    if($channelObj->p41_43_count != $p41_43_number)
-                    {
+                    if ($channelObj->p41_43_count != $p41_43_number) {
                         $dataObj->isMatch = false;
-                        $dataObj->msg .= "p41_43_count not equal ".$p41_43_number;
+                        $dataObj->msg .= "p41_43_count not equal " . $p41_43_number;
                     }
-                    
-                    $v = unpack('C*', substr($channelData, 4 + 1 + 4*$p41_41_number + 4, $p41_43_number));
+
+                    $v = unpack('C*', substr($channelData, 4 + 1 + 4 * $p41_41_number + 4, $p41_43_number));
                     $channelObj->p41_43 = array();
                     $p41_43_index = -1;
-                    foreach(Constants::$pmBusConfig[$model]['p41_43_label'] as $key=>$show)
-                    {
+                    foreach (Constants::$pmBusConfig[$model]['p41_43_label'] as $key => $show) {
                         $p41_43_index++;
-                        if($show)
-                        {
-                            $channelObj->p41_43[] = Realtime::_CheckAlertMap($v[$p41_43_index+1], Constants::$pmBusConfig[$model]['p41_43_rules'][$p41_43_index]);
+                        if ($show) {
+                            $channelObj->p41_43[] = Realtime::_CheckAlertMap($v[$p41_43_index + 1], Constants::$pmBusConfig[$model]['p41_43_rules'][$p41_43_index]);
                         }
-                    }    
-                    
-                    $v = unpack('C*', substr($channelData, 4 + 1 + 4*$p41_41_number + 4 + $p41_43_number, 2));
+                    }
+
+                    $v = unpack('C*', substr($channelData, 4 + 1 + 4 * $p41_41_number + 4 + $p41_43_number, 2));
                     $channelObj->fault = Realtime::_GetPMBus41_44Msg($v[1]);
                     $channelObj->p41_44_count = $v[2];
-                    
-                    $v = unpack('C*', substr($channelData, 4 + 1 + 4*$p41_41_number + 4 + $p41_43_number + 2, $p41_44_number));
-                    if ($channelObj->p41_44_count == $p41_44_number)
-                    {
+
+                    $v = unpack('C*', substr($channelData, 4 + 1 + 4 * $p41_41_number + 4 + $p41_43_number + 2, $p41_44_number));
+                    if ($channelObj->p41_44_count == $p41_44_number) {
                         $channelObj->p41_44 = array();
                         $p41_44_index = -1;
-                        foreach(Constants::$pmBusConfig[$model]['p41_44_label'] as $key=>$show)
-                        {
+                        foreach (Constants::$pmBusConfig[$model]['p41_44_label'] as $key => $show) {
                             $p41_44_index++;
-                            if($show)
-                            {
-                                $channelObj->p41_44[] = Realtime::_CheckAlertMap($v[$p41_44_index+1], Constants::$pmBusConfig[$model]['p41_44_rules'][$p41_44_index]);
+                            if ($show) {
+                                $channelObj->p41_44[] = Realtime::_CheckAlertMap($v[$p41_44_index + 1], Constants::$pmBusConfig[$model]['p41_44_rules'][$p41_44_index]);
                             }
                         }
-                    }else{
+                    } else {
                         $dataObj->isMatch = false;
-                        $dataObj->msg .= "p41_44_count not equal ".$p41_44_number;
-                        foreach(Constants::$pmBusConfig[$model]['p41_44_label'] as $key=>$show)
-                        {
+                        $dataObj->msg .= "p41_44_count not equal " . $p41_44_number;
+                        foreach (Constants::$pmBusConfig[$model]['p41_44_label'] as $key => $show) {
                             $channelObj->p41_44[] = "未监测";
                         }
                     }
                     array_push($dataObj->channelList, $channelObj);
                 }
-            }            
-        }else{
-            $dataObj->isEmpty = true;
-            $dataObj->update_datetime = date('Y-m-d H:i:s');
-        }
-        return $dataObj;
-    }
-    static function  _GetPMBusPowerDC($model,$memData, $m_number, $n_number, $p_number, $alert_m_number, $alert_p_number)
-    {
-        $dataObj = new stdClass();
-        if (strlen($memData) >= (4*3 + 1 + 4 * $m_number + 1 + 4 * $n_number + 1 + 4 *$p_number + 2 + $alert_m_number + 1 + $alert_p_number + 7)) {
-            $dataObj->isEmpty = false;
-            $dataObj->isMatch = true;
-            $dataObj->msg = "";
-            $v = unpack("I", substr($memData, 0, 4));
-            $dataObj->data_id = $v[1];
-            $v = unpack('f*', substr($memData, 4, 4 * 2));
-            $dataObj->v = number_format($v[1], 2)."V";
-            $dataObj->i = number_format($v[2], 2)."A";
-            $v = unpack('C', substr($memData, 4 + 4 * 2, 1));
-            $dataObj->m = $v[1];
-            $v = unpack('f*', substr($memData, 4 + 4 * 2 + 1, $m_number * 4));
-            $dataObj->dc_i = array();
-            foreach($v as $val)
-            {
-                $dataObj->dc_i[] = number_format($val, 2)."A";
             }
-            $v = unpack('C', substr($memData, 4 + 4 * 2 + 1 + $m_number * 4, 1));
-            $dataObj->n = $v[1];
-            $v = unpack('f*', substr($memData, 4 + 4 * 2 + 1 + $m_number * 4 + 1, $n_number * 4));
-            $dataObj->channel = array();
-	    foreach($v as $val){
-		if(is_nan($val)){
-			$dataObj->channel[] = 0.0;
-		}else{
-			$dataObj->channel[] = $val;
-		}
-	    }
-		
-            $v = unpack('C', substr($memData, 4 + 4 * 2 + 1 + $m_number * 4 + 1 + $n_number * 4, 1));
-            $dataObj->p_count = $v[1];
-            if($dataObj->p_count != $p_number)
-            {
-                $dataObj->isMatch = false;
-                $dataObj->msg .= "p_count != ".$p_number;
-            }
-            $v = unpack('f*', substr($memData, 4 + 4 * 2 + 1 + $m_number * 4 + 1 + $n_number * 4 + 1, $p_number*4));
-            $dataObj->p = array();
-
-            foreach($v as $val)
-            {
-                if(abs($val - (-0.1)) < 0.01)
-                {
-                    $dataObj->p[] = "未监测";
-                }else{
-                    $dataObj->p[] = number_format($val, 2);
-                }
-            }
-            $v = unpack('C*', substr($memData, 4 + 4 * 2 + 1 + $m_number * 4 + 1 + $n_number * 4 + 1 + $p_number*4, 2));
-            $dataObj->alert_v = Realtime::_GetPMBusCheckMsg($v[1]);
-            $dataObj->alert_m_count = $v[2];
-            $v = unpack('C*', substr($memData, 4 + 4 * 2 + 1 + $m_number * 4 + 1 + $n_number * 4 + 1 + $p_number*4 + 2, $alert_m_number));
-            $dataObj->alert_m = array();
-            foreach($v as $k)
-            {
-                array_push($dataObj->alert_m, Realtime::_GetPMBusCheckMsg($k, $model));
-            }
-            $v = unpack('C', substr($memData, 4 + 4 * 2 + 1 + $m_number * 4 + 1 + $n_number * 4 + 1 + $p_number*4 + 2 + $alert_m_number, 1));
-            $dataObj->alert_p_count = $v[1];
-            if($dataObj->alert_p_count != $alert_p_number)
-            {
-                $dataObj->isMatch = false;
-                $dataObj->msg .= "alert_p_count != ".$alert_p_number;
-            }
-            $v = unpack('C*', substr($memData, 4 + 4 * 2 + 1 + $m_number * 4 + 1 + $n_number * 4 + 1 + $p_number*4 + 2 + $alert_m_number + 1, $alert_p_number));
-            $dataObj->alert_p = array();
-            if($dataObj->alert_p_count == $alert_p_number)
-            {
-                $alert_p_index = -1;
-                foreach(Constants::$pmBusConfig[$model]['alert_p_label'] as $key=>$show)
-                {
-                    $alert_p_index++;
-                    if(is_array($show))
-                    {
-                        $avIndex = 0;
-                        foreach($show as $kv=>$av)
-                        {
-                            if($av)
-                            {
-                                $bValue = ($v[$alert_p_index+1] >> $avIndex) & 0x1;
-                                if($bValue == 0)
-                                {
-                                    $dataObj->alert_p[] = "正常";
-                                }else if($bValue == 1)
-                                {
-                                    $dataObj->alert_p[] = "告警";
-                                }else{
-                                    $dataObj->alert_p[] = "无效";
-                                }
-                            }
-                        }
-                    }else{
-                        if($show){
-                            $dataObj->alert_p[] = Realtime::_CheckAlertMap($v[$alert_p_index+1], Constants::$pmBusConfig[$model]['alert_p_rules'][$alert_p_index]);
-                        }
-                    }
-                }
-            }else{
-                $dataObj->isMatch = false;
-                foreach(Constants::$pmBusConfig[$model]['alert_p_label'] as $key=>$show){
-                    if($show){
-                        $dataObj->alert_p[] = "未监测";
-                    }
-                }
-            }
-            $v = unpack('v', substr($memData, 4 + 4 * 2 + 1 + $m_number * 4 + 1 + $n_number * 4 + 1 + $p_number*4 + 2 + $alert_m_number + 1 + $alert_p_number, 2));
-            $year = $v[1];
-            $v = unpack('C*', substr($memData, 4 + 4 * 2 + 1 + $m_number * 4 + 1 + $n_number * 4 + 1 + $p_number*4 + 2 + $alert_m_number + 1 + $alert_p_number + 2, 5));
-            $dataObj->update_datetime = date('Y-m-d H:i:s', strtotime($year . '-' . $v[1] . '-' . $v[2] . ' ' . $v[3] . ':' . $v[4] . ':' . $v[5]));
-            if(Util::startsWith($model, "zxdu58"))
-            {
-                $v = unpack('C',substr($memData, 4 + 4 * 2 + 1 + $m_number * 4 + 1 + $n_number * 4 + 1 + $p_number*4 + 2 + $alert_m_number + 1 + $alert_p_number + 2 + 5, 1));
-                $dataObj->has_report = $v[1] == 0 ? "无":"有";
-                $v = unpack('v', substr($memData, 4 + 4 * 2 + 1 + $m_number * 4 + 1 + $n_number * 4 + 1 + $p_number*4 + 2 + $alert_m_number + 1 + $alert_p_number + 2 + 5 + 1, 2));
-                $year = $v[1];
-                $v = unpack('C*', substr($memData, 4 + 4 * 2 + 1 + $m_number * 4 + 1 + $n_number * 4 + 1 + $p_number*4 + 2 + $alert_m_number + 1 + $alert_p_number + 2 + 5 + 1 + 2, 5));
-                $dataObj->test_end = date('Y-m-d H:i:s', strtotime($year . '-' . $v[1] . '-' . $v[2] . ' ' . $v[3] . ':' . $v[4] . ':' . $v[5]));
-                $v =  unpack('I*', substr($memData, 4 + 4 * 2 + 1 + $m_number * 4 + 1 + $n_number * 4 + 1 + $p_number*4 + 2 + $alert_m_number + 1 + $alert_p_number + 2 + 5 + 1 + 2 + 5, 8));
-                $dataObj->duration_minutes = $v[1];
-                $dataObj->discharge_capacity = $v[2];
-            }            
         } else {
             $dataObj->isEmpty = true;
             $dataObj->update_datetime = date('Y-m-d H:i:s');
         }
         return $dataObj;
     }
-    
-    static function Get_Dk04RtData($data_id)
+
+    static function _GetPMBusPowerDC($model, $memData, $m_number, $n_number, $p_number, $alert_m_number, $alert_p_number)
     {
+        $dataObj = new stdClass();
+        if (strlen($memData) >= (4 * 3 + 1 + 4 * $m_number + 1 + 4 * $n_number + 1 + 4 * $p_number + 2 + $alert_m_number + 1 + $alert_p_number + 7)) {
+            $dataObj->isEmpty = false;
+            $dataObj->isMatch = true;
+            $dataObj->msg = "";
+            $v = unpack("I", substr($memData, 0, 4));
+            $dataObj->data_id = $v[1];
+            $v = unpack('f*', substr($memData, 4, 4 * 2));
+            $dataObj->v = number_format($v[1], 2) . "V";
+            $dataObj->i = number_format($v[2], 2) . "A";
+            $v = unpack('C', substr($memData, 4 + 4 * 2, 1));
+            $dataObj->m = $v[1];
+            $v = unpack('f*', substr($memData, 4 + 4 * 2 + 1, $m_number * 4));
+            $dataObj->dc_i = array();
+            foreach ($v as $val) {
+                $dataObj->dc_i[] = number_format($val, 2) . "A";
+            }
+            $v = unpack('C', substr($memData, 4 + 4 * 2 + 1 + $m_number * 4, 1));
+            $dataObj->n = $v[1];
+            $v = unpack('f*', substr($memData, 4 + 4 * 2 + 1 + $m_number * 4 + 1, $n_number * 4));
+            $dataObj->channel = array();
+            foreach ($v as $val) {
+                if (is_nan($val)) {
+                    $dataObj->channel[] = 0.0;
+                } else {
+                    $dataObj->channel[] = $val;
+                }
+            }
+
+            $v = unpack('C', substr($memData, 4 + 4 * 2 + 1 + $m_number * 4 + 1 + $n_number * 4, 1));
+            $dataObj->p_count = $v[1];
+            if ($dataObj->p_count != $p_number) {
+                $dataObj->isMatch = false;
+                $dataObj->msg .= "p_count != " . $p_number;
+            }
+            $v = unpack('f*', substr($memData, 4 + 4 * 2 + 1 + $m_number * 4 + 1 + $n_number * 4 + 1, $p_number * 4));
+            $dataObj->p = array();
+
+            foreach ($v as $val) {
+                if (abs($val - (-0.1)) < 0.01) {
+                    $dataObj->p[] = "未监测";
+                } else {
+                    $dataObj->p[] = number_format($val, 2);
+                }
+            }
+            $v = unpack('C*', substr($memData, 4 + 4 * 2 + 1 + $m_number * 4 + 1 + $n_number * 4 + 1 + $p_number * 4, 2));
+            $dataObj->alert_v = Realtime::_GetPMBusCheckMsg($v[1]);
+            $dataObj->alert_m_count = $v[2];
+            $v = unpack('C*', substr($memData, 4 + 4 * 2 + 1 + $m_number * 4 + 1 + $n_number * 4 + 1 + $p_number * 4 + 2, $alert_m_number));
+            $dataObj->alert_m = array();
+            foreach ($v as $k) {
+                array_push($dataObj->alert_m, Realtime::_GetPMBusCheckMsg($k, $model));
+            }
+            $v = unpack('C', substr($memData, 4 + 4 * 2 + 1 + $m_number * 4 + 1 + $n_number * 4 + 1 + $p_number * 4 + 2 + $alert_m_number, 1));
+            $dataObj->alert_p_count = $v[1];
+            if ($dataObj->alert_p_count != $alert_p_number) {
+                $dataObj->isMatch = false;
+                $dataObj->msg .= "alert_p_count != " . $alert_p_number;
+            }
+            $v = unpack('C*', substr($memData, 4 + 4 * 2 + 1 + $m_number * 4 + 1 + $n_number * 4 + 1 + $p_number * 4 + 2 + $alert_m_number + 1, $alert_p_number));
+            $dataObj->alert_p = array();
+            if ($dataObj->alert_p_count == $alert_p_number) {
+                $alert_p_index = -1;
+                foreach (Constants::$pmBusConfig[$model]['alert_p_label'] as $key => $show) {
+                    $alert_p_index++;
+                    if (is_array($show)) {
+                        $avIndex = 0;
+                        foreach ($show as $kv => $av) {
+                            if ($av) {
+                                $bValue = ($v[$alert_p_index + 1] >> $avIndex) & 0x1;
+                                if ($bValue == 0) {
+                                    $dataObj->alert_p[] = "正常";
+                                } else if ($bValue == 1) {
+                                    $dataObj->alert_p[] = "告警";
+                                } else {
+                                    $dataObj->alert_p[] = "无效";
+                                }
+                            }
+                        }
+                    } else {
+                        if ($show) {
+                            $dataObj->alert_p[] = Realtime::_CheckAlertMap($v[$alert_p_index + 1], Constants::$pmBusConfig[$model]['alert_p_rules'][$alert_p_index]);
+                        }
+                    }
+                }
+            } else {
+                $dataObj->isMatch = false;
+                foreach (Constants::$pmBusConfig[$model]['alert_p_label'] as $key => $show) {
+                    if ($show) {
+                        $dataObj->alert_p[] = "未监测";
+                    }
+                }
+            }
+            $v = unpack('v', substr($memData, 4 + 4 * 2 + 1 + $m_number * 4 + 1 + $n_number * 4 + 1 + $p_number * 4 + 2 + $alert_m_number + 1 + $alert_p_number, 2));
+            $year = $v[1];
+            $v = unpack('C*', substr($memData, 4 + 4 * 2 + 1 + $m_number * 4 + 1 + $n_number * 4 + 1 + $p_number * 4 + 2 + $alert_m_number + 1 + $alert_p_number + 2, 5));
+            $dataObj->update_datetime = date('Y-m-d H:i:s', strtotime($year . '-' . $v[1] . '-' . $v[2] . ' ' . $v[3] . ':' . $v[4] . ':' . $v[5]));
+            if (Util::startsWith($model, "zxdu58")) {
+                $v = unpack('C', substr($memData, 4 + 4 * 2 + 1 + $m_number * 4 + 1 + $n_number * 4 + 1 + $p_number * 4 + 2 + $alert_m_number + 1 + $alert_p_number + 2 + 5, 1));
+                $dataObj->has_report = $v[1] == 0 ? "无" : "有";
+                $v = unpack('v', substr($memData, 4 + 4 * 2 + 1 + $m_number * 4 + 1 + $n_number * 4 + 1 + $p_number * 4 + 2 + $alert_m_number + 1 + $alert_p_number + 2 + 5 + 1, 2));
+                $year = $v[1];
+                $v = unpack('C*', substr($memData, 4 + 4 * 2 + 1 + $m_number * 4 + 1 + $n_number * 4 + 1 + $p_number * 4 + 2 + $alert_m_number + 1 + $alert_p_number + 2 + 5 + 1 + 2, 5));
+                $dataObj->test_end = date('Y-m-d H:i:s', strtotime($year . '-' . $v[1] . '-' . $v[2] . ' ' . $v[3] . ':' . $v[4] . ':' . $v[5]));
+                $v = unpack('I*', substr($memData, 4 + 4 * 2 + 1 + $m_number * 4 + 1 + $n_number * 4 + 1 + $p_number * 4 + 2 + $alert_m_number + 1 + $alert_p_number + 2 + 5 + 1 + 2 + 5, 8));
+                $dataObj->duration_minutes = $v[1];
+                $dataObj->discharge_capacity = $v[2];
+            }
+        } else {
+            $dataObj->isEmpty = true;
+            $dataObj->update_datetime = date('Y-m-d H:i:s');
+        }
+        return $dataObj;
+    }
+
+    static function Get_Dk04RtData($data_id)
+    {t::f($data_id);
         $dk04Obj = new stdClass();
         $dk04Obj->data_id = $data_id;
-        $CI = & get_instance();
+        $CI = &get_instance();
         $CI->load->driver('cache');
         $memData = $CI->cache->get($data_id);
         // memData minimal length
         if (strlen($memData) >= 37) {
             $dk04Obj->isEmpty = false;
             $v = unpack('S*', substr($memData, 0, 9 * 2));
-            $dk04Obj->SysV = $v[1]/10;
+            $dk04Obj->SysV = $v[1] / 10;
             $dk04Obj->ILoad = $v[2];
             $dk04Obj->IBat1 = $v[3];
             $dk04Obj->IBat2 = $v[4];
             $dk04Obj->IBat3 = $v[5];
             $dk04Obj->IBat4 = $v[6];
-            $dk04Obj->VAcSys = $v[7]/10;
-            $dk04Obj->I1AcSys = $v[8]/10;
-            $dk04Obj->I2AcSys = $v[9]/10;
-            $v = unpack("C*", substr($memData, 9*2, 14));
-            $dk04Obj->Btemp1 = $v[4]/10;
-            $dk04Obj->Btemp2 = $v[5]/10;
-            $dk04Obj->Btemp3 = $v[6]/10;
-            $dk04Obj->Btemp4 = $v[7]/10;
-            $dk04Obj->Atemp = $v[13]/10;
-            
+            $dk04Obj->VAcSys = $v[7] / 10;
+            $dk04Obj->I1AcSys = $v[8] / 10;
+            $dk04Obj->I2AcSys = $v[9] / 10;
+            $v = unpack("C*", substr($memData, 9 * 2, 14));
+            $dk04Obj->Btemp1 = $v[4] / 10;
+            $dk04Obj->Btemp2 = $v[5] / 10;
+            $dk04Obj->Btemp3 = $v[6] / 10;
+            $dk04Obj->Btemp4 = $v[7] / 10;
+            $dk04Obj->Atemp = $v[13] / 10;
+
             //offset = 18+14+5
-            
+
             //offset += 104 sizeof(ParamPacket) //ParamPacket
-            $v = unpack("S*", substr($memData, 18+14+5, 32));
+            $v = unpack("S*", substr($memData, 18 + 14 + 5, 32));
             $dk04Obj->EeFloat = $v[1];
             $dk04Obj->eeIBlim = $v[2];
             $dk04Obj->eeFSDiA = $v[3];
@@ -554,110 +506,105 @@ class Realtime
             $dk04Obj->eeFSDiL = $v[14];
             $dk04Obj->eeFSDiB = $v[15];
             $dk04Obj->eeLastSMR = $v[16];
-            
-            $v = unpack("C*", substr($memData, 18+14+5 + 32, 20));
-           
-            $v = unpack("C", substr($memData, 18+14+5 + 104, 1));
+
+            $v = unpack("C*", substr($memData, 18 + 14 + 5 + 32, 20));
+
+            $v = unpack("C", substr($memData, 18 + 14 + 5 + 104, 1));
             //var_dump($v);
             $dk04Obj->number = intval($v[1]);
             $dk04Obj->channel = array();
             $dk04Obj->Iout = array();
-            for($i=0; $i<$dk04Obj->number; $i++)
-            {
+            for ($i = 0; $i < $dk04Obj->number; $i++) {
                 $channelObj = array();
-                $v = unpack("C*", substr($memData, 18+14+5+104 + 1 + 4*$i, 4));
-                for($j = 1; $j<=4;$j++)
-                {
-                    for($z = 0;$z < 8; $z++)
-                    {
-                        $channelObj[] = (($v[$j]>>$z)&0x1) === 0 ? "正常" : "告警";
+                $v = unpack("C*", substr($memData, 18 + 14 + 5 + 104 + 1 + 4 * $i, 4));
+                for ($j = 1; $j <= 4; $j++) {
+                    for ($z = 0; $z < 8; $z++) {
+                        $channelObj[] = (($v[$j] >> $z) & 0x1) === 0 ? "正常" : "告警";
                     }
                 }
                 $dk04Obj->channel[] = $channelObj;
                 $dk04Obj->Iout[] = $v[4];
             }
             //offset (18+14+5+104) + (1 + 4*110 + 1) 
-            $val = unpack('v', substr($memData, (18+14+5+104) + (1 + 4*110 + 1), 2));
+            $val = unpack('v', substr($memData, (18 + 14 + 5 + 104) + (1 + 4 * 110 + 1), 2));
             $year = $val[1];
-            $val = unpack('C*', substr($memData, (18+14+5+104) + (1 + 4*110 + 1) + 2, 5));
+            $val = unpack('C*', substr($memData, (18 + 14 + 5 + 104) + (1 + 4 * 110 + 1) + 2, 5));
             $dk04Obj->update_datetime = date('Y-m-d H:i:s', strtotime($year . '-' . $val[1] . '-' . $val[2] . ' ' . $val[3] . ':' . $val[4] . ':' . $val[5]));
             $dk04Obj->channelParam = array();
-            for($i=0; $i<$dk04Obj->number; $i++)
-            {
+            for ($i = 0; $i < $dk04Obj->number; $i++) {
                 $paramObj = new stdClass();
-                $v = unpack("S*", substr($memData, (18+14+5+104) + (1 + 4*110 + 1) + 2 + 5 + $i*14, 10));
-                $paramObj->FloatV = $v[1]/100;
-                $paramObj->EQV = $v[2]/100;
-                $paramObj->Vhi = $v[3]/100;
-                $paramObj->V1o = $v[4]/100;
-                $paramObj->HVSD = $v[5]/100;
-                $v = unpack("C*", substr($memData, (18+14+5+104) + (1 + 4*110 + 1) + 2 + 5 + $i*14 + 10, 3));
+                $v = unpack("S*", substr($memData, (18 + 14 + 5 + 104) + (1 + 4 * 110 + 1) + 2 + 5 + $i * 14, 10));
+                $paramObj->FloatV = $v[1] / 100;
+                $paramObj->EQV = $v[2] / 100;
+                $paramObj->Vhi = $v[3] / 100;
+                $paramObj->V1o = $v[4] / 100;
+                $paramObj->HVSD = $v[5] / 100;
+                $v = unpack("C*", substr($memData, (18 + 14 + 5 + 104) + (1 + 4 * 110 + 1) + 2 + 5 + $i * 14 + 10, 3));
                 $paramObj->I1im = $v[1];
                 $paramObj->AdjV = $v[2];
-                $paramObj->SecEnable = $v[3] ? "不启用":"启用";
+                $paramObj->SecEnable = $v[3] ? "不启用" : "启用";
                 $dk04Obj->channelParam[] = $paramObj;
             }
-        }else{
+        } else {
             $dk04Obj->isEmpty = true;
         }
         return $dk04Obj;
     }
-    
-    
+
+
     static function Get_Dk04cRtData($data_id)
     {
         $dk04Obj = new stdClass();
         $dk04Obj->data_id = $data_id;
-        $CI = & get_instance();
+        $CI = &get_instance();
         $CI->load->driver('cache');
         $memData = $CI->cache->get($data_id);
+
         // memData minimal length
         if (strlen($memData) >= 1094) {
             $dk04Obj->isEmpty = false;
             $v = unpack('S*', substr($memData, 0, 5 * 2));
             $dk04Obj->PacketId = $v[1];
-            $dk04Obj->SysV = $v[2]/10;
+            $dk04Obj->SysV = $v[2] / 10;
             $dk04Obj->ILoad = $v[3];
             $dk04Obj->IBat1 = $v[4];
             $dk04Obj->IBat2 = $v[5];
-            
+
             $dk04Obj->alarm = array();
             $v = unpack("C*", substr($memData, 10, 4));
-            for($z = 0;$z < 8; $z++)
-            {
-                $dk04Obj->alarm[] = (($v[1]>>$z)&0x1) === 0 ? "正常" : "告警";
+            for ($z = 0; $z < 8; $z++) {
+                $dk04Obj->alarm[] = (($v[1] >> $z) & 0x1) === 0 ? "正常" : "告警";
             }
-            for($z = 0;$z < 8; $z++)
-            {
-                $dk04Obj->alarm[] = (($v[2]>>$z)&0x1) === 0 ? "正常" : "告警";
+            for ($z = 0; $z < 8; $z++) {
+                $dk04Obj->alarm[] = (($v[2] >> $z) & 0x1) === 0 ? "正常" : "告警";
             }
-            $dk04Obj->alarm[] = (($v[3]>>0)&0x1) === 0 ? "正常" : "告警";
-            $dk04Obj->alarm[] = (($v[3]>>3)&0x1) === 0 ? "正常" : "告警";
-            $dk04Obj->alarm[] = (($v[3]>>4)&0x1) === 0 ? "正常" : "告警";
-            $dk04Obj->alarm[] = (($v[3]>>5)&0x1) === 0 ? "正常" : "告警";
-            $dk04Obj->alarm[] = (($v[3]>>6)&0x1) === 0 ? "正常" : "告警";
-            $dk04Obj->alarm[] = (($v[4]>>4)&0x1) === 0 ? "正常" : "告警";
+            $dk04Obj->alarm[] = (($v[3] >> 0) & 0x1) === 0 ? "正常" : "告警";
+            $dk04Obj->alarm[] = (($v[3] >> 3) & 0x1) === 0 ? "正常" : "告警";
+            $dk04Obj->alarm[] = (($v[3] >> 4) & 0x1) === 0 ? "正常" : "告警";
+            $dk04Obj->alarm[] = (($v[3] >> 5) & 0x1) === 0 ? "正常" : "告警";
+            $dk04Obj->alarm[] = (($v[3] >> 6) & 0x1) === 0 ? "正常" : "告警";
+            $dk04Obj->alarm[] = (($v[4] >> 4) & 0x1) === 0 ? "正常" : "告警";
             $v = unpack('S*', substr($memData, 14, 4));
-            $dk04Obj->battery_temp = $v[1]/10;
-            $dk04Obj->amb_temp = $v[2]/10;
+            $dk04Obj->battery_temp = $v[1] / 10;
+            $dk04Obj->amb_temp = $v[2] / 10;
             $v = unpack('I*', substr($memData, 14 + 4, 8));
-            $dk04Obj->q_est_bat1 = number_format($v[1]/41199,2);//单位:AmpTickHour 
-            $dk04Obj->q_est_bat2 = number_format($v[2]/41199,2);
-            
-            $v = unpack('S*', substr($memData, 14 + 4 + 8, 2*10));
+            $dk04Obj->q_est_bat1 = number_format($v[1] / 41199, 2);//单位:AmpTickHour
+            $dk04Obj->q_est_bat2 = number_format($v[2] / 41199, 2);
+
+            $v = unpack('S*', substr($memData, 14 + 4 + 8, 2 * 10));
             $dk04Obj->ac_volts = $v[1];
             $dk04Obj->ac_current = $v[2];
-            $dk04Obj->ac_freq = $v[3]/10;
+            $dk04Obj->ac_freq = $v[3] / 10;
             $dk04Obj->acv_phase1 = $v[4];
             $dk04Obj->acv_phase2 = $v[5];
             $dk04Obj->acv_phase3 = $v[6];
             $dk04Obj->aci_phase1 = $v[7];
             $dk04Obj->aci_phase2 = $v[8];
             $dk04Obj->aci_phase3 = $v[9];
-            $dk04Obj->ac_freq_3ph = $v[10]/10;
-    
+            $dk04Obj->ac_freq_3ph = $v[10] / 10;
+
             //offset = 46
-            $v = unpack('S*', substr($memData, 46, 2*19));
+            $v = unpack('S*', substr($memData, 46, 2 * 19));
             $dk04Obj->ac_v_hi_alarm = $v[2];
             $dk04Obj->ac_v_lo_alarm = $v[3];
             $dk04Obj->ac_f_hi_alarm = $v[4];
@@ -676,7 +623,7 @@ class Realtime
             $dk04Obj->dialy_hour = $v[17];
             $dk04Obj->dialy_min = $v[18];
             $dk04Obj->expansiona1 = $v[19];
-            $v = unpack('S*', substr($memData, 46 + 2*19 + 20*3, 2*20));
+            $v = unpack('S*', substr($memData, 46 + 2 * 19 + 20 * 3, 2 * 20));
             $dk04Obj->battery_rating = $v[1];
             $dk04Obj->btc = $v[2];
             $dk04Obj->i_bat_limit1 = $v[3];
@@ -698,20 +645,20 @@ class Realtime
             $dk04Obj->lvds = $v[19];
             $dk04Obj->lvds_mode = $v[20];
             //offset += 104 sizeof(ParamPacket) //ParamPacket
-          
-            $v = unpack("C*", substr($memData,  46 + 2*19 + 20*3 + 2*20, 7));//Day,Month,Year,Cent,Hour,Min,Sec;
-            $dk04Obj->CSUTime = $v[3]."-".$v[2]."-".$v[1]." ".$v[5].":".$v[6].":".$v[7];
-            $v = unpack("S*", substr($memData, 46 + 2*19 + 20*3 + 2*20 + 7 + 1, 10));
+
+            $v = unpack("C*", substr($memData, 46 + 2 * 19 + 20 * 3 + 2 * 20, 7));//Day,Month,Year,Cent,Hour,Min,Sec;
+            $dk04Obj->CSUTime = $v[3] . "-" . $v[2] . "-" . $v[1] . " " . $v[5] . ":" . $v[6] . ":" . $v[7];
+            $v = unpack("S*", substr($memData, 46 + 2 * 19 + 20 * 3 + 2 * 20 + 7 + 1, 10));
             $dk04Obj->ac_v_hi_3ph = $v[1];
             $dk04Obj->ac_v_lo_3ph = $v[2];
             $dk04Obj->ac_f_hi_3ph = $v[3];
             $dk04Obj->ac_f_lo_3ph = $v[4];
             $dk04Obj->aci_fsd_3ph = $v[5];
-            $v = unpack("C*", substr($memData, 46 + 2*19 + 20*3 + 2*20 + 7 + 1 + 10, 2));
+            $v = unpack("C*", substr($memData, 46 + 2 * 19 + 20 * 3 + 2 * 20 + 7 + 1 + 10, 2));
             $dk04Obj->expansion2 = $v[1];
             $dk04Obj->bts_alarm = $v[2];
             //46 + 2*19 + 20*3 + 2*20 + 7 + 1 + 10 + 8
-            
+
             //46 + 164 DK04C_SMRstatPacket
             $v = unpack('S*', substr($memData, 46 + 164, 4));
             $dk04Obj->NumSMRs = $v[2];
@@ -719,34 +666,28 @@ class Realtime
             $dk04Obj->Iout = array();
             $dk04Obj->temp = array();
             $dk04Obj->smr_volts = array();
-            for($i=0; $i< $dk04Obj->NumSMRs; $i++)
-            {
+            for ($i = 0; $i < $dk04Obj->NumSMRs; $i++) {
                 $channelObj = array();
                 $v = unpack("C*", substr($memData, 46 + 164 + 4 + $i * 8, 6));
-                for($j = 1; $j<=3;$j++)
-                {
-                    for($z = 0;$z < 8; $z++)
-                    {
-                        $channelObj[] = (($v[$j]>>$z)&0x1) === 0 ? "正常" : "告警";
+                for ($j = 1; $j <= 3; $j++) {
+                    for ($z = 0; $z < 8; $z++) {
+                        $channelObj[] = (($v[$j] >> $z) & 0x1) === 0 ? "正常" : "告警";
                     }
                 }
-                for($z = 0;$z < 8; $z++)
-                {
-                    $channelObj[] = (($v[6]>>$z)&0x1) === 0 ? "正常" : "告警";
+                for ($z = 0; $z < 8; $z++) {
+                    $channelObj[] = (($v[6] >> $z) & 0x1) === 0 ? "正常" : "告警";
                 }
                 $dk04Obj->Iout[] = $v[4];
                 $dk04Obj->temp[] = $v[5];
                 $dk04Obj->channel[] = $channelObj;
-                $v = unpack("S*", substr($memData, 46+ 164 + 4 + $i * 8 +6, 2));
-                $dk04Obj->smr_volts[] = $v[1]/100;
+                $v = unpack("S*", substr($memData, 46 + 164 + 4 + $i * 8 + 6, 2));
+                $dk04Obj->smr_volts[] = $v[1] / 100;
             }
             //offset 46 + 164 + 884      
             $dk04Obj->param_channel = array();
-            if($dk04Obj->smr_type == 0)
-            {
+            if ($dk04Obj->smr_type == 0) {
                 //DK04C_SMRParamPacket
-                for($i =0; $i < $dk04Obj->num_smrs; $i++)
-                {
+                for ($i = 0; $i < $dk04Obj->num_smrs; $i++) {
                     $channelObj = new stdClass();
                     $channelData = substr($memData, 46 + 164 + 884 + 17 * $i, 17);
                     $v = unpack("S*", substr($channelData, 0, 14));
@@ -762,10 +703,9 @@ class Realtime
                     $channelObj->SecEnable = $v[3];
                     $dk04Obj->param_channel[] = $channelObj;
                 }
-            }else{
+            } else {
                 //DK04C_SMRParamPacketA
-                for($i =0; $i < $dk04Obj->num_smrs; $i++)
-                {
+                for ($i = 0; $i < $dk04Obj->num_smrs; $i++) {
                     $channelObj = new stdClass();
                     $channelData = substr($memData, 46 + 164 + 884 + 23 * $i, 23);
                     $v = unpack("S*", substr($channelData, 0, 14));
@@ -784,55 +724,193 @@ class Realtime
                     $dk04Obj->param_channel[] = $channelObj;
                 }
             }
-        
-        }else{
+
+        } else {
             $dk04Obj->isEmpty = true;
         }
         return $dk04Obj;
     }
-            
+
+    static function Get_Dk09RtData($data_id)
+    {
+
+        $dk09Obj = new stdClass();
+        $dk09Obj->data_id = $data_id;
+        $CI = &get_instance();
+        $CI->load->driver('cache');
+        $memData = $CI->cache->get($data_id);
+        // memData minimal length
+        if (strlen($memData) >= 10) {
+            $dk09Obj->isEmpty = false;
+
+            //REG_40_42
+            $v = unpack('S*', substr($memData, 4, 12 * 2));
+
+            $dk09Obj->ACChannelNum = $v[1];//交流输入路数
+            $dk09Obj->MainSupplyAC_a = $v[2];//主供交流电源相电压 a
+            $dk09Obj->MainSupplyAC_b = $v[3];//主供交流电源相电压 b
+            $dk09Obj->MainSupplyAC_c = $v[4];//主供交流电源相电压 c
+            $dk09Obj->MainSupplyACFreq = $v[5];//主供交流输入频率
+
+            $dk09Obj->ThreeACInput_a = $v[6];//三相交流输入电流 a
+            $dk09Obj->ThreeACInput_b = $v[7];//三相交流输入电流 b
+            $dk09Obj->ThreeACInput_c = $v[8];//三相交流输入电流 c
+            $dk09Obj->BackUpBatteryVoltage_a = $v[9];//备用交流电源相电压a
+            $dk09Obj->BackUpBatteryVoltage_b = $v[10];//备用交流电源相电压b
+            $dk09Obj->BackUpBatteryVoltage_c = $v[11];//备用交流电源相电压c
+            $dk09Obj->BackUpBatteryVoltage_Free = $v[12];//备用交流输入频率
+
+            //REG_41_42 获取系统模拟量数据(定点数)
+            $v = unpack("S*", substr($memData, 28, 5 * 2));
+            $dk09Obj->RectificationNum = $v[1];//获取系统模拟量数据(定点数)
+            $dk09Obj->ModuleState = $v[2];//模块输出电压*100
+            $dk09Obj->ModuleOutputCurrent = $v[3];//模块输出电流*100
+            $dk09Obj->ModuleTempature = $v[4];//内部温度
+
+
+            //REG_42_42  获取系统模拟量数据（定点）
+            $v = unpack("S*", substr($memData, 38, 12 * 2));
+            $dk09Obj->BatteryNum = $v[1];//电池组数
+            $dk09Obj->Battery_1_Voltage = $v[2];//电池1电压
+            $dk09Obj->Battery_1_Current = $v[3];//电池1电流
+            $dk09Obj->Battery_1_Capacity = $v[4];//电池1容量
+            $dk09Obj->Battery_1_temperature = $v[5];//电池1温度
+            $dk09Obj->System_voltage = $v[6];//系统电压2
+            $dk09Obj->Environment_tamperature = $v[7];//环境温度2
+            $dk09Obj->PayLoad = $v[8];//负载
+            $dk09Obj->Battery_2_Voltage = $v[9];//电池2电压
+            $dk09Obj->Battery_2_Current = $v[10];//电池2电流
+            $dk09Obj->Battery_2_Capacity = $v[11];//电池2容量
+            $dk09Obj->battery_2_temperature = $v[12];//电池2温度
+
+            //reg_42_44_data  获取状态与报警
+            $v = unpack("S*", substr($memData, 62, 3 * 2));
+            $dk09Obj->status = $v[1];//状态
+            $dk09Obj->SeriousAlarm = $v[2];//严重报警
+            $dk09Obj->Generalalarm = $v[3];//一般报警
+
+
+            //update_time
+            $v = unpack("C*", substr($memData, 68, 1 * 7));
+            $dk09Obj->update_time = $v[3] . "-" . $v[2] . "-" . $v[1] . " " . $v[5] . ":" . $v[6] . ":" . $v[7];
+
+
+        } else {
+            $dk09Obj->isEmpty = true;
+        }
+        return $dk09Obj;
+    }
+
+    //开关电源 Cuc21vb
+    static function Get_Cuc21vbRtData($data_id)
+    {
+
+        $Cuc21vbObj = new stdClass();
+        $Cuc21vbObj->data_id = $data_id;
+        $CI = &get_instance();
+        $CI->load->driver('cache');
+        $memData = $CI->cache->get($data_id);
+
+        if (strlen($memData) >= 1094) {
+            $Cuc21vbObj->isEmpty = false;
+            $v = unpack('C*', substr($memData, 4, 4));
+            $Cuc21vbObj->out_v = $v[1];//显示
+
+            $v = unpack('f*', substr($memData, 8, 1));
+            $Cuc21vbObj->channel_count = $v[1];//通道数
+
+            $v = unpack('C*', substr($memData, 9, 7));
+            $Cuc21vbObj->update_time = $v[3] . "-" . $v[2] . "-" . $v[1] . " " . $v[5] . ":" . $v[6] . ":" . $v[7];;//时间
+            $Cuc21vbObj->channel = [];
+            for ($i = 0; $i < $Cuc21vbObj->channel_count; $i++) {
+                $channelObj = array();
+                /**
+                 * short out_i;
+                 * //status状态量
+                 * char  shutdown;//开机/关机状态 00H：开机，01H：关机
+                 * char  i_limit;//限流/不限流状态 00H：限流，01H：不限流
+                 * char  charge;//浮充/均充/测试状态 00H：浮充，01H：均充，02H：测试
+                 * //alert告警量
+                 * char  fault;
+                 */
+                $v = unpack('S*', substr($memData, 16, 2));
+                $channelObj['out_i'] = $v[1];
+
+                $v = unpack('C*', substr($memData, 16 + 2, 1));
+                $channelObj['shutdown'] = $v[1];
+
+                $v = unpack('C*', substr($memData, 16 + 2 + 1, 1));
+                $channelObj['i_limit'] = $v[1];
+
+                $v = unpack('C*', substr($memData, 16 + 2 + 1 + 1, 1));
+                $channelObj['charge'] = $v[1];
+
+                $v = unpack('C*', substr($memData, 16 + 2 + 1 + 1 + 1, 1));
+                $channelObj['fault'] = $v[1];
+                $Cuc21vbObj->channel[] = $channelObj;
+            }
+        } else {
+            $Cuc21vbObj->isEmpty = true;
+        }
+        return $Cuc21vbObj;
+    }
+
+
+    //开关电源 Des
+    static function Get_DesRtData($data_id){
+        $DesObj = new stdClass();
+        $DesObj->data_id = $data_id;
+        $CI = &get_instance();
+        $CI->load->driver('cache');
+        $memData = $CI->cache->get($data_id);
+
+
+    }
+
     /*
      * 统一处理所有开关电源的数据解析
      */
     static function GetSpsPower($dataIdArray)
     {
-        $CI = & get_instance();
+
+        $CI = &get_instance();
         $CI->load->helper("constants");
         $CI->load->driver('cache');
         $dataList = array();
         foreach ($dataIdArray as $dataId) {
             $cacheValue = false;//$CI->cache->get($dataId."_webcache");
-            if($cacheValue)
-            {
+            if ($cacheValue) {
                 $dataList[] = $cacheValue;
-            }else{
+            } else {
                 //Do get
                 $memData = $CI->cache->get($dataId);
-                if(!$memData)
-                {
+
+                if (!$memData) {
                     //No Data，这个没有就是1次也没有
                     $dataObj = new stdClass();
                     $dataObj->isEmpty = true;
                     $dataObj->data_id = $dataId;
                     $dataObj->update_datetime = date('Y-m-d H:i:s');
-                }else{
+                } else {
                     $devObj = $CI->mp_xjdh->Get_Device($dataId);
-                    if(count($devObj))
-                    {
-                        if(Util::endsWith($devObj->model, "ac"))
-					    {
+                    if (count($devObj)) {
+                        if (Util::endsWith($devObj->model, "ac")) {
                             $dataObj = Realtime::_GetPMBusPowerAC($devObj->model, $memData, Constants::$pmBusConfig[$devObj->model]["airlock"], Constants::$pmBusConfig[$devObj->model]["p40_43"], Constants::$pmBusConfig[$devObj->model]["p40_41"], Constants::$pmBusConfig[$devObj->model]["p40_44"]);
-                        }else if(Util::endsWith($devObj->model, "rc"))
-                        {
+                        } else if (Util::endsWith($devObj->model, "rc")) {
                             $dataObj = Realtime::_GetPMBusPowerRC($devObj->model, $memData, Constants::$pmBusConfig[$devObj->model]["p42_46"], Constants::$pmBusConfig[$devObj->model]["p42_46_size"], Constants::$pmBusConfig[$devObj->model]["p41_41"], Constants::$pmBusConfig[$devObj->model]["p41_43"], Constants::$pmBusConfig[$devObj->model]["p41_44"]);
-                        }else if(Util::endsWith($devObj->model, "dc"))
-					    {
-					        $dataObj = Realtime::_GetPMBusPowerDC($devObj->model, $memData, Constants::$pmBusConfig[$devObj->model]["m"], Constants::$pmBusConfig[$devObj->model]["n"], Constants::$pmBusConfig[$devObj->model]["p"], Constants::$pmBusConfig[$devObj->model]["alert_m"], Constants::$pmBusConfig[$devObj->model]["alert_p"]);
-					    }else if($devObj->model == "dk04"){
-					        $dataObj = Realtime::Get_Dk04RtData($dataId);
-					    }else if($devObj->model == "dk04c"){
-					        $dataObj = Realtime::Get_Dk04cRtData($dataId);
-					    }
+                        } else if (Util::endsWith($devObj->model, "dc")) {
+                            $dataObj = Realtime::_GetPMBusPowerDC($devObj->model, $memData, Constants::$pmBusConfig[$devObj->model]["m"], Constants::$pmBusConfig[$devObj->model]["n"], Constants::$pmBusConfig[$devObj->model]["p"], Constants::$pmBusConfig[$devObj->model]["alert_m"], Constants::$pmBusConfig[$devObj->model]["alert_p"]);
+                        } else if ($devObj->model == "dk04") {
+                            $dataObj = Realtime::Get_Dk04RtData($dataId);
+                        } else if ($devObj->model == "dk04c") {
+                            $dataObj = Realtime::Get_Dk04cRtData($dataId);
+                        } //dk09
+                        else if ($devObj->model == "dk09") {
+                            $dataObj = Realtime::Get_Dk09RtData($dataId);
+                        } //Des
+                        else if ($devObj->model == "cuc21vb") {
+                            $dataObj = Realtime::Get_Cuc21vbRtData();
+                        }
                         //$CI->cache->save($dataId."_webcache", $dataObj, 20);
                     }
                 }
@@ -841,9 +919,10 @@ class Realtime
         }
         return $dataList;
     }
+
     static function Get_Mec10RtData($dataIdStr)
     {
-        $CI = & get_instance();
+        $CI = &get_instance();
         $CI->load->driver('cache');
         $mec10List = array();
         $idArr = array();
@@ -865,7 +944,7 @@ class Realtime
                 $mec10Obj->alert2 = $v[3];
                 $mec10Obj->alert3 = $v[4];
                 $mec10Obj->alert4 = $v[5];
-                $v = unpack('s*', substr($memData, 13, 2*9));
+                $v = unpack('s*', substr($memData, 13, 2 * 9));
                 $mec10Obj->battery = $v[1];
                 $mec10Obj->ai1 = $v[2];
                 $mec10Obj->ai2 = $v[3];
@@ -874,12 +953,12 @@ class Realtime
                 $mec10Obj->ai5 = $v[6];
                 $mec10Obj->ai6 = $v[7];
                 $mec10Obj->freq = $v[8];
-                $v = unpack('i', substr($memData, 13+2*9+4, 4));
+                $v = unpack('i', substr($memData, 13 + 2 * 9 + 4, 4));
                 $mem10Obj->run_time = $v[1];
-                $v = unpack('i', substr($memData, 13+2*9+4 + 4, 4));
+                $v = unpack('i', substr($memData, 13 + 2 * 9 + 4 + 4, 4));
                 $mem10Obj->up_time = $v[1];
                 $mem10Obj->count = $v[2];
-                $v = unpack('c*', substr($memData, 13+2*9+4 + 4 + 4, 6));
+                $v = unpack('c*', substr($memData, 13 + 2 * 9 + 4 + 4 + 4, 6));
                 $mem10Obj->year = $v[1];
                 $mem10Obj->month = $v[2];
                 $mem10Obj->day = $v[3];
@@ -894,9 +973,10 @@ class Realtime
         }
         return $mec10List;
     }
+
     static function Get_Power302ARtData($dataIdStr)
     {
-        $CI = & get_instance();
+        $CI = &get_instance();
         $CI->load->driver('cache');
         $power302aDevList = array();
         $idArr = array();
@@ -907,12 +987,12 @@ class Realtime
             $power302aDevObj->data_id = $val;
             $memData = $CI->cache->get($val);
             if (strlen($memData) == 248) {
-                $v = unpack('f*', substr($memData,4,244));
+                $v = unpack('f*', substr($memData, 4, 244));
                 //功率寄存器
-                $power302aDevObj->pa = number_format($v[1]/1000, 3);
-                $power302aDevObj->pb = number_format($v[2]/1000, 3);
-                $power302aDevObj->pc = number_format($v[3]/1000, 3);
-                $power302aDevObj->pt = number_format($v[4]/1000, 3);
+                $power302aDevObj->pa = number_format($v[1] / 1000, 3);
+                $power302aDevObj->pb = number_format($v[2] / 1000, 3);
+                $power302aDevObj->pc = number_format($v[3] / 1000, 3);
+                $power302aDevObj->pt = number_format($v[4] / 1000, 3);
                 $power302aDevObj->qa = number_format($v[5], 3);
                 $power302aDevObj->qb = number_format($v[6], 3);
                 $power302aDevObj->qc = number_format($v[7], 3);
@@ -974,23 +1054,24 @@ class Realtime
                 $power302aDevObj->lineEpa = number_format($v[58], 3);
                 $power302aDevObj->lineEpb = number_format($v[59], 3);
                 $power302aDevObj->lineEpc = number_format($v[60], 3);
-                $power302aDevObj->lineEpt = number_format($v[61], 3);               
-            }            
+                $power302aDevObj->lineEpt = number_format($v[61], 3);
+            }
             $power302aDevObj->update_datetime = date('Y-m-d H:i:s');
             $power302aDevObj->dynamic_config = $CI->cache->get($val . '_dc');
             array_push($power302aDevList, $power302aDevObj);
         }
         return $power302aDevList;
     }
-    static function Get_Imem12RtData ($dataIdStr)
+
+    static function Get_Imem12RtData($dataIdStr)
     {
-        $CI = & get_instance();
+        $CI = &get_instance();
         $CI->load->driver('cache');
         $imem12DevList = array();
         $idArr = array();
         if (strlen($dataIdStr) > 0)
             $idArr = explode(',', $dataIdStr);
-        
+
         foreach ($idArr as $key => $val) {
             $imem12DevObj = new stdClass();
             $imem12DevObj->data_id = $val;
@@ -1021,9 +1102,10 @@ class Realtime
         }
         return $imem12DevList;
     }
+
     static function Get_Battery4Voltage($dataIdStr)
     {
-        $CI = & get_instance();
+        $CI = &get_instance();
         $CI->load->driver('cache');
         $batList = array();
         $idArr = array();
@@ -1041,9 +1123,10 @@ class Realtime
         }
         return $batList;
     }
-    static function Get_BatRtData ($dataIdStr, $batNum)
+
+    static function Get_BatRtData($dataIdStr, $batNum)
     {
-        $CI = & get_instance();
+        $CI = &get_instance();
         $CI->load->driver('cache');
         $batList = array();
         $idArr = array();
@@ -1092,7 +1175,7 @@ class Realtime
                 $batObj->update_datetime = date('Y-m-d H:i:s', strtotime($year . '-' . $val[1] . '-' . $val[2] . ' ' . $val[3] . ':' . $val[4] . ':' . $val[5]));
             } else {
                 $batObj->voltage = array();
-                for ($i = 0; $i < $batNum; $i ++) {
+                for ($i = 0; $i < $batNum; $i++) {
                     array_push($batObj->voltage, 0);
                 }
                 $batObj->group_v = 0;
@@ -1107,7 +1190,7 @@ class Realtime
         return $batList;
     }
 
-    static function Get_FreshAirRtData ($dataIdStr)
+    static function Get_FreshAirRtData($dataIdStr)
     {
         /*
          * typedef struct tele_c_freshair_
@@ -1162,7 +1245,7 @@ class Realtime
          * tele_c_ttime update_time;
          * }tele_c_freshair;
          */
-        $CI = & get_instance();
+        $CI = &get_instance();
         $CI->load->driver('cache');
         $idArr = array();
         if (strlen($dataIdStr))
@@ -1182,7 +1265,7 @@ class Realtime
                 $freshAirObj->temperature4 = 0; // number_format($v[5], 2);
                 $freshAirObj->temperature5 = 0; // number_format($v[6], 2); // 室内温度5
                 $freshAirObj->humidity1 = number_format($v[7], 2);
-                
+
                 $freshAirObj->humidity2 = 0; // number_format($v[8], 2);
                 $freshAirObj->humidity3 = 0; // number_format($v[9], 2);
                 $freshAirObj->humidity4 = 0; // number_format($v[10], 2);
@@ -1194,7 +1277,7 @@ class Realtime
                 $freshAirObj->humidifier_current = number_format($v[16], 2);
                 $freshAirObj->average_temperature = number_format($v[17], 2);
                 $freshAirObj->average_humidity = number_format($v[18], 2);
-                
+
                 $v = unpack('s*', substr($memData, 18 * 4, 2 * 2));
                 $freshAirObj->reserve_60_42_1 = $v[1];
                 $freshAirObj->reserve_60_42_2 = $v[2];
@@ -1212,7 +1295,7 @@ class Realtime
                 $freshAirObj->runstate_fill = $v[8]; // 湿帘加湿注水
                 $freshAirObj->runstate_pump = $v[9]; // 湿帘加湿水泵
                 $freshAirObj->runstate_ac = $v[10]; // 外部空调
-                
+
                 /*
                  * 60_44 获取告警状态
                  * 00H：正常 20H：无此报警类型 ,01H：故障
@@ -1220,7 +1303,7 @@ class Realtime
                 // $v = unpack('c*', substr($memData, 18 * 4 + 2 * 2 + 4 + 10,
                 // 135));
                 // $freshAirObj->alert[135] = $v[0];
-                
+
                 // 60_47 参数设置
                 $v = unpack('f*', substr($memData, 18 * 4 + 2 * 2 + 4 + 10 + 135, 6 * 4));
                 $freshAirObj->setting_temperature = number_format($v[1], 2); // 温度设定点
@@ -1229,7 +1312,7 @@ class Realtime
                 $freshAirObj->low_temperature_alert = number_format($v[4], 2); // 低温告警点
                 $freshAirObj->high_humidity_alert = number_format($v[5], 2); // 高湿报警点
                 $freshAirObj->low_humidity_alert = number_format($v[6], 2); // 低湿报警点
-                
+
                 $v = unpack('v', substr($memData, 18 * 4 + 2 * 2 + 4 + 10 + 135 + 6 * 4, 2));
                 $year = $v[1];
                 $v = unpack('C*', substr($memData, 18 * 4 + 2 * 2 + 4 + 10 + 135 + 6 * 4 + 2, 5));
@@ -1244,7 +1327,7 @@ class Realtime
         return $freshAirList;
     }
 
-    static function Get_Datamate3000RtData ($dataIdStr)
+    static function Get_Datamate3000RtData($dataIdStr)
     {
         /*
          struct tele_c_data_mate3000
@@ -1312,7 +1395,7 @@ class Realtime
         	tele_c_ttime update_time;	
         };
         */
-        $CI = & get_instance();
+        $CI = &get_instance();
         $CI->load->driver('cache');
         $idArr = array();
         if (strlen($dataIdStr))
@@ -1328,19 +1411,19 @@ class Realtime
                 $dataObj->room_temp = number_format($v[2], 1);
                 $dataObj->room_humid = number_format($v[3], 1);
                 $dataObj->outdoor_temp = number_format($v[4], 1);
-                
+
                 $v = unpack('c*', substr($memData, 4 * 4, 1));
                 $dataObj->air_state = $v[1];
-                
-                $v = unpack('f*', substr($memData, 4 * 4 + 1, 4*6));
+
+                $v = unpack('f*', substr($memData, 4 * 4 + 1, 4 * 6));
                 $dataObj->temperature = number_format($v[1], 1);
-                $dataObj->humidity = number_format($v[2], 1);    
+                $dataObj->humidity = number_format($v[2], 1);
                 $dataObj->set_temp = number_format($v[3], 1);
                 $dataObj->temp_pric = number_format($v[4], 1);
                 $dataObj->set_humid = number_format($v[5], 1);
                 $dataObj->humid_pric = number_format($v[6], 1);
-                
-                $v = unpack('c*', substr($memData, 4 * 4 + 1 + 4*6, 36));
+
+                $v = unpack('c*', substr($memData, 4 * 4 + 1 + 4 * 6, 36));
                 $dataObj->switch_status = $v[1];
                 $dataObj->fan_status = $v[2];
                 $dataObj->cool_status = $v[3];
@@ -1377,11 +1460,11 @@ class Realtime
                 $dataObj->high_press_lock = $v[34];
                 $dataObj->low_press_lock = $v[35];
                 $dataObj->exhaust_lock = $v[36];
-             
-    
-                $v = unpack('v', substr($memData, 4 * 4 + 1 + 4*6 + 36, 2));
+
+
+                $v = unpack('v', substr($memData, 4 * 4 + 1 + 4 * 6 + 36, 2));
                 $year = $v[1];
-                $v = unpack('C*', substr($memData, 4 * 4 + 1 + 4*6 + 36 + 2, 5));
+                $v = unpack('C*', substr($memData, 4 * 4 + 1 + 4 * 6 + 36 + 2, 5));
                 $dataObj->update_datetime = date('Y-m-d H:i:s', strtotime($year . '-' . $v[1] . '-' . $v[2] . ' ' . $v[3] . ':' . $v[4] . ':' . $v[5]));
             } else {
                 $dataObj->is_empty = true;
@@ -1392,12 +1475,13 @@ class Realtime
         }
         return $dataList;
     }
-    static function Get_SwitchingPowerSupplyRtData ($dataIdStr)
+
+    static function Get_SwitchingPowerSupplyRtData($dataIdStr)
     {
         $idArr = array();
         if (strlen($dataIdStr))
             $idArr = explode(',', $dataIdStr);
-        $CI = & get_instance();
+        $CI = &get_instance();
         $switchingPowerSupplyList = array();
         foreach ($idArr as $data_id) {
             $devObj = $CI->mp_xjdh->Get_Device($data_id);
@@ -1421,7 +1505,7 @@ class Realtime
                 case 'm810g-rc':
                     $switchingPowerSupplyObj = Realtime::_Get_M810gRcData($data_id);
                     break;
-               	case 'smu06c-ac':
+                case 'smu06c-ac':
                     $switchingPowerSupplyObj = Realtime::_Get_Smu06cAcData($data_id);
                     break;
                 case 'smu06c-dc':
@@ -1431,14 +1515,14 @@ class Realtime
                     $switchingPowerSupplyObj = Realtime::_Get_Smu06cRcData($data_id);
                     break;
                 case 'zxdu-ac':
-		    $switchingPowerSupplyObj = Realtime::Get_zxduACcache($data_id);
-		    break;
+                    $switchingPowerSupplyObj = Realtime::Get_zxduACcache($data_id);
+                    break;
                 case 'zxdu-dc':
-		    $switchingPowerSupplyObj = Realtime::Get_zxduDCcache($data_id);
-		    break;
-		case 'zxdu-rc':
-		    $switchingPowerSupplyObj = Realtime::Get_zxduRCcache($data_id);
-		    break;
+                    $switchingPowerSupplyObj = Realtime::Get_zxduDCcache($data_id);
+                    break;
+                case 'zxdu-rc':
+                    $switchingPowerSupplyObj = Realtime::Get_zxduRCcache($data_id);
+                    break;
                 default:
                     break;
             }
@@ -1448,100 +1532,99 @@ class Realtime
         return $switchingPowerSupplyList;
     }
 
-    
-    
+
     static function Get_Psm06RtData($dataIdStr)
     {
-    	/*		
-	struct tele_c_psm6
-	{
-		 unsigned int data_id;
-		 float out_v;//系统输出电压
-		 float out_i;//系统负载电流
-		 char ac_type;//交流类型00H单相，FFH三相
-		 int p_in_v_max_limiting;//输入交流过压电压值
-		 int p_in_v_min_limiting;//输入交流低压保护值
-		 int output_count;//配电输出总数
-		 int output_num[16];//配电输出序号
-		 int rc_model_count;//整流模块总数
-		 int  rc_model_addrs[20];//整流模块地址
-		 char  auto_manual;//模块的控制状态,自动或手动 00H:手动，01H:自动
-		 char battery_count;//电池组数ascii
-		 int battery_capacity;//电池容量
-		 int charge_float_v;//浮充电压
-		 int charge_average_v;//均充电压
-		 int charge_average_timer;//均充时间间隔（小时）
-		 int charge_average_time;//均充时间（小时）
-		 int charge_modulus;//充电系数
-		 int feeder_resistance;//馈线电阻
-		 int charge_limit_i;//电池充电限流值
-		 int charge_average_trans_i;//均充转换电流
-		 int low_battery_alert_v;//电池欠压报警值
-		 int low_battery_protect_v;//电池欠压保护值
-		 char low_battery_autoprotect;//电池欠压是否自动保护 00是 01否
-		 int dev_addr;//配电监控单元地址（00-99）
-		 
-		 char  run_status;//正常运行 00H：市电停电电池放电，01H：有市电停电到有点电池充电，02H:市电停电到有电,电池充电
-		 char  charge;//浮充/均充 00H：浮充，01H：均充	
-		 char  connect_status;//配电通讯状态 00H正常：01H通信中断
-		 char  output_status;//系统总输出通讯状态 00H正常：01H通讯中断
-		
-		 char  fuses_status[9];//直流容断丝
-		 char  alert_p[16];//池组1过流预报警（用01H表示）、电池组1过流紧急报警（用02H表示）、电池组1欠压预报警（用04H表示）、电池组1电压过低（用05H表示）、
-									//池组2过流预报警（用01H表示）、电池组2过流紧急报警（用02H表示）、电池组2欠压预报警（用04H表示）、电池组2电压过低（用05H表示）、
-		 tele_c_ttime update_time;
-	};
+        /*
+    struct tele_c_psm6
+    {
+         unsigned int data_id;
+         float out_v;//系统输出电压
+         float out_i;//系统负载电流
+         char ac_type;//交流类型00H单相，FFH三相
+         int p_in_v_max_limiting;//输入交流过压电压值
+         int p_in_v_min_limiting;//输入交流低压保护值
+         int output_count;//配电输出总数
+         int output_num[16];//配电输出序号
+         int rc_model_count;//整流模块总数
+         int  rc_model_addrs[20];//整流模块地址
+         char  auto_manual;//模块的控制状态,自动或手动 00H:手动，01H:自动
+         char battery_count;//电池组数ascii
+         int battery_capacity;//电池容量
+         int charge_float_v;//浮充电压
+         int charge_average_v;//均充电压
+         int charge_average_timer;//均充时间间隔（小时）
+         int charge_average_time;//均充时间（小时）
+         int charge_modulus;//充电系数
+         int feeder_resistance;//馈线电阻
+         int charge_limit_i;//电池充电限流值
+         int charge_average_trans_i;//均充转换电流
+         int low_battery_alert_v;//电池欠压报警值
+         int low_battery_protect_v;//电池欠压保护值
+         char low_battery_autoprotect;//电池欠压是否自动保护 00是 01否
+         int dev_addr;//配电监控单元地址（00-99）
+
+         char  run_status;//正常运行 00H：市电停电电池放电，01H：有市电停电到有点电池充电，02H:市电停电到有电,电池充电
+         char  charge;//浮充/均充 00H：浮充，01H：均充
+         char  connect_status;//配电通讯状态 00H正常：01H通信中断
+         char  output_status;//系统总输出通讯状态 00H正常：01H通讯中断
+
+         char  fuses_status[9];//直流容断丝
+         char  alert_p[16];//池组1过流预报警（用01H表示）、电池组1过流紧急报警（用02H表示）、电池组1欠压预报警（用04H表示）、电池组1电压过低（用05H表示）、
+                                    //池组2过流预报警（用01H表示）、电池组2过流紧急报警（用02H表示）、电池组2欠压预报警（用04H表示）、电池组2电压过低（用05H表示）、
+         tele_c_ttime update_time;
+    };
 */
-    	$idArr = array();
-    	if (strlen($dataIdStr))
-    		$idArr = explode(',', $dataIdStr);
-    		$CI = & get_instance();
-    		$CI->load->driver('cache');
-    		$psm06List = array();
-    		foreach ($idArr as $data_id) {
-    			$psm06Obj = new stdClass();
-    			$psm06Obj->data_id = $data_id;
-    			$memData = $CI->cache->get($data_id);
-    			// memData minimal length
+        $idArr = array();
+        if (strlen($dataIdStr))
+            $idArr = explode(',', $dataIdStr);
+        $CI = &get_instance();
+        $CI->load->driver('cache');
+        $psm06List = array();
+        foreach ($idArr as $data_id) {
+            $psm06Obj = new stdClass();
+            $psm06Obj->data_id = $data_id;
+            $memData = $CI->cache->get($data_id);
+            // memData minimal length
 //echo strlen($memData);
-    			if (strlen($memData) >= 223) {
-    				$psm06Obj->isEmpty = false;
-    				$v = unpack('c', substr($memData, 4, 1));
-    				$psm06Obj->ac_type = $v[1];
+            if (strlen($memData) >= 223) {
+                $psm06Obj->isEmpty = false;
+                $v = unpack('c', substr($memData, 4, 1));
+                $psm06Obj->ac_type = $v[1];
 //echo $psm06Obj->ac_type;
-    				$v = unpack('i*', substr($memData, 4 + 1, 40 * 4));
-    				$psm06Obj->p_in_v_max_limiting = $v[1];
-    				$psm06Obj->p_in_v_min_limiting = $v[2];
-    				$psm06Obj->output_count = $v[3];
-    				$psm06Obj->output_num = array_values(array_slice($v, 3, 16));
-    				$psm06Obj->rc_model_count = $v[20];
-    				$psm06Obj->rc_model_addrs = array_values(array_slice($v, 20));	
-    				$v = unpack('c*', substr($memData, 4 + 1 + 40 * 4, 2));
-    				$psm06Obj->auto_manual= $v[1];
-    				$psm06Obj->battery_count= $v[2];
-    				$v = unpack('i*', substr($memData, 4 + 1 + 40 * 4 + 2, 11 * 4));
-    				$psm06Obj->battery_capacity = $v[1];
-    				$psm06Obj->charge_average_v = $v[2];
-    				$psm06Obj->charge_float_v = $v[3];
-    				$psm06Obj->charge_average_timer = $v[4];
-    				$psm06Obj->charge_average_time = $v[5];
-    				$psm06Obj->charge_modulus = $v[6];
-    				$psm06Obj->feeder_resistance = $v[7];
-    				$psm06Obj->charge_limit_i = $v[8];
-    				$psm06Obj->charge_average_trans_i = $v[9];
-    				$psm06Obj->low_battery_alert_v = $v[10];
-    				$psm06Obj->low_battery_protect_v = $v[11];
-    				$v = unpack('s', substr($memData, 4 + 1 + 40 * 4 + 2 + 11 * 4,2));
-    				$psm06Obj->dev_addr = $v[1];
-    				$psm06Obj->update_datetime = date('Y-m-d H:i:s');
-    
-    				array_push($psm06List, $psm06Obj);
-    			}
-    		}
-    		return $psm06List;
+                $v = unpack('i*', substr($memData, 4 + 1, 40 * 4));
+                $psm06Obj->p_in_v_max_limiting = $v[1];
+                $psm06Obj->p_in_v_min_limiting = $v[2];
+                $psm06Obj->output_count = $v[3];
+                $psm06Obj->output_num = array_values(array_slice($v, 3, 16));
+                $psm06Obj->rc_model_count = $v[20];
+                $psm06Obj->rc_model_addrs = array_values(array_slice($v, 20));
+                $v = unpack('c*', substr($memData, 4 + 1 + 40 * 4, 2));
+                $psm06Obj->auto_manual = $v[1];
+                $psm06Obj->battery_count = $v[2];
+                $v = unpack('i*', substr($memData, 4 + 1 + 40 * 4 + 2, 11 * 4));
+                $psm06Obj->battery_capacity = $v[1];
+                $psm06Obj->charge_average_v = $v[2];
+                $psm06Obj->charge_float_v = $v[3];
+                $psm06Obj->charge_average_timer = $v[4];
+                $psm06Obj->charge_average_time = $v[5];
+                $psm06Obj->charge_modulus = $v[6];
+                $psm06Obj->feeder_resistance = $v[7];
+                $psm06Obj->charge_limit_i = $v[8];
+                $psm06Obj->charge_average_trans_i = $v[9];
+                $psm06Obj->low_battery_alert_v = $v[10];
+                $psm06Obj->low_battery_protect_v = $v[11];
+                $v = unpack('s', substr($memData, 4 + 1 + 40 * 4 + 2 + 11 * 4, 2));
+                $psm06Obj->dev_addr = $v[1];
+                $psm06Obj->update_datetime = date('Y-m-d H:i:s');
+
+                array_push($psm06List, $psm06Obj);
+            }
+        }
+        return $psm06List;
     }
-    
-    static function _Get_PsmaAcData ($dataId)
+
+    static function _Get_PsmaAcData($dataId)
     {
         /*
          * //交流
@@ -1582,7 +1665,7 @@ class Realtime
          */
         $psmaAcObj = new stdClass();
         $psmaAcObj->data_id = $dataId;
-        $CI = & get_instance();
+        $CI = &get_instance();
         $CI->load->driver('cache');
         $memData = $CI->cache->get($dataId);
         // memData minimal length
@@ -1591,14 +1674,14 @@ class Realtime
             $v = unpack('f*', substr($memData, 4, 3 * 4));
             $psmaAcObj->ia = number_format($v[1], 2);
             $psmaAcObj->ib = number_format($v[2], 2);
-        
+
             $psmaAcObj->ic = number_format($v[3], 2);
             $v = unpack('i', substr($memData, 4 + 3 * 4, 4));
             $psmaAcObj->channelCount = $v[1];
             $psmaAcObj->channelList = array();
             // total length
             if (strlen($memData) == 45 + $psmaAcObj->channelCount * 28) {
-                for ($i = 0; $i < $psmaAcObj->channelCount; $i ++) {
+                for ($i = 0; $i < $psmaAcObj->channelCount; $i++) {
                     $channelObj = new stdClass();
                     $channelData = substr($memData, 45 + $i * 28, 28);
                     $v = unpack('f*', substr($channelData, 0, 4 * 4));
@@ -1615,13 +1698,13 @@ class Realtime
                     array_push($psmaAcObj->channelList, $channelObj);
                 }
             }
-            
+
             $v = unpack('i', substr($memData, 4 + 3 * 4 + 4, 4));
             $psmaAcObj->airlock_count = $v[1];
-            
+
             $v = unpack('c*', substr($memData, 4 + 3 * 4 + 4 + 4, 8));
             $psmaAcObj->airlock_status = array_values($v);
-            
+
             $v = unpack('c*', substr($memData, 4 + 3 * 4 + 4 + 4 + 8, 6));
             $psmaAcObj->ac_switch = $v[1];
             $psmaAcObj->light_switch = $v[2];
@@ -1641,7 +1724,7 @@ class Realtime
         return $psmaAcObj;
     }
 
-    static function _Get_PsmaRcData ($dataId)
+    static function _Get_PsmaRcData($dataId)
     {
         /*
          * //整流
@@ -1670,7 +1753,7 @@ class Realtime
          * char p[4];//模块保护（用01H表示故障），风扇故障（用01H表示故障），模块过温（用01H表示故障），模块通讯中断（用E2H表示故障）
          * }tele_c_rc_channel;
          */
-        $CI = & get_instance();
+        $CI = &get_instance();
         $CI->load->driver('cache');
         $psmaRcObj = new stdClass();
         $psmaRcObj->data_id = $dataId;
@@ -1684,7 +1767,7 @@ class Realtime
             $psmaRcObj->channelCount = $v[1];
             $psmaRcObj->channelList = array();
             if (strlen($memData) == 19 + 29 * $psmaRcObj->channelCount) {
-                for ($i = 0; $i < $psmaRcObj->channelCount; $i ++) {
+                for ($i = 0; $i < $psmaRcObj->channelCount; $i++) {
                     $channelObj = new stdClass();
                     $channelStr = substr($memData, 19 + 29 * $i, 29);
                     $v = unpack('f*', substr($channelStr, 0, 4 * 5));
@@ -1712,11 +1795,11 @@ class Realtime
             $psmaRcObj->update_datetime = date('Y-m-d H:i:s');
         }
         $psmaRcObj->dynamic_config = $CI->cache->get($psmaRcObj->data_id . '_dc');
-        
+
         return $psmaRcObj;
     }
 
-    static function _Get_PsmaDcData ($dataId)
+    static function _Get_PsmaDcData($dataId)
     {
         // 直流
         /*
@@ -1742,12 +1825,12 @@ class Realtime
          * tele_c_ttime update_time;
          * }tele_c_dc;
          */
-        $CI = & get_instance();
+        $CI = &get_instance();
         $CI->load->driver('cache');
-        
+
         $psmaDcObj = new stdClass();
         $psmaDcObj->data_id = $dataId;
-       $memData = $CI->cache->get($dataId);      
+        $memData = $CI->cache->get($dataId);
         if (strlen($memData) == 162) {
             $psmaDcObj->isEmpty = false;
             $v = unpack('f*', substr($memData, 4, 4 * 2));
@@ -1764,11 +1847,11 @@ class Realtime
             $v = unpack('f*', substr($memData, 4 + 4 * 2 + 4 + 2 * 4 + 4, 4 * 6));
             $psmaDcObj->channelList = array();
             foreach ($v as $key => $val) {
-		if(is_nan($val)){
-                	array_push($psmaDcObj->channelList, 0);
-		}else{
-                	array_push($psmaDcObj->channelList, number_format($val, 2));
-		}
+                if (is_nan($val)) {
+                    array_push($psmaDcObj->channelList, 0);
+                } else {
+                    array_push($psmaDcObj->channelList, number_format($val, 2));
+                }
             }
             $v = unpack('i', substr($memData, 4 + 4 * 2 + 4 + 2 * 4 + 4 + 4 * 6, 4));
             $psmaDcObj->p_count = $v[1];
@@ -1794,7 +1877,7 @@ class Realtime
         return $psmaDcObj;
     }
 
-    static function _Get_M810gAcData ($dataId)
+    static function _Get_M810gAcData($dataId)
     {
         /*
          * struct tele_c_m810g_ac
@@ -1832,7 +1915,7 @@ class Realtime
          * p[7];//按顺序为交流输入空开跳（用05表示故障状态），交流输出空开跳（用05表示故障状态），防雷器断（用05表示故障状态），交流输入1停电（用E1H表示故障状态），交流输入2停电（用E1H表示故障状态），交流输入3停电（用E1H表示故障状态），交流屏通讯中断（用E2H表示故障状态）。以上各量以00H表示正常状态
          * };
          */
-        $CI = & get_instance();
+        $CI = &get_instance();
         $CI->load->driver('cache');
         $m810gAcObj = new stdClass();
         $m810gAcObj->data_id = $dataId;
@@ -1849,7 +1932,7 @@ class Realtime
             $m810gAcObj->channelList = array();
             // total length
             if (strlen($memData) == 45 + $m810gAcObj->channelCount * 27) {
-                for ($i = 0; $i < $m810gAcObj->channelCount; $i ++) {
+                for ($i = 0; $i < $m810gAcObj->channelCount; $i++) {
                     $channelObj = new stdClass();
                     $channelData = substr($memData, 45 + $i * 27, 27);
                     $v = unpack('f*', substr($channelData, 0, 4 * 4));
@@ -1866,13 +1949,13 @@ class Realtime
                     array_push($m810gAcObj->channelList, $channelObj);
                 }
             }
-            
+
             $v = unpack('i', substr($memData, 4 + 3 * 4 + 4, 4));
             $m810gAcObj->airlock_count = $v[1];
-            
+
             $v = unpack('c*', substr($memData, 4 + 3 * 4 + 4 + 4, 8));
             $m810gAcObj->airlock_status = array_values($v);
-            
+
             $v = unpack('c*', substr($memData, 4 + 3 * 4 + 4 + 4 + 8, 6));
             $m810gAcObj->ac_switch = $v[1];
             $m810gAcObj->light_switch = $v[2];
@@ -1888,44 +1971,47 @@ class Realtime
             $m810gAcObj->isEmpty = true;
             $m810gAcObj->update_datetime = date('Y-m-d H:i:s');
         }
-        
+
         $m810gAcObj->dynamic_config = $CI->cache->get($m810gAcObj->data_id . '_dc');
         return $m810gAcObj;
     }
 
-     static function Get_ACCESScache($dataid){      	
-      	    $CI=& get_instance();
-      	      $CI->load->driver('cache');
-      	      $cache=$CI->cache->get($dataid);
-      	      return $cache;
-      }
-      static function Get_zxduRCcache($dataId){
-      /*
-         * //整流
-         * typedef struct tele_c_rc_
-         * {
-         * unsigned int data_id;
-         * float out_v;
-         * int channel_count;
-         * tele_c_ttime update_time;
-         * }tele_c_rc;
-         *
-         * typedef struct tele_c_rc_channel_
-         * {
-         * float out_i;
-         * float out_wrong;//整流模块输出异常
-  
-         * //status状态量
-         * char shutdown;//开机/关机状态
-         * char i_limit;//限流/不限流状态
-         * char charge;//浮充/均充/测试状态
-         * char status_p;//模块的控制状态,自动或手动
-         * //alert告警量
-         * char fault;
-         * char p[4];//模块保护（用01H表示故障），风扇故障（用01H表示故障），模块过温（用01H表示故障），模块通讯中断（用E2H表示故障）
-         * }tele_c_rc_channel;
-         */
-        $CI = & get_instance();
+    static function Get_ACCESScache($dataid)
+    {
+        $CI =& get_instance();
+        $CI->load->driver('cache');
+        $cache = $CI->cache->get($dataid);
+        return $cache;
+    }
+
+    static function Get_zxduRCcache($dataId)
+    {
+        /*
+           * //整流
+           * typedef struct tele_c_rc_
+           * {
+           * unsigned int data_id;
+           * float out_v;
+           * int channel_count;
+           * tele_c_ttime update_time;
+           * }tele_c_rc;
+           *
+           * typedef struct tele_c_rc_channel_
+           * {
+           * float out_i;
+           * float out_wrong;//整流模块输出异常
+
+           * //status状态量
+           * char shutdown;//开机/关机状态
+           * char i_limit;//限流/不限流状态
+           * char charge;//浮充/均充/测试状态
+           * char status_p;//模块的控制状态,自动或手动
+           * //alert告警量
+           * char fault;
+           * char p[4];//模块保护（用01H表示故障），风扇故障（用01H表示故障），模块过温（用01H表示故障），模块通讯中断（用E2H表示故障）
+           * }tele_c_rc_channel;
+           */
+        $CI = &get_instance();
         $CI->load->driver('cache');
         $psmaRcObj = new stdClass();
         $psmaRcObj->data_id = $dataId;
@@ -1939,7 +2025,7 @@ class Realtime
             $zxduRcObj->channelCount = $v[1];
             $zxduRcObj->channelList = array();
             if (strlen($memData) == 19 + $zxduRcObj->channelCount * 17) {
-                for ($i = 0; $i < $zxduRcObj->channelCount; $i ++) {
+                for ($i = 0; $i < $zxduRcObj->channelCount; $i++) {
                     $channelObj = new stdClass();
                     $channelStr = substr($memData, 19 + 17 * $i, 17);
                     $v = unpack('f*', substr($channelStr, 0, 4 * 2));
@@ -1964,68 +2050,70 @@ class Realtime
             $zxduRcObj->update_datetime = date('Y-m-d H:i:s');
         }
         $zxduRcObj->dynamic_config = $CI->cache->get($zxduRcObj->data_id . '_dc');
-        
-        return $zxduRcObj;
-      }
-      static function Get_zxduDCcache($dataId){
-       /*
-         * struct tele_c_zxdu_dc
-         * {
-         * unsigned int data_id;
-	int dc_m; //直流屏数量M(1字节) ＝ 1
-	float v;//直流输出电压
-	float i;//总负载电流
-	int   m;//蓄电池组数m,m<4
-	float dc_i[4];//
-	int   n;//监测直流分路电流数N<9
-	float channel[9];
-	int   p_count;
-	float p[12];//按顺序依次为用户自定义（电池1 温度）用户自定义（电池1 电压） 用户自定义（电池1实时容量百分比）
-	char test; //有无测试报告
-	tele_c_ttime test_end; //测试节数时间
-	int duration; //测试持续时间
-	float quality; //电池放电容量
-	//status
-	char status_num; //状态数量
-	char eps_status; //应急照明状态
-	char charge_discharge; //充放电状态
-	char stem_in; //输入干结点数量
-	char stem_m[4]; //依次为干结点1,干结点2,干结点3,干结点4
-	char work_mode;  //工作模式
-	char stem_func; //输出干结点功能 00H：自动控制，01H手动控制
-	char stem_out; //输出干结点数量
-	char stem_o[8]; //依次为输出干结点1-8
-	//alert
-	char  alert_v;//直流电压
-	char  alert_m_number;//直流容断丝数量
-	char  alert_m[15];//直流输出
-	char  alert_p[27];//依次为：（一次下电），（二次下电）,（电池1 回路断 ）,（电池1 电压低）,（电池1 温度高）,（电池1 温度低）,（电池1 温度无效）,（电池2 回路断 ）,（电池2 电压低）,（电池2 温度高）,（电池2 温度低）,（电池2 温度无效）,（电池3 回路断 ）,（电池3电压低）,（电池3 温度高）,（电池3 温度低）,（电池3 温度无效）,（电池4 回路断 ）,（电池4 电压低）,（电池4 温度高）,（电池4 温度低）,（电池4 温度无效）,（直流避雷器异常）,（负载断路器1异常）,（负载断路器2异常）,（蓄电池故障）,（电池放电告警）
-//			　　　告警字节描述：
-//　　　					00H：正常          	    01H：低于下限			02H：高于上限
-//　　　					03H：熔丝断				04H：开关断开
-//　　　　				E1H：防雷器坏/空开断
-//　　　					F0H：一次下电			F1H：二次下电           F2H：负载断路器异常
-//　　　					F3H：蓄电池故障
-//　　　					F4H：电池放电告警
-//　　　					F5H：温度无效
-	
 
-	//parameter
-	float out_v_high; //输出电压上限
-	float out_v_low; //输出电压下限
-	int param_num; //用户自定义参数个数
-	float param[32]; //依次为：用户自定义参数数量p =32，浮充电压值(V)，均充电压值(V)，测试电压值(V)，电池欠压值(V)，一次下电电压(V)，二次下电电压(V)，电池限电流(A/Ah)，均充周期(天)，温度补偿系数(V/℃)，电池过温值(℃)，电池1容量(Ah)，电池2容量(Ah)，电池3容量(Ah)，电池4容量(Ah)，均充最长时间(H)，均充最短时间(H)，均充维持时间(H)，均充阈值容量(C)，均充阈值电压(V)，均充末期电流率(A/Ah)，自动测试周期(天)，测试最长时间(H)，测试启动时刻，启调电压偏差(V)，轮换周期(天)，电池检测时间(M)，非节能延时时间(H)，电池检测周期(天)，最小开机数，限流温补系数，电池放电阈值，电池温度低阈值
-	
-	float get_channel(int index){ if(index >=0 && index < 9){ return channel[index];}else{return 0;}}
-	float get_p(int index){ if(index >=0 && index < 12){ return p[index];}else{return 0;}}
-	float get_alert_m(int index){ if(index >=0 && index < 15){ return alert_m[index];}else{return 0;}}
-	float get_alert_p(int index){ if(index >=0 && index < 27){ return alert_p[index];}else{return 0;}}
-	tele_c_ttime update_time;
-         * };
-         */
-        $CI = & get_instance();
+        return $zxduRcObj;
+    }
+
+    static function Get_zxduDCcache($dataId)
+    {
+        /*
+          * struct tele_c_zxdu_dc
+          * {
+          * unsigned int data_id;
+     int dc_m; //直流屏数量M(1字节) ＝ 1
+     float v;//直流输出电压
+     float i;//总负载电流
+     int   m;//蓄电池组数m,m<4
+     float dc_i[4];//
+     int   n;//监测直流分路电流数N<9
+     float channel[9];
+     int   p_count;
+     float p[12];//按顺序依次为用户自定义（电池1 温度）用户自定义（电池1 电压） 用户自定义（电池1实时容量百分比）
+     char test; //有无测试报告
+     tele_c_ttime test_end; //测试节数时间
+     int duration; //测试持续时间
+     float quality; //电池放电容量
+     //status
+     char status_num; //状态数量
+     char eps_status; //应急照明状态
+     char charge_discharge; //充放电状态
+     char stem_in; //输入干结点数量
+     char stem_m[4]; //依次为干结点1,干结点2,干结点3,干结点4
+     char work_mode;  //工作模式
+     char stem_func; //输出干结点功能 00H：自动控制，01H手动控制
+     char stem_out; //输出干结点数量
+     char stem_o[8]; //依次为输出干结点1-8
+     //alert
+     char  alert_v;//直流电压
+     char  alert_m_number;//直流容断丝数量
+     char  alert_m[15];//直流输出
+     char  alert_p[27];//依次为：（一次下电），（二次下电）,（电池1 回路断 ）,（电池1 电压低）,（电池1 温度高）,（电池1 温度低）,（电池1 温度无效）,（电池2 回路断 ）,（电池2 电压低）,（电池2 温度高）,（电池2 温度低）,（电池2 温度无效）,（电池3 回路断 ）,（电池3电压低）,（电池3 温度高）,（电池3 温度低）,（电池3 温度无效）,（电池4 回路断 ）,（电池4 电压低）,（电池4 温度高）,（电池4 温度低）,（电池4 温度无效）,（直流避雷器异常）,（负载断路器1异常）,（负载断路器2异常）,（蓄电池故障）,（电池放电告警）
+ //			　　　告警字节描述：
+ //　　　					00H：正常          	    01H：低于下限			02H：高于上限
+ //　　　					03H：熔丝断				04H：开关断开
+ //　　　　				E1H：防雷器坏/空开断
+ //　　　					F0H：一次下电			F1H：二次下电           F2H：负载断路器异常
+ //　　　					F3H：蓄电池故障
+ //　　　					F4H：电池放电告警
+ //　　　					F5H：温度无效
+
+
+     //parameter
+     float out_v_high; //输出电压上限
+     float out_v_low; //输出电压下限
+     int param_num; //用户自定义参数个数
+     float param[32]; //依次为：用户自定义参数数量p =32，浮充电压值(V)，均充电压值(V)，测试电压值(V)，电池欠压值(V)，一次下电电压(V)，二次下电电压(V)，电池限电流(A/Ah)，均充周期(天)，温度补偿系数(V/℃)，电池过温值(℃)，电池1容量(Ah)，电池2容量(Ah)，电池3容量(Ah)，电池4容量(Ah)，均充最长时间(H)，均充最短时间(H)，均充维持时间(H)，均充阈值容量(C)，均充阈值电压(V)，均充末期电流率(A/Ah)，自动测试周期(天)，测试最长时间(H)，测试启动时刻，启调电压偏差(V)，轮换周期(天)，电池检测时间(M)，非节能延时时间(H)，电池检测周期(天)，最小开机数，限流温补系数，电池放电阈值，电池温度低阈值
+
+     float get_channel(int index){ if(index >=0 && index < 9){ return channel[index];}else{return 0;}}
+     float get_p(int index){ if(index >=0 && index < 12){ return p[index];}else{return 0;}}
+     float get_alert_m(int index){ if(index >=0 && index < 15){ return alert_m[index];}else{return 0;}}
+     float get_alert_p(int index){ if(index >=0 && index < 27){ return alert_p[index];}else{return 0;}}
+     tele_c_ttime update_time;
+          * };
+          */
+        $CI = &get_instance();
         $CI->load->driver('cache');
-        
+
         $zxduDcObj = new stdClass();
         $zxduDcObj->data_id = $dataId;
         $memData = $CI->cache->get($dataId);
@@ -2038,7 +2126,7 @@ class Realtime
             $zxduDcObj->i = number_format($v[2], 2);
             $v = unpack('i', substr($memData, 4 + 4 + 4 * 2, 4));
             $zxduDcObj->m = $v[1];
-            $v = unpack('f*', substr($memData,4 + 4 + 4 * 2 + 4, 4 * 4));
+            $v = unpack('f*', substr($memData, 4 + 4 + 4 * 2 + 4, 4 * 4));
             $zxduDcObj->dc_i = array();
             array_push($zxduDcObj->dc_i, number_format($v[1], 2));
             array_push($zxduDcObj->dc_i, number_format($v[2], 2));
@@ -2046,7 +2134,7 @@ class Realtime
             array_push($zxduDcObj->dc_i, number_format($v[4], 2));
             $v = unpack('i', substr($memData, 4 + 4 + 4 * 2 + 4 + 4 * 4, 4));
             $zxduDcObj->n = $v[1];
-            $v = unpack('f*', substr($memData,4 + 4 + 4 * 2 + 4 + 4 * 4 + 4, 4 * 9));
+            $v = unpack('f*', substr($memData, 4 + 4 + 4 * 2 + 4 + 4 * 4 + 4, 4 * 9));
             $zxduDcObj->channel = array();
             foreach ($v as $key => $val) {
                 array_push($zxduDcObj->channel, number_format($val, 2));
@@ -2054,18 +2142,18 @@ class Realtime
             $v = unpack('i', substr($memData, 4 + 4 + 4 * 2 + 4 + 4 * 4 + 4 + 9 * 4, 4));
             $zxduDcObj->p_count = $v[1];
             $zxduDcObj->p = array();
-            $v = unpack('f*', substr($memData,4 + 4 + 4 * 2 + 4 + 4 * 4 + 4 + 9 * 4 + 4, 4 * 14));
+            $v = unpack('f*', substr($memData, 4 + 4 + 4 * 2 + 4 + 4 * 4 + 4 + 9 * 4 + 4, 4 * 14));
             foreach ($v as $key => $val) {
                 array_push($zxduDcObj->p, number_format($val, 2));
             }
-            $v = unpack('c*', substr($memData,4 + 4 + 4 * 2 + 4 + 4 * 4 + 4 + 9 * 4 + 4 + 14 * 4, 44));
+            $v = unpack('c*', substr($memData, 4 + 4 + 4 * 2 + 4 + 4 * 4 + 4 + 9 * 4 + 4 + 14 * 4, 44));
             $zxduDcObj->alert_v = $v[1];
             $zxduDcObj->alert_m_number = $v[2];
             $zxduDcObj->alert_m = array_values(array_slice($v, 2, 15));
             $zxduDcObj->alert_p = array_values(array_slice($v, 2 + 15, 27));
             $v = unpack('v', substr($memData, 4 + 4 + 4 * 2 + 4 + 4 * 4 + 4 + 9 + 4 + 4 + 14 * 4 + 44, 2));
             $year = $v[1];
-            $v = unpack('C*', substr($memData,4 + 4 + 4 * 2 + 4 + 4 * 4 + 4 + 9 + 4 + 4 + 14 * 4 + 44 + 2, 5));
+            $v = unpack('C*', substr($memData, 4 + 4 + 4 * 2 + 4 + 4 * 4 + 4 + 9 + 4 + 4 + 14 * 4 + 44 + 2, 5));
             $zxduDcObj->update_datetime = date('Y-m-d H:i:s', strtotime($year . '-' . $v[1] . '-' . $v[2] . ' ' . $v[3] . ':' . $v[4] . ':' . $v[5]));
         } else {
             $zxduDcObj->isEmpty = true;
@@ -2073,46 +2161,48 @@ class Realtime
         }
         $zxduDcObj->dynamic_config = $CI->cache->get($zxduDcObj->data_id . '_dc');
         return $zxduDcObj;
-      }
-     static function Get_zxduACcache($dataId){
-     	  /*
-         struct tele_c_zxdu_ac
+    }
+
+    static function Get_zxduACcache($dataId)
+    {
+        /*
+      struct tele_c_zxdu_ac
 {
-	unsigned int data_id;
-	float ia; //交流屏输出电流L1
-	float ib;  //交流屏输出电流L2
-	float ic;	//交流屏输出电流L3
-	int channel_count; //交流配电数量
-	//status
-	int airlock_count; //开关数量
-	int status_p; //用户自定义状态数量P=4
-	char airlock_status[4]; //自定义状态数量 依次为：自定义字节 （交流输入空开1断），自定义字节 （交流输入空开2断），自定义字节 （交流辅助输出开关断），自定义字节（交流供电方式）
-	//alert交流告警数据
-	char ia_alert; //输出电流L1
-	char ib_alert;//输出电流L2
-	char ic_alert;//输出电流L3
-	GET_AC_CHANNEL_FIELD(float,va)
-	GET_AC_CHANNEL_FIELD(float,vb)
-	GET_AC_CHANNEL_FIELD(float,vc)
-	GET_AC_CHANNEL_FIELD(float,f)
-	GET_AC_CHANNEL_FIELD(char,alert_a)
-	GET_AC_CHANNEL_FIELD(char,alert_b)
-	GET_AC_CHANNEL_FIELD(char,alert_c)
-	GET_AC_CHANNEL_FIELD(char,alert_f)
-	char get_ac_channel_p(int index, int offset)
-	{
-		if(index >= 0 && index < channel_count && offset >=0 && offset < 4)
-		{
-			return channels[index].am[offset];
-		}
-		return 0;
-	}
-	
-	tele_c_ttime update_time;
-	tele_c_zxdu_ac_channel channels[0];
+ unsigned int data_id;
+ float ia; //交流屏输出电流L1
+ float ib;  //交流屏输出电流L2
+ float ic;	//交流屏输出电流L3
+ int channel_count; //交流配电数量
+ //status
+ int airlock_count; //开关数量
+ int status_p; //用户自定义状态数量P=4
+ char airlock_status[4]; //自定义状态数量 依次为：自定义字节 （交流输入空开1断），自定义字节 （交流输入空开2断），自定义字节 （交流辅助输出开关断），自定义字节（交流供电方式）
+ //alert交流告警数据
+ char ia_alert; //输出电流L1
+ char ib_alert;//输出电流L2
+ char ic_alert;//输出电流L3
+ GET_AC_CHANNEL_FIELD(float,va)
+ GET_AC_CHANNEL_FIELD(float,vb)
+ GET_AC_CHANNEL_FIELD(float,vc)
+ GET_AC_CHANNEL_FIELD(float,f)
+ GET_AC_CHANNEL_FIELD(char,alert_a)
+ GET_AC_CHANNEL_FIELD(char,alert_b)
+ GET_AC_CHANNEL_FIELD(char,alert_c)
+ GET_AC_CHANNEL_FIELD(char,alert_f)
+ char get_ac_channel_p(int index, int offset)
+ {
+     if(index >= 0 && index < channel_count && offset >=0 && offset < 4)
+     {
+         return channels[index].am[offset];
+     }
+     return 0;
+ }
+
+ tele_c_ttime update_time;
+ tele_c_zxdu_ac_channel channels[0];
 };
-         */
-        $CI = & get_instance();
+      */
+        $CI = &get_instance();
         $CI->load->driver('cache');
         $acObj = new stdClass();
         $acObj->data_id = $dataId;
@@ -2129,7 +2219,7 @@ class Realtime
             $zxduAcObj->channelList = array();
             // total length
             if (strlen($memData) == 42 + $zxduAcObj->channelCount * 33) {
-                for ($i = 0; $i < $zxduAcObj->channelCount; $i ++) {
+                for ($i = 0; $i < $zxduAcObj->channelCount; $i++) {
                     $channelObj = new stdClass();
                     $channelData = substr($memData, 42 + $i * 32, 32);
                     $v = unpack('f*', substr($channelData, 0, 4 * 4));
@@ -2150,17 +2240,17 @@ class Realtime
                     array_push($zxduAcObj->channelList, $channelObj);
                 }
             }
-            
+
             $v = unpack('i', substr($memData, 4 + 3 * 4 + 4, 4));
             $zxduAcObj->airlock_count = $v[1];
- 
+
             $v = unpack('i', substr($memData, 4 + 3 * 4 + 4 + 4, 4));
-            $zxduAcObj->status_p= $v[1];
-            
-            $v = unpack('c*', substr($memData,4 + 3 * 4 + 4 + 4 + 4, 4));
+            $zxduAcObj->status_p = $v[1];
+
+            $v = unpack('c*', substr($memData, 4 + 3 * 4 + 4 + 4 + 4, 4));
             $zxduAcObj->airlock_status = array_values($v);
-            
-            $v = unpack('c*', substr($memData,4 + 3 * 4 + 4 + 4 + 4 + 4, 3));
+
+            $v = unpack('c*', substr($memData, 4 + 3 * 4 + 4 + 4 + 4 + 4, 3));
             $zxduAcObj->ia_alert = $v[1];
             $zxduAcObj->ib_alert = $v[2];
             $zxduAcObj->ic_alert = $v[3];
@@ -2172,11 +2262,12 @@ class Realtime
             $zxduAcObj->isEmpty = true;
             $zxduAcObj->update_datetime = date('Y-m-d H:i:s');
         }
-        
+
         $zxduAcObj->dynamic_config = $CI->cache->get($zxduAcObj->data_id . '_dc');
         return $zxduAcObj;
-     }
-    static function _Get_M810gRcData ($dataId)
+    }
+
+    static function _Get_M810gRcData($dataId)
     {
         /*
          * //整流
@@ -2208,9 +2299,9 @@ class Realtime
          * char p[7];//模块保护（用01H表示故障），风扇故障（用01H表示故障），模块过温（用01H表示故障），模块通讯中断（用E2H表示故障）
          * }tele_c_rc_channel;
          */
-        $CI = & get_instance();
+        $CI = &get_instance();
         $CI->load->driver('cache');
-        
+
         $m810gRcObj = new stdClass();
         $m810gRcObj->data_id = $dataId;
         $memData = $CI->cache->get($dataId);
@@ -2223,7 +2314,7 @@ class Realtime
             $m810gRcObj->channelCount = $v[1];
             $m810gRcObj->channelList = array();
             if (strlen($memData) == 19 + 48 * $m810gRcObj->channelCount) {
-                for ($i = 0; $i < $m810gRcObj->channelCount; $i ++) {
+                for ($i = 0; $i < $m810gRcObj->channelCount; $i++) {
                     $channelObj = new stdClass();
                     $channelStr = substr($memData, 19 + 48 * $i, 48);
                     $v = unpack('f*', substr($channelStr, 0, 4 * 8));
@@ -2254,11 +2345,11 @@ class Realtime
             $m810gRcObj->update_datetime = date('Y-m-d H:i:s');
         }
         $m810gRcObj->dynamic_config = $CI->cache->get($m810gRcObj->data_id . '_dc');
-        
+
         return $m810gRcObj;
     }
 
-    static function _Get_M810gDcData ($dataId)
+    static function _Get_M810gDcData($dataId)
     {
         /*
          * struct tele_c_m810g_dc
@@ -2284,9 +2375,9 @@ class Realtime
          * tele_c_ttime update_time;
          * };
          */
-        $CI = & get_instance();
+        $CI = &get_instance();
         $CI->load->driver('cache');
-        
+
         $m810gDcObj = new stdClass();
         $m810gDcObj->data_id = $dataId;
         $memData = $CI->cache->get($dataId);
@@ -2334,258 +2425,258 @@ class Realtime
         return $m810gDcObj;
     }
 
-    
-    static function _Get_Smu06cAcData ($dataId)
-    {
-    	/*
-		 //交流
-		struct tele_c_smu06c_ac
-		{
-			unsigned int data_id;
-			int channel_count; //交流配电数量
-			//status
-			char ac_switch;//交流切换状态（切换自动或切换手动）
-			int airlock_count; //开关数量
-			int p; //用户自定义状态数量P
-			char airlock_status[4]; //自定义状态数量 依次为：自定义字节 （交流输入空开1断），自定义字节 （交流输入空开2断），自定义字节 （交流辅助输出开关断），自定义字节（交流供电方式）
-			//alert交流告警数据
-		};
-		//smu06c related functions
-		struct tele_c_smu06c_ac_channel
-		{
-			float va; //输入相电压/ L1
-			float vb;//输入相电压/ L2
-			float vc;//输入相电压/ L3
-			float f;  //交流输入频率
-			//alert
-			char alert_a;//输入线/相电压AB/A
-			char alert_b;//输入线/相电压BC/B
-			char alert_c;//输入线/相电压CA/C
-			char alert_f;//输入频率
-			int m; //监测熔丝/开关数量L ＝0
-			int p; //用户自定义数量
-			char am[4];//用户自定义（交流主空开断）,用户自定义（交流停电）,用户自定义（交流避雷器异常 ）,自定义字节 （交流辅助输出断）
-			char alert_mp[2];//1:防雷器丝告警2:第一路交流输入停电告警
-		};
-    	 */
-    	$CI = & get_instance();
-    	$CI->load->driver('cache');
-    	$smu06cAcObj = new stdClass();
-    	$smu06cAcObj->data_id = $dataId;
-    	$memData = $CI->cache->get($dataId);
-    	// memData minimal length
-    	if (strlen($memData) >= 43) {
-    		$smu06cAcObj->isEmpty = false;
-    		$v = unpack('f*', substr($memData, 4, 3 * 4));
-    		$smu06cAcObj->ia = number_format($v[1], 2);
-    		$smu06cAcObj->ib = number_format($v[2], 2);
-    		$smu06cAcObj->ic = number_format($v[3], 2);
-    		$v = unpack('i', substr($memData, 4 + 3 * 4, 4));
-    		$smu06cAcObj->channelCount = $v[1];
-    		$v = unpack('c', substr($memData, 4 + 3 * 4 + 4, 1));
-    		$smu06cAcObj->ac_switch = $v[1];
-    		$v = unpack('i', substr($memData, 4 + 3 * 4 + 4 + 1, 4));
-    		$smu06cAcObj->airlock_count = $v[1];
-    		$v = unpack('i', substr($memData, 4 + 3 * 4 + 4 + 1 + 4, 4));
-    		$smu06cAcObj->p = $v[1];
-    		
-    		$v = unpack('c*', substr($memData, 4 + 3 * 4 + 4 + 1 + 4 + 4, 4));
-    		$smu06cAcObj->airlock_status = array_values($v);
-    		
-    		$v = unpack('c*', substr($memData, 4 + 3 * 4 + 4 + 1 + 4 + 4 + 4, 3));
-    		$smu06cAcObj->ia_alert = $v[1];
-    		$smu06cAcObj->ib_alert = $v[2];
-    		$smu06cAcObj->ic_alert = $v[3];
-    		$smu06cAcObj->channelList = array();
-    		// total length
-    		if (strlen($memData) == 43 + $smu06cAcObj->channelCount * 34) {
-    			for ($i = 0; $i < $smu06cAcObj->channelCount; $i ++) {
-    				$channelObj = new stdClass();
-    				$channelData = substr($memData, 43 + $i * 34, 34);
-    				$v = unpack('f*', substr($channelData, 0, 4 * 4));
-    				$channelObj->a = number_format($v[1], 2);
-    				$channelObj->b = number_format($v[2], 2);
-    				$channelObj->c = number_format($v[3], 2);
-    				$channelObj->f = number_format($v[4], 2);
-    				$v = unpack('c*', substr($channelData, 4 * 4, 4));
-    				$channelObj->alert_a = $v[1];
-    				$channelObj->alert_b = $v[2];
-    				$channelObj->alert_c = $v[3];
-    				$channelObj->alert_f = $v[4];
-    				$v = unpack('i*', substr($channelData, 4 * 4 + 4, 8));
-    				$channelObj->m = $v[1];
-    				$channelObj->p = $v[2];
-    				$v = unpack('c*', substr($channelData, 4 * 4 + 4 + 8, 6));
-    				$channelObj->am = array_values(array_slice($v, 0, 4));
-    				$channelObj->alert_mp = array_values(array_slice($v, 4));
-    				array_push($smu06cAcObj->channelList, $channelObj);
-    			}
-    		}
-    		$v = unpack('v', substr($memData, 4 + 3 * 4 + 4 + 1 + 4 + 4 + 4 + 3, 2));
-    		$year = $v[1];
-    		$v = unpack('C*', substr($memData, 4 + 3 * 4 + 4 + 1 + 4 + 4 + 4 + 3 + 2, 5));
-    		$smu06cAcObj->update_datetime = date('Y-m-d H:i:s', strtotime($year . '-' . $v[1] . '-' . $v[2] . ' ' . $v[3] . ':' . $v[4] . ':' . $v[5]));
-    	} else {
-    		$smu06cAcObj->isEmpty = true;
-    		$smu06cAcObj->update_datetime = date('Y-m-d H:i:s');
-    	}
-    
-    	$smu06cAcObj->dynamic_config = $CI->cache->get($smu06cAcObj->data_id . '_dc');
-    	return $smu06cAcObj;
-    }
-    
-    static function _Get_Smu06cRcData ($dataId)
-    {
-/*     	
-			struct tele_c_smu06c_rc
-	{
-		 unsigned int data_id;
-		 float out_v; //整流模块输出电压
-		 //float channel_count; //监控的模块数量M ＝16
-		 int channel_count; //监控的模块数量M ＝16
-		 tele_c_ttime update_time;
-	};
-  //整流
-    	struct tele_c_smu06c_rc_channel
-    	{
-    		float out_i; //模块输出电流
-    		//	 float out_wrong; //整流模块输出异常
-    		//status状态量
-    		char  shutdown;//开机/关机状态
-    		char  i_limit;//限流/不限流状态
-    		char  charge;//浮充/均充/测试状态/交流停电：00H：浮充，01H：均充，02H：测试
-    		char  status_p[2];//WALK-in模式（00H使能，83H禁止）;（00H：无顺序起机，84H顺序起机）
-    		float p_limiting;//模块限流点(百分比，45%时上报45)
-    		float p_out_v;//模块输出电压
-    		float p_ab_v;//交流输入三相电压AB/A
-    		float p_bc_v;//交流输入三相电压BC/B
-    		float p_ca_v;//交流输入三相电压CA/C
-    		//alert告警量
-    		char  fault;
-    		char  p[2];//模块通讯中断(00H：正常，80H：告警)，模块保护(00H：正常，81H：告警)
-    	}; */
 
-    	$CI = & get_instance();
-    	$CI->load->driver('cache');
-    
-    	$smu06cRcObj = new stdClass();
-    	$smu06cRcObj->data_id = $dataId;
-    	$memData = $CI->cache->get($dataId);
-    	// minimain length
-    	if (strlen($memData) >= 19) {
-    		$smu06cRcObj->isEmpty = false;
-    		$v = unpack('f', substr($memData, 4, 4));
-    		$smu06cRcObj->out_v = number_format($v[1], 2);
-    		$v = unpack('i', substr($memData, 4 + 4, 4));
-    		$smu06cRcObj->channelCount = $v[1];
-    		$smu06cRcObj->channelList = array();
-    		if (strlen($memData) == 19 + 32 * $smu06cRcObj->channelCount) {
-    			for ($i = 0; $i < $smu06cRcObj->channelCount; $i ++) {
-    				$channelObj = new stdClass();
-    				$channelStr = substr($memData, 19 + 32 * $i, 32);
-    				$v = unpack('f', substr($channelStr, 0, 4));
-    				$channelObj->out_i = number_format($v[1], 2);
-    				$v = unpack('c*', substr($channelStr, 4, 5));
-    				$channelObj->shutdown = $v[1];
-    				$channelObj->i_limit = $v[2];
-    				$channelObj->charge = $v[3];
-    				$channelObj->status_p = array_values(array_slice($v, 3));
-    				$v = unpack('f*', substr($channelStr, 4 + 5, 4*5));    				
-    				$channelObj->p_limiting = number_format($v[1], 2);
-    				$channelObj->p_out_v = number_format($v[2], 2);
-    				$channelObj->p_ab_v = number_format($v[3], 2);
-    				$channelObj->p_bc_v = number_format($v[4], 2);
-    				$channelObj->p_ca_v = number_format($v[5], 2);
-    				$v = unpack('c*', substr($channelStr, 4 + 5 + 4 * 5, 3));
-    				$channelObj->fault = $v[1];
-    				$channelObj->p = array_values(array_slice($v, 1));
-    				array_push($smu06cRcObj->channelList, $channelObj);
-    			}
-    		}
-    		$v = unpack('v', substr($memData, 4 + 4 + 4, 2));
-    		$year = $v[1];
-    		$v = unpack('C*', substr($memData, 4 + 4 + 4 + 2, 5));
-    		$smu06cRcObj->update_datetime = date('Y-m-d H:i:s', strtotime($year . '-' . $v[1] . '-' . $v[2] . ' ' . $v[3] . ':' . $v[4] . ':' . $v[5]));
-    	} else {
-    		$smu06cRcObj->isEmpty = true;
-    		$smu06cRcObj->update_datetime = date('Y-m-d H:i:s');
-    	}
-    	$smu06cRcObj->dynamic_config = $CI->cache->get($smu06cRcObj->data_id . '_dc');
-    
-    	return $smu06cRcObj;
-    }
-    
-    static function _Get_Smu06cDcData ($dataId)
+    static function _Get_Smu06cAcData($dataId)
     {
-    	/*
+        /*
+         //交流
+        struct tele_c_smu06c_ac
+        {
+            unsigned int data_id;
+            int channel_count; //交流配电数量
+            //status
+            char ac_switch;//交流切换状态（切换自动或切换手动）
+            int airlock_count; //开关数量
+            int p; //用户自定义状态数量P
+            char airlock_status[4]; //自定义状态数量 依次为：自定义字节 （交流输入空开1断），自定义字节 （交流输入空开2断），自定义字节 （交流辅助输出开关断），自定义字节（交流供电方式）
+            //alert交流告警数据
+        };
+        //smu06c related functions
+        struct tele_c_smu06c_ac_channel
+        {
+            float va; //输入相电压/ L1
+            float vb;//输入相电压/ L2
+            float vc;//输入相电压/ L3
+            float f;  //交流输入频率
+            //alert
+            char alert_a;//输入线/相电压AB/A
+            char alert_b;//输入线/相电压BC/B
+            char alert_c;//输入线/相电压CA/C
+            char alert_f;//输入频率
+            int m; //监测熔丝/开关数量L ＝0
+            int p; //用户自定义数量
+            char am[4];//用户自定义（交流主空开断）,用户自定义（交流停电）,用户自定义（交流避雷器异常 ）,自定义字节 （交流辅助输出断）
+            char alert_mp[2];//1:防雷器丝告警2:第一路交流输入停电告警
+        };
+         */
+        $CI = &get_instance();
+        $CI->load->driver('cache');
+        $smu06cAcObj = new stdClass();
+        $smu06cAcObj->data_id = $dataId;
+        $memData = $CI->cache->get($dataId);
+        // memData minimal length
+        if (strlen($memData) >= 43) {
+            $smu06cAcObj->isEmpty = false;
+            $v = unpack('f*', substr($memData, 4, 3 * 4));
+            $smu06cAcObj->ia = number_format($v[1], 2);
+            $smu06cAcObj->ib = number_format($v[2], 2);
+            $smu06cAcObj->ic = number_format($v[3], 2);
+            $v = unpack('i', substr($memData, 4 + 3 * 4, 4));
+            $smu06cAcObj->channelCount = $v[1];
+            $v = unpack('c', substr($memData, 4 + 3 * 4 + 4, 1));
+            $smu06cAcObj->ac_switch = $v[1];
+            $v = unpack('i', substr($memData, 4 + 3 * 4 + 4 + 1, 4));
+            $smu06cAcObj->airlock_count = $v[1];
+            $v = unpack('i', substr($memData, 4 + 3 * 4 + 4 + 1 + 4, 4));
+            $smu06cAcObj->p = $v[1];
+
+            $v = unpack('c*', substr($memData, 4 + 3 * 4 + 4 + 1 + 4 + 4, 4));
+            $smu06cAcObj->airlock_status = array_values($v);
+
+            $v = unpack('c*', substr($memData, 4 + 3 * 4 + 4 + 1 + 4 + 4 + 4, 3));
+            $smu06cAcObj->ia_alert = $v[1];
+            $smu06cAcObj->ib_alert = $v[2];
+            $smu06cAcObj->ic_alert = $v[3];
+            $smu06cAcObj->channelList = array();
+            // total length
+            if (strlen($memData) == 43 + $smu06cAcObj->channelCount * 34) {
+                for ($i = 0; $i < $smu06cAcObj->channelCount; $i++) {
+                    $channelObj = new stdClass();
+                    $channelData = substr($memData, 43 + $i * 34, 34);
+                    $v = unpack('f*', substr($channelData, 0, 4 * 4));
+                    $channelObj->a = number_format($v[1], 2);
+                    $channelObj->b = number_format($v[2], 2);
+                    $channelObj->c = number_format($v[3], 2);
+                    $channelObj->f = number_format($v[4], 2);
+                    $v = unpack('c*', substr($channelData, 4 * 4, 4));
+                    $channelObj->alert_a = $v[1];
+                    $channelObj->alert_b = $v[2];
+                    $channelObj->alert_c = $v[3];
+                    $channelObj->alert_f = $v[4];
+                    $v = unpack('i*', substr($channelData, 4 * 4 + 4, 8));
+                    $channelObj->m = $v[1];
+                    $channelObj->p = $v[2];
+                    $v = unpack('c*', substr($channelData, 4 * 4 + 4 + 8, 6));
+                    $channelObj->am = array_values(array_slice($v, 0, 4));
+                    $channelObj->alert_mp = array_values(array_slice($v, 4));
+                    array_push($smu06cAcObj->channelList, $channelObj);
+                }
+            }
+            $v = unpack('v', substr($memData, 4 + 3 * 4 + 4 + 1 + 4 + 4 + 4 + 3, 2));
+            $year = $v[1];
+            $v = unpack('C*', substr($memData, 4 + 3 * 4 + 4 + 1 + 4 + 4 + 4 + 3 + 2, 5));
+            $smu06cAcObj->update_datetime = date('Y-m-d H:i:s', strtotime($year . '-' . $v[1] . '-' . $v[2] . ' ' . $v[3] . ':' . $v[4] . ':' . $v[5]));
+        } else {
+            $smu06cAcObj->isEmpty = true;
+            $smu06cAcObj->update_datetime = date('Y-m-d H:i:s');
+        }
+
+        $smu06cAcObj->dynamic_config = $CI->cache->get($smu06cAcObj->data_id . '_dc');
+        return $smu06cAcObj;
+    }
+
+    static function _Get_Smu06cRcData($dataId)
+    {
+        /*
+                    struct tele_c_smu06c_rc
+            {
+                 unsigned int data_id;
+                 float out_v; //整流模块输出电压
+                 //float channel_count; //监控的模块数量M ＝16
+                 int channel_count; //监控的模块数量M ＝16
+                 tele_c_ttime update_time;
+            };
+          //整流
+                struct tele_c_smu06c_rc_channel
+                {
+                    float out_i; //模块输出电流
+                    //	 float out_wrong; //整流模块输出异常
+                    //status状态量
+                    char  shutdown;//开机/关机状态
+                    char  i_limit;//限流/不限流状态
+                    char  charge;//浮充/均充/测试状态/交流停电：00H：浮充，01H：均充，02H：测试
+                    char  status_p[2];//WALK-in模式（00H使能，83H禁止）;（00H：无顺序起机，84H顺序起机）
+                    float p_limiting;//模块限流点(百分比，45%时上报45)
+                    float p_out_v;//模块输出电压
+                    float p_ab_v;//交流输入三相电压AB/A
+                    float p_bc_v;//交流输入三相电压BC/B
+                    float p_ca_v;//交流输入三相电压CA/C
+                    //alert告警量
+                    char  fault;
+                    char  p[2];//模块通讯中断(00H：正常，80H：告警)，模块保护(00H：正常，81H：告警)
+                }; */
+
+        $CI = &get_instance();
+        $CI->load->driver('cache');
+
+        $smu06cRcObj = new stdClass();
+        $smu06cRcObj->data_id = $dataId;
+        $memData = $CI->cache->get($dataId);
+        // minimain length
+        if (strlen($memData) >= 19) {
+            $smu06cRcObj->isEmpty = false;
+            $v = unpack('f', substr($memData, 4, 4));
+            $smu06cRcObj->out_v = number_format($v[1], 2);
+            $v = unpack('i', substr($memData, 4 + 4, 4));
+            $smu06cRcObj->channelCount = $v[1];
+            $smu06cRcObj->channelList = array();
+            if (strlen($memData) == 19 + 32 * $smu06cRcObj->channelCount) {
+                for ($i = 0; $i < $smu06cRcObj->channelCount; $i++) {
+                    $channelObj = new stdClass();
+                    $channelStr = substr($memData, 19 + 32 * $i, 32);
+                    $v = unpack('f', substr($channelStr, 0, 4));
+                    $channelObj->out_i = number_format($v[1], 2);
+                    $v = unpack('c*', substr($channelStr, 4, 5));
+                    $channelObj->shutdown = $v[1];
+                    $channelObj->i_limit = $v[2];
+                    $channelObj->charge = $v[3];
+                    $channelObj->status_p = array_values(array_slice($v, 3));
+                    $v = unpack('f*', substr($channelStr, 4 + 5, 4 * 5));
+                    $channelObj->p_limiting = number_format($v[1], 2);
+                    $channelObj->p_out_v = number_format($v[2], 2);
+                    $channelObj->p_ab_v = number_format($v[3], 2);
+                    $channelObj->p_bc_v = number_format($v[4], 2);
+                    $channelObj->p_ca_v = number_format($v[5], 2);
+                    $v = unpack('c*', substr($channelStr, 4 + 5 + 4 * 5, 3));
+                    $channelObj->fault = $v[1];
+                    $channelObj->p = array_values(array_slice($v, 1));
+                    array_push($smu06cRcObj->channelList, $channelObj);
+                }
+            }
+            $v = unpack('v', substr($memData, 4 + 4 + 4, 2));
+            $year = $v[1];
+            $v = unpack('C*', substr($memData, 4 + 4 + 4 + 2, 5));
+            $smu06cRcObj->update_datetime = date('Y-m-d H:i:s', strtotime($year . '-' . $v[1] . '-' . $v[2] . ' ' . $v[3] . ':' . $v[4] . ':' . $v[5]));
+        } else {
+            $smu06cRcObj->isEmpty = true;
+            $smu06cRcObj->update_datetime = date('Y-m-d H:i:s');
+        }
+        $smu06cRcObj->dynamic_config = $CI->cache->get($smu06cRcObj->data_id . '_dc');
+
+        return $smu06cRcObj;
+    }
+
+    static function _Get_Smu06cDcData($dataId)
+    {
+        /*
 //直流
 struct tele_c_smu06c_dc
 {
-	unsigned int data_id;
-	int dc_m; //直流屏数量M(1字节) ＝ 1
-	float v;//直流输出电压
-	float i;//总负载电流
-	int   m;//蓄电池组数m,m<4
-	float dc_i[4];//
-	int   n;//监测直流分路电流数N<9
-	float channel[9];
-	int   p_count;
-	float battery_i;
-	float p[12];//按顺序依次为用户自定义（电池1 温度）用户自定义（电池1 电压） 用户自定义（电池1实时容量百分比）
-	char test; //有无测试报告
-	tele_c_ttime test_end; //测试节数时间
-	int duration; //测试持续时间
-	float quality; //电池放电容量
-	//status
-	char status_num; //状态数量
-	char eps_status; //应急照明状态
-	char charge_discharge; //充放电状态
-	char stem_in; //输入干结点数量
-	char stem_m[4]; //依次为干结点1,干结点2,干结点3,干结点4
-	char work_mode;  //工作模式
-	char stem_func; //输出干结点功能 00H：自动控制，01H手动控制
-	char stem_out; //输出干结点数量
-	char stem_o[8]; //依次为输出干结点1-8
-	//alert
-	char  alert_v;//直流电压
-	char  alert_m_number;//直流容断丝数量
-	char  alert_m[15];//直流输出
-	char  alert_p[60];
-	float battery_v[6];//各组电池中点电压
-	float battery_last_capacity[6];//各组电池剩余容量百分比
-	float battery_temperature[6];//各组电池温度支持电池组1
-	float internal_temperature[3];//机柜内环境温度
-	float internal_humidity[3];//机柜内环境湿度支持环境湿度1
-	float fan_speed[4];	*/
-														/*	风扇组1风扇1转速
-														风扇组1风扇2转速
-														风扇组2风扇1转速
-														风扇组2风扇2转速*/
-	//parameter
+    unsigned int data_id;
+    int dc_m; //直流屏数量M(1字节) ＝ 1
+    float v;//直流输出电压
+    float i;//总负载电流
+    int   m;//蓄电池组数m,m<4
+    float dc_i[4];//
+    int   n;//监测直流分路电流数N<9
+    float channel[9];
+    int   p_count;
+    float battery_i;
+    float p[12];//按顺序依次为用户自定义（电池1 温度）用户自定义（电池1 电压） 用户自定义（电池1实时容量百分比）
+    char test; //有无测试报告
+    tele_c_ttime test_end; //测试节数时间
+    int duration; //测试持续时间
+    float quality; //电池放电容量
+    //status
+    char status_num; //状态数量
+    char eps_status; //应急照明状态
+    char charge_discharge; //充放电状态
+    char stem_in; //输入干结点数量
+    char stem_m[4]; //依次为干结点1,干结点2,干结点3,干结点4
+    char work_mode;  //工作模式
+    char stem_func; //输出干结点功能 00H：自动控制，01H手动控制
+    char stem_out; //输出干结点数量
+    char stem_o[8]; //依次为输出干结点1-8
+    //alert
+    char  alert_v;//直流电压
+    char  alert_m_number;//直流容断丝数量
+    char  alert_m[15];//直流输出
+    char  alert_p[60];
+    float battery_v[6];//各组电池中点电压
+    float battery_last_capacity[6];//各组电池剩余容量百分比
+    float battery_temperature[6];//各组电池温度支持电池组1
+    float internal_temperature[3];//机柜内环境温度
+    float internal_humidity[3];//机柜内环境湿度支持环境湿度1
+    float fan_speed[4];	*/
+        /*	风扇组1风扇1转速
+        风扇组1风扇2转速
+        风扇组2风扇1转速
+        风扇组2风扇2转速*/
+        //parameter
 // 	float out_v_high; //输出电压上限
 // 	float out_v_low; //输出电压下限
 // 	int param_num; //用户自定义参数个数
 // 	float param[32]; 
-												/*依次为：电池组过压告警点(V)
-													电池组欠压告警点(V)
-													电池组充电过流告警点(A)
-													电池过温告警点(℃)
-													电池欠温告警点(℃)
-													环境过温告警点(℃)
-													环境欠温告警点(℃)
-													环境过湿告警点(℃)
-													环境欠湿告警点(℃)
-													电池充电限流点(A)
-													浮充电压(V)
-													均充电压(V)
-													电池下电电压(V)
-													电池上电电压
-													LLVD1下电电压
-													LLVD1上电电压
-													每组电池额定容量(Ah)
-													电池测试终止电压(V)
-													电池组温补系数(mV/℃)
-													电池温补中心点*/
+        /*依次为：电池组过压告警点(V)
+            电池组欠压告警点(V)
+            电池组充电过流告警点(A)
+            电池过温告警点(℃)
+            电池欠温告警点(℃)
+            环境过温告警点(℃)
+            环境欠温告警点(℃)
+            环境过湿告警点(℃)
+            环境欠湿告警点(℃)
+            电池充电限流点(A)
+            浮充电压(V)
+            均充电压(V)
+            电池下电电压(V)
+            电池上电电压
+            LLVD1下电电压
+            LLVD1上电电压
+            每组电池额定容量(Ah)
+            电池测试终止电压(V)
+            电池组温补系数(mV/℃)
+            电池温补中心点*/
 // 	char timed_charge_enable;//定时均充使能
 // 	char auto_charge_enable;//自动均充使能
 // 	char timed_test_enable;//定时测试使能
@@ -2593,695 +2684,686 @@ struct tele_c_smu06c_dc
 // 	char battery_testend_time[2];//电池测试终止时间(分钟)
 // 	char timed_average_interval[2];//定时均充间隔(天)
 // 	char screen_battery_packs[10];//第1屏-第10屏电池组数，支持一屏
-    	
-    	$CI = & get_instance();
-    	$CI->load->driver('cache');
-    
-    	$smu06cDcObj = new stdClass();
-    	$smu06cDcObj->data_id = $dataId;
-    	$memData = $CI->cache->get($dataId);
-    	if (strlen($memData)>= 314){
-    		$smu06cDcObj->isEmpty = false;
-/*     		$v = unpack('i', substr($memData, 4, 4));
-    		$smu06cDcObj->dc_m = $v[1];
-    		$v = unpack('f*', substr($memData, 4 + 4, 4 * 2));
-    		$smu06cDcObj->v = number_format($v[1], 2);
-    		$smu06cDcObj->i = number_format($v[2], 2);
-    		$v = unpack('i', substr($memData, 4 + 4 * 3, 4));
-    		$smu06cDcObj->m = $v[1];
-    		$v = unpack('f*', substr($memData, 4 + 4 * 3 + 4, 4 * 4));
-    		$smu06cDcObj->dc_i = array();
-    		array_push($smu06cDcObj->dc_i, number_format($v[1], 2));
-    		array_push($smu06cDcObj->dc_i, number_format($v[2], 2));
-    		array_push($smu06cDcObj->dc_i, number_format($v[3], 2));
-    		array_push($smu06cDcObj->dc_i, number_format($v[4], 2));
-    		$v = unpack('i', substr($memData, 4 + 4 * 3 + 4 + 4 * 4, 4));
-    		$smu06cDcObj->n = $v[1];
-    		$v = unpack('f*', substr($memData, 4 + 4 * 3 + 4 + 4 * 4 + 4, 9 * 4));
-    		$smu06cDcObj->channel = array();
-    		foreach ($v as $key => $val) {
-    			array_push($smu06cDcObj->channel, number_format($val, 2));
-    			}
-    		$v = unpack('i', substr($memData, 4 + 4 * 2 + 4 + 4 * 4 + 4 + 9 * 4, 4));
-    		$smu06cDcObj->p_count = $v[1]; */
+
+        $CI = &get_instance();
+        $CI->load->driver('cache');
+
+        $smu06cDcObj = new stdClass();
+        $smu06cDcObj->data_id = $dataId;
+        $memData = $CI->cache->get($dataId);
+        if (strlen($memData) >= 314) {
+            $smu06cDcObj->isEmpty = false;
+            /*     		$v = unpack('i', substr($memData, 4, 4));
+                        $smu06cDcObj->dc_m = $v[1];
+                        $v = unpack('f*', substr($memData, 4 + 4, 4 * 2));
+                        $smu06cDcObj->v = number_format($v[1], 2);
+                        $smu06cDcObj->i = number_format($v[2], 2);
+                        $v = unpack('i', substr($memData, 4 + 4 * 3, 4));
+                        $smu06cDcObj->m = $v[1];
+                        $v = unpack('f*', substr($memData, 4 + 4 * 3 + 4, 4 * 4));
+                        $smu06cDcObj->dc_i = array();
+                        array_push($smu06cDcObj->dc_i, number_format($v[1], 2));
+                        array_push($smu06cDcObj->dc_i, number_format($v[2], 2));
+                        array_push($smu06cDcObj->dc_i, number_format($v[3], 2));
+                        array_push($smu06cDcObj->dc_i, number_format($v[4], 2));
+                        $v = unpack('i', substr($memData, 4 + 4 * 3 + 4 + 4 * 4, 4));
+                        $smu06cDcObj->n = $v[1];
+                        $v = unpack('f*', substr($memData, 4 + 4 * 3 + 4 + 4 * 4 + 4, 9 * 4));
+                        $smu06cDcObj->channel = array();
+                        foreach ($v as $key => $val) {
+                            array_push($smu06cDcObj->channel, number_format($val, 2));
+                            }
+                        $v = unpack('i', substr($memData, 4 + 4 * 2 + 4 + 4 * 4 + 4 + 9 * 4, 4));
+                        $smu06cDcObj->p_count = $v[1]; */
 //     		$smu06cDcObj->p = array();
 //     		$v = unpack('f*', substr($memData, 4 + 4 * 2 + 4 + 4 * 4 + 4 + 9 * 4 + 4, 12 * 4));
 //     		foreach ($v as $key => $val) {
 //     			array_push($smu06cDcObj->p, number_format($val, 2));
 //     			}
-/*     		$v = unpack('c', substr($memData, 4 + 4 * 2 + 4 + 4 * 4 + 4 + 9 * 4 + 4 + 12 * 4, 4));
-    		$smu06cDcObj->test = $v[1];
-    		$v = unpack('i', substr($memData, 4 + 4 * 2 + 4 + 4 * 4 + 4 + 9 * 4 + 4 + 12 * 4 + 4, 4));
-    		$smu06cDcObj->duration = $v[1];
-    		$v = unpack('c*', substr($memData, 4 + 4 * 2 + 4 + 4 * 4 + 4 + 9 * 4 + 4 + 12 * 4 + 3 + 4, 11));
-    		$smu06cDcObj->status_num = $v[1];
-    		$smu06cDcObj->eps_status = $v[2];
-    		$smu06cDcObj->charge_discharge = $v[3];
-    		$smu06cDcObj->stem_m[0] = $v[4];
-    		$smu06cDcObj->stem_m[1] = $v[5];
-    		$smu06cDcObj->stem_m[2] = $v[6];
-    		$smu06cDcObj->stem_m[3] = $v[7];
-    		$smu06cDcObj->work_mode = $v[8];
-    		$smu06cDcObj->stem_func = $v[9];
-    		$smu06cDcObj->stem_out = $v[10];
-    		$v = unpack('c*', substr($memData, 4 + 4 * 2 + 4 + 4 * 4 + 4 + 9 * 4 + 4 + 12 * 4 + 3 + 4 + 11, 8));
-    		foreach ($v as $key => $val) {
-    			array_push($smu06cDcObj->stem_o, $v);
-    			}
-    		$v = unpack('c', substr($memData, 4 + 4 * 2 + 4 + 4 * 4 + 4 + 9 * 4 + 4 + 12 * 4 + 3 + 4 + 11 + 8, 1));
-    		$smu06cDcObj->stem_out = $v[1];
-    		$v = unpack('c', substr($memData, 4 + 4 * 2 + 4 + 4 * 4 + 4 + 9 * 4 + 4 + 12 * 4 + 3 + 4 + 11 + 8 + 1, 1));
-    		$smu06cDcObj->stem_out = $v[1];
-    		$v = unpack('c*', substr($memData, 4 + 4 * 2 + 4 + 4 * 4 + 4 + 9 * 4 + 4 + 12 * 4 + 3 + 4 + 11 + 8 + 1 + 1, 15));
-    		foreach ($v as $key => $val) {
-    			array_push($smu06cDcObj->alert_m, $v);
-    			}
-    		$v = unpack('c*', substr($memData, 4 + 4 * 2 + 4 + 4 * 4 + 4 + 9 * 4 + 4 + 12 * 4 + 3 + 4 + 11 + 8 + 1 + 1 + 15, 60));
-    		foreach ($v as $key => $val) {
-    			array_push($smu06cDcObj->alert_p, $v);
-    			}
-    		$v = unpack('f*', substr($memData, 4 + 4 * 2 + 4 + 4 * 4 + 4 + 9 * 4 + 4 + 12 * 4 + 3 + 4 + 11 + 8 + 1 + 1 + 15, 30));  			
-    		$smu06cDcObj->alert_m_number = $v[2];
-    		$smu06cDcObj->battery_v = array_values(array_slice($v, 0, 6));
-    		$smu06cDcObj->battery_last_capacity = array_values(array_slice($v, 6, 6));
-    		$smu06cDcObj->battery_temperature = array_values(array_slice($v, 6 + 6, 6));
-    		$smu06cDcObj->internal_temperature = array_values(array_slice($v, 6 + 6 + 6, 3));
-    		$smu06cDcObj->internal_humidity = array_values(array_slice($v, 6 + 6 + 6 + 3, 3));
-    		$smu06cDcObj->fan_speed = array_values(array_slice($v, 6 + 6 + 6 + 3 + 4, 4)); */
+            /*     		$v = unpack('c', substr($memData, 4 + 4 * 2 + 4 + 4 * 4 + 4 + 9 * 4 + 4 + 12 * 4, 4));
+                        $smu06cDcObj->test = $v[1];
+                        $v = unpack('i', substr($memData, 4 + 4 * 2 + 4 + 4 * 4 + 4 + 9 * 4 + 4 + 12 * 4 + 4, 4));
+                        $smu06cDcObj->duration = $v[1];
+                        $v = unpack('c*', substr($memData, 4 + 4 * 2 + 4 + 4 * 4 + 4 + 9 * 4 + 4 + 12 * 4 + 3 + 4, 11));
+                        $smu06cDcObj->status_num = $v[1];
+                        $smu06cDcObj->eps_status = $v[2];
+                        $smu06cDcObj->charge_discharge = $v[3];
+                        $smu06cDcObj->stem_m[0] = $v[4];
+                        $smu06cDcObj->stem_m[1] = $v[5];
+                        $smu06cDcObj->stem_m[2] = $v[6];
+                        $smu06cDcObj->stem_m[3] = $v[7];
+                        $smu06cDcObj->work_mode = $v[8];
+                        $smu06cDcObj->stem_func = $v[9];
+                        $smu06cDcObj->stem_out = $v[10];
+                        $v = unpack('c*', substr($memData, 4 + 4 * 2 + 4 + 4 * 4 + 4 + 9 * 4 + 4 + 12 * 4 + 3 + 4 + 11, 8));
+                        foreach ($v as $key => $val) {
+                            array_push($smu06cDcObj->stem_o, $v);
+                            }
+                        $v = unpack('c', substr($memData, 4 + 4 * 2 + 4 + 4 * 4 + 4 + 9 * 4 + 4 + 12 * 4 + 3 + 4 + 11 + 8, 1));
+                        $smu06cDcObj->stem_out = $v[1];
+                        $v = unpack('c', substr($memData, 4 + 4 * 2 + 4 + 4 * 4 + 4 + 9 * 4 + 4 + 12 * 4 + 3 + 4 + 11 + 8 + 1, 1));
+                        $smu06cDcObj->stem_out = $v[1];
+                        $v = unpack('c*', substr($memData, 4 + 4 * 2 + 4 + 4 * 4 + 4 + 9 * 4 + 4 + 12 * 4 + 3 + 4 + 11 + 8 + 1 + 1, 15));
+                        foreach ($v as $key => $val) {
+                            array_push($smu06cDcObj->alert_m, $v);
+                            }
+                        $v = unpack('c*', substr($memData, 4 + 4 * 2 + 4 + 4 * 4 + 4 + 9 * 4 + 4 + 12 * 4 + 3 + 4 + 11 + 8 + 1 + 1 + 15, 60));
+                        foreach ($v as $key => $val) {
+                            array_push($smu06cDcObj->alert_p, $v);
+                            }
+                        $v = unpack('f*', substr($memData, 4 + 4 * 2 + 4 + 4 * 4 + 4 + 9 * 4 + 4 + 12 * 4 + 3 + 4 + 11 + 8 + 1 + 1 + 15, 30));
+                        $smu06cDcObj->alert_m_number = $v[2];
+                        $smu06cDcObj->battery_v = array_values(array_slice($v, 0, 6));
+                        $smu06cDcObj->battery_last_capacity = array_values(array_slice($v, 6, 6));
+                        $smu06cDcObj->battery_temperature = array_values(array_slice($v, 6 + 6, 6));
+                        $smu06cDcObj->internal_temperature = array_values(array_slice($v, 6 + 6 + 6, 3));
+                        $smu06cDcObj->internal_humidity = array_values(array_slice($v, 6 + 6 + 6 + 3, 3));
+                        $smu06cDcObj->fan_speed = array_values(array_slice($v, 6 + 6 + 6 + 3 + 4, 4)); */
 //     		$v = unpack('f', substr($memData, 4 + 4 * 2 + 4 + 4 * 4 + 4 + 9 * 4 + 4 + 4 * 29, 4));
-    		$v = unpack('f', substr($memData, 49 * 4, 4));
-    		$smu06cDcObj->out_v_high = number_format($v[1], 2);
+            $v = unpack('f', substr($memData, 49 * 4, 4));
+            $smu06cDcObj->out_v_high = number_format($v[1], 2);
 //     		$v = unpack('f', substr($memData, 4 + 4 * 2 + 4 + 4 * 4 + 4 + 9 * 4 + 4 + 4 * 29 + 4, 4));
-    		$v = unpack('f', substr($memData, 49 * 4 + 4, 4));
-    		$smu06cDcObj->out_v_low = number_format($v[1], 2);
-    		$v = unpack('i', substr($memData, 49 * 4 + 4 + 4, 4));
-    		$smu06cDcObj->param_num = $v[1];
-    		$v = unpack('f*', substr($memData, 49 * 4 + 4 + 4 + 4, 80));
-    		$smu06cDcObj->param = array();
-    	 	foreach ($v as $key => $val) {
-    	 		array_push($smu06cDcObj->param, number_format($val, 2));
-    			}
-    		$v = unpack('c', substr($memData, 49 * 4 + 4 + 4 + 4 + 80, 1));
-    		$smu06cDcObj->timed_charge_enable = $v[1];
-    		$v = unpack('c', substr($memData, 49 * 4 + 4 + 4 + 4 + 80 + 1, 1));
-    		$smu06cDcObj->auto_charge_enable = $v[1];
-    		$v = unpack('c', substr($memData, 49 * 4 + 4 + 4 + 4 + 80 + 1 + 1, 1));
-    		$smu06cDcObj->timed_test_enable = $v[1];
-    		$v = unpack('s', substr($memData, 49 * 4 + 4 + 4 + 4 + 80 + 1 + 1 + 1, 2));
-    		$smu06cDcObj->timed_test_interval = $v[1];
-    		$v = unpack('s', substr($memData, 49 * 4 + 4 + 4 + 4 + 80 + 1 + 1 + 1 + 2, 2));
-    		$smu06cDcObj->battery_testend_time = $v[1];
-    		$v = unpack('s', substr($memData, 49 * 4 + 4 + 4 + 4 + 80 + 1 + 1 + 1 + 2 + 2, 2));
-    		$smu06cDcObj->timed_average_interval = $v[1];
-    		$v = unpack('c*', substr($memData, 49 * 4 + 4 + 4 + 4 + 80 + 1 + 1 + 1 + 2 + 2 + 2, 10));
-    		$smu06cDcObj->screen_battery_packs = array_values(array_slice($v, 0, 10));
-    		
-    		
-    		$v = unpack('v', substr($memData, 49 * 4 + 4 + 4 + 4 + 80 + 1 + 1 + 1 + 2 + 2 + 2 + 10, 2));
-    		$year = $v[1];
-    		$v = unpack('C*', substr($memData, 49 * 4 + 4 + 4 + 4 + 80 + 1 + 1 + 1 + 2 + 2 + 2 + 10 + 2, 5));
-    		$smu06cDcObj->update_datetime = date('Y-m-d H:i:s', strtotime($year . '-' . $v[1] . '-' . $v[2] . ' ' . $v[3] . ':' . $v[4] . ':' . $v[5]));
-    	} else {
-    		$smu06cDcObj->isEmpty = true;
-    		$smu06cDcObj->update_datetime = date('Y-m-d H:i:s');
-    	}
-    	$smu06cDcObj->dynamic_config = $CI->cache->get($smu06cDcObj->data_id . '_dc');
-    	return $smu06cDcObj;
+            $v = unpack('f', substr($memData, 49 * 4 + 4, 4));
+            $smu06cDcObj->out_v_low = number_format($v[1], 2);
+            $v = unpack('i', substr($memData, 49 * 4 + 4 + 4, 4));
+            $smu06cDcObj->param_num = $v[1];
+            $v = unpack('f*', substr($memData, 49 * 4 + 4 + 4 + 4, 80));
+            $smu06cDcObj->param = array();
+            foreach ($v as $key => $val) {
+                array_push($smu06cDcObj->param, number_format($val, 2));
+            }
+            $v = unpack('c', substr($memData, 49 * 4 + 4 + 4 + 4 + 80, 1));
+            $smu06cDcObj->timed_charge_enable = $v[1];
+            $v = unpack('c', substr($memData, 49 * 4 + 4 + 4 + 4 + 80 + 1, 1));
+            $smu06cDcObj->auto_charge_enable = $v[1];
+            $v = unpack('c', substr($memData, 49 * 4 + 4 + 4 + 4 + 80 + 1 + 1, 1));
+            $smu06cDcObj->timed_test_enable = $v[1];
+            $v = unpack('s', substr($memData, 49 * 4 + 4 + 4 + 4 + 80 + 1 + 1 + 1, 2));
+            $smu06cDcObj->timed_test_interval = $v[1];
+            $v = unpack('s', substr($memData, 49 * 4 + 4 + 4 + 4 + 80 + 1 + 1 + 1 + 2, 2));
+            $smu06cDcObj->battery_testend_time = $v[1];
+            $v = unpack('s', substr($memData, 49 * 4 + 4 + 4 + 4 + 80 + 1 + 1 + 1 + 2 + 2, 2));
+            $smu06cDcObj->timed_average_interval = $v[1];
+            $v = unpack('c*', substr($memData, 49 * 4 + 4 + 4 + 4 + 80 + 1 + 1 + 1 + 2 + 2 + 2, 10));
+            $smu06cDcObj->screen_battery_packs = array_values(array_slice($v, 0, 10));
+
+
+            $v = unpack('v', substr($memData, 49 * 4 + 4 + 4 + 4 + 80 + 1 + 1 + 1 + 2 + 2 + 2 + 10, 2));
+            $year = $v[1];
+            $v = unpack('C*', substr($memData, 49 * 4 + 4 + 4 + 4 + 80 + 1 + 1 + 1 + 2 + 2 + 2 + 10 + 2, 5));
+            $smu06cDcObj->update_datetime = date('Y-m-d H:i:s', strtotime($year . '-' . $v[1] . '-' . $v[2] . ' ' . $v[3] . ':' . $v[4] . ':' . $v[5]));
+        } else {
+            $smu06cDcObj->isEmpty = true;
+            $smu06cDcObj->update_datetime = date('Y-m-d H:i:s');
+        }
+        $smu06cDcObj->dynamic_config = $CI->cache->get($smu06cDcObj->data_id . '_dc');
+        return $smu06cDcObj;
     }
-    
-    
-    
-    
-    
+
     static function Get_Amf25($dataIdStr)
     {
-    	/*unsigned int data_id;
-    	uint16_t l1_n;//发电机l1-n相电压
-    	uint16_t l2_n;
-    	uint16_t l3_n;
-    	uint16_t l1_l2;//发电机l1-l2线电压
-    	uint16_t l2_l3;
-    	uint16_t l3_l1;
-    	uint16_t l1_i;//l1负载电流
-    	uint16_t l2_i;
-    	uint16_t l3_i;
-    	uint16_t rpm;//转速，1500/分钟
-    	float freq;//Hz:501, 保存时候需要除以10
-    	uint16_t p;//有功功率
-    	uint16_t l1_p;//L1有功功率
-    	uint16_t l2_p;
-    	uint16_t l3_p;
-    	uint16_t kva;//标称视在功率
-    	uint16_t load_kvar;//无功功率
-    	uint16_t load_kvar_l1;//l1无功功率
-    	uint16_t load_kvar_l2;//l2无功功率
-    	uint16_t load_kvar_l3;//l3无功功率
-    	float	  pf;//总功率因数，要除2
-    	float     l1_pf;//
-    	float	  l2_pf;
-    	float	  l3_pf;
-    	uint16_t load_kva;//总视在功率
-    	uint16_t load_kva_l1;//l1视在功率
-    	uint16_t load_kva_l2;//l2视在功率
-    	uint16_t load_kva_l3;//l3视在功率
-    	uint16_t mains_l1_n;//干线l1-n相电压
-    	uint16_t mains_l2_n;//干线l2-n相电压
-    	uint16_t mains_l3_n;//干线l3-n相电压
-    	uint16_t mains_l1_l2;//干线l1-l2线电压
-    	uint16_t mains_l2_l3;//干线l2-l3线电压
-    	uint16_t mains_l3_l1;//干线l3-l1线电压
-    	uint16_t mains_freq;//干线频率
-    	float 	 earth_fault;//接地故障,除100
-    	float    battery_voltage;//电池电压,除10
-    	float	 dplus;//充电电压，除10
-    	float    oil_presure;//油压，除10
-    	uint16_t engine_temp;//引擎温度
-    	uint16_t bin_inputs;/* 0  GCB Feedback
-    	1  MCB Feedback
-    	2  Emergency Stop
-    	3  低油压
-    	4  高水温
-    	5  Remote TEST
-    	6  Rem Start/Stop
-    	uint16_t bin_outputs;  0  Starter
-    	1  Fuel Solenoid
-    	2  GCB Close/Open
-    	3  MCB Close/Open
-    	4  Prestart
-    	5  Horn
-    	6  Running
-    	uint16_t iom_bin_inp; 0  IOM BI1 Alarm
-    	1  IOM BI2 Alarm
-    	2  IOM BI3 Alarm
-    	3  IOM BI4 Alarm
-    	4  IOM BI5 Alarm
-    	5  IOM BI6 Alarm
-    	6  IOM BI7 Alarm
-    	7  IOM BI8 Alarm 
-    	uint16_t engine_state;//引擎状态
-    	uint16_t breaker_state; 20  Init
-    	21  Not ready
-    	22  Prestart
-    	23  Cranking
-    	24  Pause
-    	25  Starting
-    	26  Running
-    	27  Loaded
-    	28  Stop
-    	29  Shutdown
-    	30  Ready
-    	31  Cooling
-    	32  EmergMan
-    	33  MainsOper
-    	34  MainsFlt
-    	35  MainsFlt
-    	36  IslOper
-    	37  MainsRet
-    	38  Brks Off
-    	39  No Timer
-    	40  MCB Close
-    	41  ReturnDel
-    	42  Trans Del
-    	43  Idle Run
-    	44  MinStabTO
-    	45  MaxStabTO
-    	46  AfterCool
-    	47  GCB Open
-    	48  StopValve
-    	49  Start Del
-    	50  (1Ph)
-    	51  (3PD)
-    	52  (3PY)
-    	53  MRS Mode      
-    	float run_hours;//除10
-    	uint16_t maintainance;//
-    	uint16_t num_starts;//
-    	uint32_t genset_kwh;//总发电有功电量
-    	uint32_t genset_kvarh;//总发电无功电量
-    	uint32_t num_estops;//紧急停车数
-    	uint32_t shutdowns;//关机数
-    	tele_c_ttime update_time;*/
-    	$CI = & get_instance();
-    	$CI->load->driver('cache');
-    	$idArr = array();
-    	$amf25List = array();
-    	if (strlen($dataIdStr))
-    		$idArr = explode(',', $dataIdStr);
-    	 
-    	foreach ($idArr as $key => $val) {
-    		$amf25Obj = new stdClass();
-    		$amf25Obj->data_id = $val;
-    		$memData = $CI->cache->get($val);
-    		$amf25Obj->value = array();
-    		if($memData == false)
-    		{
-    			$amf25Obj->isEmpty = true;
-    		}else{
-    			$v = unpack('S*', substr($memData, 4, 2 * 10));
-    			$amf25Obj->l1_n = $v[1];
-    			$amf25Obj->l2_n = $v[2];
-    			$amf25Obj->l3_n = $v[3];
-    			$amf25Obj->l1_l2 = $v[4];//发电机l1-l2线电压
-    			$amf25Obj->l2_l3 = $v[5];
-    			$amf25Obj->l3_l1 = $v[6];
-    			$amf25Obj->l1_i = $v[7];//l1负载电流
-    			$amf25Obj->l2_i = $v[8];
-    			$amf25Obj->l3_i = $v[9];
-    			$amf25Obj->rpm = $v[10];//转速，1500/分钟
-    			$v = unpack('f', substr($memData, 4 + 20));
-    			$amf25Obj->freq = number_format($val[1], 2);
-    			$v = unpack('S*', substr($memData, 4 + 24,  2 * 9));
-    			$amf25Obj->p = $v[1];
-    			$amf25Obj->l1_p = $v[2];
-    			$amf25Obj->l2_p = $v[3];
-    			$amf25Obj->l3_p = $v[3];
-    			$amf25Obj->kva = $v[4];
-    			$amf25Obj->load_kvar = $v[5];
-    			$amf25Obj->load_kvar_l1 = $v[6];
-    			$amf25Obj->load_kvar_l2 = $v[7];
-    			$amf25Obj->load_kvar_l3 = $v[8];
-    			$v = unpack('f', substr($memData, 4 + 24 + 18, 16));
-    			$amf25Obj->pf = $v[1];
-    			$amf25Obj->l1_pf = $v[2];
-    			$amf25Obj->l2_pf = $v[3];
-    			$amf25Obj->l3_pf = $v[4];
-    			$v = unpack('S*', substr($memData, 4 + 24+ 18 + 16,  2 * 11));
-    			$amf25Obj->load_kva = $v[1];
-    			$amf25Obj->load_kva_l1 = $v[2];
-    			$amf25Obj->load_kva_l2 = $v[3];
-    			$amf25Obj->load_kva_l3 = $v[4];
-    			$amf25Obj->mains_l1_n = $v[5];
-    			$amf25Obj->mains_l2_n = $v[6];
-    			$amf25Obj->mains_l3_n = $v[7];
-    			$amf25Obj->mains_l1_l2 = $v[8];
-    			$amf25Obj->mains_l2_l3 = $v[9];
-    			$amf25Obj->mains_l3_l1 = $v[10];
-    			$amf25Obj->mains_freq = $v[11];
-    			$v = unpack('f', substr($memData, 4 + 24 + 18 + 16 + 22, 16));
-    			$amf25Obj->earth_fault = $v[1];
-    			$amf25Obj->battery_voltage = $v[2];
-    			$amf25Obj->dplus = $v[3];
-    			$amf25Obj->oil_presure = $v[4];
-    			$v = unpack('S*', substr($memData, 4 + 24+ 18 + 16 + 22 + 16,  2 * 6));
-    			$amf25Obj->engine_temp = $v[1];
-    			$amf25Obj->bin_inputs = $v[2];
-    			$amf25Obj->bin_outputs = $v[3];
-    			$amf25Obj->iom_bin_inp = $v[4];
-    			$amf25Obj->engine_state = $v[5];
-    			$amf25Obj->breaker_state = $v[6];
-    			$v = unpack('f', substr($memData, 4 + 24+ 18 + 16 + 22 + 16 + 12, 4));
-    			$amf25Obj->run_hours = number_format($val[1], 2);
-    			$v = unpack('S*', substr($memData, 4 + 24+ 18 + 16 + 22 + 16 + 12 + 4,  2 * 6));
-    			$amf25Obj->maintainance = $v[1];
-    			$amf25Obj->num_starts = $v[2];
-    			$amf25Obj->genset_kwh = $v[3];
-    			$amf25Obj->genset_kvarh = $v[4];
-    			$amf25Obj->num_estops = $v[5];
-    			$amf25Obj->shutdowns = $v[6];    			
-    		}
-    		array_push($amf25List, $amf25Obj);  		
-    	}
-    	return $amf25List;
+        /*unsigned int data_id;
+        uint16_t l1_n;//发电机l1-n相电压
+        uint16_t l2_n;
+        uint16_t l3_n;
+        uint16_t l1_l2;//发电机l1-l2线电压
+        uint16_t l2_l3;
+        uint16_t l3_l1;
+        uint16_t l1_i;//l1负载电流
+        uint16_t l2_i;
+        uint16_t l3_i;
+        uint16_t rpm;//转速，1500/分钟
+        float freq;//Hz:501, 保存时候需要除以10
+        uint16_t p;//有功功率
+        uint16_t l1_p;//L1有功功率
+        uint16_t l2_p;
+        uint16_t l3_p;
+        uint16_t kva;//标称视在功率
+        uint16_t load_kvar;//无功功率
+        uint16_t load_kvar_l1;//l1无功功率
+        uint16_t load_kvar_l2;//l2无功功率
+        uint16_t load_kvar_l3;//l3无功功率
+        float	  pf;//总功率因数，要除2
+        float     l1_pf;//
+        float	  l2_pf;
+        float	  l3_pf;
+        uint16_t load_kva;//总视在功率
+        uint16_t load_kva_l1;//l1视在功率
+        uint16_t load_kva_l2;//l2视在功率
+        uint16_t load_kva_l3;//l3视在功率
+        uint16_t mains_l1_n;//干线l1-n相电压
+        uint16_t mains_l2_n;//干线l2-n相电压
+        uint16_t mains_l3_n;//干线l3-n相电压
+        uint16_t mains_l1_l2;//干线l1-l2线电压
+        uint16_t mains_l2_l3;//干线l2-l3线电压
+        uint16_t mains_l3_l1;//干线l3-l1线电压
+        uint16_t mains_freq;//干线频率
+        float 	 earth_fault;//接地故障,除100
+        float    battery_voltage;//电池电压,除10
+        float	 dplus;//充电电压，除10
+        float    oil_presure;//油压，除10
+        uint16_t engine_temp;//引擎温度
+        uint16_t bin_inputs;/* 0  GCB Feedback
+        1  MCB Feedback
+        2  Emergency Stop
+        3  低油压
+        4  高水温
+        5  Remote TEST
+        6  Rem Start/Stop
+        uint16_t bin_outputs;  0  Starter
+        1  Fuel Solenoid
+        2  GCB Close/Open
+        3  MCB Close/Open
+        4  Prestart
+        5  Horn
+        6  Running
+        uint16_t iom_bin_inp; 0  IOM BI1 Alarm
+        1  IOM BI2 Alarm
+        2  IOM BI3 Alarm
+        3  IOM BI4 Alarm
+        4  IOM BI5 Alarm
+        5  IOM BI6 Alarm
+        6  IOM BI7 Alarm
+        7  IOM BI8 Alarm
+        uint16_t engine_state;//引擎状态
+        uint16_t breaker_state; 20  Init
+        21  Not ready
+        22  Prestart
+        23  Cranking
+        24  Pause
+        25  Starting
+        26  Running
+        27  Loaded
+        28  Stop
+        29  Shutdown
+        30  Ready
+        31  Cooling
+        32  EmergMan
+        33  MainsOper
+        34  MainsFlt
+        35  MainsFlt
+        36  IslOper
+        37  MainsRet
+        38  Brks Off
+        39  No Timer
+        40  MCB Close
+        41  ReturnDel
+        42  Trans Del
+        43  Idle Run
+        44  MinStabTO
+        45  MaxStabTO
+        46  AfterCool
+        47  GCB Open
+        48  StopValve
+        49  Start Del
+        50  (1Ph)
+        51  (3PD)
+        52  (3PY)
+        53  MRS Mode
+        float run_hours;//除10
+        uint16_t maintainance;//
+        uint16_t num_starts;//
+        uint32_t genset_kwh;//总发电有功电量
+        uint32_t genset_kvarh;//总发电无功电量
+        uint32_t num_estops;//紧急停车数
+        uint32_t shutdowns;//关机数
+        tele_c_ttime update_time;*/
+        $CI = &get_instance();
+        $CI->load->driver('cache');
+        $idArr = array();
+        $amf25List = array();
+        if (strlen($dataIdStr))
+            $idArr = explode(',', $dataIdStr);
+
+        foreach ($idArr as $key => $val) {
+            $amf25Obj = new stdClass();
+            $amf25Obj->data_id = $val;
+            $memData = $CI->cache->get($val);
+            $amf25Obj->value = array();
+            if ($memData == false) {
+                $amf25Obj->isEmpty = true;
+            } else {
+                $v = unpack('S*', substr($memData, 4, 2 * 10));
+                $amf25Obj->l1_n = $v[1];
+                $amf25Obj->l2_n = $v[2];
+                $amf25Obj->l3_n = $v[3];
+                $amf25Obj->l1_l2 = $v[4];//发电机l1-l2线电压
+                $amf25Obj->l2_l3 = $v[5];
+                $amf25Obj->l3_l1 = $v[6];
+                $amf25Obj->l1_i = $v[7];//l1负载电流
+                $amf25Obj->l2_i = $v[8];
+                $amf25Obj->l3_i = $v[9];
+                $amf25Obj->rpm = $v[10];//转速，1500/分钟
+                $v = unpack('f', substr($memData, 4 + 20));
+                $amf25Obj->freq = number_format($val[1], 2);
+                $v = unpack('S*', substr($memData, 4 + 24, 2 * 9));
+                $amf25Obj->p = $v[1];
+                $amf25Obj->l1_p = $v[2];
+                $amf25Obj->l2_p = $v[3];
+                $amf25Obj->l3_p = $v[3];
+                $amf25Obj->kva = $v[4];
+                $amf25Obj->load_kvar = $v[5];
+                $amf25Obj->load_kvar_l1 = $v[6];
+                $amf25Obj->load_kvar_l2 = $v[7];
+                $amf25Obj->load_kvar_l3 = $v[8];
+                $v = unpack('f', substr($memData, 4 + 24 + 18, 16));
+                $amf25Obj->pf = $v[1];
+                $amf25Obj->l1_pf = $v[2];
+                $amf25Obj->l2_pf = $v[3];
+                $amf25Obj->l3_pf = $v[4];
+                $v = unpack('S*', substr($memData, 4 + 24 + 18 + 16, 2 * 11));
+                $amf25Obj->load_kva = $v[1];
+                $amf25Obj->load_kva_l1 = $v[2];
+                $amf25Obj->load_kva_l2 = $v[3];
+                $amf25Obj->load_kva_l3 = $v[4];
+                $amf25Obj->mains_l1_n = $v[5];
+                $amf25Obj->mains_l2_n = $v[6];
+                $amf25Obj->mains_l3_n = $v[7];
+                $amf25Obj->mains_l1_l2 = $v[8];
+                $amf25Obj->mains_l2_l3 = $v[9];
+                $amf25Obj->mains_l3_l1 = $v[10];
+                $amf25Obj->mains_freq = $v[11];
+                $v = unpack('f', substr($memData, 4 + 24 + 18 + 16 + 22, 16));
+                $amf25Obj->earth_fault = $v[1];
+                $amf25Obj->battery_voltage = $v[2];
+                $amf25Obj->dplus = $v[3];
+                $amf25Obj->oil_presure = $v[4];
+                $v = unpack('S*', substr($memData, 4 + 24 + 18 + 16 + 22 + 16, 2 * 6));
+                $amf25Obj->engine_temp = $v[1];
+                $amf25Obj->bin_inputs = $v[2];
+                $amf25Obj->bin_outputs = $v[3];
+                $amf25Obj->iom_bin_inp = $v[4];
+                $amf25Obj->engine_state = $v[5];
+                $amf25Obj->breaker_state = $v[6];
+                $v = unpack('f', substr($memData, 4 + 24 + 18 + 16 + 22 + 16 + 12, 4));
+                $amf25Obj->run_hours = number_format($val[1], 2);
+                $v = unpack('S*', substr($memData, 4 + 24 + 18 + 16 + 22 + 16 + 12 + 4, 2 * 6));
+                $amf25Obj->maintainance = $v[1];
+                $amf25Obj->num_starts = $v[2];
+                $amf25Obj->genset_kwh = $v[3];
+                $amf25Obj->genset_kvarh = $v[4];
+                $amf25Obj->num_estops = $v[5];
+                $amf25Obj->shutdowns = $v[6];
+            }
+            array_push($amf25List, $amf25Obj);
+        }
+        return $amf25List;
     }
-    
+
     static function Get_Access4000xRtData($dataIdStr)
     {
-    	/*
-    	 * unsigned int data_id;
-	//unsigned char bit1[4];
-	unsigned char oms; //oil machine start
-	unsigned char omd; //oil machine downtime
-	unsigned char ems; //emergency stop
-	unsigned char ra; //reset alarm
-	//unsigned char bit2[28];
-	unsigned char as; //auto switch
-	unsigned char ga; //general alarm
-	unsigned char re1; //Reserved
-	unsigned char re2; //Reserved
-	unsigned char hb; //Heart beat
-	unsigned char rs; //remote start
-	unsigned char or1; //output relay 1
-	unsigned char or2; //output relay 2
-	unsigned char alop; //approaching low oil pressure
-	unsigned char ahet; //approaching high engine temperature
-	unsigned char lct; //lowcoolant temperature
-	unsigned char lbv; //low battery voltage
-	unsigned char hbv; //high battery voltage
-	unsigned char bcf; //battery charger fail
-	unsigned char nia; //not in auto
-	unsigned char fts; //fail to start
-	unsigned char uf; //under frequency
-	unsigned char of; //over frequency
-	unsigned char uv; //under voltage
-	unsigned char ov; //over voltage
-	unsigned char oc; //over current
-	unsigned char os; //over speed
-	unsigned char es; //emergency stop
-	unsigned char het; //high engine temperature
-	unsigned char lop; //low oil pressure
-	unsigned char sf1; //spare fault 1
-	unsigned char sf2; //spare fault 2
-	unsigned char sf3; //spare fault 3
-	unsigned char sf4; //spare fault 4
-	//unsigned short reg3[137];
-	unsigned char cco; //crank cut-out
-	unsigned char ct; //crank time
-	unsigned char cd; //crank delay
-	unsigned char cr; //crank repeats
-	unsigned char ovs; //over voltage setpoint
-	unsigned char ovd; //over voltage delay
-	unsigned char uvs; //under voltage setpoint
-	unsigned char uvd; //under voltage delay
-	unsigned char ofs; //over frequency setpoint
-	unsigned char ofd; //over frequency delay
-	unsigned char ufd; //under frequency delay
-	unsigned char oss; //over speed setpoint
-	unsigned char hivs; //high battery voltage setpoint
-	unsigned char hivd; //high battery voltage delay
-	unsigned char hvvs; //high battery voltage setpoint
-	unsigned char hvvd; //high battery voltage delay
-	unsigned char lbvs; //low battery voltage setpoint
-	unsigned char lbvd; //low battery voltage delay
-	unsigned char bcfs; //battery changer failure setpoint
-	unsigned char bcfd; //battery changer failure delay
-	unsigned char lops; //low oil pressure setpoint
-	unsigned char hetm; //high engine temperature
-	unsigned char let; //low engine temperature
-	unsigned char fpd; //FPT delay
-	unsigned char sd; //start delay
-	unsigned char cod; //cooling delay
-	unsigned char ohva; //over high voltage action
-	unsigned char olva; //over low voltage action
-	unsigned char ohfd; //over high frequency delay
-	unsigned char olfd; //over low frequency delay
-	unsigned char lopd; //low oil pressure delay
-	unsigned char hetd; //high engine temperature delay
-	unsigned char niam; //not in auto mode
-	unsigned char fid1; //fault input 1 delay
-	unsigned char fia1; //fault input 1 action
-	unsigned char fif1; //fault input 1 FPT
-	unsigned char fid2; //fault input 2 delay
-	unsigned char fia2; //fault input 2 action
-	unsigned char fif2; //fault input 2 FPT
-	unsigned char fid3; //fault input 3 delay
-	unsigned char fia3; //fault input 3 action
-	unsigned char fif3; //fault input 3 FPT
-	unsigned char fid4; //fault input 4 delay
-	unsigned char fia4; //fault input 4 action
-	unsigned char fif4; //fault input 4 FPT
-	unsigned char ore1; //output relay 1
-	unsigned char ore2; //output relay 2
-	unsigned short ep_imp; //action power
-	unsigned short eq_imp; //reaction power
-	unsigned short run; //running
-	unsigned char crn; //Crank record number
-	unsigned char sl; //select language
-	unsigned char cb; //comm band
-	unsigned char dtr; //data transfer rate
-	unsigned char vtr; //voltage transfer rate
-	unsigned char rkw; //rated KW
-	unsigned char rkva; //rated KVA
-	unsigned char nt; //No of teeth
-	unsigned char np; //No of poles
-	unsigned char vr; //VT ratio
-	unsigned char ctr; //current transfer rate
-	unsigned char tsm; //T-sensor mode
-	unsigned char psm; //P-sensor mode
-	unsigned char fit1; //fault input 1 type
-	unsigned char fit2; //fault input 2 type
-	unsigned char fit3; //fault input 3 type
-	unsigned char fit4; //fault input 4 type
-	unsigned char ccv1; //v1 Calibration correction	
-	unsigned char ccv2; //v2 Calibration correction
-	unsigned char ccv3; //v3 Calibration correction
-	unsigned char cci1; //i1 Calibration correction
-	unsigned char cci2; //i2 Calibration correction
-	unsigned char cci3; //i3 Calibration correction
-	unsigned char cop; //correct oil pressure
-	unsigned char cwt; //correct water temperature
-	unsigned char cbv; //correct battery voltage
-	unsigned char opsd[20]; //oil pressure sensor data
-	unsigned char wtsd[20]; //water temperature sensor data
-	unsigned char ft[20]; //fault records
-	//unsigned short reg4[21];
-	unsigned char wt; //water temperature
-	unsigned char op; //oil pressure
-	unsigned char bv; //battery voltage
-	unsigned char hr; //hours run
-	unsigned char starts; //starts
-	unsigned char rpm; //RPM
-	unsigned char pha; //phase a voltage
-	unsigned char phb; //phase b voltage
-	unsigned char phc; //phase c voltage
-	unsigned char lab; //line ab voltage
-	unsigned char lbc; //line bc voltage
-	unsigned char lca; //line ca voltage
-	unsigned char pca; //phase a current
-	unsigned char pcb; //phase b current
-	unsigned char pcc; //phase c current
-	unsigned char freq; //Frequency
-	unsigned char pf; //power factor
-	unsigned char psum; //active power total
-	unsigned char ssum; //apparent power total
-	unsigned char qsum; //reactive power total
-	unsigned short kwh; //KWH
-	
-	tele_c_ttime update_time;
-    	 */
-    	$CI = & get_instance();
-    	$CI->load->driver('cache');
-    	$idArr = array();
-    	$access4000xList = array();
-    	if (strlen($dataIdStr))
-    		$idArr = explode(',', $dataIdStr);
-    	
-    	foreach ($idArr as $key => $val) {
-    		$access4000xObj = new stdClass();
-    		$access4000xObj->data_id = $val;
-    		$memData = $CI->cache->get($val);
-    		$access4000xObj->value = array();
-    		if($memData == false)
-    		{
-    			$libertUpsObj->isEmpty = true;
-    		}else{
-    			$v = unpack('C*', substr($memData, 176, 21));
-    			foreach($v as $i=>$val)
-    			{
-    				switch($i)
-    				{
-    					case 0:
-    						array_push($access4000xObj->value, $val."°C");
-    						break;
-    					case 1:
-    						array_push($access4000xObj->value, ($val*0.1)."Bar");
-    						break;
-    					case 2:
-    						array_push($access4000xObj->value, $val*0.1."V");
-    						break;
-    				}
-    			}
-    		}
-    		array_push($access4000xList, $access4000xObj);  		
-    	}
-    	return $access4000xList;
+        /*
+         * unsigned int data_id;
+    //unsigned char bit1[4];
+    unsigned char oms; //oil machine start
+    unsigned char omd; //oil machine downtime
+    unsigned char ems; //emergency stop
+    unsigned char ra; //reset alarm
+    //unsigned char bit2[28];
+    unsigned char as; //auto switch
+    unsigned char ga; //general alarm
+    unsigned char re1; //Reserved
+    unsigned char re2; //Reserved
+    unsigned char hb; //Heart beat
+    unsigned char rs; //remote start
+    unsigned char or1; //output relay 1
+    unsigned char or2; //output relay 2
+    unsigned char alop; //approaching low oil pressure
+    unsigned char ahet; //approaching high engine temperature
+    unsigned char lct; //lowcoolant temperature
+    unsigned char lbv; //low battery voltage
+    unsigned char hbv; //high battery voltage
+    unsigned char bcf; //battery charger fail
+    unsigned char nia; //not in auto
+    unsigned char fts; //fail to start
+    unsigned char uf; //under frequency
+    unsigned char of; //over frequency
+    unsigned char uv; //under voltage
+    unsigned char ov; //over voltage
+    unsigned char oc; //over current
+    unsigned char os; //over speed
+    unsigned char es; //emergency stop
+    unsigned char het; //high engine temperature
+    unsigned char lop; //low oil pressure
+    unsigned char sf1; //spare fault 1
+    unsigned char sf2; //spare fault 2
+    unsigned char sf3; //spare fault 3
+    unsigned char sf4; //spare fault 4
+    //unsigned short reg3[137];
+    unsigned char cco; //crank cut-out
+    unsigned char ct; //crank time
+    unsigned char cd; //crank delay
+    unsigned char cr; //crank repeats
+    unsigned char ovs; //over voltage setpoint
+    unsigned char ovd; //over voltage delay
+    unsigned char uvs; //under voltage setpoint
+    unsigned char uvd; //under voltage delay
+    unsigned char ofs; //over frequency setpoint
+    unsigned char ofd; //over frequency delay
+    unsigned char ufd; //under frequency delay
+    unsigned char oss; //over speed setpoint
+    unsigned char hivs; //high battery voltage setpoint
+    unsigned char hivd; //high battery voltage delay
+    unsigned char hvvs; //high battery voltage setpoint
+    unsigned char hvvd; //high battery voltage delay
+    unsigned char lbvs; //low battery voltage setpoint
+    unsigned char lbvd; //low battery voltage delay
+    unsigned char bcfs; //battery changer failure setpoint
+    unsigned char bcfd; //battery changer failure delay
+    unsigned char lops; //low oil pressure setpoint
+    unsigned char hetm; //high engine temperature
+    unsigned char let; //low engine temperature
+    unsigned char fpd; //FPT delay
+    unsigned char sd; //start delay
+    unsigned char cod; //cooling delay
+    unsigned char ohva; //over high voltage action
+    unsigned char olva; //over low voltage action
+    unsigned char ohfd; //over high frequency delay
+    unsigned char olfd; //over low frequency delay
+    unsigned char lopd; //low oil pressure delay
+    unsigned char hetd; //high engine temperature delay
+    unsigned char niam; //not in auto mode
+    unsigned char fid1; //fault input 1 delay
+    unsigned char fia1; //fault input 1 action
+    unsigned char fif1; //fault input 1 FPT
+    unsigned char fid2; //fault input 2 delay
+    unsigned char fia2; //fault input 2 action
+    unsigned char fif2; //fault input 2 FPT
+    unsigned char fid3; //fault input 3 delay
+    unsigned char fia3; //fault input 3 action
+    unsigned char fif3; //fault input 3 FPT
+    unsigned char fid4; //fault input 4 delay
+    unsigned char fia4; //fault input 4 action
+    unsigned char fif4; //fault input 4 FPT
+    unsigned char ore1; //output relay 1
+    unsigned char ore2; //output relay 2
+    unsigned short ep_imp; //action power
+    unsigned short eq_imp; //reaction power
+    unsigned short run; //running
+    unsigned char crn; //Crank record number
+    unsigned char sl; //select language
+    unsigned char cb; //comm band
+    unsigned char dtr; //data transfer rate
+    unsigned char vtr; //voltage transfer rate
+    unsigned char rkw; //rated KW
+    unsigned char rkva; //rated KVA
+    unsigned char nt; //No of teeth
+    unsigned char np; //No of poles
+    unsigned char vr; //VT ratio
+    unsigned char ctr; //current transfer rate
+    unsigned char tsm; //T-sensor mode
+    unsigned char psm; //P-sensor mode
+    unsigned char fit1; //fault input 1 type
+    unsigned char fit2; //fault input 2 type
+    unsigned char fit3; //fault input 3 type
+    unsigned char fit4; //fault input 4 type
+    unsigned char ccv1; //v1 Calibration correction
+    unsigned char ccv2; //v2 Calibration correction
+    unsigned char ccv3; //v3 Calibration correction
+    unsigned char cci1; //i1 Calibration correction
+    unsigned char cci2; //i2 Calibration correction
+    unsigned char cci3; //i3 Calibration correction
+    unsigned char cop; //correct oil pressure
+    unsigned char cwt; //correct water temperature
+    unsigned char cbv; //correct battery voltage
+    unsigned char opsd[20]; //oil pressure sensor data
+    unsigned char wtsd[20]; //water temperature sensor data
+    unsigned char ft[20]; //fault records
+    //unsigned short reg4[21];
+    unsigned char wt; //water temperature
+    unsigned char op; //oil pressure
+    unsigned char bv; //battery voltage
+    unsigned char hr; //hours run
+    unsigned char starts; //starts
+    unsigned char rpm; //RPM
+    unsigned char pha; //phase a voltage
+    unsigned char phb; //phase b voltage
+    unsigned char phc; //phase c voltage
+    unsigned char lab; //line ab voltage
+    unsigned char lbc; //line bc voltage
+    unsigned char lca; //line ca voltage
+    unsigned char pca; //phase a current
+    unsigned char pcb; //phase b current
+    unsigned char pcc; //phase c current
+    unsigned char freq; //Frequency
+    unsigned char pf; //power factor
+    unsigned char psum; //active power total
+    unsigned char ssum; //apparent power total
+    unsigned char qsum; //reactive power total
+    unsigned short kwh; //KWH
+
+    tele_c_ttime update_time;
+         */
+        $CI = &get_instance();
+        $CI->load->driver('cache');
+        $idArr = array();
+        $access4000xList = array();
+        if (strlen($dataIdStr))
+            $idArr = explode(',', $dataIdStr);
+
+        foreach ($idArr as $key => $val) {
+            $access4000xObj = new stdClass();
+            $access4000xObj->data_id = $val;
+            $memData = $CI->cache->get($val);
+            $access4000xObj->value = array();
+            if ($memData == false) {
+                $libertUpsObj->isEmpty = true;
+            } else {
+                $v = unpack('C*', substr($memData, 176, 21));
+                foreach ($v as $i => $val) {
+                    switch ($i) {
+                        case 0:
+                            array_push($access4000xObj->value, $val . "°C");
+                            break;
+                        case 1:
+                            array_push($access4000xObj->value, ($val * 0.1) . "Bar");
+                            break;
+                        case 2:
+                            array_push($access4000xObj->value, $val * 0.1 . "V");
+                            break;
+                    }
+                }
+            }
+            array_push($access4000xList, $access4000xObj);
+        }
+        return $access4000xList;
     }
+
     static function Get_ug40RtData($dataIdStr)
     {
-    	//     	unsigned int data_id;
-    	//     	unsigned char system_on; //System On (Fan)
-    	//     	unsigned char compressor1; //Compressor 1
-    	//     	unsigned char compressor2; //Compressor 2
-    	//     	unsigned char compressor3; //Compressor 3
-    	//     	unsigned char compressor4; //Compressor 4
-    	//     	unsigned char heater1; //El. Heater 1
-    	//     	unsigned char heater2; //El. Heater 2
-    	//     	unsigned char hot_gas; //Hot gas ON
-    	//     	unsigned char dehumidification; //Dehumidification
-    	//     	unsigned char humid; //Humidification
-    	//     	unsigned char emergency; //Emergency Working
-    	//     	unsigned char wrong_psword; //Wrong Password Alarm
-    	//     	unsigned char high_room_temp; //High Room Temperature Alarm
-    	//     	unsigned char low_room_temp; //Low Room Temperature Alarm
-    	//     	unsigned char high_room_humidy; //High Room Humidity Alarm
-    	//     	unsigned char low_root_humidy; //Low Room Humidity Alarm
-    	//     	unsigned char sensors; //Room Temp. And Humidity Limits by External Sensors
-    	//     	unsigned char clogged_filter; //Clogged Filter Alarm
-    	//     	unsigned char flooding; //Flooding Alarm
-    	//     	unsigned char loss_air_flow; //Loss of Air Flow Alarm
-    	//     	unsigned char heater_over; //Heater Overheating Alarm
-    	//     	unsigned char circuit1_high_presure;//Circuit 1 High Pressure Alarm
-    	//     	unsigned char circuit2_high_presure;//Circuit 2 High Pressure Alarm
-    	//     	unsigned char circuit1_low_presure;//Circuit 1 High Pressure Alarm
-    	//     	unsigned char circuit2_low_presure;//Circuit 2 High Pressure Alarm
-    	//     	unsigned char circuit1_elec_valve; //Circuit 1 Electronic Valve Failure
-    	//     	unsigned char circuit2_elec_valve; //Circuit 2 Electronic Valve Failure
-    	//     	unsigned char wrong_phase_seq; //Wrong Phase Sequence Alarm
-    	//     	unsigned char smoke_fire; //Smoke-Fire Alarm
-    	//     	unsigned char interrupt_lan; //Interrupted LAN Alarm
-    	//     	unsigned char high_current; //Humidifier: High Current Alarm
-    	//     	unsigned char power_loss; //Humidifier: Power Loss Alarm
-    	//     	unsigned char water_loss; //Humidifier: Water Loss Alarm
-    	//     	unsigned char cthd;//CW Temperature too High for Dehumidification
-    	//     	unsigned char cvf_wftl;//CW Valve Failure or Water Flow too Low
-    	//     	unsigned char loss_water_flow; //Loss of Water Flow Alarm
-    	//     	unsigned char high_water_temp; //High Chilled Water Temperature Alarm
-    	//     	unsigned char room_air_sensor; //Room Air Sensor Failed/Disconnected
-    	//     	unsigned char hot_water_temp_sensor; //Hot Water Temp. Sensor Failed/Disconnected
-    	//     	unsigned char chilled_water_temp; //Chilled Water Temp. Sensor Failed/Disconnected
-    	//     	unsigned char outdoor_temp_sensor; //Outdoor Temperature Sensor Failed/Disconnected
-    	//     	unsigned char deliv_air_temp_sensor; //Delivery Air Temp. Sensor Failed/Disconnected
-    	//     	unsigned char room_humid; //Room Humidity Sensor Failed/Disconnected
-    	//     	unsigned char water_outlet_temp; //Chilled Water Outlet Temp.Sensor Failed/Disconnected
-    	//     	unsigned char compress1_alarm;  //Compressor 1: hour counter threshold Alarm
-    	//     	unsigned char compress2_alarm;  //Compressor 2: hour counter threshold Alarm
-    	//     	unsigned char compress3_alarm;  //Compressor 3: hour counter threshold Alarm
-    	//     	unsigned char compress4_alarm;  //Compressor 4: hour counter threshold Alarm
-    	//     	unsigned char air_filter; //Air filter: hour counter threshold Alarm
-    	//     	unsigned char heater1_alarm; //Heater 1: hour counter threshold Alarm
-    	//     	unsigned char heater2_alarm; //Heater 2: hour counter threshold Alarm
-    	//     	unsigned char humid_alarm; //Humidifier: hour counter threshold Alarm
-    	//     	unsigned char air_cond_unit; //Air conditioning unit: hour counter threshold Alarm
-    	//     	unsigned char digital_input2; //Alarm by Digital Input 2
-    	//     	unsigned char digital_input4; //Alarm by Digital Input 4
-    	//     	unsigned char digital_input6; //Alarm by Digital Input 6
-    	//     	unsigned char humid_general; //Humidifier General Alarm
-    	//     	unsigned char unit; //Unit on Alarm
-    	//     	unsigned char unit_rotation; //Unit on Rotation Alarm
-    	//     	unsigned char unit_a; //Unit on Alarm Type A
-    	//     	unsigned char unit_b; //Unit on Alarm Type B
-    	//     	unsigned char unit_c; //Unit on Alarm Type C
-    	//     	unsigned char dc_switch; //DX/CW Switch on TC Units
-    	//     	unsigned char sw_switch; //Summer/Winter Switch
-    	//     	unsigned char unit_switch; //Unit ON/OFF Switch
-    	//     	unsigned char unit_reset; //Buzzer and Alarm Unit Reset
-    	//     	unsigned char filter_reset; //Filter Run Hours Reset
-    	//     	unsigned char comp1_run_reset; //Compressor 1 Run Hours Reset
-    	//     	unsigned char comp2_run_reset; //Compressor 2 Run Hours Reset
-    	//     	unsigned char comp3_run_reset; //Compressor 3 Run Hours Reset
-    	//     	unsigned char comp4_run_reset; //Compressor 4 Run Hours Reset
-    	//     	unsigned char comp1_start_reset; //Compressor 1 Starting Reset
-    	//     	unsigned char comp2_start_reset; //Compressor 2 Starting Reset
-    	//     	unsigned char comp3_start_reset; //Compressor 3 Starting Reset
-    	//     	unsigned char comp4_start_reset; //Compressor 4 Starting Reset
-    	//     	unsigned char heater1_run_reset; //Heater 1 Run Hours Reset
-    	//     	unsigned char heater2_run_reset; //Heater 2 Run Hours Reset
-    	//     	unsigned char heater1_start_reset;	//Heater 1 Starting Reset
-    	//     	unsigned char heater2_start_reset;	//Heater 2 Starting Reset
-    	//     	unsigned char humid_run_reset; //Humidifier Run Hours Reset
-    	//     	unsigned char humid_start_reset; //Humidifier Starting Reset
-    	//     	unsigned char unit_run_reset; //Unit Run Hours Reset
-    	//     	unsigned char setback_mode; //Setback Mode (Sleep Mode)
-    	//     	unsigned char sleep_mode_test; //Sleep Mode Test
-    	//     	unsigned char lm_usage_values; //Local/Mean Usage of Values
-    	//     	unsigned char sb_unit_no; //No. of Stand-by Units
-    	//     	unsigned char unit2_rotation; //Unit 2 on Rotation Alarm
-    	//     	unsigned char unit3_rotation; //Unit 3 on Rotation Alarm
-    	//     	unsigned char unit4_rotation; //Unit 4 on Rotation Alarm
-    	//     	unsigned char unit5_rotation; //Unit 5 on Rotation Alarm
-    	//     	unsigned char unit6_rotation; //Unit 6 on Rotation Alarm
-    	//     	unsigned char unit7_rotation; //Unit 7 on Rotation Alarm
-    	//     	unsigned char unit8_rotation; //Unit 8 on Rotation Alarm
-    	//     	unsigned char unit9_rotation; //Unit 9 on Rotation Alarm
-    	//     	unsigned char unit10_rotation; //Unit 10 on Rotation Alarm
-    	//     	float room_temp; //Room Temprature
-    	//     	float outdoor_temp; //Outdoor Temperature
-    	//     	float deliv_air_temp; //Delivery Air Temperature
-    	//     	float chill_water_temp; //Chilled Water Temperature
-    	//     	float hot_water_temp; //Hot Water Temperature
-    	//     	float room_rela_humid; //Room Relative Humidity
-    	//     	float outlet_water_temp; //Outlet Chilled Water Temperature
-    	//     	float circuit1_evap_press; //Circuit 1 Evaporating Pressure
-    	//     	float circuit2_evap_press; //Circuit 2 Evaporating Pressure
-    	//     	float circuit1_suct_temp; //Circuit 1 Suction Temperature
-    	//     	float circuit2_suct_temp; //Circuit 2 Suction Temperature
-    	//     	float circuit1_evap_temp; //Circuit 1 Evaporating Temperature
-    	//     	float circuit2_evap_temp; //Circuit 2 Evaporating Temperature
-    	//     	float circuit1_superheat; //Circuit 1 Superheat
-    	//     	float circuit2_superheat; //Circuit 2 Superheat
-    	//     	float cold_water_ramp; //Cold Water Valve Ramp
-    	//     	float hot_water_ramp; //Hot Water Valve Ramp
-    	//     	float evap_fan_speed; //Evaporating Fan Speed
-    	//     	float cool_set; //Cooling Setpoint
-    	//     	float cool_sensit; //Cooling Sensitivity
-    	//     	float cool_set2; //Second Cooling Setpoint
-    	//     	float heat_set; //	Heating Setpoint
-    	//     	float heat_set2;  //Second Heating setpoint
-    	//     	float heat_sensit; //Heating Sensitivity
-    	//     	float high_room_temp_thres; //High Room Temperature Alarm Threshold(1)
-    	//     	float low_room_temp_thres; //Low Room Temperature Alarm Threshold(1)
-    	//     	float cool_set_mode; //Setback Mode: Cooling Setpoint
-    	//     	float heat_set_mode; //Setback Mode: Heating Setpoint
-    	//     	float cws_to_sd; //CW Setpoint to Start Dehumidification
-    	//     	float cw_high_temp_thres; //CW High Temperature Alarm Threshold
-    	//     	float cws_to_scwom; //CW Setpoint to start CW Operating Mode(Only TC Units)
-    	//     	float radcool_set; //Radcooler Setpoint in Energy Saving Mode
-    	//     	float radcooler_set_dx; //Radcooler Setpoint in DX Mode
-    	//     	float del_temp_low_set; //Delivery Temperature Low Limit Setpoint(1)
-    	//     	float delta_temp; //Delta Temperature for Automatic Mean/Local Changeover
-    	//     	float serial_trans; //Serial Transmission Offset
-    	//     	float unit2_room_temp; //LAN Unit 2 Room Temperature
-    	//     	float unit3_room_temp; //LAN Unit 3 Room Temperature
-    	//     	float unit4_room_temp; //LAN Unit 4 Room Temperature
-    	//     	float unit5_room_temp; //LAN Unit 5 Room Temperature
-    	//     	float unit6_room_temp; //LAN Unit 6 Room Temperature
-    	//     	float unit7_room_temp; //LAN Unit 7 Room Temperature
-    	//     	float unit8_room_temp; //LAN Unit 8 Room Temperature
-    	//     	float unit9_room_temp; //LAN Unit 9 Room Temperature
-    	//     	float unit10_room_temp; //LAN Unit 10 Room Temperature
-    	//     	float unit2_room_humid; //LAN Unit 2 Room Humidity
-    	//     	float unit3_room_humid; //LAN Unit 3 Room Humidity
-    	//     	float unit4_room_humid; //LAN Unit 4 Room Humidity
-    	//     	float unit5_room_humid; //LAN Unit 5 Room Humidity
-    	//     	float unit6_room_humid; //LAN Unit 6 Room Humidity
-    	//     	float unit7_room_humid; //LAN Unit 7 Room Humidity
-    	//     	float unit8_room_humid; //LAN Unit 8 Room Humidity
-    	//     	float unit9_room_humid; //LAN Unit 9 Room Humidity
-    	//     	float unit10_room_humid; //LAN Unit 10 Room Humidity
-    	//     	unsigned int air_filter_run; //Air Filter Run Hours
-    	//     	unsigned int unit_run; //Unit Run Hours
-    	//     	unsigned int comp1_run; //Compressor 1 Run Hours
-    	//     	unsigned int comp2_run; //Compressor 2 Run Hours
-    	//     	unsigned int comp3_run; //Compressor 3 Run Hours
-    	//     	unsigned int comp4_run; //Compressor 4 Run Hours
-    	//     	unsigned int heat1_run; //Heater 1 Run Hours
-    	//     	unsigned int heat2_run; //Heater 2 Run Hours
-    	//     	unsigned int humid_run; //Humidifier Run Hours
-    	//     	unsigned int dehumid_prop_band; //Dehumidification Prop.Band
-    	//     	unsigned int humid_prop_band; //Humidification Prop.Band
-    	//     	unsigned int high_humid_thres; //High Humidity Alarm Threshold
-    	//     	unsigned int low_humid_thres; //Low Humidity Alarm Threshold
-    	//     	unsigned int dehumid_set; //Dehumidification Setpoint
-    	//     	unsigned int dehumid_set_mode; //Setback Mode: Dehumidification Setpoint
-    	//     	unsigned int humid_set; //Humidification Setpoint
-    	//     	unsigned int humid_set_mode; //Setback Mode: Humidification Setpoint
-    	//     	unsigned int res_delay; //Restart Delay
-    	//     	unsigned int regula_start_trans; //Regulation Start Transitory
-    	//     	unsigned int low_press_delay; //Low Pressure Delay
-    	//     	unsigned int th_limit_delay; //Temp./Humid.Limits Alarm Delay
-    	//     	unsigned int anti_hunt; //Anti-Hunting Constant
-    	//     	unsigned int cycle; //Stand-by Cycle Base Time
-    	//     	unsigned int lan_units_num; //Number of LAN Units
-    	//     	unsigned int circuit1_elec; //Circuit 1 Electronic Valve Position
-    	//     	unsigned int circuit2_elec; //Circuit 2 Electronic Valve Position
-    	//     	tele_c_ttime update_time;
-    	$CI = & get_instance();
-    	$CI->load->driver('cache');
-    	$idArr = array();
-    	$ug40List = array();
-    	if (strlen($dataIdStr))
-    		$idArr = explode(',', $dataIdStr);
-    	foreach ($idArr as $key => $val) {
-    		$ug40Obj = new stdClass();
-    		$ug40Obj->data_id = $val;
-     		$memData = $CI->cache->get($val);
-    		$ug40Obj->value = array();
-    		if($memData != false)
-    		{
-    			$v = unpack('C*', substr($memData, 4, 95));
-    			foreach($v as $i=>$val)
-    			{
-    				array_push($ug40Obj->value, $val);
-    			}
+        //     	unsigned int data_id;
+        //     	unsigned char system_on; //System On (Fan)
+        //     	unsigned char compressor1; //Compressor 1
+        //     	unsigned char compressor2; //Compressor 2
+        //     	unsigned char compressor3; //Compressor 3
+        //     	unsigned char compressor4; //Compressor 4
+        //     	unsigned char heater1; //El. Heater 1
+        //     	unsigned char heater2; //El. Heater 2
+        //     	unsigned char hot_gas; //Hot gas ON
+        //     	unsigned char dehumidification; //Dehumidification
+        //     	unsigned char humid; //Humidification
+        //     	unsigned char emergency; //Emergency Working
+        //     	unsigned char wrong_psword; //Wrong Password Alarm
+        //     	unsigned char high_room_temp; //High Room Temperature Alarm
+        //     	unsigned char low_room_temp; //Low Room Temperature Alarm
+        //     	unsigned char high_room_humidy; //High Room Humidity Alarm
+        //     	unsigned char low_root_humidy; //Low Room Humidity Alarm
+        //     	unsigned char sensors; //Room Temp. And Humidity Limits by External Sensors
+        //     	unsigned char clogged_filter; //Clogged Filter Alarm
+        //     	unsigned char flooding; //Flooding Alarm
+        //     	unsigned char loss_air_flow; //Loss of Air Flow Alarm
+        //     	unsigned char heater_over; //Heater Overheating Alarm
+        //     	unsigned char circuit1_high_presure;//Circuit 1 High Pressure Alarm
+        //     	unsigned char circuit2_high_presure;//Circuit 2 High Pressure Alarm
+        //     	unsigned char circuit1_low_presure;//Circuit 1 High Pressure Alarm
+        //     	unsigned char circuit2_low_presure;//Circuit 2 High Pressure Alarm
+        //     	unsigned char circuit1_elec_valve; //Circuit 1 Electronic Valve Failure
+        //     	unsigned char circuit2_elec_valve; //Circuit 2 Electronic Valve Failure
+        //     	unsigned char wrong_phase_seq; //Wrong Phase Sequence Alarm
+        //     	unsigned char smoke_fire; //Smoke-Fire Alarm
+        //     	unsigned char interrupt_lan; //Interrupted LAN Alarm
+        //     	unsigned char high_current; //Humidifier: High Current Alarm
+        //     	unsigned char power_loss; //Humidifier: Power Loss Alarm
+        //     	unsigned char water_loss; //Humidifier: Water Loss Alarm
+        //     	unsigned char cthd;//CW Temperature too High for Dehumidification
+        //     	unsigned char cvf_wftl;//CW Valve Failure or Water Flow too Low
+        //     	unsigned char loss_water_flow; //Loss of Water Flow Alarm
+        //     	unsigned char high_water_temp; //High Chilled Water Temperature Alarm
+        //     	unsigned char room_air_sensor; //Room Air Sensor Failed/Disconnected
+        //     	unsigned char hot_water_temp_sensor; //Hot Water Temp. Sensor Failed/Disconnected
+        //     	unsigned char chilled_water_temp; //Chilled Water Temp. Sensor Failed/Disconnected
+        //     	unsigned char outdoor_temp_sensor; //Outdoor Temperature Sensor Failed/Disconnected
+        //     	unsigned char deliv_air_temp_sensor; //Delivery Air Temp. Sensor Failed/Disconnected
+        //     	unsigned char room_humid; //Room Humidity Sensor Failed/Disconnected
+        //     	unsigned char water_outlet_temp; //Chilled Water Outlet Temp.Sensor Failed/Disconnected
+        //     	unsigned char compress1_alarm;  //Compressor 1: hour counter threshold Alarm
+        //     	unsigned char compress2_alarm;  //Compressor 2: hour counter threshold Alarm
+        //     	unsigned char compress3_alarm;  //Compressor 3: hour counter threshold Alarm
+        //     	unsigned char compress4_alarm;  //Compressor 4: hour counter threshold Alarm
+        //     	unsigned char air_filter; //Air filter: hour counter threshold Alarm
+        //     	unsigned char heater1_alarm; //Heater 1: hour counter threshold Alarm
+        //     	unsigned char heater2_alarm; //Heater 2: hour counter threshold Alarm
+        //     	unsigned char humid_alarm; //Humidifier: hour counter threshold Alarm
+        //     	unsigned char air_cond_unit; //Air conditioning unit: hour counter threshold Alarm
+        //     	unsigned char digital_input2; //Alarm by Digital Input 2
+        //     	unsigned char digital_input4; //Alarm by Digital Input 4
+        //     	unsigned char digital_input6; //Alarm by Digital Input 6
+        //     	unsigned char humid_general; //Humidifier General Alarm
+        //     	unsigned char unit; //Unit on Alarm
+        //     	unsigned char unit_rotation; //Unit on Rotation Alarm
+        //     	unsigned char unit_a; //Unit on Alarm Type A
+        //     	unsigned char unit_b; //Unit on Alarm Type B
+        //     	unsigned char unit_c; //Unit on Alarm Type C
+        //     	unsigned char dc_switch; //DX/CW Switch on TC Units
+        //     	unsigned char sw_switch; //Summer/Winter Switch
+        //     	unsigned char unit_switch; //Unit ON/OFF Switch
+        //     	unsigned char unit_reset; //Buzzer and Alarm Unit Reset
+        //     	unsigned char filter_reset; //Filter Run Hours Reset
+        //     	unsigned char comp1_run_reset; //Compressor 1 Run Hours Reset
+        //     	unsigned char comp2_run_reset; //Compressor 2 Run Hours Reset
+        //     	unsigned char comp3_run_reset; //Compressor 3 Run Hours Reset
+        //     	unsigned char comp4_run_reset; //Compressor 4 Run Hours Reset
+        //     	unsigned char comp1_start_reset; //Compressor 1 Starting Reset
+        //     	unsigned char comp2_start_reset; //Compressor 2 Starting Reset
+        //     	unsigned char comp3_start_reset; //Compressor 3 Starting Reset
+        //     	unsigned char comp4_start_reset; //Compressor 4 Starting Reset
+        //     	unsigned char heater1_run_reset; //Heater 1 Run Hours Reset
+        //     	unsigned char heater2_run_reset; //Heater 2 Run Hours Reset
+        //     	unsigned char heater1_start_reset;	//Heater 1 Starting Reset
+        //     	unsigned char heater2_start_reset;	//Heater 2 Starting Reset
+        //     	unsigned char humid_run_reset; //Humidifier Run Hours Reset
+        //     	unsigned char humid_start_reset; //Humidifier Starting Reset
+        //     	unsigned char unit_run_reset; //Unit Run Hours Reset
+        //     	unsigned char setback_mode; //Setback Mode (Sleep Mode)
+        //     	unsigned char sleep_mode_test; //Sleep Mode Test
+        //     	unsigned char lm_usage_values; //Local/Mean Usage of Values
+        //     	unsigned char sb_unit_no; //No. of Stand-by Units
+        //     	unsigned char unit2_rotation; //Unit 2 on Rotation Alarm
+        //     	unsigned char unit3_rotation; //Unit 3 on Rotation Alarm
+        //     	unsigned char unit4_rotation; //Unit 4 on Rotation Alarm
+        //     	unsigned char unit5_rotation; //Unit 5 on Rotation Alarm
+        //     	unsigned char unit6_rotation; //Unit 6 on Rotation Alarm
+        //     	unsigned char unit7_rotation; //Unit 7 on Rotation Alarm
+        //     	unsigned char unit8_rotation; //Unit 8 on Rotation Alarm
+        //     	unsigned char unit9_rotation; //Unit 9 on Rotation Alarm
+        //     	unsigned char unit10_rotation; //Unit 10 on Rotation Alarm
+        //     	float room_temp; //Room Temprature
+        //     	float outdoor_temp; //Outdoor Temperature
+        //     	float deliv_air_temp; //Delivery Air Temperature
+        //     	float chill_water_temp; //Chilled Water Temperature
+        //     	float hot_water_temp; //Hot Water Temperature
+        //     	float room_rela_humid; //Room Relative Humidity
+        //     	float outlet_water_temp; //Outlet Chilled Water Temperature
+        //     	float circuit1_evap_press; //Circuit 1 Evaporating Pressure
+        //     	float circuit2_evap_press; //Circuit 2 Evaporating Pressure
+        //     	float circuit1_suct_temp; //Circuit 1 Suction Temperature
+        //     	float circuit2_suct_temp; //Circuit 2 Suction Temperature
+        //     	float circuit1_evap_temp; //Circuit 1 Evaporating Temperature
+        //     	float circuit2_evap_temp; //Circuit 2 Evaporating Temperature
+        //     	float circuit1_superheat; //Circuit 1 Superheat
+        //     	float circuit2_superheat; //Circuit 2 Superheat
+        //     	float cold_water_ramp; //Cold Water Valve Ramp
+        //     	float hot_water_ramp; //Hot Water Valve Ramp
+        //     	float evap_fan_speed; //Evaporating Fan Speed
+        //     	float cool_set; //Cooling Setpoint
+        //     	float cool_sensit; //Cooling Sensitivity
+        //     	float cool_set2; //Second Cooling Setpoint
+        //     	float heat_set; //	Heating Setpoint
+        //     	float heat_set2;  //Second Heating setpoint
+        //     	float heat_sensit; //Heating Sensitivity
+        //     	float high_room_temp_thres; //High Room Temperature Alarm Threshold(1)
+        //     	float low_room_temp_thres; //Low Room Temperature Alarm Threshold(1)
+        //     	float cool_set_mode; //Setback Mode: Cooling Setpoint
+        //     	float heat_set_mode; //Setback Mode: Heating Setpoint
+        //     	float cws_to_sd; //CW Setpoint to Start Dehumidification
+        //     	float cw_high_temp_thres; //CW High Temperature Alarm Threshold
+        //     	float cws_to_scwom; //CW Setpoint to start CW Operating Mode(Only TC Units)
+        //     	float radcool_set; //Radcooler Setpoint in Energy Saving Mode
+        //     	float radcooler_set_dx; //Radcooler Setpoint in DX Mode
+        //     	float del_temp_low_set; //Delivery Temperature Low Limit Setpoint(1)
+        //     	float delta_temp; //Delta Temperature for Automatic Mean/Local Changeover
+        //     	float serial_trans; //Serial Transmission Offset
+        //     	float unit2_room_temp; //LAN Unit 2 Room Temperature
+        //     	float unit3_room_temp; //LAN Unit 3 Room Temperature
+        //     	float unit4_room_temp; //LAN Unit 4 Room Temperature
+        //     	float unit5_room_temp; //LAN Unit 5 Room Temperature
+        //     	float unit6_room_temp; //LAN Unit 6 Room Temperature
+        //     	float unit7_room_temp; //LAN Unit 7 Room Temperature
+        //     	float unit8_room_temp; //LAN Unit 8 Room Temperature
+        //     	float unit9_room_temp; //LAN Unit 9 Room Temperature
+        //     	float unit10_room_temp; //LAN Unit 10 Room Temperature
+        //     	float unit2_room_humid; //LAN Unit 2 Room Humidity
+        //     	float unit3_room_humid; //LAN Unit 3 Room Humidity
+        //     	float unit4_room_humid; //LAN Unit 4 Room Humidity
+        //     	float unit5_room_humid; //LAN Unit 5 Room Humidity
+        //     	float unit6_room_humid; //LAN Unit 6 Room Humidity
+        //     	float unit7_room_humid; //LAN Unit 7 Room Humidity
+        //     	float unit8_room_humid; //LAN Unit 8 Room Humidity
+        //     	float unit9_room_humid; //LAN Unit 9 Room Humidity
+        //     	float unit10_room_humid; //LAN Unit 10 Room Humidity
+        //     	unsigned int air_filter_run; //Air Filter Run Hours
+        //     	unsigned int unit_run; //Unit Run Hours
+        //     	unsigned int comp1_run; //Compressor 1 Run Hours
+        //     	unsigned int comp2_run; //Compressor 2 Run Hours
+        //     	unsigned int comp3_run; //Compressor 3 Run Hours
+        //     	unsigned int comp4_run; //Compressor 4 Run Hours
+        //     	unsigned int heat1_run; //Heater 1 Run Hours
+        //     	unsigned int heat2_run; //Heater 2 Run Hours
+        //     	unsigned int humid_run; //Humidifier Run Hours
+        //     	unsigned int dehumid_prop_band; //Dehumidification Prop.Band
+        //     	unsigned int humid_prop_band; //Humidification Prop.Band
+        //     	unsigned int high_humid_thres; //High Humidity Alarm Threshold
+        //     	unsigned int low_humid_thres; //Low Humidity Alarm Threshold
+        //     	unsigned int dehumid_set; //Dehumidification Setpoint
+        //     	unsigned int dehumid_set_mode; //Setback Mode: Dehumidification Setpoint
+        //     	unsigned int humid_set; //Humidification Setpoint
+        //     	unsigned int humid_set_mode; //Setback Mode: Humidification Setpoint
+        //     	unsigned int res_delay; //Restart Delay
+        //     	unsigned int regula_start_trans; //Regulation Start Transitory
+        //     	unsigned int low_press_delay; //Low Pressure Delay
+        //     	unsigned int th_limit_delay; //Temp./Humid.Limits Alarm Delay
+        //     	unsigned int anti_hunt; //Anti-Hunting Constant
+        //     	unsigned int cycle; //Stand-by Cycle Base Time
+        //     	unsigned int lan_units_num; //Number of LAN Units
+        //     	unsigned int circuit1_elec; //Circuit 1 Electronic Valve Position
+        //     	unsigned int circuit2_elec; //Circuit 2 Electronic Valve Position
+        //     	tele_c_ttime update_time;
+        $CI = &get_instance();
+        $CI->load->driver('cache');
+        $idArr = array();
+        $ug40List = array();
+        if (strlen($dataIdStr))
+            $idArr = explode(',', $dataIdStr);
+        foreach ($idArr as $key => $val) {
+            $ug40Obj = new stdClass();
+            $ug40Obj->data_id = $val;
+            $memData = $CI->cache->get($val);
+            $ug40Obj->value = array();
+            if ($memData != false) {
+                $v = unpack('C*', substr($memData, 4, 95));
+                foreach ($v as $i => $val) {
+                    array_push($ug40Obj->value, $val);
+                }
 //     			$ug40Obj->system_on = $v[1];
 //     			$ug40Obj->compressor1 = $v[2];
 //     			$ug40Obj->compressor2 = $v[3];
@@ -3377,11 +3459,10 @@ struct tele_c_smu06c_dc
 //     			$ug40Obj->unit8_rotation = $v[93];
 //     			$ug40Obj->unit9_rotation = $v[94];
 //     			$ug40Obj->unit10_rotation = $v[95];
-    			$v = unpack('f*', substr($memData, 4 + 95, 4 * 54));
-    			foreach($v as $i=>$val)
-    			{
-    				array_push($ug40Obj->value, $val);
-    			}
+                $v = unpack('f*', substr($memData, 4 + 95, 4 * 54));
+                foreach ($v as $i => $val) {
+                    array_push($ug40Obj->value, $val);
+                }
 //     			$ug40Obj->room_temp = $v[1];
 //     			$ug40Obj->outdoor_temp = $v[2];
 //     			$ug40Obj->deliv_air_temp = $v[3];
@@ -3436,11 +3517,10 @@ struct tele_c_smu06c_dc
 //     			$ug40Obj->unit8_room_humid = $v[52];
 //     			$ug40Obj->unit9_room_humid = $v[53];
 //     			$ug40Obj->unit10_room_humid = $v[54];
-    			$v = unpack('I*', substr($memData, 4 + 95 + 4 * 54, 4 * 26));
-    			foreach($v as $i=>$val)
-    			{
-    				array_push($ug40Obj->value, $val);
-    			}
+                $v = unpack('I*', substr($memData, 4 + 95 + 4 * 54, 4 * 26));
+                foreach ($v as $i => $val) {
+                    array_push($ug40Obj->value, $val);
+                }
 //     			$ug40Obj->air_filter_run = $v[1];
 //     			$ug40Obj->unit_run = $v[2];
 //     			$ug40Obj->comp1_run = $v[3];
@@ -3467,12 +3547,13 @@ struct tele_c_smu06c_dc
 //     			$ug40Obj->lan_units_num = $v[24];
 //     			$ug40Obj->circuit1_elec = $v[25];
 //     			$ug40Obj->circuit2_elec = $v[26];
-    		}
-    		array_push($ug40List, $ug40Obj);
-    	}
-    	return $ug40List;
+            }
+            array_push($ug40List, $ug40Obj);
+        }
+        return $ug40List;
     }
-    static function Get_LiebertUpsRtData ($dataIdStr)
+
+    static function Get_LiebertUpsRtData($dataIdStr)
     {
         /*
          * typedef struct tele_c_liebert_ups_
@@ -3484,13 +3565,13 @@ struct tele_c_smu06c_dc
          * tele_c_ttime update_time;
          * }tele_c_liebert_ups;
          */
-        $CI = & get_instance();
+        $CI = &get_instance();
         $CI->load->driver('cache');
         $idArr = array();
         $libertUpsList = array();
         if (strlen($dataIdStr))
             $idArr = explode(',', $dataIdStr);
-        
+
         foreach ($idArr as $key => $val) {
             $libertUpsObj = new stdClass();
             $libertUpsObj->data_id = $val;
@@ -3509,7 +3590,7 @@ struct tele_c_smu06c_dc
                     }
                     array_push($libertUpsObj->aList, $aObj);
                 }
-                
+
                 $v = unpack('I*', substr($memData, 4 + 2 * 32, 4 * 3));
                 $libertUpsObj->d1List = array();
                 foreach ($v as $k => $val) {
@@ -3542,230 +3623,221 @@ struct tele_c_smu06c_dc
 
     static function Get_LiebertPexRtData($dataIdStr)
     {
-  /*   	struct tele_c_liebert_pex
-    	{
-    		unsigned int data_id;
-    		//unsigned char bit[109];
-    		//unsigned short reg[158];
-    		tele_c_ttime update_time;
-    	}; */
-    	$CI = & get_instance();
-    	$CI->load->driver('cache');
-    	$idArr = array();
-    	$libertPexList = array();
-    	if (strlen($dataIdStr))
-    		$idArr = explode(',', $dataIdStr);
-    	
-    	foreach ($idArr as $key => $val) {
-    		$libertPexObj = new stdClass();
-    		$libertPexObj->data_id = $val;
-    		$memData = $CI->cache->get($val);
-    		if (strlen($memData) == 436) {
-    			$v = unpack('C*', substr($memData, 4, 109));
-    			$libertPexObj->isEmpty = false;
-    			$libertPexObj->aList = array();
-    			foreach ($v as $k => $val) {
-    				$bitObj = new stdClass();
-    				$bitObj->val = number_format($val, 1);
-    				$value = $CI->cache->get($libertPexObj->data_id . '_alert_bit_' . $k . '_value');
-    				if ($value) {
-    					$value = unpack("i", $value);
-    					$bitObj->alert = $value[1];
-    				}
-    				array_push($libertPexObj->aList, $bitObj);
-    			}
-    	
-    			$v = unpack('S*', substr($memData, 4 + 109, 2 * 158));
-    			$libertPexObj->d1List = array();
-    			foreach ($v as $k => $val) {
-    				$regObj = new stdClass();
-    				$regObj->val = number_format($val,2);
-    				$value = $CI->cache->get($libertPexObj->data_id . '_alert_reg_' . $k . '_value');
-    					if ($value) {
-    						$value = unpack("i", $value);
-    						$regObj->alert = $value[1];
-    					}
-    					array_push($libertPexObj->d1List, $regObj);
-    			}
-    			$v = unpack('v', substr($memData, 4 + 109 + 2*158, 2));
-    			$year = $v[1];
-    			$v = unpack('C*', substr($memData, 4 + 109 + 2*158 + 2, 5));
-    			$libertPexObj->update_datetime = date('Y-m-d H:i:s', strtotime($year . '-' . $v[1] . '-' . $v[2] . ' ' . $v[3] . ':' . $v[4] . ':' . $v[5]));
-    		} else {
-    			$libertPexObj->isEmpty = true;
-    			$libertPexObj->update_datetime = date('Y-m-d H:i:s');
-    		}
-    		$libertPexObj->dynamic_config = $CI->cache->get($libertPexObj->data_id . '_dc');
-    		array_push($libertPexList, $libertPexObj);
-    	}
-    	return $libertPexList;
-    /* 	$CI = & get_instance();
-    	$CI->load->driver('cache');
-    	$liebertPEXList = array();
-    	if (strlen($dataIdStr))
-    		$idArr = explode(',', $dataIdStr);
-    	foreach ($idArr as $data_id) {
-    		$liebertPEXObj = new stdClass();
-    		$liebertPEXObj->data_id = $data_id;
-    		$memData = $CI->cache->get($data_id);
-    		if (strlen($memData) == 436) {
-    			$liebertPEXObj->isEmpty = false;
-    			$v = unpack('C*', substr($memData, 4, 109));
-    			$liebertPEXObj->bit1 = array_values($v);
-    			
-    			$v = unpack('S*', substr($memData, 4 + 109, 2 * 158));
-    			$liebertPEXObj->reg3 = array_values($v);
-    			
-    			$v = unpack('v', substr($memData, 4 + 109 + 2*158, 2));
-    			$year = $v[1];
-    			$v = unpack('C*', substr($memData, 4 + 109 + 2*158 + 2, 5));
-    			$liebertPEXObj->update_datetime = date('Y-m-d H:i:s', strtotime($year . '-' . $v[1] . '-' . $v[2] . ' ' . $v[3] . ':' . $v[4] . ':' . $v[5]));
-    		} else {
-    			$liebertPEXObj->isEmpty = true;
-    			$liebertPEXObj->save_datetime = date('Y-m-d H:i:s');
-    		}
-    		$liebertPEXObj->dynamic_config = $CI->cache->get($data_id . '_dc');
-    		array_push($liebertPEXList, $liebertPEXObj);
-    	}
-    	return $liebertPEXList; */
+        /*   	struct tele_c_liebert_pex
+              {
+                  unsigned int data_id;
+                  //unsigned char bit[109];
+                  //unsigned short reg[158];
+                  tele_c_ttime update_time;
+              }; */
+        $CI = &get_instance();
+        $CI->load->driver('cache');
+        $idArr = array();
+        $libertPexList = array();
+        if (strlen($dataIdStr))
+            $idArr = explode(',', $dataIdStr);
+
+        foreach ($idArr as $key => $val) {
+            $libertPexObj = new stdClass();
+            $libertPexObj->data_id = $val;
+            $memData = $CI->cache->get($val);
+            if (strlen($memData) == 436) {
+                $v = unpack('C*', substr($memData, 4, 109));
+                $libertPexObj->isEmpty = false;
+                $libertPexObj->aList = array();
+                foreach ($v as $k => $val) {
+                    $bitObj = new stdClass();
+                    $bitObj->val = number_format($val, 1);
+                    $value = $CI->cache->get($libertPexObj->data_id . '_alert_bit_' . $k . '_value');
+                    if ($value) {
+                        $value = unpack("i", $value);
+                        $bitObj->alert = $value[1];
+                    }
+                    array_push($libertPexObj->aList, $bitObj);
+                }
+
+                $v = unpack('S*', substr($memData, 4 + 109, 2 * 158));
+                $libertPexObj->d1List = array();
+                foreach ($v as $k => $val) {
+                    $regObj = new stdClass();
+                    $regObj->val = number_format($val, 2);
+                    $value = $CI->cache->get($libertPexObj->data_id . '_alert_reg_' . $k . '_value');
+                    if ($value) {
+                        $value = unpack("i", $value);
+                        $regObj->alert = $value[1];
+                    }
+                    array_push($libertPexObj->d1List, $regObj);
+                }
+                $v = unpack('v', substr($memData, 4 + 109 + 2 * 158, 2));
+                $year = $v[1];
+                $v = unpack('C*', substr($memData, 4 + 109 + 2 * 158 + 2, 5));
+                $libertPexObj->update_datetime = date('Y-m-d H:i:s', strtotime($year . '-' . $v[1] . '-' . $v[2] . ' ' . $v[3] . ':' . $v[4] . ':' . $v[5]));
+            } else {
+                $libertPexObj->isEmpty = true;
+                $libertPexObj->update_datetime = date('Y-m-d H:i:s');
+            }
+            $libertPexObj->dynamic_config = $CI->cache->get($libertPexObj->data_id . '_dc');
+            array_push($libertPexList, $libertPexObj);
+        }
+        return $libertPexList;
+        /* 	$CI = & get_instance();
+            $CI->load->driver('cache');
+            $liebertPEXList = array();
+            if (strlen($dataIdStr))
+                $idArr = explode(',', $dataIdStr);
+            foreach ($idArr as $data_id) {
+                $liebertPEXObj = new stdClass();
+                $liebertPEXObj->data_id = $data_id;
+                $memData = $CI->cache->get($data_id);
+                if (strlen($memData) == 436) {
+                    $liebertPEXObj->isEmpty = false;
+                    $v = unpack('C*', substr($memData, 4, 109));
+                    $liebertPEXObj->bit1 = array_values($v);
+
+                    $v = unpack('S*', substr($memData, 4 + 109, 2 * 158));
+                    $liebertPEXObj->reg3 = array_values($v);
+
+                    $v = unpack('v', substr($memData, 4 + 109 + 2*158, 2));
+                    $year = $v[1];
+                    $v = unpack('C*', substr($memData, 4 + 109 + 2*158 + 2, 5));
+                    $liebertPEXObj->update_datetime = date('Y-m-d H:i:s', strtotime($year . '-' . $v[1] . '-' . $v[2] . ' ' . $v[3] . ':' . $v[4] . ':' . $v[5]));
+                } else {
+                    $liebertPEXObj->isEmpty = true;
+                    $liebertPEXObj->save_datetime = date('Y-m-d H:i:s');
+                }
+                $liebertPEXObj->dynamic_config = $CI->cache->get($data_id . '_dc');
+                array_push($liebertPEXList, $liebertPEXObj);
+            }
+            return $liebertPEXList; */
     }
+
     static function Get_PueData($dataIdStr)
     {
-    	$CI = & get_instance();
-    	$CI->load->driver('cache');
-    	$stationList = array();
-    	if (strlen($dataIdStr) > 0)
-    		$stationList = $CI->mp_xjdh->Get_Substations_By_IdList(explode(',', $dataIdStr));
-    	$dataList = array();
-    	foreach ($stationList as $stationObj) {
-    		$data = new stdClass();
-    		$data->data_id = $stationObj->id;
-    		$memData = $CI->cache->get($stationObj->id."_all_power");
-    		if($memData)
-    		{
-    			$val = unpack('f', $memData);
-    			$data->all_power = number_format($val[1], 2);
-    		}else{
-    			$data->all_power = 0.0;
-    		}
-    		$memData = $CI->cache->get($stationObj->id."_all_power_consumption");
-    		if($memData)
-    		{
-    			$val = unpack('f', $memData);
-    			$data->all_power_consumption = number_format($val[1], 2);
-    		}else{
-    			$data->all_power_consumption = 0.0;
-    		}
-    		$memData = $CI->cache->get($stationObj->id."_all_power_compensate");
-    		if($memData)
-    		{
-    			$val = unpack('f', $memData);
-    			$data->all_power_compensate = number_format($val[1], 2);
-    		}else{
-    			$data->all_power_compensate = 0.0;
-    		}
-    		$memData = $CI->cache->get($stationObj->id."_all_power_consumption_compensate");
-    		if($memData)
-    		{
-    			$val = unpack('f', $memData);
-    			$data->all_power_consumption_compensate = number_format($val[1], 2);
-    		}else{
-    			$data->all_power_consumption_compensate = 0.0;
-    		}
-    		$memData = $CI->cache->get($stationObj->id."_main_power");
-    		if($memData)
-    		{
-    			$val = unpack('f', $memData);
-    			$data->main_power = number_format($val[1], 2);
-    		}else{
-    			$data->main_power = 0.0;
-    		}
-    		$memData = $CI->cache->get($stationObj->id."_main_power_consumption");
-    		if($memData)
-    		{
-    			$val = unpack('f', $memData);
-    			$data->main_power_consumption = number_format($val[1], 2);
-    		}else{
-    			$data->main_power_consumption = 0.0;
-    		}
-    		$memData = $CI->cache->get($stationObj->id."_main_power_compensate");
-    		if($memData)
-    		{
-    			$val = unpack('f', $memData);
-    			$data->main_power_compensate = number_format($val[1], 2);
-    		}else{
-    			$data->main_power_compensate = 0.0;
-    		}
-    		if($data->main_power_compensate != 0.0)
-    		{
-    			$data->pue = number_format($data->all_power_compensate/$data->main_power_compensate,2);
-    		}
-    		$memData = $CI->cache->get($stationObj->id."_main_power_consumption_compensate");
-    		if($memData)
-    		{
-    			$val = unpack('f', $memData);
-    			$data->main_power_consumption_compensate = number_format($val[1], 2);
-    		}else{
-    			$data->main_power_consumption_compensate = 0.0;
-    		}
-    		if($data->main_power_consumption_compensate != 0.0)
-    		{
-    			$data->accumulated_pue = number_format($data->all_power_consumption_compensate/$data->main_power_consumption_compensate, 2);
-    		}
-    		$data->update_datetime = date('Y-m-d H:i:s');
-    		array_push($dataList, $data);
-    	}
-    	return $dataList;
+        $CI = &get_instance();
+        $CI->load->driver('cache');
+        $stationList = array();
+        if (strlen($dataIdStr) > 0)
+            $stationList = $CI->mp_xjdh->Get_Substations_By_IdList(explode(',', $dataIdStr));
+        $dataList = array();
+        foreach ($stationList as $stationObj) {
+            $data = new stdClass();
+            $data->data_id = $stationObj->id;
+            $memData = $CI->cache->get($stationObj->id . "_all_power");
+            if ($memData) {
+                $val = unpack('f', $memData);
+                $data->all_power = number_format($val[1], 2);
+            } else {
+                $data->all_power = 0.0;
+            }
+            $memData = $CI->cache->get($stationObj->id . "_all_power_consumption");
+            if ($memData) {
+                $val = unpack('f', $memData);
+                $data->all_power_consumption = number_format($val[1], 2);
+            } else {
+                $data->all_power_consumption = 0.0;
+            }
+            $memData = $CI->cache->get($stationObj->id . "_all_power_compensate");
+            if ($memData) {
+                $val = unpack('f', $memData);
+                $data->all_power_compensate = number_format($val[1], 2);
+            } else {
+                $data->all_power_compensate = 0.0;
+            }
+            $memData = $CI->cache->get($stationObj->id . "_all_power_consumption_compensate");
+            if ($memData) {
+                $val = unpack('f', $memData);
+                $data->all_power_consumption_compensate = number_format($val[1], 2);
+            } else {
+                $data->all_power_consumption_compensate = 0.0;
+            }
+            $memData = $CI->cache->get($stationObj->id . "_main_power");
+            if ($memData) {
+                $val = unpack('f', $memData);
+                $data->main_power = number_format($val[1], 2);
+            } else {
+                $data->main_power = 0.0;
+            }
+            $memData = $CI->cache->get($stationObj->id . "_main_power_consumption");
+            if ($memData) {
+                $val = unpack('f', $memData);
+                $data->main_power_consumption = number_format($val[1], 2);
+            } else {
+                $data->main_power_consumption = 0.0;
+            }
+            $memData = $CI->cache->get($stationObj->id . "_main_power_compensate");
+            if ($memData) {
+                $val = unpack('f', $memData);
+                $data->main_power_compensate = number_format($val[1], 2);
+            } else {
+                $data->main_power_compensate = 0.0;
+            }
+            if ($data->main_power_compensate != 0.0) {
+                $data->pue = number_format($data->all_power_compensate / $data->main_power_compensate, 2);
+            }
+            $memData = $CI->cache->get($stationObj->id . "_main_power_consumption_compensate");
+            if ($memData) {
+                $val = unpack('f', $memData);
+                $data->main_power_consumption_compensate = number_format($val[1], 2);
+            } else {
+                $data->main_power_consumption_compensate = 0.0;
+            }
+            if ($data->main_power_consumption_compensate != 0.0) {
+                $data->accumulated_pue = number_format($data->all_power_consumption_compensate / $data->main_power_consumption_compensate, 2);
+            }
+            $data->update_datetime = date('Y-m-d H:i:s');
+            array_push($dataList, $data);
+        }
+        return $dataList;
     }
+
     static function Get_FlunctuationData($dataIdStr)
     {
-    	$CI = & get_instance();
-    	$CI->load->driver('cache');
-    	$devList = array();
-    	if (strlen($dataIdStr) > 0)
-    		$devList = $CI->mp_xjdh->Get_Devices(explode(',', $dataIdStr));
-    	$dataList = array();
-    	foreach ($devList as $devObj) {
-    		$data = new stdClass();
-    		$data->data_id = $devObj->data_id;
-    		$memData = $CI->cache->get($devObj->data_id."_flunctuation");
-    		if($memData)
-    		{
-	    		$val = unpack('f*', $memData);
-	    		$data->load = number_format($val[1], 2);
-	    		$data->i = number_format($val[2], 2);
-	    		$data->stable_load = number_format($val[3], 2);
-	    		$data->stable_i = number_format($val[4], 2);
-	    		$data->sudden_flunctuation = number_format($val[5], 2);
-	    		$data->i0 = number_format($val[6], 2);
-	    		$data->i1 = number_format($val[7], 2);
-	    		$data->period_flunctuation = number_format($val[9], 2);
-    		}else{
-    			$data->isEmpty = true;
-    		}
-    		$data->update_datetime = date('Y-m-d H:i:s');
-    		array_push($dataList, $data);
-    	}
-    	return $dataList;
+        $CI = &get_instance();
+        $CI->load->driver('cache');
+        $devList = array();
+        if (strlen($dataIdStr) > 0)
+            $devList = $CI->mp_xjdh->Get_Devices(explode(',', $dataIdStr));
+        $dataList = array();
+        foreach ($devList as $devObj) {
+            $data = new stdClass();
+            $data->data_id = $devObj->data_id;
+            $memData = $CI->cache->get($devObj->data_id . "_flunctuation");
+            if ($memData) {
+                $val = unpack('f*', $memData);
+                $data->load = number_format($val[1], 2);
+                $data->i = number_format($val[2], 2);
+                $data->stable_load = number_format($val[3], 2);
+                $data->stable_i = number_format($val[4], 2);
+                $data->sudden_flunctuation = number_format($val[5], 2);
+                $data->i0 = number_format($val[6], 2);
+                $data->i1 = number_format($val[7], 2);
+                $data->period_flunctuation = number_format($val[9], 2);
+            } else {
+                $data->isEmpty = true;
+            }
+            $data->update_datetime = date('Y-m-d H:i:s');
+            array_push($dataList, $data);
+        }
+        return $dataList;
     }
-    static function Get_AiDiRtData ($dataIdStr)
+
+    static function Get_AiDiRtData($dataIdStr)
     {
-        $CI = & get_instance();
+        $CI = &get_instance();
         $CI->load->driver('cache');
         $roomDevList = array();
-        if (strlen($dataIdStr) > 0)
-        {
+        if (strlen($dataIdStr) > 0) {
             $roomDevList = $CI->mp_xjdh->Get_Devices(explode(',', $dataIdStr));
             foreach ($roomDevList as $roomDevObj) {
                 $memData = $CI->cache->get($roomDevObj->data_id);
-                if (in_array($roomDevObj->model, array('water','smoke'))) {
+                if (in_array($roomDevObj->model, array('water', 'smoke'))) {
                     if (strlen($memData) == 1) {
                         $val = unpack('C', $memData);
                         $roomDevObj->value = $val[1];
                     } else {
                         $roomDevObj->value = 1;
                     }
-                } else if (in_array($roomDevObj->model, array('temperature','humid'))) {
+                } else if (in_array($roomDevObj->model, array('temperature', 'humid'))) {
                     if (strlen($memData) == 4) {
                         $val = unpack('f', $memData);
                         $roomDevObj->value = number_format($val[1], 2);
@@ -3774,13 +3846,11 @@ struct tele_c_smu06c_dc
                     }
                 }
                 $roomDevObj->alert_value = 0;
-                $alertValue = $CI->cache->get($roomDevObj->data_id."_alert_value");
-                if($alertValue != FALSE)
-                {
+                $alertValue = $CI->cache->get($roomDevObj->data_id . "_alert_value");
+                if ($alertValue != FALSE) {
                     //有告警数据
                     $val = unpack('i', $alertValue);
-                    if(count($val) == 1)
-                    {
+                    if (count($val) == 1) {
                         $roomDevObj->alert_value = $val[1];
                     }
                 }
@@ -3791,9 +3861,9 @@ struct tele_c_smu06c_dc
         return $roomDevList;
     }
 
-    static function Get_MotorBatRtData ($dataIdStr)
+    static function Get_MotorBatRtData($dataIdStr)
     {
-        $CI = & get_instance();
+        $CI = &get_instance();
         $CI->load->driver('cache');
         $motorBatList = array();
         if (strlen($dataIdStr))
@@ -3815,12 +3885,12 @@ struct tele_c_smu06c_dc
         return $motorBatList;
     }
 
-    static function Get_RoomPiData ($piKeyStr)
+    static function Get_RoomPiData($piKeyStr)
     {
         $keyArr = array();
         if (strlen($piKeyStr) > 0)
             $keyArr = explode(',', $piKeyStr);
-        $CI = & get_instance();
+        $CI = &get_instance();
         $CI->load->driver('cache');
         $roomPiList = array();
         foreach ($keyArr as $key) {
@@ -3835,7 +3905,7 @@ struct tele_c_smu06c_dc
         return $roomPiList;
     }
 
-    static function Get_Access4000xRtData_deprecated ($dataIdStr)
+    static function Get_Access4000xRtData_deprecated($dataIdStr)
     {
         /*
          * struct tele_c_access4000x
@@ -3849,7 +3919,7 @@ struct tele_c_smu06c_dc
          * };
          *
          */
-        $CI = & get_instance();
+        $CI = &get_instance();
         $CI->load->driver('cache');
         $access4000xList = array();
         if (strlen($dataIdStr))
@@ -3882,7 +3952,7 @@ struct tele_c_smu06c_dc
         return $access4000xList;
     }
 
-    static function Get_AegMS10SERtData ($dataIdStr)
+    static function Get_AegMS10SERtData($dataIdStr)
     {
         /*
          * struct tele_c_aeg_ms10se
@@ -3966,7 +4036,7 @@ struct tele_c_aeg_ms10se
 	tele_c_ttime update_time;
 };
          */
-        $CI = & get_instance();
+        $CI = &get_instance();
         $CI->load->driver('cache');
         $aegMS10SEList = array();
         if (strlen($dataIdStr))
@@ -3981,13 +4051,13 @@ struct tele_c_aeg_ms10se
                 $aegMS10SEObj->reg1 = array_values($v);
                 $v = unpack('S*', substr($memData, 4 + 2 * 35, 15 * 2));
                 $aegMS10SEObj->reg2 = array_values($v);
-                
+
                 $v = unpack('C*', substr($memData, 4 + 2 * 35 + 15 * 2, 6));
                 $aegMS10SEObj->di = array_values($v);
-                
+
                 $v = unpack('C*', substr($memData, 4 + 2 * 35 + 15 * 2 + 6, 6));
                 $aegMS10SEObj->d_o = array_values($v);
-                
+
                 $v = unpack('v', substr($memData, 4 + 2 * 35 + 15 * 2 + 6 + 6, 2));
                 $year = $v[1];
                 $v = unpack('C*', substr($memData, 4 + 4 + 28 + 2 * 137 + 21 * 2 + 2, 5));
@@ -4002,7 +4072,7 @@ struct tele_c_aeg_ms10se
         return $aegMS10SEList;
     }
 
-    static function Get_AegMS10MRtData ($dataIdStr)
+    static function Get_AegMS10MRtData($dataIdStr)
     {
         /*
          * struct tele_c_aeg_ms10m
@@ -4108,7 +4178,7 @@ struct tele_c_aeg_ms10m
 	tele_c_ttime update_time;
 };
          */
-        $CI = & get_instance();
+        $CI = &get_instance();
         $CI->load->driver('cache');
         $aegMS10MList = array();
         if (strlen($dataIdStr))
@@ -4140,11 +4210,14 @@ struct tele_c_aeg_ms10m
         }
         return $aegMS10MList;
     }
-    static function Get_smd_status(){
-    	$CI=& get_instance();
-    	$CI->load->driver('cache');
-    		$cache=$CI->cache->get();    		 
-    	return $cache;
+
+    static function Get_smd_status()
+    {
+        $CI =& get_instance();
+        $CI->load->driver('cache');
+        $cache = $CI->cache->get();
+        return $cache;
     }
 }
+
 ?>

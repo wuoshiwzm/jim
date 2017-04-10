@@ -39,33 +39,15 @@ $(document).ready(function() {
 			for(var i = 0 ; i < ret.aidiValue.length ; i++)
 			{
 				var obj = ret.aidiValue[i];
-				if(hre !=null){
-					$(".rt-data").remove();
-						if(obj.data_id==hre){
-							$('#s').show();
-							$('#s td:eq(0)').html(i);
-							$('#s td:eq(1) a').html(hrename);
-							if(obj.model == 'water' || obj.model == 'smoke'){
-								$('#s td:eq(2)').html(obj.alert_value > 0 ? '<span class="label label-important">告警</span>' : '<span class="label label-success">正常</span>');
-							}else if(obj.model == 'temperature'){
-								$('#s td:eq(2)').html(obj.alert_value > 0 ? '<span class="label label-important">'+ obj.value + '°C</span>' : '<span class="label label-success">'+ obj.value + '°C</span>' );
-							}else if(obj.model == 'humid'){
-								$('#s td:eq(2)').html(obj.alert_value > 0 ? '<span class="label label-important">'+ obj.value + '°%</span>' : '<span class="label label-success">'+ obj.value + '%</span>');
-							}
-							$('#s td:eq(3)').html(obj.save_datetime);
-							$('#butt').attr("data_id",hre);
-							$('#s td:eq(1) a').attr("data_id",hre);
-							$('#s td:eq(1) a').attr("model",batmodel);
-						}	
-				}
 				if(obj.model == 'water' || obj.model == 'smoke'){
-					$('#device-'+ obj.data_id +'>td:eq(2)').html(obj.alert_value > 0 ? '<span class="label label-important"><a href="/portal/alarm?word=' + obj.data_id + '">告警</a></span>' : '<span class="label label-success">正常</span>');
+					$('#device-'+ obj.data_id +'>td:eq(2)').html(obj.alert_value > 0 ? '<span class="label label-important"><a href="/portal/alarm?word=' + obj.data_id + '">告警</a></span>' : '<span class="label label-success">正常</span>' + (obj.status ? '':'  (<span class="label label-warning">数据异常</span>)'));
 				}else if(obj.model == 'temperature'){
-					$('#device-'+ obj.data_id +'>td:eq(2)').html(obj.alert_value > 0  ? '<span class="label label-important"><a href="/portal/alarm?word=' + obj.data_id + '">' + obj.value + '°C</a></span>' : '<span class="label label-success">'+ obj.value + '°C</span>' );
+					$('#device-'+ obj.data_id +'>td:eq(2)').html(obj.alert_value > 0  ? '<span class="label label-important"><a href="/portal/alarm?word=' + obj.data_id + '">' + obj.value + '°C</a></span>' : '<span class="label label-success">'+ obj.value + '°C</span>' + (obj.status ? '':'  (<span class="label label-warning">数据异常</span>)') );
 				}else if(obj.model == 'humid'){
-					$('#device-'+ obj.data_id +'>td:eq(2)').html(obj.alert_value > 0  ? '<span class="label label-important"><a href="/portal/alarm?word=' + obj.data_id + '">' + obj.value + '°%</a></span>' : '<span class="label label-success">'+ obj.value + '%</span>');
+					$('#device-'+ obj.data_id +'>td:eq(2)').html(obj.alert_value > 0  ? '<span class="label label-important"><a href="/portal/alarm?word=' + obj.data_id + '">' + obj.value + '°%</a></span>' : '<span class="label label-success">'+ obj.value + '%</span>' + (obj.status ? '':'  (<span class="label label-warning">数据异常</span>)'));
 				}
-				$('#device-'+ obj.data_id +'>td:eq(3)' ).html(obj.save_datetime);
+				$('#device-'+ obj.data_id +'>td:eq(3)' ).html(obj.last_update);
+				$('#device-'+ obj.data_id +'>td:eq(4)' ).html(obj.save_datetime);
 			}
 			
 		});
