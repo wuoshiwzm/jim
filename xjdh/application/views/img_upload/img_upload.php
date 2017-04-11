@@ -201,7 +201,7 @@
         silverlight_xap_url: 'plupload/Moxie.xap',
         //silverlight文件地址
         filters: {
-            max_file_size: '2048kb',
+            max_file_size: '5000kb',
             //最大上传文件大小（格式100b, 10kb, 10mb, 1gb）
             mime_types: [ //允许文件上传类型
                 {

@@ -3565,12 +3565,12 @@ class Portal extends CI_Controller
        }
         $data['deviceContentHeader'] = $deviceContentHeader;
         $data['model'] = $model;
-
         $scriptExtra .= '<script type="text/javascript" src="/public/portal/js/rt_data/rt_data.js"></script>';
         $bcObj = new Breadcrumb();
         $bcObj->title = '实时数据管理';
         $bcObj->isLast = true;
         array_push($data['bcList'], $bcObj);
+
         $content = $this->load->view("portal/realtimedata", $data, TRUE);
         $this->mp_master->Show_Portal($content, $scriptExtra, '', $data);
     }

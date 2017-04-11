@@ -25,8 +25,6 @@ class Check extends CI_Controller
      */
     public function index()
     {
-        $data = "P";
-        print_r(unpack("C*",$data));die;
         $this->arrange();
     }
 
