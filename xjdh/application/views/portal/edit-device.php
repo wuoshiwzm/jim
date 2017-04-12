@@ -35,7 +35,7 @@
 								<button data-dismiss="alert" class="close" type="button">×</button>
 								<i class="icon-exclamation-sign"></i><?php echo $errorMsg;?>
                     		</div>
-                		<?php }else if($successMsg){?>
+                		<?php }else if(isset($successMsg)&&$successMsg){?>
                 		  <div class="alert alert-success">
 								<button data-dismiss="alert" class="close" type="button">×</button>
 								<i class="icon-ok-sign"></i><?php echo $successMsg;?>&nbsp;&nbsp;&nbsp;&nbsp;<a href="<?php echo 'http://'.$_SERVER['HTTP_HOST'].$_SERVER['PHP_SELF'].'?'.$_SERVER['QUERY_STRING']?>"><font color='write'>继续添加</font></a>
@@ -88,7 +88,7 @@
 										name='selSubstation' id='selSubstation'>
 									<?php if(isset($substationList) || count($substation)) foreach ($substationList as $substationObj){?>
 									   <option value='<?php echo htmlentities($substationObj->id,ENT_COMPAT,"UTF-8")?>'
-											<?php if((count($devObj) && $substationObj->id == $devObj->substation_id) || $substation == $substationObj->id){?>
+											<?php if((isset($devObj)&&count($devObj) && $substationObj->id == $devObj->substation_id) || $substation == $substationObj->id){?>
 											selected="selected" <?php }?>> <?php echo htmlentities($substationObj->name,ENT_COMPAT,"UTF-8");?></option>
 									<?php }?>
 									</select>
@@ -99,7 +99,7 @@
 										name='selRoom' id='selRoom'>
 									<?php if(isset($roomList)) foreach ($roomList as $roomObj){?>
 									   <option value='<?php echo htmlentities($roomObj->id,ENT_COMPAT,"UTF-8")?>'
-											<?php if(count($devObj) && $roomObj->id == $devObj->room_id){?>
+											<?php if(isset($devObj)&&count($devObj) && $roomObj->id == $devObj->room_id){?>
 											selected="selected" <?php }?>> <?php echo htmlentities($roomObj->name,ENT_COMPAT,"UTF-8");?></option>
 									<?php }?>
 									</select>
@@ -112,7 +112,7 @@
 										name='selSmdDev' id='selSmdDev'>
 									   <?php if(isset($smdDevList)) foreach ($smdDevList as $smdDevObj){?>
 									   <option value='<?php echo htmlentities($smdDevObj->device_no,ENT_COMPAT,"UTF-8")?>'
-											<?php if(count($devObj) && $devObj->smd_device_no == $smdDevObj->device_no){?>
+											<?php if(isset($devObj)&&count($devObj) && $devObj->smd_device_no == $smdDevObj->device_no){?>
 											selected="selected" <?php }?>><?php echo htmlentities($smdDevObj->name,ENT_COMPAT,"UTF-8");?></option>
 									   <?php }?>
 									</select>
@@ -120,7 +120,7 @@
 								<label class="control-label" style="float: left;">设备名     <font size=4 color=red>&nbsp;*</font></label>
 								<div class="controls" style="margin-left: 20px; float: left;">
 									<input type='text' name='txtName' id='txtName'
-										value='<?php if(count($devObj)){ echo htmlentities($devObj->name,ENT_COMPAT,"UTF-8");}?>' />
+										value='<?php if(isset($devObj)&&count($devObj)){ echo htmlentities($devObj->name,ENT_COMPAT,"UTF-8");}?>' />
 								</div>
 							</div>
 														
@@ -132,14 +132,15 @@
 										<option value=''>选择设备类型</option>
 									   <?php foreach (Defines::$gDevModel as $key=>$val){?>
 									   <option
-											<?php if(count($devObj) && $devObj->model == $key) {?>
+											<?php if(isset($devObj)&&count($devObj) && $devObj->model == $key) {?>
 											selected="selected" <?php }?> value='<?php echo $key;?>'><?php echo $val;?></option>
 									   <?php }?>
 									</select>
 								</div>
 								<label class="control-label"  id='group' style="float: left;">所属分组<span id='must' style=""><font size=4 color=red>&nbsp;*</font></span></label>
 									<div class="controls" style="margin-left: 20px; float: left;">
-										<input type="text"  name='devgroup' id='devgroup' style="" <?php if(count($devObj)){?>
+
+										<input type="text"  name='devgroup' id='devgroup' style="" <?php if(isset($devObj)&&count($devObj)){?>
 										value="<?php echo htmlentities($devObj->dev_group,ENT_COMPAT,"UTF-8");?>" <?php }?>/>
 									</div>
 									<span class="help-block error" id='text1'   style="">
@@ -174,8 +175,9 @@
 							<div class="control-group">
 								<label class="control-label" style="float: left;">数据ID  <font size=4 color=red>&nbsp;*</font></label>
 								<div class="controls" style="margin-left: 20px; float: left;">
-									<input type='text' name='txtDataId' id='txtDataId' data_id='<?php echo $data_id?>' readonly="readonly"
-										<?php if(count($devObj)){?>
+									<input type='text' name='txtDataId' id='txtDataId' data_id='<?php if(isset($data_id)){echo $data_id;} ?>'
+                                           readonly="readonly"
+										<?php if(isset($devObj)&&count($devObj)){?>
 										value="<?php echo htmlentities($devObj->data_id,ENT_COMPAT,"UTF-8");?>"
 										<?php }?> />
 								</div>
@@ -184,7 +186,7 @@
 									<select class="chzn-select chzn-search-disabled" name='selPort'
 										id='selPort'>
 									<?php for($i = 0; $i < 13 ; $i++){?>
-									   <option <?php if(count($devObj) && $devObj->port == $i) {?>
+									   <option <?php if(isset($devObj)&&count($devObj) && $devObj->port == $i) {?>
 											selected="selected" <?php }?> value='<?php echo $i;?>'><?php echo $i;?></option>
 								   <?php }?>
 									</select>
@@ -196,42 +198,42 @@
 									<select class="chzn-select chzn-search-disabled "
 										name='selActive' id='selActive'>
 										<option
-											<?php if((count($devObj) && $devObj->active) || $this->input->post('selActive') == 'active'){?>
+											<?php if((isset($devObj)&&count($devObj) && $devObj->active) || $this->input->post('selActive') == 'active'){?>
 											selected='selected' <?php }?> value='active'>已激活</option>
 										<option
-											<?php if((count($devObj) && !$devObj->active) || $this->input->post('selActive') == 'deactive'){?>
+											<?php if((isset($devObj)&&count($devObj) && !$devObj->active) || $this->input->post('selActive') == 'deactive'){?>
 											selected='selected' <?php }?> value='deactive'>未激活</option>
 									</select>
 								</div>
 								<label class="control-label" style="float: left;">逻辑参数     <font size=4 color=red>&nbsp;&nbsp;</font></label>
 								<div class="controls" style="margin-left: 20px; float: left;">
 									<input type='text' name='txtExtraParam' id='txtExtraParam'
-										value='<?php if (count($devObj)) echo htmlentities($devObj->extra_para,ENT_COMPAT,"UTF-8");?>' />
+										value='<?php if (isset($devObj)&&count($devObj)) echo htmlentities($devObj->extra_para,ENT_COMPAT,"UTF-8");?>' />
 								</div>		
 							</div>
 							<div class="control-group">
 								<label class="control-label" style="float: left;">设备品牌     <font size=4 color=red>&nbsp;&nbsp;</font></label>
 								<div class="controls" style="margin-left: 20px; float: left;">
 									<input type='text' name='devicebrand' id='txtdevicebrand'
-										value='<?php if (count($devObj)) echo htmlentities($devObj->devicebrand,ENT_COMPAT,"UTF-8");?>' />
+										value='<?php if (isset($devObj)&&count($devObj)) echo htmlentities($devObj->devicebrand,ENT_COMPAT,"UTF-8");?>' />
 								</div>
 								<label class="control-label" style="float: left;">生产日期     <font size=4 color=red>&nbsp;&nbsp;</font></label>
 								<div class="controls" style="margin-left: 20px; float: left;">
 									<input type="text" id="txtProductionDate"
 										name="txtProductionDate" class="datepicker"
-										value='<?php if (count($devObj)) echo htmlentities($devObj->production_date,ENT_COMPAT,"UTF-8");?>'>
+										value='<?php if (isset($devObj)&&count($devObj)) echo htmlentities($devObj->production_date,ENT_COMPAT,"UTF-8");?>'>
 								</div>
 							</div>
 							<div class="control-group">
 								<label class="control-label" style="float: left;">设备型号    <font size=4 color=red>&nbsp;&nbsp;</font></label>
 								<div class="controls" style="margin-left: 20px; float: left;">
 									<input type='text' name='txtDeviceModel' id='txtDeviceModel'
-										value='<?php if (count($devObj)) echo htmlentities($devObj->device_model,ENT_COMPAT,"UTF-8");?>' />
+										value='<?php if (isset($devObj)&&count($devObj)) echo htmlentities($devObj->device_model,ENT_COMPAT,"UTF-8");?>' />
 								</div>
 								<label class="control-label" style="float: left;">额定功率     <font size=4 color=red>&nbsp;&nbsp;</font></label>
 								<div class="controls" style="margin-left: 20px; float: left;">
 									<input type='text' name='txtRatedPower' id='txtRatedPower'
-										value='<?php if (count($devObj)) echo htmlentities($devObj->rated_power,ENT_COMPAT,"UTF-8");?>' />
+										value='<?php if (isset($devObj)&&count($devObj)) echo htmlentities($devObj->rated_power,ENT_COMPAT,"UTF-8");?>' />
 								</div>
 							</div>
 							<div class="control-group">
@@ -239,7 +241,7 @@
 								<div class="controls" style="margin-left: 20px; float: left;">
 									<input type='file' name='fDistributionEquipment'
 										id='fDistributionEquipment'>
-								    <?php if (count($devObj) && strlen($devObj->distribution_equipment) > 0) { $dEqObj = json_decode($devObj->distribution_equipment); ?>
+								    <?php if (isset($devObj)&&count($devObj) && strlen($devObj->distribution_equipment) > 0) { $dEqObj = json_decode($devObj->distribution_equipment); ?>
 								    <a
 										href='<?php echo site_url('/attachments/'.$dEqObj->file_name)?>'
 										target="_blank"><?php echo htmlentities($dEqObj->orig_name,ENT_COMPAT,"UTF-8");?></a>
@@ -252,7 +254,11 @@
 								<label class="control-label">备注</label>
 								<div class="controls">
 									<div class='span6'>
-										<textarea class="span5" rows='6' name='txtMemo' id='txtMemo'><?php if (count($devObj)) echo htmlentities($devObj->memo, ENT_COMPAT, "UTF-8");?></textarea>
+										<textarea class="span5" rows='6' name='txtMemo' id='txtMemo'>
+                                            <?php if (isset($devObj)&&count($devObj))
+                                                echo htmlentities($devObj->memo, ENT_COMPAT, "UTF-8");
+                                            ?>
+                                        </textarea>
 									</div>
 								</div>
 							</div>

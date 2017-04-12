@@ -250,8 +250,12 @@ class MP_Xjdh extends CI_Model
     }
 
 
-    function Get_Device_Count($cityCode = false, $countyCode = false, $substationId = false, $roomId = false, $smd_device_no = false, $devModel = false,
-                              $devgroup = false, $active = 'all', $devName = false, $dataId = false, $Identifier = false, $keyWord = false, $selCity = false, $gCounty = false)
+    function Get_Device_Count($cityCode = false, $countyCode = false, $substationId = false,
+                              $roomId = false, $smd_device_no = false, $devModel = false,
+                              $devgroup = false, $active = 'all', $devName = false,
+                              $dataId = false, $Identifier = false,
+                              $keyWord = false, $selCity = false,
+                              $gCounty = false)
     {
         $dbObj = $this->load->database('default', TRUE);
         $dbObj->join('room', 'room.id=device.room_id', 'left');
@@ -886,13 +890,13 @@ class MP_Xjdh extends CI_Model
         if ($subId) {
             $dbObj->where_in('id', $subId);
         }
-        if ($keyWord) {
-            $dbObj->group_start();
-            $dbObj->like('substation.name', $keyWord);
-            //$dbObj->or_like('substation.county', $keyWord);
-            $dbObj->or_like('substation.type', $keyWord);
-            $dbObj->group_end();
-        }
+//        if ($keyWord) {
+//            $dbObj->group_start();
+//            $dbObj->like('substation.name', $keyWord);
+//            //$dbObj->or_like('substation.county', $keyWord);
+//            $dbObj->or_like('substation.type', $keyWord);
+//            $dbObj->group_end();
+//        }
         $dbObj->order_by('city_code', 'asc');
         $dbObj->order_by('county_code', 'asc');
         $dbObj->order_by('name', 'asc');

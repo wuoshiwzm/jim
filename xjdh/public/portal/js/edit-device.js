@@ -1,13 +1,14 @@
 $(document).ready(function(){
 	var pre_data_id = $('#txtDataId').attr('data_id');
+	alert(pre_data_id);
 	var devName = '';
 	 $("#selRoom").bind("change",function(){
 		 $.get('/portal/Get_Sev_Name',{roomid:$(this).val()},function(data){
 			 eval('var ret = ' + data);
 			 devName = ret;
 		 })
-	 })
-	  $("#selModel").bind("change",function(){
+	 });
+	$("#selModel").bind("change",function(){
 		for(var i=0;i<devName.denName.length;i++){
 			if($('#txtName').val() == devName.denName[i].name){
 				alert("同一个机房下不能有重复设备名字");

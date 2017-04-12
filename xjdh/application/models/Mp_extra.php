@@ -9,59 +9,67 @@ class Mp_Extra extends CI_Model
         parent::__construct();
     }
 
-    function get_user_subs($userID){
+    function get_user_subs($userID)
+    {
         $dbObj = $this->load->database('default', TRUE);
-        $dbObj->where('user_id',$userID);
+        $dbObj->where('user_id', $userID);
         return $arrange = $dbObj->get('check_arrange')->result();
     }
 
-    function Get_substation_info($subID){
+    function Get_substation_info($subID)
+    {
         $dbObj = $this->load->database('default', TRUE);
-        $dbObj->where('id',$subID);
+        $dbObj->where('id', $subID);
         return $arrange = $dbObj->get('substation')->row();
     }
 
-    function getSubstationByRoom($roomID){
+    function getSubstationByRoom($roomID)
+    {
         $dbObj = $this->load->database('default', TRUE);
-        $dbObj->where('id',$roomID);
+        $dbObj->where('id', $roomID);
         return $substation = $dbObj->get('room')->row();
     }
 
-    function Get_room_info($roomID){
+    function Get_room_info($roomID)
+    {
         $dbObj = $this->load->database('default', TRUE);
-        $dbObj->where('id',$roomID);
+        $dbObj->where('id', $roomID);
         return $arrange = $dbObj->get('room')->row();
     }
 
-    function Get_device_info($dataID){
+    function Get_device_info($dataID)
+    {
         $dbObj = $this->load->database('default', TRUE);
-        $dbObj->where('data_id',$dataID);
+        $dbObj->where('data_id', $dataID);
         return $arrange = $dbObj->get('device')->row();
     }
 
-    function get_device_name($data_id){
+    function get_device_name($data_id)
+    {
         $dbObj = $this->load->database('default', TRUE);
-        $dbObj->where('data_id',$data_id);
+        $dbObj->where('data_id', $data_id);
         return $dbObj->get('device')->row()->name;
     }
 
-    function getArrangeByID($arrangeID){
+    function getArrangeByID($arrangeID)
+    {
         $dbObj = $this->load->database('default', TRUE);
-        $dbObj->where('id',$arrangeID);
+        $dbObj->where('id', $arrangeID);
         return $arrange = $dbObj->get('check_arrange')->row();
     }
 
     function get_user_id_by_name($name)
     {
         $dbObj = $this->load->database('default', TRUE);
-        $dbObj->where('full_name',$name);
+        $dbObj->where('full_name', $name);
         $dbObj->select('id');
         return $dbObj->get('user')->row();
     }
 
-    function get_user_fullname($id){
+    function get_user_fullname($id)
+    {
         $dbObj = $this->load->database('default', TRUE);
-        $dbObj->where('id',$id);
+        $dbObj->where('id', $id);
         $dbObj->select('full_name');
         return $dbObj->get('user')->row()->full_name;
     }
@@ -74,9 +82,10 @@ class Mp_Extra extends CI_Model
         return $dbObj->get('room')->row();
     }
 
-    function get_device_type_name($data_type){
-        foreach (Constants::$devConfigList as $a){
-            if($a[2] == $data_type){
+    function get_device_type_name($data_type)
+    {
+        foreach (Constants::$devConfigList as $a) {
+            if ($a[2] == $data_type) {
                 return $a[1];
             }
         }
@@ -101,7 +110,7 @@ class Mp_Extra extends CI_Model
             $dbObj->join('room', 'room.id=device.room_id');
             $dbObj->join('substation', 'substation.id=room.substation_id', 'left');
             $dbObj->where('device.room_id', $room_id);
-            $dbObj->where_not_in('device.model',['motivator','venv']);
+            $dbObj->where_not_in('device.model', ['motivator', 'venv']);
             $dbObj->where('active', true);
             if (is_array($model)) {
                 $dbObj->where_in('model', $model);
@@ -117,65 +126,88 @@ class Mp_Extra extends CI_Model
         }
     }
 
-    function getArrangeBySub($subID){
+    function getArrangeBySub($subID)
+    {
         $dbObj = $this->load->database('default', TRUE);
-        $res = $dbObj->where('substation_id',$subID)
+        $res = $dbObj->where('substation_id', $subID)
             ->get('check_arrange')
             ->row();
         return $res;
     }
 
-    function getArrangeByRoom($roomID){
+    function getArrangeByRoom($roomID)
+    {
         $dbObj = $this->load->database('default', TRUE);
-        $res = $dbObj->where('room_id',$roomID)->get('check_device')->row();
+        $res = $dbObj->where('room_id', $roomID)->get('check_device')->row();
         return $res;
     }
 
     //判断工艺问题是否已经提交部分
-    function checkApplied($subID){
+    function checkApplied($subID)
+    {
         $dbObj = $this->load->database('default', TRUE);
-        $res = $dbObj->where('substation_id',$subID)
+        $res = $dbObj->where('substation_id', $subID)
             ->get('check_apply')
             ->row();
         return $res;
     }
 
     //判断设备问题是否已经提交部分
-    function deviceApplied($roomID){
+    function deviceApplied($roomID)
+    {
         $dbObj = $this->load->database('default', TRUE);
-        $res = $dbObj->where('room_id',$roomID)
+        $res = $dbObj->where('room_id', $roomID)
             ->get('check_device')
             ->row();
         return $res;
     }
 
     //获取设备类型的中文名称
-    function getDeviceTypeName($typeName){
-        foreach (Constants::$devConfigList as $devConfig){
-            if($devConfig[2] == $typeName){
+    function getDeviceTypeName($typeName)
+    {
+        foreach (Constants::$devConfigList as $devConfig) {
+            if ($devConfig[2] == $typeName) {
                 return $devConfig[1];
             }
         }
     }
 
     //获取问题内容 通过问题ID
-    function getQuestionContent($questionID){
+    function getQuestionContent($questionID)
+    {
         $dbObj = $this->load->database('default', TRUE);
-        $res = $dbObj->where('id',$questionID)
+        $res = $dbObj->where('id', $questionID)
             ->get('check_question')
             ->row();
         return $res;
     }
 
     //获取城市对应的局站列表 数组
-    function getSubsList($cityCode){
-        $subs =[];
+    function getSubsList($cityCode)
+    {
+        $subs = [];
         $dbObj = $this->load->database('default', TRUE);
-        $res = $dbObj->where('city_code',$cityCode)->get('substation')->result();
-        foreach ($res as $re){
+        $res = $dbObj->where('city_code', $cityCode)->get('substation')->result();
+        foreach ($res as $re) {
             $subs[] = $re->id;
         }
         return $subs;
+    }
+
+    function Get_Device_By_SmdRoom($smdID, $roomID)
+    {
+        //同时机房符合 板子也符合
+        $dbObj = $this->load->database('default', TRUE);
+        $res = $dbObj->where('room_id', $roomID)
+            ->where('smd_device_no', $smdID)
+            ->order_by("dev_type", "asc")
+            ->order_by("port", "asc")
+            ->get('device')
+            ->result();
+
+        return $res;
+
+
     }
 
 

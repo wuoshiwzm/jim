@@ -89,7 +89,7 @@ class Realtime
         return "无效";
     }
     static function _GetPMBusPowerAC($model,$memData, $airlock_number, $p40_43_number, $p40_41_number, $p40_44_number)
-    {    
+    {
         $dataObj = new stdClass();
         $acLen = (18+ $airlock_number + 1 + $p40_43_number + 3 + 7);
         $acChannelLen = (16 + 6 + 4 * $p40_41_number + $p40_44_number);
@@ -799,6 +799,7 @@ class Realtime
         $CI = &get_instance();
         $CI->load->driver('cache');
         $memData = $CI->cache->get($data_id);
+
         // memData minimal length
         if (strlen($memData) >= 75) {
             $dk09Obj->isEmpty = false;
@@ -821,15 +822,24 @@ class Realtime
             $dk09Obj->BackUpBatteryVoltage_Free = $v[12];//备用交流输入频率
 
             //REG_41_42 获取系统模拟量数据(定点数)
-            $v = unpack("S*", substr($memData, 28, 5 * 2));
+            $v = unpack("S*", substr($memData, 28, 1 * 2));
             $dk09Obj->RectificationNum = $v[1];//获取系统模拟量数据(定点数)
-            $dk09Obj->ModuleState = $v[2];//模块输出电压*100
-            $dk09Obj->ModuleOutputCurrent = $v[3];//模块输出电流*100
-            $dk09Obj->ModuleTempature = $v[4];//内部温度
+
+            $dk09Obj->moduleInfo = [];
+            $v = unpack("S*", substr($memData, 28+ 1 * 2,12*4*2));
+            for($i =0;$i<12;$i++){
+                $info = new stdClass();
+                $v = unpack("S*", substr($memData, 28 + 1 * 2+$i*4*2,4*2));
+                $info->ModuleState = $v[1];//模块状态,参考前面定义的宏
+                $info->ModuleOutputVoltage = $v[2];//模块输出电流*100
+                $info->ModuleOutputCurrent = $v[3];//模块输出电流*100
+                $info->ModuleTempature = $v[4];//内部温度
+                $dk09Obj->moduleInfo[] = $info;
+            }
 
 
             //REG_42_42  获取系统模拟量数据（定点）
-            $v = unpack("S*", substr($memData, 38, 12 * 2));
+            $v = unpack("S*", substr($memData, 126, 12 * 2));
             $dk09Obj->BatteryNum = $v[1];//电池组数
             $dk09Obj->Battery_1_Voltage = $v[2];//电池1电压
             $dk09Obj->Battery_1_Current = $v[3];//电池1电流
@@ -844,14 +854,15 @@ class Realtime
             $dk09Obj->battery_2_temperature = $v[12];//电池2温度
 
             //reg_42_44_data  获取状态与报警
-            $v = unpack("S*", substr($memData, 62, 3 * 2));
+            $v = unpack("S*", substr($memData, 150, 3 * 2));
             $dk09Obj->_status = $v[1];//状态
             $dk09Obj->SeriousAlarm = $v[2];//严重报警
             $dk09Obj->Generalalarm = $v[3];//一般报警
 
 
             //update_time
-            $v = unpack("C*", substr($memData, 68, 1 * 7));
+            $v = unpack("C*", substr($memData, 156, 1 * 7));
+
             $dk09Obj->update_time = $v[3] . "-" . $v[2] . "-" . $v[1] . " " . $v[5] . ":" . $v[6] . ":" . $v[7];
 
 
@@ -1128,6 +1139,8 @@ class Realtime
         }
         return $dataList;
     }
+
+
     static function Get_Mec10RtData($dataIdStr)
     {
         $CI = & get_instance();
@@ -1770,6 +1783,7 @@ class Realtime
         }
         return $dataList;
     }
+
     static function Get_SwitchingPowerSupplyRtData ($dataIdStr)
     {
         $idArr = array();

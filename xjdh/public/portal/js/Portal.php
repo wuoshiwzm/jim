@@ -6418,7 +6418,8 @@ class Portal extends CI_Controller
     function getRtAlarmCount ()
     {
     	$reportDate[0] = date('Y-m-d h:i:s',time());    
-    	$reportDate[1] = date('Y-m-d ',strtotime("$reportDate[0] - 30 day"));   
+    	$reportDate[1] = date('Y-m-d ',strtotime("$reportDate[0] - 30 day"));
+        $total = 0;
         if ($_SESSION['XJTELEDH_USERROLE'] == 'admin'||$_SESSION['XJTELEDH_USERROLE'] == 'noc') {
             $cityCode = false;
             $countyCode = false;
@@ -6437,6 +6438,7 @@ class Portal extends CI_Controller
                 }
             }
             $jsonRet['level' . $i] = $count;
+
             $total += $count;
         }
         $jsonRet['totalCount'] = $total;

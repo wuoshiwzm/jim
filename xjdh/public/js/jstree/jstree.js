@@ -6471,7 +6471,7 @@
 		 * @name $.jstree.defaults.search.search_callback
 		 * @plugin search
 		 */
-		search_callback : false
+		search_callback : true
 	};
 
 	$.jstree.plugins.search = function (options, parent) {

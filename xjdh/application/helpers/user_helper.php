@@ -1,5 +1,5 @@
 <?php
-session_start();
+//session_start();
 
 
 class User
@@ -7,7 +7,7 @@ class User
 
     static $userRole = array();
 
-    function GetUserListByName($nameList)
+  static function GetUserListByName($nameList)
     {
         $ci = &get_instance();
         $dbObj = $ci->load->database('default', TRUE);
@@ -15,7 +15,7 @@ class User
         return $dbObj->get('user')->result();
     }
 
-    function Get_UserList($cityCode = false, $countyCode = false, $username = false, $fullName = false, $gender = false, $email = false, $userRole = false, $mobile = false, $access_id = false, $offset = 0, $size = 0, $substationId = false, $selCity = false, $selCounty = false)
+  static function Get_UserList($cityCode = false, $countyCode = false, $username = false, $fullName = false, $gender = false, $email = false, $userRole = false, $mobile = false, $access_id = false, $offset = 0, $size = 0, $substationId = false, $selCity = false, $selCounty = false)
     {
         $ci = &get_instance();
         $dbObj = $ci->load->database('default', TRUE);
@@ -59,35 +59,35 @@ class User
         return $dbObj->get('user', $size, $offset)->result();
     }
 
-    function Get_username_User($username = false)
+  static function Get_username_User($username = false)
     {
         $ci = &get_instance();
         $dbObj = $ci->load->database('default', TRUE);
         return $dbObj->get_where("user", array("username" => $username))->row();
     }
 
-    function Get_email_User($email = false)
+  static function Get_email_User($email = false)
     {
         $ci = &get_instance();
         $dbObj = $ci->load->database('default', TRUE);
         return $dbObj->get_where("user", array("email" => $email))->row();
     }
 
-    function Get_mobile_User($mobile = false)
+  static function Get_mobile_User($mobile = false)
     {
         $ci = &get_instance();
         $dbObj = $ci->load->database('default', TRUE);
         return $dbObj->get_where("user", array("mobile" => $mobile))->row();
     }
 
-    function Get_accessId_User($accessId = false)
+  static function Get_accessId_User($accessId = false)
     {
         $ci = &get_instance();
         $dbObj = $ci->load->database('default', TRUE);
         return $dbObj->get_where("user", array("accessid" => $accessId))->row();
     }
 
-    function Get_PartUserList($userName = false, $fullName = false, $idNumber = false, $offset = 0, $size = 0, $selCity = false)
+  static function Get_PartUserList($userName = false, $fullName = false, $idNumber = false, $offset = 0, $size = 0, $selCity = false)
     {
         $ci = &get_instance();
         $dbObj = $ci->load->database('default', TRUE);
@@ -105,7 +105,7 @@ class User
             return $dbObj->get('user', $size, $offset)->result();
     }
 
-    function Get_NewUsers_Count($fullName, $mobile, $ID, $dateStart, $dateEnd, $mode = 0)
+  static function Get_NewUsers_Count($fullName, $mobile, $ID, $dateStart, $dateEnd, $mode = 0)
     {
         $ci = &get_instance();
         $dbObj = $ci->load->database('default', TRUE);
@@ -134,7 +134,7 @@ class User
         return $dbObj->count_all_results('user');
     }
 
-    function Get_NewUsers_List($fullName, $mobile, $ID, $dateStart, $dateEnd, $mode = 0, $offset = 0, $size = 10)
+  static function Get_NewUsers_List($fullName, $mobile, $ID, $dateStart, $dateEnd, $mode = 0, $offset = 0, $size = 10)
     {
         $ci = &get_instance();
         $dbObj = $ci->load->database('default', TRUE);
@@ -164,7 +164,7 @@ class User
         return $dbObj->get('user', $size, $offset)->result();
     }
 
-    function Get_UserCount($cityCode = false, $countyCode = false, $username = false, $fullName = false, $gender = false, $email = false, $userRole = false, $mobile = false, $access_id = false, $substation_id = false, $selCity = false, $selCounty = false)
+  static function Get_UserCount($cityCode = false, $countyCode = false, $username = false, $fullName = false, $gender = false, $email = false, $userRole = false, $mobile = false, $access_id = false, $substation_id = false, $selCity = false, $selCounty = false)
     {
         $ci = &get_instance();
         $dbObj = $ci->load->database('default', TRUE);
@@ -214,7 +214,7 @@ class User
 
     }
 
-    function Get_UserLoginCount($txtName, $userRole, $userAgent, $selCity, $selCounty, $selSubstation, $datestart, $dateend, $cityCode)
+  static function Get_UserLoginCount($txtName, $userRole, $userAgent, $selCity, $selCounty, $selSubstation, $datestart, $dateend, $cityCode)
     {
         $ci = &get_instance();
         $dbObj = $ci->load->database('default', TRUE);
@@ -250,7 +250,7 @@ class User
 
     }
 
-    function Get_UserLoginList($txtName, $userRole, $userAgent, $selCity, $selCounty, $selSubstation, $datestart, $dateend, $offset = 0, $size = 0, $cityCode)
+  static function Get_UserLoginList($txtName, $userRole, $userAgent, $selCity, $selCounty, $selSubstation, $datestart, $dateend, $offset = 0, $size = 0, $cityCode)
     {
         $ci = &get_instance();
         $dbObj = $ci->load->database('default', TRUE);
@@ -289,7 +289,7 @@ class User
         return $dbObj->get('user_loginlog AS  l', $size, $offset)->result();
     }
 
-    function Get_PartUserCount($userName = false, $fullName = false, $idNumber = false, $selCity = false)
+  static function Get_PartUserCount($userName = false, $fullName = false, $idNumber = false, $selCity = false)
     {
         $ci = &get_instance();
         $dbObj = $ci->load->database('default', TRUE);
@@ -305,7 +305,7 @@ class User
         return $dbObj->count_all_results('user');
     }
 
-    function UpdateUserImage($user_id, $user_img)
+  static function UpdateUserImage($user_id, $user_img)
     {
         $ci = &get_instance();
         $dbObj = $ci->load->database('default', TRUE);
@@ -314,7 +314,7 @@ class User
         return $dbObj->update('user');
     }
 
-    function CreateUser($username, $password, $userRole = 'member', $full_name, $gender = 'male', $mobile, $email,
+  static function CreateUser($username, $password, $userRole = 'member', $full_name, $gender = 'male', $mobile, $email,
                         $info = '', $city_code, $county_code, $substation_id, $isActive, $accessId)
     {
         $ci = &get_instance();
@@ -338,7 +338,7 @@ class User
         return $dbObj->insert_id();
     }
 
-    function CreateUsers($username = false, $password = false, $userRole = 'member', $full_name = false, $gender = 'male', $mobile = false, $email = false,
+  static function CreateUsers($username = false, $password = false, $userRole = 'member', $full_name = false, $gender = 'male', $mobile = false, $email = false,
                          $info = '', $substation_id = false, $isActive = false, $accessId = false, $city = false, $county = false)
     {
         $ci = &get_instance();
@@ -374,7 +374,7 @@ class User
         return $dbObj->insert_id();
     }
 
-    function CreatePartUser($username, $department, $position, $password, $userRole, $full_name, $gender, $race, $ID_type, $ID_number, $birth, $mobile, $email,
+  static function CreatePartUser($username, $department, $position, $password, $userRole, $full_name, $gender, $race, $ID_type, $ID_number, $birth, $mobile, $email,
                             $tele, $isActive)
     {
         $ci = &get_instance();
@@ -400,7 +400,7 @@ class User
         return $dbObj->insert('user');
     }
 
-    function CreatEnroll($username, $phone, $company, $memo, $article_id)
+  static function CreatEnroll($username, $phone, $company, $memo, $article_id)
     {
         $ci = &get_instance();
         $dbObj = $ci->load->database('default', TRUE);
@@ -412,7 +412,7 @@ class User
         return $dbObj->insert('enroll');
     }
 
-    function GetUserByName($name)
+  static function GetUserByName($name)
     {
         $ci = &get_instance();
         $dbObj = $ci->load->database('default', TRUE);
@@ -423,7 +423,7 @@ class User
         return null;
     }
 
-    function GetUserByEmail($email)
+  static function GetUserByEmail($email)
     {
         $ci = &get_instance();
         $dbObj = $ci->load->database('default', TRUE);
@@ -435,7 +435,7 @@ class User
     }
 
 
-    function GetUserByAccessid($accessid)
+  static function GetUserByAccessid($accessid)
     {
         $ci = &get_instance();
         $dbObj = $ci->load->database('default', TRUE);
@@ -446,7 +446,7 @@ class User
         return null;
     }
 
-    function GetSmdDeviceByIp($ip)
+  static function GetSmdDeviceByIp($ip)
     {
         $ci = &get_instance();
         $dbObj = $ci->load->database('default', TRUE);
@@ -457,7 +457,7 @@ class User
         return null;
     }
 
-    function GetUserByPhone($phone)
+  static function GetUserByPhone($phone)
     {
         $ci = &get_instance();
         $dbObj = $ci->load->database('default', TRUE);
@@ -468,7 +468,7 @@ class User
         return null;
     }
 
-    function UpdateUserBindingphone($id, $phone)
+  static function UpdateUserBindingphone($id, $phone)
     {
         $ci = &get_instance();
         $dbObj = $ci->load->database('default', TRUE);
@@ -477,7 +477,7 @@ class User
         $dbObj->update('user');
     }
 
-    function UpdateUserinfo($id, $password, $userRole = 'member', $full_name, $gender, $mobile, $email, $info, $city_code, $county_code, $substation_id, $isActive, $accessId)
+  static function UpdateUserinfo($id, $password, $userRole = 'member', $full_name, $gender, $mobile, $email, $info, $city_code, $county_code, $substation_id, $isActive, $accessId)
     {
         $ci = &get_instance();
         $dbObj = $ci->load->database('default', TRUE);
@@ -504,7 +504,7 @@ class User
         return $dbObj->update('user');
     }
 
-    function UpdatePartUserinfo($id, $department, $position, $password, $userRole, $full_name, $gender, $race, $ID_type, $ID_number, $birth, $mobile, $email,
+  static function UpdatePartUserinfo($id, $department, $position, $password, $userRole, $full_name, $gender, $race, $ID_type, $ID_number, $birth, $mobile, $email,
                                 $tele, $isActive, $accessid)
     {
         $ci = &get_instance();
@@ -529,13 +529,13 @@ class User
         return $dbObj->update('user');
     }
 
-    function TestInfoByUserId($userid)
+  static function TestInfoByUserId($userid)
     {
         $userObj = User::GetUserById($userid);
         User::TestInfoComplete($userObj);
     }
 
-    function TestInfoComplete($userObj)
+  static function TestInfoComplete($userObj)
     {
         $ci = &get_instance();
         if ($userObj->info_filled && $userObj->cert_filled && !empty($userObj->user_img)) {
@@ -546,7 +546,7 @@ class User
         }
     }
 
-    function UpdateUser($userObj)
+  static function UpdateUser($userObj)
     {
         $ci = &get_instance();
         $dbObj = $ci->load->database('default', TRUE);
@@ -554,7 +554,7 @@ class User
         return $dbObj->update('user', $userObj);
     }
 
-    function UpdateUserPasswd($id, $password)
+  static function UpdateUserPasswd($id, $password)
     {
         $ci = &get_instance();
         $dbObj = $ci->load->database('default', TRUE);
@@ -564,7 +564,7 @@ class User
         return $dbObj->get_where('user', array('id' => $id))->row();
     }
 
-    function UpdateLastSendCode($id, $times)
+  static function UpdateLastSendCode($id, $times)
     {
         $ci = &get_instance();
         $dbObj = $ci->load->database('default', TRUE);
@@ -582,7 +582,7 @@ class User
      * @param string $errMsg
      * @return newPassword or null if error
      */
-    function GeneratePassword($user)
+  static function GeneratePassword($user)
     {
         $ci = &get_instance();
         $dbObj = $ci->load->database('default', TRUE);
@@ -612,7 +612,7 @@ class User
      *            error message $errorMsg
      * @return bool
      */
-    function ChangePassword($user, $oldPassword, $newPassword, &$errorMsg)
+  static function ChangePassword($user, $oldPassword, $newPassword, &$errorMsg)
     {
         $ci = &get_instance();
         $ci->load->database('default');
@@ -629,7 +629,7 @@ class User
         return false;
     }
 
-    function SetInterest($user_id, $interestStr)
+  static function SetInterest($user_id, $interestStr)
     {
         $ci = &get_instance();
         $ci->load->database('default');
@@ -638,13 +638,13 @@ class User
         $ci->db->update('user');
     }
 
-    function GetMemberUser($name)
+  static function GetMemberUser($name)
     {
         $_SESSION["membername"] = $name;
         return User::GetUser($name);
     }
 
-    function SetPhone($user_id, $newPhone)
+  static function SetPhone($user_id, $newPhone)
     {
         $otherUser = User::GetUser($newPhone);
         if ($otherUser && $otherUser->id != $user_id) {
@@ -657,7 +657,7 @@ class User
         $dbObj->update('user');
     }
 
-    function ConfirmMail($code)
+  static function ConfirmMail($code)
     {
         $ci = &get_instance();
         $dbObj = $ci->load->database('default', TRUE);
@@ -685,7 +685,7 @@ class User
         }
     }
 
-    function ChangeEmail($user, $newEmail)
+  static function ChangeEmail($user, $newEmail)
     {
         $ci = &get_instance();
         $dbObj = $ci->load->database('default', TRUE);
@@ -710,7 +710,7 @@ class User
      * @param string(email,userid,username) $name
      * @return Object or Null
      */
-    function GetUser($value)
+  static function GetUser($value)
     {
         $ci = &get_instance();
         $dbObj = $ci->load->database('default', TRUE);
@@ -729,7 +729,7 @@ class User
 //         }
     }
 
-    function Clear_Auth($uid, $mUidArray)
+  static function Clear_Auth($uid, $mUidArray)
     {
         $ci = &get_instance();
         $dbObj = $ci->load->database('default', TRUE);
@@ -738,7 +738,7 @@ class User
         $dbObj->delete('user_auth');
     }
 
-    function GetUserById($id)
+  static function GetUserById($id)
     {
         $ci = &get_instance();
         $dbObj = $ci->load->database('default', TRUE);
@@ -746,7 +746,7 @@ class User
         return $dbObj->get('user')->row();
     }
 
-    function GetUserByMobile($mobile)
+  static function GetUserByMobile($mobile)
     {
         $ci = &get_instance();
         $dbObj = $ci->load->database('default', TRUE);
@@ -754,7 +754,7 @@ class User
         return $dbObj->get('user')->row();
     }
 
-    function GetAuthListAll($uid)
+  static function GetAuthListAll($uid)
     {
         $ci = &get_instance();
         $dbObj = $ci->load->database('default', true);
@@ -767,7 +767,7 @@ class User
      *
      * @return object or null
      */
-    function GetCurrentUser($bForceLoad = false)
+  static function GetCurrentUser($bForceLoad = false)
     {
         if (User::IsAuthenticated()) {
             $userid = $_SESSION["XJTELEDH_USERID"];
@@ -798,7 +798,7 @@ class User
      * @param
      *            $role
      */
-    function MarkUserRole($username, $role)
+  static function MarkUserRole($username, $role)
     {
         $ci = &get_instance();
         $dbObj = $ci->load->database('default', TRUE);
@@ -816,7 +816,7 @@ class User
         return TRUE;
     }
 
-    function IsUserInRole($username, $role)
+  static function IsUserInRole($username, $role)
     {
         if (empty($role)) {
             debug_print_backtrace();
@@ -847,7 +847,7 @@ class User
      *
      * @return bool
      */
-    function IsAuthenticated()
+  static function IsAuthenticated()
     {
 
         if (isset($_SESSION["XJTELEDH_USERNAME"])) {
@@ -883,7 +883,7 @@ class User
      *            string(Is pwd in md5 format) $isMd5
      * @return -1,user not exists; -2, user expire. -3, password incorrect, 1 passed
      */
-    function ValidUser($userName, $password, $isMd5 = false)
+  static function ValidUser($userName, $password, $isMd5 = false)
     {
         $user = User::GetUser($userName, true);
 
@@ -911,7 +911,7 @@ class User
      * @param string $isMd5
      * @return bool
      */
-    function LogInUser($username, $password, $isMd5 = false, $isRememberMe = false)
+  static function LogInUser($username, $password, $isMd5 = false, $isRememberMe = false)
     {
         if (1 == User::ValidUser($username, $password, $isMd5)) {
             $user = User::GetUser($username);
@@ -920,7 +920,7 @@ class User
         return false;
     }
 
-    function LogInUserObj($user, $isRememberMe = false)
+  static function LogInUserObj($user, $isRememberMe = false)
     {
         $username = $user->username;
         $password = $user->password;
@@ -941,7 +941,7 @@ class User
         return true;
     }
 
-    function SaveUserLoginLog($user)
+  static function SaveUserLoginLog($user)
     {
 
         $ci = &get_instance();
@@ -962,7 +962,7 @@ class User
 
     }
 
-    function DeleteUser($userid)
+  static function DeleteUser($userid)
     {
         $ci = &get_instance();
         $dbObj = $ci->load->database('default', true);
@@ -970,7 +970,7 @@ class User
         return $dbObj->delete('user');
     }
 
-    function Save($user)
+  static function Save($user)
     {
         $ci = &get_instance();
         $dbObj = $ci->load->database('default', true);
@@ -978,7 +978,7 @@ class User
         $dbObj->update('user', $user);
     }
 
-    function LogInUserId($userid, $isRememberMe = false, &$outScript = '')
+  static function LogInUserId($userid, $isRememberMe = false, &$outScript = '')
     {
         $user = User::GetUser($userid);
         if (!$user) {
@@ -991,7 +991,7 @@ class User
     /**
      * Logout User
      */
-    function LogOutUser()
+  static function LogOutUser()
     {
         $ci = &get_instance();
         $ci->load->helper("cookie");
@@ -1003,7 +1003,7 @@ class User
         delete_cookie("XJTELEDH_HASH");
     }
 
-    function Search_User($word)
+  static function Search_User($word)
     {
         $ci = &get_instance();
         $dbObj = $ci->load->database('default', true);
@@ -1016,7 +1016,7 @@ class User
         return $dbObj->get('user')->result();
     }
 
-    function IsEmailAvailable($email)
+  static function IsEmailAvailable($email)
     {
         $ci = &get_instance();
         $dbObj = $ci->load->database('default', true);
@@ -1025,7 +1025,7 @@ class User
         return $dbObj->count_all_results('user') == 0;
     }
 
-    function Get_ResetPassword($user_id)
+  static function Get_ResetPassword($user_id)
     {
         $ci = &get_instance();
         $dbObj = $ci->load->database('default', true);
@@ -1036,7 +1036,7 @@ class User
         return null;
     }
 
-    function Add_ResetPassword($user_id, $rand)
+  static function Add_ResetPassword($user_id, $rand)
     {
         $ci = &get_instance();
         $dbObj = $ci->load->database('default', true);
@@ -1046,7 +1046,7 @@ class User
         return $dbObj->insert('reset_password');
     }
 
-    function Update_ResetPassword($user_id, $rand)
+  static function Update_ResetPassword($user_id, $rand)
     {
         $ci = &get_instance();
         $dbObj = $ci->load->database('default', true);
@@ -1056,7 +1056,7 @@ class User
         return $dbObj->update('reset_password');
     }
 
-    function UpdateAuth($uid, $pKey, $v)
+  static function UpdateAuth($uid, $pKey, $v)
     {
         $ci = &get_instance();
         $dbObj = $ci->load->database('default', TRUE);
@@ -1073,14 +1073,14 @@ class User
         return $dbObj->insert_id();
     }
 
-    function GetParent($pKey)
+  static function GetParent($pKey)
     {
         $ci = &get_instance();
         $dbObj = $ci->load->database('default', TRUE);
         return $dbObj->get_where('user_auth', array('auth_name' => $pKey))->row();
     }
 
-    function Delete_ResetPassword($user_id)
+  static function Delete_ResetPassword($user_id)
     {
         $ci = &get_instance();
         $dbObj = $ci->load->database('default', true);
@@ -1088,7 +1088,7 @@ class User
         return $dbObj->delete('reset_password');
     }
 
-    function Set_UserActiveStatus($user_id, $status)
+  static function Set_UserActiveStatus($user_id, $status)
     {
         $ci = &get_instance();
         $dbObj = $ci->load->database('default', true);
@@ -1097,7 +1097,7 @@ class User
         return $dbObj->update('user');
     }
 
-    function Get_UserPrivilege($user_id)
+  static function Get_UserPrivilege($user_id)
     {
         $ci = &get_instance();
         $dbObj = $ci->load->database('default', true);
@@ -1105,7 +1105,7 @@ class User
         return $dbObj->get('user_privilege')->row();
     }
 
-    function Get_UserPrivileges($user_id)
+  static function Get_UserPrivileges($user_id)
     {
         $ci = &get_instance();
         $dbObj = $ci->load->database('default', true);
@@ -1113,7 +1113,7 @@ class User
         return $dbObj->get('user_privilege')->row();
     }
 
-    function Get_UserPrivilegeList($offset = 0, $size = 0)
+  static function Get_UserPrivilegeList($offset = 0, $size = 0)
     {
         $ci = &get_instance();
         $dbObj = $ci->load->database('default', true);
@@ -1127,7 +1127,7 @@ class User
             return $dbObj->get('user')->result();
     }
 
-    function Update_UserPrivilege($user_id, $area_privilege = false, $dev_privilege = false)
+  static function Update_UserPrivilege($user_id, $area_privilege = false, $dev_privilege = false)
     {
         $ci = &get_instance();
         $dbObj = $ci->load->database('default', true);
@@ -1139,7 +1139,7 @@ class User
         return $dbObj->update('user_privilege');
     }
 
-    function Save_UserPrivilege($user_id, $area_privilege, $dev_privilege)
+  static function Save_UserPrivilege($user_id, $area_privilege, $dev_privilege)
     {
         $ci = &get_instance();
         $dbObj = $ci->load->database('default', true);
@@ -1149,24 +1149,24 @@ class User
         return $dbObj->insert('user_privilege');
     }
 
-    function Set_UserAppOnline($user_id)
+  static function Set_UserAppOnline($user_id)
     {
         User::Set_UserStatusToCache($user_id, 'app');
     }
 
-    function Set_UserWebOnline($user_id)
+  static function Set_UserWebOnline($user_id)
     {
         User::Set_UserStatusToCache($user_id, 'web');
     }
 
-    function Set_UserStatusToCache($user_id, $platform, $expire = 60)
+  static function Set_UserStatusToCache($user_id, $platform, $expire = 60)
     {
         $CI = &get_instance();
         $CI->load->driver('cache');
         $CI->cache->save('online_user-' . $user_id . '-' . $platform, date('Y-m-d H:i:s'), $expire);
     }
 
-    function Is_UserOnline($user_id)
+  static function Is_UserOnline($user_id)
     {
         $CI = &get_instance();
         $CI->load->driver('cache');
@@ -1177,7 +1177,7 @@ class User
         return $isOnline;
     }
 
-    function Get_AllOnlineUser()
+  static function Get_AllOnlineUser()
     {
         $CI = &get_instance();
         $dbObj = $CI->load->database('default', TRUE);
@@ -1209,7 +1209,7 @@ class User
         return $userList;
     }
 
-    function IsUserHasFirst($userid, $permission)
+  static function IsUserHasFirst($userid, $permission)
     {
         $CI = &get_instance();
         $dbObj = $CI->load->database('default', TRUE);
@@ -1218,7 +1218,7 @@ class User
         return $dbObj->count_all_results('user_auth');
     }
 
-    function IsUserHasPermission($userid, $permission)
+  static function IsUserHasPermission($userid, $permission)
     {
         $CI = &get_instance();
         $dbObj = $CI->load->database('default', TRUE);
@@ -1227,7 +1227,7 @@ class User
         return $dbObj->count_all_results('user_auth');
     }
 
-    function ChangePasswd($id, $password)
+  static function ChangePasswd($id, $password)
     {
         $ci = &get_instance();
         $dbObj = $ci->load->database('default', TRUE);
@@ -1241,7 +1241,7 @@ class User
      * @param null $teamID 施工队ID, 空则返回所有施工队信息
      * 获取施工队信息
      */
-    function getTeam($teamID = null)
+  static function getTeam($teamID = null)
     {
         //未传$teamID, 则获取所有信息
         $ci = &get_instance();

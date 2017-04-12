@@ -8,7 +8,7 @@
 if (!defined('BASEPATH'))
     exit('No direct script access allowed');
 class t{
-    public function f($data)
+    public static function f($data)
     {
         var_dump($data);
         die();

@@ -43,7 +43,8 @@
     		 <?php $index = 0;foreach ($dataList as $dataObj){?>
     		 <?php if($model == 'smd_device'){?>
     		 	<div id='device-<?php echo $dataObj->device_no;?>'  data_id='<?php echo $dataObj->device_no;?>'
-				   class="tab-pane rt-data <?php if($index++ == 0 && empty($active_data_id) ){?>active<?php }?>" data_type="<?php echo $dataObj->model; ?>">
+				   class="tab-pane rt-data <?php if($index++ == 0 && empty($active_data_id) ){?>active<?php }?>"
+                     data_type="<?php if(!empty($dataObj->model))echo $dataObj->model; ?>">
 			<div class="tab-widget">
 				<ul class="nav nav-tabs">
                 	  <li><a class="devDate" data='<?php echo $dataObj->device_no;?>'><i class="icon-tasks"></i>设备数据</a></li>

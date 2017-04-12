@@ -190,7 +190,8 @@ var substation_id = "<?php echo $selSubstation;?>";
 								<td class="center"><?php echo $index++; ?></td>
 								<td class="center"><?php echo htmlentities($dtObj->apply_area, ENT_COMPAT, "UTF-8"); ?></td>
 								<td class="center"
-									dev_type="<?php echo htmlentities($dtObj->dev_type,ENT_COMPAT,"UTF-8");?>"><?php echo Defines::$gDevModel[$dtObj->dev_type]; ?></td>
+									dev_type="<?php echo htmlentities($dtObj->dev_type,ENT_COMPAT,"UTF-8");?>">
+                                    <?php if(!empty(Defines::$gDevModel[$dtObj->dev_type])) echo Defines::$gDevModel[$dtObj->dev_type]; ?></td>
 								<td class="center"><?php echo htmlentities($dtObj->var_label, ENT_COMPAT, "UTF-8"); ?></td>
 								<td class="center"><?php echo htmlentities($dtObj->var_name,ENT_COMPAT,"UTF-8"); ?></td>
 								<td class="center">

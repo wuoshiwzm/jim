@@ -187,11 +187,106 @@ $(document).ready(function () {
                         //显示所有通道
                         if (obj.channel_count > 0) {
                             $table = $('#' + obj.data_id + '-sps-rc-2');
-                            for (var i = 0; i < obj.channel_count; i++) {
+                            $.each(obj.channel, function (index, value) {
+                                //生成一行 代表一个通道
                                 var trObj = $('<tr></tr>');
-                                //trObj.append('<td>'++'</td>');
-                            }
+                                $.each(value,function (index1,value1) {
+                                    //通道数据
+                                    trObj.append('<td>'+value1+'</td>');
+                                });
+                                //将对应通道插入表格
+                                $table.append(trObj);
+                            });
+
+
                         }
+                        // if($('#' + obj.data_id + '-sps-rc-2 tbody').children().length == 0){
+                        //     var columnsCount = $('#' + obj.data_id + '-sps-rc-2 thead>tr>th').length;
+                        //     var trObj = $('<tr></tr>');
+                        //     for(var j = 0; j < columnsCount; j++)
+                        //     {
+                        //         trObj.append('<td><span class="label label-success"></span></td>');
+                        //     }
+                        //     var columnsCount3 = $('#' + obj.data_id + '-sps-rc-3 thead>tr>th').length;
+                        //     var trObj3 = $('<tr></tr>');
+                        //     for(var j = 0; j < columnsCount3; j++)
+                        //     {
+                        //         trObj3.append('<td><span class="label label-success"></span></td>');
+                        //     }
+                        //     for(var j = 0 ; j < obj.number; j++)
+                        //     {
+                        //         var tTrObj = trObj.clone();
+                        //         tTrObj.find("td:eq(0)").text('整流模块'+ (j+1));
+                        //         $('#' + obj.data_id + '-sps-rc-2 tbody').append(tTrObj);
+                        //         var tTrObj3 = trObj3.clone();
+                        //         tTrObj3.find("td:eq(0)").text('整流模块'+ (j+1));
+                        //         $('#' + obj.data_id + '-sps-rc-3 tbody').append(tTrObj3);
+                        //     }
+                        // }
+                        // for(var j = 0 ; j < obj.number; j++)
+                        // {
+                        //     var pTr = $('#' + obj.data_id + '-sps-rc-2 tbody>tr').eq(j);
+                        //     pTr.find("td:eq(1)").text(obj.Iout[j]);
+                        //     pTr.find("td:eq(2)").text(obj.channelParam[j].FloatV);
+                        //     pTr.find("td:eq(3)").text(obj.channelParam[j].EQV);
+                        //     pTr.find("td:eq(4)").text(obj.channelParam[j].Vhi);
+                        //     pTr.find("td:eq(5)").text(obj.channelParam[j].V1o);
+                        //     pTr.find("td:eq(6)").text(obj.channelParam[j].HVSD);
+                        //     pTr.find("td:eq(7)").text(obj.channelParam[j].I1im);
+                        //     pTr.find("td:eq(8)").text(obj.channelParam[j].AdjV);
+                        //     pTr.find("td:eq(9)").text(obj.channelParam[j].SecEnable);
+                        //
+                        //     pTr = $('#' + obj.data_id + '-sps-rc-3 tbody>tr').eq(j);
+                        //     for(var z = 0; z < obj.channel[j].length; z++)
+                        //     {
+                        //         pTr.find("td:eq(" + (z+1) + ")>span").text(obj.channel[j][z]);
+                        //         set_label_class(pTr.find("td:eq(" + (z+1) + ")>span"), obj.channel[j][z]);
+                        //     }
+                        // }
+                    }
+
+                    else if (model == "des") {
+                        //struct BasicInstrumentation
+                        $("#des-" + obj.data_id + "-field0").text(obj.BatteryChargerMode);
+                        $("#des-" + obj.data_id + "-field1").text(obj.BatteryChargerActiveCellCount);
+                        $("#des-" + obj.data_id + "-field2").text(obj.BatteryChemistryID);
+
+                        //struct BasicInstrumentation
+                        $("#des-" + obj.data_id + "-field3").text(obj.ChargingStages);
+                        $("#des-" + obj.data_id + "-field4").text(obj.ActiveCellCount);
+                        $("#des-" + obj.data_id + "-field5").text(obj.Fuellevel);
+                        $("#des-" + obj.data_id + "-field6").text(obj.Chargealternatorvoltage);
+                        $("#des-" + obj.data_id + "-field7").text(obj.Generatorfrequency);
+                        $("#des-" + obj.data_id + "-field8").text(obj.Mainsfrequency);
+                        $("#des-" + obj.data_id + "-field9").text(obj.MainsvoltagephaselagOrlead);
+                        $("#des-" + obj.data_id + "-field10").text(obj.Generatorphaserotation);
+                        $("#des-" + obj.data_id + "-field11").text(obj.Mainsphaserotation);
+                        $("#des-" + obj.data_id + "-field12").text(obj.Mainscurrentlag_lead);
+                        $("#des-" + obj.data_id + "-field13").text(obj.DCVoltage);
+                        $("#des-" + obj.data_id + "-field14").text(obj.DCPlantBatteryCurrent);
+                        $("#des-" + obj.data_id + "-field15").text(obj.DCTotalCurrent);
+                        $("#des-" + obj.data_id + "-field16").text(obj.DCPlantBatteryCycles);
+                        $("#des-" + obj.data_id + "-field17").text(obj.DCChargerWatts);
+                        $("#des-" + obj.data_id + "-field18").text(obj.DCPlantBatteryWatts);
+                        $("#des-" + obj.data_id + "-field19").text(obj.DCTotalWatts);
+                        $("#des-" + obj.data_id + "-field20").text(obj.DCChargeMode);
+                        $("#des-" + obj.data_id + "-field21").text(obj.DCPlantBatterytemperature);
+                        $("#des-" + obj.data_id + "-field22").text(obj.BatteryChargerOutputCurrent);
+                        $("#des-" + obj.data_id + "-field23").text(obj.BatteryChargerOutputVoltage);
+                        $("#des-" + obj.data_id + "-field24").text(obj.BatteryOpenCircuitVoltage);
+                        $("#des-" + obj.data_id + "-field25").text(obj.BatteryChargerAuxiliaryVoltage);
+                        $("#des-" + obj.data_id + "-field26").text(obj.BatteryChargerAuxiliaryCurrent);
+                        //struct ExtendedInstrumentation
+                        $("#des-" + obj.data_id + "-field27").text(obj.Fuelconsumption);
+                        $("#des-" + obj.data_id + "-field28").text(obj.Fueltemperature);
+                        $("#des-" + obj.data_id + "-field29").text(obj.Oillevel);
+                        $("#des-" + obj.data_id + "-field30").text(obj.EngineOperatingState);
+                        $("#des-" + obj.data_id + "-field31").text(obj.CurrentOperatingMode);
+                        $("#des-" + obj.data_id + "-field32").text(obj.TripAverageFuel);
+                        $("#des-" + obj.data_id + "-field33").text(obj.TripAverageFuelEfficiency);
+                        $("#des-" + obj.data_id + "-field34").text(obj.InstantaneousFuelEfficiency);
+                        //显示所有通道
+
                         // if($('#' + obj.data_id + '-sps-rc-2 tbody').children().length == 0){
                         //     var columnsCount = $('#' + obj.data_id + '-sps-rc-2 thead>tr>th').length;
                         //     var trObj = $('<tr></tr>');

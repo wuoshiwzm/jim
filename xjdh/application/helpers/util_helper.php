@@ -4,13 +4,13 @@ if (! defined('BASEPATH'))
 
 class Util
 {
-    function startsWith($haystack, $needle)
+  static function  startsWith($haystack, $needle)
     {
         $length = strlen($needle);
         return (substr($haystack, 0, $length) === $needle);
     }
     
-    function endsWith($haystack, $needle)
+  static function  endsWith($haystack, $needle)
     {
         $length = strlen($needle);
         if ($length == 0) {
