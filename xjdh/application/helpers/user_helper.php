@@ -36,10 +36,10 @@ class User
             $dbObj->like('user.accessid', $access_id);
         if ($email)
             $dbObj->like('user.email', $email);
-        if ($dateStart)
+        /*if ($dateStart)
             $dbObj->where('user.added_datetime >=', $dateStart . ' 00:00:00');
         if ($dateEnd)
-            $dbObj->where('user.added_datetime <=', $dateEnd . ' 23:59:59');
+            $dbObj->where('user.added_datetime <=', $dateEnd . ' 23:59:59');*/
         if ($userRole)
             $dbObj->where('user.user_role ', $userRole);
         if ($substationId)
@@ -48,8 +48,8 @@ class User
             $dbObj->where('city_code', $selCity);
         if ($selCounty)
             $dbObj->where('county_code', $selCounty);
-        if ($accessId)
-            $dbObj->like('accessid', $accessId);
+        if ($access_id)
+            $dbObj->like('accessid', $access_id);
         if ($_SESSION['XJTELEDH_USERROLE'] == "city_admin") {
             return $dbObj->where_not_in('user.user_role', array('noc', 'admin'))->get('user', $size, $offset)->result();
         }
@@ -164,7 +164,7 @@ class User
         return $dbObj->get('user', $size, $offset)->result();
     }
 
-  static function Get_UserCount($cityCode = false, $countyCode = false, $username = false, $fullName = false, $gender = false, $email = false, $userRole = false, $mobile = false, $access_id = false, $substation_id = false, $selCity = false, $selCounty = false)
+    static function Get_UserCount($cityCode = false, $countyCode = false, $username = false, $fullName = false, $gender = false, $email = false, $userRole = false, $mobile = false, $access_id = false, $substation_id = false, $selCity = false, $selCounty = false)
     {
         $ci = &get_instance();
         $dbObj = $ci->load->database('default', TRUE);
@@ -187,10 +187,10 @@ class User
             $dbObj->like('user.accessid', $access_id);
         if ($email)
             $dbObj->like('user.email', $email);
-        if ($dateStart)
+        /*if ($dateStart)
             $dbObj->where('user.added_datetime >=', $dateStart . ' 00:00:00');
         if ($dateEnd)
-            $dbObj->where('user.added_datetime <=', $dateEnd . ' 23:59:59');
+            $dbObj->where('user.added_datetime <=', $dateEnd . ' 23:59:59');*/
         if ($userRole)
             $dbObj->where('user.user_role ', $userRole);
         if ($substation_id)
@@ -199,7 +199,7 @@ class User
             $dbObj->where('city_code', $selCity);
         if ($selCounty)
             $dbObj->where('county_code', $selCounty);
-        if ($accessId)
+        if ($access_id)
             $dbObj->like('accessid', $accessId);
         if ($_SESSION['XJTELEDH_USERROLE'] == "city_admin") {
             return $dbObj->where_not_in('user.user_role', array('noc', 'admin'))->count_all_results('user');

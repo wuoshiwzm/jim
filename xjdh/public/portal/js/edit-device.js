@@ -131,6 +131,7 @@ $(document).ready(function(){
 	 });
 
 	$('#txtName').change(function(){
+		var t_model =$("#selModel").find("option:selected").text();
 		if(t_model.indexOf("流屏电源") > 0 && (t_model != "交直流屏电源蓄电池组")){
 			var device = $('#txtName').val();
 			device = device.replace("交流屏","");
@@ -143,8 +144,15 @@ $(document).ready(function(){
 	$('#manufacturers').change(function(){
 		var manufacturers = $("#manufacturers option:selected").text(); 
 		var device = $('#txtName').val();
-		var devname = device.replace('设备厂商',manufacturers);
-		$('#txtName').val(devname);
+		if(device.indexOf("设备厂商") > 0){
+			var device = device.replace('设备厂商',manufacturers);
+			$('#txtName').val(device);
+			
+			device = device.replace("交流屏","");
+			device = device.replace("整流屏","");
+			device = device.replace("直流屏","");
+			$('#devgroup').val(device);
+		}
 	})
 
 	var models =$("#selModel").find("option:selected").text();

@@ -276,7 +276,6 @@ abstract class CI_DB_query_builder extends CI_DB_driver {
 
 		// If the escape value was not set, we will base it on the global setting
 		is_bool($escape) OR $escape = $this->_protect_identifiers;
-
 		foreach ($select as $val)
 		{
 			$val = trim($val);
@@ -294,7 +293,7 @@ abstract class CI_DB_query_builder extends CI_DB_driver {
 				}
 			}
 		}
-
+		
 		return $this;
 	}
 

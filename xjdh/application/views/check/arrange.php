@@ -180,11 +180,11 @@
                                 <th>序号</th>
                                 <th>分公司</th>
                                 <th>区域</th>
-                                <th>吉姆督查</th>
                                 <th>局站</th>
-                                <th>吉姆督导</th>
                                 <th>分配时间</th>
                                 <th>验收时间</th>
+                                <th>吉姆督导</th>
+                                <th>吉姆督查</th>
                                 <th>电信督查</th>
                                 <th>验收状态</th>
                                 <th>审核状态</th>
@@ -199,16 +199,18 @@
                                     <td><?php echo $arrange->id; ?></td>
                                     <td> <?php echo $this->mp_extra->Get_substation_info($arrange->substation_id)->city?></td>
                                     <td> <?php echo $this->mp_extra->Get_substation_info($arrange->substation_id)->county?></td>
-                                    <!--                                吉姆督查-->
-                                    <td> <?php echo $this->mp_extra->get_user_fullname($arrange->check_jim_user_id); ?></td>
-                                    <!--                                <td> 审核时间</td>-->
+                                   <!--                                <td> 审核时间</td>-->
                                     <td><?php echo $this->mp_extra->Get_substation_info($arrange->substation_id)->name?></td>
-
-                                    <td><?php echo $this->mp_extra->get_user_fullname($arrange->user_id); ?></td>
                                     <!--                                分配时间-->
                                     <td><?php echo $arrange->arrange_time; ?></td>
                                     <!--                                验收时间-->
                                     <td><?php echo $arrange->apply_time; ?></td>
+                                    <!-- 吉姆督导 -->
+                                    <td><?php echo $this->mp_extra->get_user_fullname($arrange->user_id); ?></td>
+
+                                    <!--                                吉姆督查-->
+                                    <td> <?php echo $this->mp_extra->get_user_fullname($arrange->check_jim_user_id); ?></td>
+
                                     <!--                                电信督查-->
                                     <td><?php echo $this->mp_extra->get_user_fullname($arrange->check_tel_user_id); ?></td>
                                     <td>

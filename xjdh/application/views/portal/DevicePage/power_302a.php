@@ -13,7 +13,7 @@
     <?php }?>
     </div>
 	<table
-		class="table table-bordered table-striped responsive table-sortable">
+		class="table table-bordered table-striped responsive table-sortable"  >
 		<thead>
 			<tr>
 				<th>序号</th>
@@ -24,7 +24,7 @@
 				<th>合相值</th>
 			</tr>
 		</thead>
-		<tbody class='rt-data 302a_power' data_id='<?php echo $dataObj->data_id;?>'>
+		<tbody class='rt-data 302a_power' data_id='<?php echo $dataObj->data_id;?>'  data_type="<?php echo $dataObj->model; ?>">
 		     <?php $i=1; foreach(Defines::$g302APower as $key){ ?>
 				<?php if($key == "无功功率" || $key == "视在功率"){ continue; } ?>
              <tr id="power302a-<?php echo $dataObj->data_id."-".$i; ?>"> 

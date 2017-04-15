@@ -309,7 +309,9 @@
 							<li><a class="orange"
 								href="<?php echo site_url("portal/opendoor_report"); ?>"><i
 									class="icon-file-alt"></i><span>开门记录报表</span> </a></li>
-						   
+						    <li><a class="orange"
+								href="<?php echo site_url("portal/alarm_report"); ?>"><i
+									class="icon-file-alt"></i><span>告警统计报表</span> </a></li>
 						</ul>
 					</div>
 					<div id="motor" class="tab-pane">

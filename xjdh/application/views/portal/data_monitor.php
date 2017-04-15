@@ -248,16 +248,18 @@ $(document).ready(function(){
         	                           data_id='<?php echo htmlentities($devObj->data_id,ENT_COMPAT,"UTF-8");?>' 
         	                           class="btn btn-warning setThreshold">查看数据 </button>	
                                        <?php } ?>														
-									<span class="label label-success "><?php								
-			        if ($devObj->model == "temperature") {
-			            echo htmlentities($devObj->value,ENT_COMPAT,"UTF-8") . "°C";
-			        } else 
-			            if ($devObj->model == "humid") {
-			                echo htmlentities($devObj->value,ENT_COMPAT,"UTF-8") . "%";
-			            } else 
-			                if ($devObj->model == "water" || $devObj->model == "smoke") {
-			                    echo $devObj->value == 0 ? "告警" : "正常";
-			                }
+									<span class="label label-success "><?php
+							if (isset($devObj->value)) {								
+            			        if ($devObj->model == "temperature") {
+            			            echo htmlentities($devObj->value,ENT_COMPAT,"UTF-8") . "°C";
+            			        } else if ($devObj->model == "humid") {
+        			                echo htmlentities($devObj->value,ENT_COMPAT,"UTF-8") . "%";
+        			            } else if ($devObj->model == "water" || $devObj->model == "smoke") {
+    			                    echo $devObj->value == 0 ? "告警" : "正常";
+        			            }else{
+                                    echo $devObj->value;
+                                 }
+                            }
 			        ?></span></td>
 						<td><a  href="/portal/rt_log/<?php echo htmlentities($devObj->smd_device_no,ENT_COMPAT,"UTF-8"); ?>">实时日志</a></td>
 								</tr>

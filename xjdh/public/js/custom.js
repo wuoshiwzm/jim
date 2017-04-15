@@ -212,23 +212,6 @@ RESPONSIVE NAV $ THEME SELECTOR
 		});
 	});
 	
-	$('#manufacturers').change(function(){
-		$.get('/portal/getversion',{manufacturers:$(this).val()},function(data){
-			eval('var ret =' + data);
-			$('#version').empty();
-			$('#version').append('<option value="">--默认为空--</option>' );
-			if(ret.ret == 0){
-				for(i = 0 ; i < ret.versionList.length ; i++)
-				{
-					var versionObj = ret.versionList[i];
-					$('#version').append('<option value="'+versionObj.key +'">'+versionObj.val +'</option>' );
-				}
-			}
-			$('#version').trigger("liszt:updated");
-			$('#version').trigger("change");
-		});
-	});
-	
 	$('#selCounty').change(function(){
 		$.get('/portal/getSubstation',{countycode:$(this).val()},function(data){
 			eval('var ret =' + data);
@@ -274,6 +257,26 @@ RESPONSIVE NAV $ THEME SELECTOR
 		});
 		
 	});
+	
+	$('#manufacturers').change(function(){
+		$.get('/portal/getversion',{manufacturers:$(this).val()},function(data){
+			eval('var ret =' + data);
+			$('#version').empty();
+			$('#version').append('<option value="">--默认为空--</option>' );
+			if(ret.ret == 0){
+				for(i = 0 ; i < ret.versionList.length ; i++)
+				{
+					var versionObj = ret.versionList[i];
+					$('#version').append('<option value="'+versionObj.val +'">'+versionObj.val +'</option>' );
+				}
+			}
+			$('#version').trigger("liszt:updated");
+			$('#version').trigger("change");
+		});
+	});
+
+	
+	
 //	$('#selRoom').change(function(){
 //		$.get('/portal/getSmdDev',{selRoom_id:$(this).val()},function(data){
 //			eval('var ret =' + data);

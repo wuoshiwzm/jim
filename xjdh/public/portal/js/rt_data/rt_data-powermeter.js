@@ -26,7 +26,8 @@ $(document).ready(function(){
 			dataIdArr2 : dataIdArr2.toString(),
 			dataIdArrPmac600a : dataIdArrPmac600a.toString(),
 			dataIdArrPmac600b : dataIdArrPmac600b.toString(),
-			model : "powermeter"
+			model : "powermeter",
+			access_token : typeof(accessToken) == "undefined" ? "":accessToken
 		}, function(ret) {
 			
 			if(dataIdArr1.toString())

@@ -133,7 +133,7 @@
 							</div>
 							<div class="form-actions">
 								<button class="btn btn-success" type="submit">查询</button>
-								<button  style="display:none" class="btn btn-success" name="export" value="exporttoexcel" type="submit">导出报表</button>
+								<button class="btn btn-success" name="export" value="exporttoexcel" type="submit">导出报表</button>
 							</div>
 						</form>
 					</div>

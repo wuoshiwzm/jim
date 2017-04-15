@@ -68,7 +68,7 @@
 								</tr>
 							</thead>
 							<tbody>
-							<?php $i = $offset + 1;foreach ($substationList as $substationObj){?>
+							<?php $i = 1;foreach ($substationList as $substationObj){?>
 							 <tr>
 									<td><?php echo $i++;?></td>
 									<td><?php echo htmlentities(Defines::$gCity[$substationObj->city_code],ENT_COMPAT,"UTF-8");?></td>

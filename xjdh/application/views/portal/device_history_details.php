@@ -124,7 +124,7 @@ if(model == "aeg-ms10se")
 
 if(model == "datamate3000")
 {
-    $('#datamate3000-'+ obj.data_id + '-field0').html(obj.Data." ".obj.Time);
+    $('#datamate3000-'+ obj.data_id + '-field0').html(obj.Date+" "+obj.Time);
     $('#datamate3000-'+ obj.data_id + '-field1').html(obj.room_temp.toFixed(3) + '°C');
     $('#datamate3000-'+ obj.data_id + '-field2').html(obj.room_humid.toFixed(3)+ '%');
     $('#datamate3000-'+ obj.data_id + '-field3').html(obj.outdoor_temp.toFixed(3) + '°C');
@@ -209,7 +209,7 @@ if(model == "liebert-ups")
 
 if(model == "ug40")
 {
-	 $('#ug40-'+ obj.data_id + '-field0').html(obj.Data." ".obj.Time);
+	 $('#ug40-'+ obj.data_id + '-field0').html(obj.Date+" "+obj.Time);
 	 $('#ug40-'+ obj.data_id + '-field1').text(obj.system_on);                          //系统运行
 	 $('#ug40-'+ obj.data_id + '-field2').text(obj.compressor1);                        //压缩机1
 	 $('#ug40-'+ obj.data_id + '-field3').text(obj.compressor2);                        //压缩机2
@@ -378,7 +378,7 @@ if(model == "ug40")
 }
 if(model == "psm-6")
 {
-	$('#psm06-'+ obj.data_id + '-field0').html(obj.Data." ".obj.Time);
+	$('#psm06-'+ obj.data_id + '-field0').html(obj.Date+" "+obj.Time);
 	$('#psm06-'+ obj.data_id + '-field1').html(obj.ac_type);
 	$('#psm06-'+ obj.data_id + '-field2').html(obj.p_in_v_max_limiting + 'V');
 	$('#psm06-'+ obj.data_id + '-field3').html(obj.p_in_v_min_limiting + 'V');
@@ -412,7 +412,7 @@ if(model == "psm-6")
 }
 if(model == "fresh_air")
 {
-	$('#fresh-air-'+ obj.data_id + '-field0').html(obj.Data." ".obj.Time);
+	$('#fresh-air-'+ obj.data_id + '-field0').html(obj.Date+" "+obj.Time);
 	$('#fresh-air-'+ obj.data_id + '-field1').html(obj.temperature1 + '°C');
 	$('#fresh-air-'+ obj.data_id + '-field2').html(obj.temperature2 + '°C');
 	$('#fresh-air-'+ obj.data_id + '-field3').html(obj.temperature3 + '°C');

@@ -46,15 +46,15 @@ for(var i = 0 ; i < powerDataList.length ; i++)
 			   chartData.current3[i] = parseFloat(powerDataObj.icRms);
 			   chartData.current4[i] = parseFloat(powerDataObj.itRms);
 			   
-			   chartData.power1[i] = parseFloat(powerDataObj.linePa);	
-			   chartData.power2[i] = parseFloat(powerDataObj.linePb);
-			   chartData.power3[i] = parseFloat(powerDataObj.linePc);
-			   chartData.power4[i] = parseFloat(powerDataObj.linePt);
+			   chartData.power1[i] = parseFloat(powerDataObj.pa);	
+			   chartData.power2[i] = parseFloat(powerDataObj.pb);
+			   chartData.power3[i] = parseFloat(powerDataObj.pc);
+			   chartData.power4[i] = parseFloat(powerDataObj.pt);
 			   
-			   chartData.energy1[i] = parseFloat(powerDataObj.lineEpa);	
-			   chartData.energy2[i] = parseFloat(powerDataObj.lineEpb);
-			   chartData.energy3[i] = parseFloat(powerDataObj.lineEpc);
-			   chartData.energy4[i] = parseFloat(powerDataObj.lineEpt);
+			   chartData.energy1[i] = parseFloat(powerDataObj.epa);	
+			   chartData.energy2[i] = parseFloat(powerDataObj.epb);
+			   chartData.energy3[i] = parseFloat(powerDataObj.epc);
+			   chartData.energy4[i] = parseFloat(powerDataObj.ept);
         }
         if(model == 'battery_24'||model == 'battery_32'){
      	       chartData.voltage[i] = parseFloat(powerDataObj.voltage);	
@@ -103,18 +103,9 @@ for(var i = 0 ; i < powerDataList.length ; i++)
 if(model == 'power_302a'){
 	$(function () {
 	    $('#chart-voltage').highcharts({
-	        title: {
-	            text: '新疆电信动环'+modelName+'统计图',
-	            x: -20 //center
-	        },
-	        subtitle: {
-	            text: '电压有效值历史数据统计图',
-	            x: -20
-	        },
-	        xAxis: {
-	            categories: chartData.categories,
-	            crosshair: true
-	        },
+	        title: { text: '新疆电信动环'+modelName+'统计图',  x: -20 },
+	        subtitle: { text: '电压有效值历史数据统计图', x: -20 },
+	        xAxis: { categories: chartData.categories, crosshair: true },
 	        yAxis: {
 	            title: {
 	                text: '电压有效值 (V)'
@@ -211,7 +202,7 @@ if(model == 'power_302a'){
 	        },
 	        yAxis: {
 	            title: {
-	                text: '有功功率 (W)'
+	                text: '功率 (W)'
 	            },
 	            plotLines: [{
 	                value: 0,
@@ -229,16 +220,16 @@ if(model == 'power_302a'){
 	            borderWidth: 0
 	        },
 	    	series: [{
-	            name: 'A相有功功率',
+	            name: 'A相功率',
 	            data: chartData.power1
 	        }, {
-	            name: 'B相有功功率',
+	            name: 'B相功率',
 	            data: chartData.power2
 	        }, {
-	            name: 'C相有功功率',
+	            name: 'C相功率',
 	            data: chartData.power3
 	        }, {
-	            name: '合相有功功率',
+	            name: '合相功率',
 	            data: chartData.power4
 	        }] 
 	    });
@@ -258,7 +249,7 @@ if(model == 'power_302a'){
 	        },
 	        yAxis: {
 	            title: {
-	                text: '有功电能 (kW·h)'
+	                text: '电能 (kW·h)'
 	            },
 	            plotLines: [{
 	                value: 0,
@@ -276,16 +267,16 @@ if(model == 'power_302a'){
 	            borderWidth: 0
 	        },
 	    	series: [{
-	            name: 'A相有功电能',
+	            name: 'A相电能',
 	            data: chartData.energy1
 	        }, {
-	            name: 'B相有功电能',
+	            name: 'B相电能',
 	            data: chartData.energy2
 	        }, {
-	            name: 'C相有功电能',
+	            name: 'C相电能',
 	            data: chartData.energy3
 	        }, {
-	            name: '合相有功电能',
+	            name: '合相电能',
 	            data: chartData.energy4
 	        }] 
 	    });
@@ -863,23 +854,6 @@ if(model == 'datamate3000'){
 				</div>
 			</div>
 			<div class="span9">
-			<?php if($powerDataList){ ?>
-			<div class="row-fluid">
-				<div class="span12">
-					<div class="content-widgets">
-						<div class="widget-head bondi-blue">
-							<h3>统计图</h3>
-						</div>
-						<div class="widget-container">
-							<div id="chart-voltage"></div>
-							<div id="chart-current"></div>
-							<div id="chart-power"></div>
-							<div id="chart-energy"></div>
-						</div>
-					</div>
-				</div>
-			</div>
-	    	<?php }?>
 				<div class="content-widgets light-gray">
 					<div class="widget-head bondi-blue">
 						<h3>综合查询</h3>
@@ -909,6 +883,23 @@ if(model == 'datamate3000'){
 							</div>
 						</form>
 					</div>
+					<?php if($powerDataList){ ?>
+					<div class="row-fluid">
+						<div class="span12">
+							<div class="content-widgets">
+								<div class="widget-head bondi-blue">
+									<h3>统计图</h3>
+								</div>
+								<div class="widget-container">
+									<div id="chart-voltage"></div></br>
+									<div id="chart-current"></div></br>
+									<div id="chart-power"></div></br>
+									<div id="chart-energy"></div>
+								</div>
+							</div>
+						</div>
+					</div>
+			    	<?php }?>
 					<div class="widget-head bondi-blue">
 						<h3>查询结果</h3>
 					</div>

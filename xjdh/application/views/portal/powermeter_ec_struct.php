@@ -111,7 +111,7 @@
 							</div>
 							<div class="form-actions">
 								<button class="btn btn-success" type="submit">查询</button>
-								<button  style="display:none" class="btn btn-success" name="export" value="exporttoexcel" type="submit">导出报表</button>
+								<button class="btn btn-success" name="export" value="exporttoexcel" type="submit">导出报表</button>
 							</div>
 						</form>
 					</div>
@@ -119,8 +119,15 @@
 						<h3>查询结果</h3>
 					</div>
 					<div class="widget-container">
+			 <?php if(isset($total)){ ?>	
 					<div class="row-fluid">
-					   <div class='span3'>
+						<div class='span4'>
+						      <div id="pieChart" style="height:350px;width:350px;"></div>
+						</div>
+						<div class="span4">
+						      <div id="barChart" style="height:350px;width:350px;"></div>
+						</div>
+						<div class='span3'>
 							<table class="table table-bordered responsive table-striped table-sortable">
 							     <thead>
 							         <tr>
@@ -148,14 +155,9 @@
 							     </tbody>
 							</table>
 						</div>
-						<div class='span3'>
-						      <div id="pieChart" style="height:350px;width:350px;"></div>
-						      
-						</div>
-						<div class="span3">
-						      <div id="barChart" style="height:350px;width:350px;"></div>
-						</div>
 					</div>
+			 <?php }?>		
+					
 				</div>
 			</div>
 		</div>

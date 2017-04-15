@@ -14,3 +14,14 @@ user_guide_src/cilexer/dist/*
 user_guide_src/cilexer/pycilexer.egg-info/*
 /vendor/
 /nbproject/
+/public/portal/Check_image/
+/Thrift/
+/user_image/
+/system/
+/resources/
+/phpexcel/
+/excel_templates/
+/doc/
+/db/
+/attachments/
+/app_download/

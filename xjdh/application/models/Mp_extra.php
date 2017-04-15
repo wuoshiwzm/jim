@@ -71,7 +71,8 @@ class Mp_Extra extends CI_Model
         $dbObj = $this->load->database('default', TRUE);
         $dbObj->where('id', $id);
         $dbObj->select('full_name');
-        return $dbObj->get('user')->row()->full_name;
+        $res = $dbObj->get('user')->row();
+        return empty($res)?null:$res->full_name;
     }
 
     function Get_room_name($room_id)
@@ -206,8 +207,15 @@ class Mp_Extra extends CI_Model
             ->result();
 
         return $res;
+    }
 
-
+    //获取某个设备变量对应的标准变量名
+    function GetStandardSignalName($tel_name_id){
+        $dbObj = $this->load->database('default', TRUE);
+        $res = $dbObj->where('id', $tel_name_id)
+            ->get('signals_standard')
+            ->row();
+        return empty($res)?null:$res->name;
     }
 
 

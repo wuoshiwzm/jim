@@ -1,5 +1,4 @@
-<script type="text/javascript" src="/public/portal/js/rt_data/rt_data-door.js"></script> 
-<h5>开门状态:&nbsp;<span class="label label-success door"  id="door-<?php echo $dataObj->data_id;?>">关闭</span></h5>
+<h5>开门状态:&nbsp;<span class="label label-success door" data_id="<?php echo $dataObj->data_id;?>" id="door-<?php echo $dataObj->data_id;?>">关闭</span></h5>
 <?php if($canOpen){ ?>
 <p>
 <button class='btn btn-info btnOpenDoor' data_id="<?php echo $dataObj->data_id; ?>" >远程开门</button>&nbsp;<button class='btn btn-info btnForceOpenDoor' data_id="<?php echo $dataObj->data_id; ?>">强制开门</button>
@@ -14,11 +13,11 @@
 				<h4>请注明开门事由</h4>
 				<p>开门须说明所在单位和手机号</p>
 				<br>
-                   <textarea name="openMessage" id="openMessage"  rows="10" cols="10"></textarea>
+                   <textarea id="openMessage<?php echo $dataObj->data_id; ?>"  rows="10" cols="10"></textarea>
 			</div>
 			<div class="modal-footer">
 				<button type="button" class="btn btn-primary" data-dismiss="modal">取消</button>
-				<button type="button" class="btn btn-danger" data_id="<?php echo $dataObj->data_id; ?>" id='btn-ok-checks' >确定</button>
+				<button type="button" class="btn btn-danger" data_id="<?php echo $dataObj->data_id; ?>" id='btn-ok-checks-<?php echo $dataObj->data_id; ?>' >确定</button>
 			</div>
 		</div>
 		<!-- /.modal-content -->

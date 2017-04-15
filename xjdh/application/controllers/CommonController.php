@@ -1,16 +1,17 @@
 <?php
-if (! defined('BASEPATH'))
+if (!defined('BASEPATH'))
     exit('No direct script access allowed');
 const DEFAULT_PAGE_SIZE = 20;
-class CommonController extends CI_Controller{
-    private $userObj = null;
+class CommonController extends CI_Controller
+{
+    public $userObj = null;
 
-    public function __construct ()
+    public function __construct()
     {
         //继承父类构造函数
         parent::__construct();
-        if (! User::IsAuthenticated()) {
-            if(uri_string() == "portal/get_video_url")
+        if (!User::IsAuthenticated()) {
+            if (uri_string() == "portal/get_video_url")
                 return;
             if (uri_string() == 'portal/refreshData' && $this->isOauthPass()) {
                 return;
@@ -26,4 +27,11 @@ class CommonController extends CI_Controller{
     {
 
     }
-};
+
+    public function test()
+    {
+        echo 'test';
+    }
+}
+
+;

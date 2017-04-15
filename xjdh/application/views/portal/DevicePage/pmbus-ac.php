@@ -16,7 +16,8 @@
 
 <p>最后更新时间:<span id="<?php echo $dataObj->data_id;?>-update_datetime"></span>
 <table
-	class="table table-bordered responsive table-striped table-sortable"
+	class="table table-bordered responsive table-striped table-sortable rt-data"   data_id='<?php echo $dataObj->data_id;?>'
+	 data_type="<?php echo $dataObj->model; ?>"
 	id='<?php echo $dataObj->data_id;?>-sps-ac-1'>
 	<thead>
 		<tr>

@@ -4,6 +4,203 @@ if (! defined('BASEPATH'))
 
 class Realtime
 {
+    /**
+     * 统一处理网页和手机显示的界面
+     * @param $model 设备分类
+     * @param $dataObj device对象
+     */
+    static function GetDevicePage($model, &$scriptExtra, &$data, &$dataObj, $userObj, $data_id = 0)
+    {
+        $CI = & get_instance();
+        $data['userObj'] = $userObj;
+        //生成页面
+        switch($model)
+        {
+            case "sps":
+                {
+                    if(Util::endsWith($dataObj->model, "ac"))
+                    {
+                        $tData = array_merge($data, Constants::$pmBusConfig[$dataObj->model]);
+                        $dataObj->html = $CI->load->view('portal/DevicePage/pmbus-ac', $tData, TRUE);
+                    }else if(Util::endsWith($dataObj->model, "dc"))
+                    {
+                        $tData = array_merge($data, Constants::$pmBusConfig[$dataObj->model]);
+                        $dataObj->html = $CI->load->view('portal/DevicePage/pmbus-dc', $tData, TRUE);
+                    }else if(Util::endsWith($dataObj->model, "rc"))
+                    {
+                        $tData = array_merge($data, Constants::$pmBusConfig[$dataObj->model]);
+                        $dataObj->html = $CI->load->view('portal/DevicePage/pmbus-rc', $tData, TRUE);
+                    }else{
+                        $dataObj->html = $CI->load->view ("portal/DevicePage/".$dataObj->model, $data, TRUE );
+                    }
+                    $dataObj->html1 = $CI->load->view ("portal/standard_data", $data, TRUE);
+                    break;
+                }
+            case "liebert-ups":
+                {
+                    if($dataObj->model == "liebert-ups")
+                    {
+                        $dataObj->html = $CI->load->view('portal/DevicePage/liebert-ups', array('liebertUpsObj' => $dataObj, 'userObj'=>$CI->userObj), TRUE);
+                        $dataObj->html1 = $CI->load->view ("portal/standard_data", array('liebertUpsObj' => $dataObj, 'userObj'=>$CI->userObj, 'devName'=>$data["devName"]), TRUE);
+                    }
+                    break;
+                }
+            case "ac":
+                {
+                    if($dataObj->model == "liebert-pex")
+                    {
+                        $dataObj->html = $CI->load->view('portal/DevicePage/liebert-pex', array('liebertPexObj' => $dataObj, 'userObj'=>$CI->userObj), TRUE);
+                        $scriptExtra .= '<script type="text/javascript" src="/public/portal/js/rt_data/rt_data-' . $dataObj->model . '.js"></script>';
+                    }else if($dataObj->model == "ug40")
+                    {
+                        $dataObj->html = $CI->load->view('portal/DevicePage/ug40', array('ug40Obj' => $dataObj, 'userObj'=>$CI->userObj), TRUE);
+                        $scriptExtra .= '<script type="text/javascript" src="/public/portal/js/rt_data/rt_data-' . $dataObj->model . '.js"></script>';
+                    }
+                    else if($dataObj->model == "canatal")
+                    {
+                        $dataObj->html = $CI->load->view('portal/DevicePage/canatal', array('canatal' => $dataObj, 'userObj'=>$CI->userObj), TRUE);
+                        $scriptExtra .= '<script type="text/javascript" src="/public/portal/js/rt_data/rt_data-' . $dataObj->model . '.js"></script>';
+                    }else if($dataObj->model == "datamate3000")
+                    {
+                        $dataObj->html = $CI->load->view('portal/DevicePage/datamate3000', array('dataObj' => $dataObj, 'userObj'=>$CI->userObj), TRUE);
+                        $scriptExtra .= '<script type="text/javascript" src="/public/portal/js/rt_data/rt_data-' . $dataObj->model . '.js"></script>';
+                    }
+                    $dataObj->html1 = $CI->load->view ("portal/standard_data", $data, TRUE);
+                    break;
+                }
+                 
+            case "pdu":
+                {
+                    if(in_array($dataObj->model, array('aeg-ms10se','aeg-ms10m')))
+                    {
+                        $dataObj->html = $CI->load->view('portal/DevicePage/page-aeg', array('aegObj' => $dataObj, 'userObj'=>$CI->userObj), TRUE);
+                    }else if($dataObj->model == "vpdu")
+                    {
+                        $dataObj->html = $CI->load->view('portal/DevicePage/vpdu', array('dataObj' => $dataObj, 'userObj'=>$CI->userObj), TRUE);
+                    }
+                    $dataObj->html1 = $CI->load->view ("portal/standard_data", array('dataObj' => $dataObj, 'userObj'=>$CI->userObj, 'devName'=>$data["devName"]), TRUE);
+                    break;
+                }
+            case "engine":
+                {
+                    $dataObj->html = $CI->load->view('portal/DevicePage/'.$dataObj->model, array('dataObj' => $dataObj, 'userObj'=>$CI->userObj), TRUE);
+                    $dataObj->html1 = $CI->load->view ("portal/standard_data", array('dataObj' => $dataObj, 'userObj'=>$CI->userObj, 'devName'=>$data["devName"]), TRUE);
+                    $scriptExtra .= '<script type="text/javascript" src="/public/portal/js/rt_data/rt_data-' . $dataObj->model . '.js"></script>';
+                    break;
+                }
+            case "smd_device":
+                {
+                    $deviceList = $CI->mp_xjdh->Get_Device_By_SMD_no($dataObj->device_no);
+                    $diList = array();
+                    $aiList = array();
+                    $spList = array();
+                    foreach($deviceList as $deviceObj)
+                    {
+                        if(in_array($deviceObj->model, array("venv","vcamera")))
+                        {
+                            continue;
+                        }
+                        switch($deviceObj->dev_type)
+                        {
+                            case 0:
+                                array_push($diList, $deviceObj);
+                                break;
+                            case 1:
+                                array_push($aiList, $deviceObj);
+                                break;
+                            case 2:
+                                array_push($spList, $deviceObj);
+                                break;
+                        }
+                    }
+                    $dataObj->html = $CI->load->view ("portal/DevicePage/smd_device", array("dataObj"=>$dataObj, "diList"=>$diList,"aiList"=>$aiList, "spList"=>$spList), TRUE);
+                    $dataObj->html1 = $CI->load->view ("portal/standard_data", $data, TRUE);
+                    break;
+                }
+            case "powermeter":
+                {
+                    if($dataObj->model == "imem_12")
+                    {
+                        $dataObj->html = $CI->load->view('portal/DevicePage/imem12', $data, TRUE);
+                    }else if($dataObj->model == "power_302a")
+                    {
+                        $dataObj->html = $CI->load->view('portal/DevicePage/power_302a', $data, TRUE);
+                    }else if($dataObj->model == "pmac600-a" || $dataObj->model == "pmac600-b")
+                    {
+                        $dataObj->html = $CI->load->view('portal/DevicePage/'.$dataObj->model, $data, TRUE);
+                    }
+                    //$dataObj->html1 = $CI->load->view ("portal/standard_data", array('dataObj' => $dataObj, 'userObj'=>$CI->userObj, 'devName'=>$data["devName"]), TRUE);
+                    break;
+                }
+            case "door":
+                {
+                    $canOpen = false;
+                    if($userObj->user_role == 'admin')
+                    {
+                        $canOpen = true;
+                    }else if(in_array($userObj->user_role, array("city_admin","operator")))
+                    {
+                        $devObj = $CI->mp_xjdh->Get_Device($dataObj->data_id);
+                        if(count($devObj))
+                        {
+                            if($devObj->city_code == $CI->userObj->city_code)
+                                $canOpen = true;
+                        }
+                    }else{
+                        $duObj = $CI->mp_xjdh->Get_DoorUser($dataObj->data_id, $userObj->id);
+                        if(count($duObj) && $duObj->remote_control)
+                            $canOpen = true;
+                    }
+                    $data['canOpen'] = $canOpen;
+                    //$tmpData['desc'] = $CI->mp_xjdh->Get_door_record($_SESSION['XJTELEDH_USERID']);
+                    $dataObj->html = $CI->load->view('portal/DevicePage/door', $data, TRUE);
+                    break;
+                }
+            case "battery":
+            case "battery_32":
+                {
+                    $data['extraPara'] = $extraPara = json_decode($dataObj->extra_para,true);
+                    if(isset($extraPara ["connection"])){
+                        if($extraPara ["connection"] == "44"){
+                            $data['type'] = $type = "44"; //44代表蓄电池前4后4接法
+                        }else if($extraPara ["connection"] == "44i"){
+                            $data['type'] = $type = "44i";//前4后4接法个例第一组与第二组之间空两节
+                        }else if($extraPara["connection"] == "11"){
+                            $data['type'] = $type = "11"; //11代表蓄电池11节接法
+                        }else{
+                            $data['type'] = '';
+                        }
+                    }else{
+                        $data['type'] = '';
+                    }
+                    $dataObj->html = $CI->load->view ("portal/DevicePage/battery", $data, TRUE );
+                    break;
+                }
+            case "canatal":
+            case "camera":
+            case "freshair":
+            case "motor_battery":{
+                $data['motorBatList'] = $CI->mp_xjdh->Get_Room_Devices($dataObj->room_id, 'motor_battery');
+                $data['pageContent'] = $CI->load->view('portal/DevicePage/motor_battery', $data, TRUE);
+            }
+            default:
+                $dataObj->html = $CI->load->view ("portal/DevicePage/$model", array("dataObj"=>$dataObj,'ExtraPara'=>$dataObj->extra_para, 'userObj'=>$CI->userObj), TRUE );
+                $dataObj->html1 = $CI->load->view ("portal/standard_data", $data, TRUE);
+                break;
+        }
+        //js
+        switch($model)
+        {
+            case "battery":
+            case "battery_32":
+                $scriptExtra .= '<script type="text/javascript" src="/public/portal/js/rt_data/rt_data-battery.js?v=1.14"></script>';
+                break;
+            default:
+                $scriptExtra .= '<script type="text/javascript" src="/public/portal/js/rt_data/rt_data-' . $model . '.js?v=1.13"></script>';
+                break;
+        }
+        $data['pageContent'] = $dataObj->html;
+    }
     /*
      * 后面几个参数的意思参考对应的后台PMBusPower子类
      */
@@ -89,7 +286,7 @@ class Realtime
         return "无效";
     }
     static function _GetPMBusPowerAC($model,$memData, $airlock_number, $p40_43_number, $p40_41_number, $p40_44_number)
-    {
+    {    
         $dataObj = new stdClass();
         $acLen = (18+ $airlock_number + 1 + $p40_43_number + 3 + 7);
         $acChannelLen = (16 + 6 + 4 * $p40_41_number + $p40_44_number);
@@ -790,7 +987,7 @@ class Realtime
         }
         return $dk04Obj;
     }
-
+    
     static function Get_Dk09RtData($data_id)
     {
 
@@ -1061,7 +1258,7 @@ class Realtime
 
 
     }
-            
+        
     /*
      * 统一处理所有开关电源的数据解析
      */
@@ -1093,30 +1290,17 @@ class Realtime
                         if(Util::endsWith($devObj->model, "ac"))
 					    {
                             $dataObj = Realtime::_GetPMBusPowerAC($devObj->model, $memData, Constants::$pmBusConfig[$devObj->model]["airlock"], Constants::$pmBusConfig[$devObj->model]["p40_43"], Constants::$pmBusConfig[$devObj->model]["p40_41"], Constants::$pmBusConfig[$devObj->model]["p40_44"]);
-                        }
-                        else if(Util::endsWith($devObj->model, "rc"))
+                        }else if(Util::endsWith($devObj->model, "rc"))
                         {
                             $dataObj = Realtime::_GetPMBusPowerRC($devObj->model, $memData, Constants::$pmBusConfig[$devObj->model]["p42_46"], Constants::$pmBusConfig[$devObj->model]["p42_46_size"], Constants::$pmBusConfig[$devObj->model]["p41_41"], Constants::$pmBusConfig[$devObj->model]["p41_43"], Constants::$pmBusConfig[$devObj->model]["p41_44"]);
-                        }
-                        else if(Util::endsWith($devObj->model, "dc"))
+                        }else if(Util::endsWith($devObj->model, "dc"))
 					    {
 					        $dataObj = Realtime::_GetPMBusPowerDC($devObj->model, $memData, Constants::$pmBusConfig[$devObj->model]["m"], Constants::$pmBusConfig[$devObj->model]["n"], Constants::$pmBusConfig[$devObj->model]["p"], Constants::$pmBusConfig[$devObj->model]["alert_m"], Constants::$pmBusConfig[$devObj->model]["alert_p"]);
-					    }
-					    else if($devObj->model == "dk04"){
+					    }else if($devObj->model == "dk04"){
 					        $dataObj = Realtime::Get_Dk04RtData($dataId);
-					    }
-					    else if($devObj->model == "dk04c"){
+					    }else if($devObj->model == "dk04c"){
 					        $dataObj = Realtime::Get_Dk04cRtData($dataId);
 					    }
-                        else if ($devObj->model == "dk09") {
-                            $dataObj = Realtime::Get_Dk09RtData($dataId);
-                        } //cuc21vb
-                        else if ($devObj->model == "cuc21vb") {
-                            $dataObj = Realtime::Get_Cuc21vbRtData();
-                        }//Des
-                        else if ($devObj->model == "Des") {
-                            $dataObj = Realtime::Get_DesRtData();
-                        }
                         //$CI->cache->save($dataId."_webcache", $dataObj, 20);
                     }
                     $memData = $CI->cache->get("$dataId:time");
@@ -1139,8 +1323,6 @@ class Realtime
         }
         return $dataList;
     }
-
-
     static function Get_Mec10RtData($dataIdStr)
     {
         $CI = & get_instance();
@@ -1414,8 +1596,23 @@ class Realtime
             $batObj->group_v = number_format($val[1], 2);
             $batObj->update_datetime = date('Y-m-d H:i:s');
             $batObj->dynamic_config = $CI->cache->get($val . '_dc');
+            $memData = $CI->cache->get($batObj->data_id.":time");
+            if($memData == false)
+            {
+                //没有时间的
+                $batObj->status = false;
+                $batObj->last_update = "无最后更新时间";
+            }else if((time() - intval($memData)) > 600){
+                //超时5分钟
+                $batObj->status = false;
+                $batObj->last_update = date("Y-m-d H:i:s", intval($memData));
+            }else{
+                $batObj->status = true;
+                $batObj->last_update = date("Y-m-d H:i:s", intval($memData));
+            }
             array_push($batList, $batObj);
         }
+        
         return $batList;
     }
     static function Get_BatRtData ($dataIdStr, $batNum)
@@ -1783,7 +1980,6 @@ class Realtime
         }
         return $dataList;
     }
-
     static function Get_SwitchingPowerSupplyRtData ($dataIdStr)
     {
         $idArr = array();
@@ -3983,125 +4179,7 @@ struct tele_c_smu06c_dc
     			$year = $v[1];
     			$v = unpack('C*', substr($memData, 4 + 109 + 2*158 + 2, 5));
     			$libertPexObj->update_datetime = date('Y-m-d H:i:s', strtotime($year . '-' . $v[1] . '-' . $v[2] . ' ' . $v[3] . ':' . $v[4] . ':' . $v[5]));
-    		}
-            else if(strlen($memData) == 44){
-                /**
-                 * struct ModBusK200Info
-                {
-                unsigned int data_id;  //29+4+1+4+1+4+1
-                char set_switch; 				//设置开关机,40001
-                float set_temp; 				//设定温度,40002,0.1
-                char set_humid; 				//设定湿度,40003
-                ModBusK200System k200sys;		//系统信息,40004
-                float retairtemparature;  		//回风温度,40005,0.1
-                char retairthumid;  			//回风湿度,40006
-                AlarmLevel_1 alarmlvl_1;		//告警位1,40007
-                AlarmLevel_2 alarmlvl_2;      	//告警位2,40008
-                tele_c_time update_time;
-                };
-                 */
-                //char set_switch;              //设置开关机,40001
-                $v = unpack('S*', substr($memData, 4,1));
-                $libertPexObj->set_switch = $v[1];
-
-                //float set_temp; 				//设定温度,40002,0.1
-                $v = unpack('S*', substr($memData, 4+1,4));
-                $libertPexObj->set_temp = $v[1];
-
-                //char set_humid; 				//设定湿度,40003
-                $v = unpack('S*', substr($memData, 4+1+4,1));
-                $libertPexObj->set_humid = $v[1];
-
-                // ModBusK200System k200sys;		//系统信息,40004
-                /**
-                 *  //reg=40004,告警信息
-                struct ModBusK200System //5*1
-                {
-                char humidify; 		//加湿,bit5
-                char dehumidfy; 	//除湿,bit4
-                char heating; 	//制热,bit3
-                char cooling; 		//制冷,bit2
-                char fan;					//风机,bit1
-                };
-                 */
-                $v = unpack('C*', substr($memData, 4+1+4+1,5*1));
-                $libertPexObj->humidify = $v[1]; //加湿,bit5
-                $libertPexObj->dehumidfy = $v[2]; //除湿,bit4
-                $libertPexObj->heating = $v[3]; //制热,bit3
-                $libertPexObj->cooling = $v[4]; //制冷,bit2
-                $libertPexObj->fan = $v[5]; //风机,bit1
-
-                /**
-                 * //reg=40007,告警信息
-                struct AlarmLevel_1  // 15*1
-                {
-                char low_pressure_compressor; 		//压缩机低压,bit15
-                char high_pressure_compressor; 		//压缩机高压,bit14
-                char air_flow_loss; 							//气流丢失,bit13
-                char fan_overload; 								//风机过载,bit12
-                char heater_overload; 						//加热器过载,bit11
-                char airstrainer; 								//空气过滤网,bit10
-                char high_temp_alert; 						//高温告警,bit9
-                char low_temp_alert; 							//低温告警,bit8
-                char high_humid_alert; 				//高湿告警,bit7
-                char low_humid_alert; 				//低湿告警,bit6
-                char air_temp_probe_alert; 			//回风温度探头故障,bit5
-                char wind_temp_probe_alert; 		//送风温度探头故障,bit4
-                char air_humid_probe_alert; 		//回风湿度探头告警,bit3
-                char out_temp_probe_alert; 			//室外温度探头告警,bit2
-                char wind_temp_alert; 				//送风温度告警,bit1
-                };
-                 */
-
-                $v = unpack('C*', substr($memData, 4+1+4+1+5*1,15));
-                $libertPexObj->low_pressure_compressor=$v[1]; 		//压缩机低压,bit15
-                $libertPexObj->high_pressure_compressor =$v[2]; 		//压缩机高压,bit14
-                $libertPexObj->air_flow_loss =$v[3]; 							//气流丢失,bit13
-                $libertPexObj->fan_overload =$v[4]; 								//风机过载,bit12
-                $libertPexObj->heater_overload =$v[5]; 						//加热器过载,bit11
-                $libertPexObj->airstrainer =$v[6]; 								//空气过滤网,bit10
-                $libertPexObj->high_temp_alert =$v[7]; 						//高温告警,bit9
-                $libertPexObj->low_temp_alert =$v[8]; 							//低温告警,bit8
-                $libertPexObj->high_humid_alert =$v[9]; 				//高湿告警,bit7
-                $libertPexObj->low_humid_alert =$v[10]; 				//低湿告警,bit6
-                $libertPexObj->air_temp_probe_alert =$v[11]; 			//回风温度探头故障,bit5
-                $libertPexObj->wind_temp_probe_alert =$v[12]; 		//送风温度探头故障,bit4
-                $libertPexObj->air_humid_probe_alert =$v[13]; 		//回风湿度探头告警,bit3
-                $libertPexObj->out_temp_probe_alert =$v[14]; 			//室外温度探头告警,bit2
-                $libertPexObj->wind_temp_alert =$v[15]; 				//送风温度告警,bit1
-
-                /**
-                 * //reg=40008,告警信息
-                struct AlarmLevel_2 // 9*1
-                {
-                char high_hunidifier_current; 		//加湿器电流过大.bit15
-                char humidifier_water_shortage; 	//加湿器缺水,bit14
-                char no_humid_current; 				//无加湿电流,bit13
-
-                char overflow_alert; 				//溢流告警,bit9
-                char user_alert; 					//用户告警,bit8
-                char smoke_alert; 					//烟雾告警,bit7
-
-                char high_pressure_compressor2; 	//压缩机2高压,bit2
-                char low_pressure_compressor2; 		//压缩机2低压	,bit1
-                char water_switch_alert; 			//水流开关告警,bit0
-                };
-                 */
-                $v = unpack('C*', substr($memData, 4+1+4+1+5*1+15,9*1));
-                $libertPexObj->high_hunidifier_current=$v[1] ; 		//加湿器电流过大.bit15
-                $libertPexObj->humidifier_water_shortage=$v[2] ; 	//加湿器缺水,bit14
-                $libertPexObj->no_humid_current=$v[3] ; 				//无加湿电流,bit13
-
-                $libertPexObj->overflow_alert=$v[4] ; 				//溢流告警,bit9
-                $libertPexObj->user_alert=$v[5] ; 					//用户告警,bit8
-                $libertPexObj->smoke_alert=$v[6] ; 					//烟雾告警,bit7
-
-                $libertPexObj->high_pressure_compressor2=$v[7] ; 	//压缩机2高压,bit2
-                $libertPexObj->low_pressure_compressor2=$v[8] ; 		//压缩机2低压	,bit1
-                $libertPexObj->water_switch_alert=$v[9] ; 			//水流开关告警,bit0
-
-            }
-    		else {
+    		} else {
     			$libertPexObj->isEmpty = true;
     			$libertPexObj->update_datetime = date('Y-m-d H:i:s');
     		}

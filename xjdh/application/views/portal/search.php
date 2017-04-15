@@ -23,7 +23,7 @@
 			<div class="span12">
 				<div class="content-widgets light-gray">
 					<div class="widget-head bondi-blue">
-						<h3>搜索 <?php echo htmlentities($queryStr, ENT_COMPAT, "UTF-8"); ?> 局站查询结果</h3>
+						<h3>搜索 <?php echo htmlentities($keyword, ENT_COMPAT, "UTF-8"); ?> 局站查询结果</h3>
 					</div>
 					<div class="widget-container">
 						<table

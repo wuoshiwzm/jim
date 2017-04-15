@@ -241,13 +241,20 @@ class Check extends CI_Controller
         if (!$apply->check_jim) {
 
             $dbObj->where('substation_id', $subID);
-            $dbObj->update('check_arrange', ['check_jim' => 1]);
+            $dbObj->update('check_arrange', [
+                'check_jim' => 1,
+                'check_jim_user_id' => $this->userObj->id,
+            ]);
             redirect('/check');
             return;
         }
         //二级审核
         $dbObj->where('substation_id', $subID);
-        $dbObj->update('check_arrange', ['check_tel' => 1]);
+        $dbObj->update('check_arrange',
+            [
+                'check_tel' => 1,
+                'check_tel_user_id' => $this->userObj->id,
+            ]);
         redirect('/check');
         return;
     }
@@ -598,6 +605,8 @@ class Check extends CI_Controller
             $dbObj->set('user_name', $userName);
             $dbObj->set('substation_id', $subID);
             $dbObj->set('substation_name', $subName);
+
+            $dbObj->set('arrange_user_id', $this->userObj->id);
 
             $dbObj->set('arrange_time', $time);
             $dbObj->insert('check_arrange');
@@ -1483,7 +1492,6 @@ class Check extends CI_Controller
 
 
     /**
-     *
      *
      * 工程进度管理
      *

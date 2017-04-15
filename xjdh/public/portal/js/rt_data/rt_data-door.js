@@ -4,14 +4,14 @@ $(document).ready(function() {
 			 keyboard: true,
 			 show	: true,
 		});	
-		$("#btn-ok-checks").unbind("click").click(function(){
-			 if($("#openMessage").val() == ""){
+		$("#btn-ok-checks-"+ $(this).attr("data_id")).click(function(){
+			 if($("#openMessage-"+ $(this).attr("data_id")).val() == ""){
 				 alert("请填写情况说明");
 				 return;
 			 }
 			 if(confirm("请确认远程开门操作")){
-				 $.post('/portal/open_door', {data_id:$(this).attr("data_id"),openMessage:$("#openMessage").val(),action:'远程开门 '},function(data){
-	                                  eval('var ret = ' + data);
+				 $.post('/portal/open_door', {data_id:$(this).attr("data_id"),openMessage:$("#openMessage-"+ $(this).attr("data_id")).val(),action:'远程开门 '},function(data){
+                     eval('var ret = ' + data);
 					 if(ret.ret == 0)
 					 {
 						 var n = noty({
@@ -21,7 +21,7 @@ $(document).ready(function() {
 		  						timeout:1000,
 		  						closeWith: ['hover','click','button']
 		  					});
-						 $('#thresholdDialog3').modal('hide');
+						 $("#thresholdDialog3-"+ $(this).attr("data_id")).modal('hide');
 						 refreshData();
 					 }else{
 						 var n = noty({
@@ -44,14 +44,14 @@ $(document).ready(function() {
 			 show	: true,
 			 
 		});	
-		$("#btn-ok-checks").unbind("click").click(function(){
-			 if($("#openMessage").val() == ""){
+		$("#btn-ok-checks-"+ $(this).attr("data_id")).click(function(){
+			 if($("#openMessage-"+ $(this).attr("data_id")).val() == ""){
 				 alert("请填写情况说明");
 				 return;
 			 }
 			 if(confirm("请确认强制远程开门操作")){
-				 $.post('/portal/force_open_door', {data_id:$(this).attr("data_id"),openMessage:$("#openMessage").val(),action:'强制远程开门 '},function(data){
-	                                  eval('var ret = ' + data);
+				 $.post('/portal/force_open_door', {data_id:$(this).attr("data_id"),openMessage:$("#openMessage-" + $(this).attr("data_id")).val(),action:'强制远程开门 '},function(data){
+	                 eval('var ret = ' + data);
 					 if(ret.ret == 0)
 					 {
 						 var n = noty({
@@ -61,7 +61,7 @@ $(document).ready(function() {
 		  						timeout:1000,
 		  						closeWith: ['hover','click','button']
 		  					});
-						 $('#thresholdDialog3').modal('hide');
+						 $("#thresholdDialog3-"+ $(this).attr("data_id")).modal('hide');
 						 refreshData();
 					 }else{
 						 var n = noty({

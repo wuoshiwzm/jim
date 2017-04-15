@@ -137,12 +137,7 @@ var layer = <?php echo json_encode($layer); ?>;
 								</div>																
 							</div>
 							<div class="control-group">
-							<label class="control-label" style="float: left;">局站名称</label>
-								<div class="controls" style="margin-left: 20px; float: left;">
-									<input type='text' name='txtName' id='txtName'
-										value='<?php if(isset($substation)) echo htmlentities($substation->name, ENT_COMPAT, "UTF-8");?>' />
-								</div>
-								<label class="control-label" style="float: left;">局站类型 </label>
+							<label class="control-label" style="float: left;">局站类型 </label>
 								<div class="controls" style="margin-left: 20px; float: left;">
 									<select id="selType" name="selType">
 										<option value="A" <?php if(isset($substation) && $substation->type == "A") echo "selected"; ?>>A级局站</option>
@@ -151,8 +146,12 @@ var layer = <?php echo json_encode($layer); ?>;
 										<option value="D" <?php if(isset($substation) && $substation->type == "D") echo "selected"; ?>>D级局站</option>
 										<option value="D1" <?php if(isset($substation) && $substation->type == "D1") echo "selected"; ?>>D级局站-无线基站</option>
 									</select>
-									<font size=4 color=red>&nbsp;*</font>
-								</div>											
+								</div>		
+							<label class="control-label" style="float: left;">局站名称</label>
+								<div class="controls" style="margin-left: 20px; float: left;">
+									<input type='text' name='txtName' id='txtName'
+										value='<?php if(isset($substation)) echo htmlentities($substation->name, ENT_COMPAT, "UTF-8");?>' />
+								</div>								
 							</div>
 						<div  class="control-group">
 						<label class="control-label" style="float: left;">经纬度</label>

@@ -50,7 +50,7 @@
 								</div>
 								<label class="control-label" style="float: left;">门禁卡号</label>
 								<div class="controls" style="margin-left: 20px; float: left;">
-									<input type="text" name="accessId" value="<?php  if(accessId) echo $accessId?>">
+									<input type="text" name="accessId" value="<?php  if($accessId) echo $accessId?>">
 								</div>
 								</div>
 								<div class="control-group">
@@ -142,8 +142,12 @@
 									<td><?php echo htmlentities($userObj->full_name,ENT_COMPAT,"UTF-8");?></td>
 									<td><?php echo htmlentities($userObj->mobile,ENT_COMPAT,"UTF-8");?></td>
                     				<td><?php echo htmlentities($userObj->accessid,ENT_COMPAT,"UTF-8");?></td>
-									<td><?php echo htmlentities(Defines::$gCity[$userObj->city_code],ENT_COMPAT,"UTF-8");?></td>
-									<td><?php echo htmlentities(Defines::$gCounty[$userObj->city_code][$userObj->county_code],ENT_COMPAT,"UTF-8");?></td>
+									<td><?php  if (isset(Defines::$gCity[$userObj->city_code])){ 
+									              echo htmlentities(Defines::$gCity[$userObj->city_code],ENT_COMPAT,"UTF-8");
+											    }?></td>
+									<td><?php if (isset(Defines::$gCounty[$userObj->city_code][$userObj->county_code])){
+									               echo htmlentities(Defines::$gCounty[$userObj->city_code][$userObj->county_code],ENT_COMPAT,"UTF-8");
+											    } ?></td>
 									<td>
 									   <a href="/portal/door_user_list/<?php echo htmlentities($userObj->id,ENT_COMPAT,"UTF-8"); ?>">
 											门禁管理

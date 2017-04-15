@@ -181,20 +181,7 @@ $(document).ready(function(){
 				</div>
 			</div>
 		</div>
-		<?php if(in_array($type, array('energy' ,'alarm'))){?>
-		<div class="row-fluid">
-			<div class="span12">
-				<div class="content-widgets">
-					<div class="widget-head bondi-blue">
-						<h3>统计图</h3>
-					</div>
-					<div class="widget-container">
-						<div id="chart-area"></div>
-					</div>
-				</div>
-			</div>
-		</div>
-		<?php }?>
+		
 		<div class="row-fluid">
 			<div class="span12">
 				<div class="content-widgets light-gray">
@@ -319,6 +306,20 @@ $(document).ready(function(){
 				</div>
 			</div>
 		</div>
+		<?php if(in_array($type, array('energy' ,'alarm'))){?>
+		<div class="row-fluid">
+			<div class="span12">
+				<div class="content-widgets">
+					<div class="widget-head bondi-blue">
+						<h3>统计图</h3>
+					</div>
+					<div class="widget-container">
+						<div id="chart-area"></div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<?php }?>
 		<div class="row-fluid">
 			<div class="span12">
 				<div class="content-widgets light-gray">

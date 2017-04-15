@@ -3,9 +3,9 @@ $(document).ready(function(){
 	var dataIdArr3 = new Array();
 	var dataIdArr4 = new Array();
 	$('.rt-data').each(function() {
-		if ($(this).attr('data_type') == 'bat24' && dataIdArr3.indexOf($(this).attr('data_id')) == -1) {
+		if ($(this).attr('data_type') == 'battery_24' && dataIdArr3.indexOf($(this).attr('data_id')) == -1) {
 			dataIdArr3.push($(this).attr('data_id'));
-		}else if ($(this).attr('data_type') == 'bat32' && dataIdArr4.indexOf($(this).attr('data_id')) == -1) {
+		}else if ($(this).attr('data_type') == 'battery_32' && dataIdArr4.indexOf($(this).attr('data_id')) == -1) {
 			dataIdArr4.push($(this).attr('data_id'));
 		}else if ($(this).attr("data_type") == "battery24_voltage" && dataIdArr2.indexOf($(this).attr("data_id")) == -1){
 			dataIdArr2.push($(this).attr("data_id"));
@@ -31,111 +31,47 @@ $(document).ready(function(){
 				}else{
 					$("#" + obj.data_id + "-status").hide();
 				}
-				$('#device-'+ obj.data_id +' .group_v').html(obj.group_v +'V');
-				$('#device-'+ obj.data_id +' .update_datetime').html(obj.update_datetime);
+				var devContainer = $('.rt-data[data_id='+ obj.data_id + ']');
+				var type = devContainer.attr("type");
+				devContainer.find('.group_v').html(obj.group_v +'V');
+				devContainer.find('.update_datetime').html(obj.update_datetime);
 				if(obj.group_i != undefined)
 				{	
-					$('#device-'+ obj.data_id +' .group_i').html(obj.group_i +'A');
-					$('#device-'+ obj.data_id +' .bat_temp').html(obj.temperature +'°C');
-					if(No1){
-					     var arr = No1.split(',');
-									for(var q=0;q<arr.length;q++){
-									  $('#bat_voltageNo1_'+ obj.data_id).find(' tbody>tr:eq('+q +') td:eq(1)>span:eq(0)').html(obj.voltage[arr[q]] + 'V');
-									  $('#bat_voltageNo1_'+ obj.data_id).find(' tbody>tr:eq('+q +') td:eq(4)>span:eq(0)').html(obj.voltage[arr[q+1]] + 'V');
-									  $('#bat_voltageNo1_'+ obj.data_id).find(' tbody>tr:eq('+q +') td:eq(7)>span:eq(0)').html(obj.voltage[arr[q]+2] + 'V');
-									  $('#bat_voltageNo1_'+ obj.data_id).find(' tbody>tr:eq('+q +') td:eq(10)>span:eq(0)').html(obj.voltage[arr[q]+3] + 'V');								
-									}
+					devContainer.find('.group_i').html(obj.group_i +'A');
+					devContainer.find('.bat_temp').html(obj.temperature +'°C');
+					if( type == "44" || type == "44i"){
+						for(var z=0; z<4; z++){
+							$('#bat_voltage_'+ obj.data_id).find('tbody td.bat_num'+ z + '>span:eq(0)').html(obj.voltage[z] + 'V');	
+						}
+						for(var z=6; z<10; z++){
+							$('#bat_voltage_'+ obj.data_id).find('tbody td.bat_num'+ (14+z) + '>span:eq(0)').html(obj.voltage[z] + 'V');
+						}
+						//44是第二组13,14,15,16, 19,20,21,22
+						//44i是第二组12,13,14,15, 18,19,20,21
+						if(type == "44"){
+							for(var z=0; z<4; z++){
+								$('#bat_voltage2_'+ obj.data_id).find('tbody td.bat_num'+ z + '>span:eq(0)').html(obj.voltage[z+13] + 'V');	
 							}
-					if(No2){
-					     var arr = No2.split(',');
-							for(var q=0;q<arr.length;q++){
-							  $('#bat_voltageNo2_'+ obj.data_id).find(' tbody>tr:eq('+q +') td:eq(1)>span:eq(0)').html(obj.voltage[arr[q]] + 'V');
-							  $('#bat_voltageNo2_'+ obj.data_id).find(' tbody>tr:eq('+q +') td:eq(4)>span:eq(0)').html(obj.voltage[arr[q+1]] + 'V');
-							  $('#bat_voltageNo2_'+ obj.data_id).find(' tbody>tr:eq('+q +') td:eq(7)>span:eq(0)').html(obj.voltage[arr[q]+2] + 'V');
-							  $('#bat_voltageNo2_'+ obj.data_id).find(' tbody>tr:eq('+q +') td:eq(10)>span:eq(0)').html(obj.voltage[arr[q]+3] + 'V');								
+							for(var z=19; z<23; z++){
+								$('#bat_voltage2_'+ obj.data_id).find('tbody td.bat_num'+ (1+z) + '>span:eq(0)').html(obj.voltage[z] + 'V');
 							}
+						}else{
+							for(var z=0; z<4; z++){
+								$('#bat_voltage2_'+ obj.data_id).find('tbody td.bat_num'+ z + '>span:eq(0)').html(obj.voltage[z+12] + 'V');	
+							}
+							for(var z=18; z<22; z++){
+								$('#bat_voltage2_'+ obj.data_id).find('tbody td.bat_num'+ (2+z) + '>span:eq(0)').html(obj.voltage[z] + 'V');
+							}
+						}							
+					}else if( type == "11"){
+						for(var z=0; z<11; z++){
+							$('#bat_voltage_'+ obj.data_id).find('tbody td.bat_num'+ z + '>span:eq(0)').html(obj.voltage[z] + 'V');	
+							$('#bat_voltage2_'+ obj.data_id).find('tbody td.bat_num'+ z + '>span:eq(0)').html(obj.voltage[13 + z] + 'V');
 						}
-					if(!No1){
-					for(var j = 0 ; j < obj.voltage.length ; j+=4)
-					{
-						if(j == 0){
-							$('#bat_voltage_'+ obj.data_id).find(' tbody>tr:eq('+j +') td:eq(1)>span:eq(0)').html(obj.voltage[j] + 'V');
-							$('#bat_voltage_'+ obj.data_id).find(' tbody>tr:eq('+j +') td:eq(4)>span:eq(0)').html(obj.voltage[j+1] + 'V');
-							$('#bat_voltage_'+ obj.data_id).find(' tbody>tr:eq('+j +') td:eq(7)>span:eq(0)').html(obj.voltage[j+2] + 'V');
-							$('#bat_voltage_'+ obj.data_id).find(' tbody>tr:eq('+j +') td:eq(10)>span:eq(0)').html(obj.voltage[j+3] + 'V');
+					}else{
+						for(var z=0; z<obj.voltage.length; z++){
+							$('#bat_voltage_'+ obj.data_id).find('tbody td.bat_num'+ z + '>span:eq(0)').html(obj.voltage[z] + 'V');
 						}
-						else{
-							var k = j - ((j / 4) * 3);
-							$('#bat_voltage_'+ obj.data_id).find(' tbody>tr:eq('+k +') td:eq(1)>span:eq(0)').html(obj.voltage[j] + 'V');
-							$('#bat_voltage_'+ obj.data_id).find(' tbody>tr:eq('+k +') td:eq(4)>span:eq(0)').html(obj.voltage[j+1] + 'V');
-							$('#bat_voltage_'+ obj.data_id).find(' tbody>tr:eq('+k +') td:eq(7)>span:eq(0)').html(obj.voltage[j+2] + 'V');
-							$('#bat_voltage_'+ obj.data_id).find(' tbody>tr:eq('+k +') td:eq(10)>span:eq(0)').html(obj.voltage[j+3] + 'V');
-						}
-					}
-					}
-					if( type == "44"){
-							$('#bat_voltage_'+ obj.data_id).find(' tbody>tr:eq('+0 +') td:eq(1)>span:eq(0)').html(obj.voltage[0] + 'V');
-							$('#bat_voltage_'+ obj.data_id).find(' tbody>tr:eq('+0 +') td:eq(4)>span:eq(0)').html(obj.voltage[1] + 'V');
-							$('#bat_voltage_'+ obj.data_id).find(' tbody>tr:eq('+0 +') td:eq(7)>span:eq(0)').html(obj.voltage[2] + 'V');
-							$('#bat_voltage_'+ obj.data_id).find(' tbody>tr:eq('+0 +') td:eq(10)>span:eq(0)').html(obj.voltage[3] + 'V');
-							$('#bat_voltage_'+ obj.data_id).find(' tbody>tr:eq('+1 +') td:eq(1)>span:eq(0)').html(obj.voltage[6] + 'V');
-							$('#bat_voltage_'+ obj.data_id).find(' tbody>tr:eq('+1 +') td:eq(4)>span:eq(0)').html(obj.voltage[7] + 'V');
-							$('#bat_voltage_'+ obj.data_id).find(' tbody>tr:eq('+1 +') td:eq(7)>span:eq(0)').html(obj.voltage[8] + 'V');
-							$('#bat_voltage_'+ obj.data_id).find(' tbody>tr:eq('+1 +') td:eq(10)>span:eq(0)').html(obj.voltage[9] + 'V');
-							
-							$('#bat_voltage2_'+ obj.data_id).find(' tbody>tr:eq('+0 +') td:eq(1)>span:eq(0)').html(obj.voltage[13] + 'V');
-							$('#bat_voltage2_'+ obj.data_id).find(' tbody>tr:eq('+0 +') td:eq(4)>span:eq(0)').html(obj.voltage[14] + 'V');
-							$('#bat_voltage2_'+ obj.data_id).find(' tbody>tr:eq('+0 +') td:eq(7)>span:eq(0)').html(obj.voltage[14] + 'V');
-							$('#bat_voltage2_'+ obj.data_id).find(' tbody>tr:eq('+0 +') td:eq(10)>span:eq(0)').html(obj.voltage[16] + 'V');
-							$('#bat_voltage2_'+ obj.data_id).find(' tbody>tr:eq('+1 +') td:eq(1)>span:eq(0)').html(obj.voltage[19] + 'V');
-							$('#bat_voltage2_'+ obj.data_id).find(' tbody>tr:eq('+1 +') td:eq(4)>span:eq(0)').html(obj.voltage[20] + 'V');
-							$('#bat_voltage2_'+ obj.data_id).find(' tbody>tr:eq('+1 +') td:eq(7)>span:eq(0)').html(obj.voltage[21] + 'V');
-							$('#bat_voltage2_'+ obj.data_id).find(' tbody>tr:eq('+1 +') td:eq(10)>span:eq(0)').html(obj.voltage[22] + 'V');
-					}
-                    if( type == "44i"){
-						        $('#bat_voltage_'+ obj.data_id).find(' tbody>tr:eq('+0 +') td:eq(1)>span:eq(0)').html(obj.voltage[0] + 'V');
-						        $('#bat_voltage_'+ obj.data_id).find(' tbody>tr:eq('+0 +') td:eq(4)>span:eq(0)').html(obj.voltage[1] + 'V');
-						        $('#bat_voltage_'+ obj.data_id).find(' tbody>tr:eq('+0 +') td:eq(7)>span:eq(0)').html(obj.voltage[2] + 'V');
-						        $('#bat_voltage_'+ obj.data_id).find(' tbody>tr:eq('+0 +') td:eq(10)>span:eq(0)').html(obj.voltage[3] + 'V');
-						        $('#bat_voltage_'+ obj.data_id).find(' tbody>tr:eq('+1 +') td:eq(1)>span:eq(0)').html(obj.voltage[6] + 'V');
-						        $('#bat_voltage_'+ obj.data_id).find(' tbody>tr:eq('+1 +') td:eq(4)>span:eq(0)').html(obj.voltage[7] + 'V');
-						        $('#bat_voltage_'+ obj.data_id).find(' tbody>tr:eq('+1 +') td:eq(7)>span:eq(0)').html(obj.voltage[8] + 'V');
-						        $('#bat_voltage_'+ obj.data_id).find(' tbody>tr:eq('+1 +') td:eq(10)>span:eq(0)').html(obj.voltage[9] + 'V');
-						
-						        $('#bat_voltage2_'+ obj.data_id).find(' tbody>tr:eq('+0 +') td:eq(1)>span:eq(0)').html(obj.voltage[12] + 'V');
-						        $('#bat_voltage2_'+ obj.data_id).find(' tbody>tr:eq('+0 +') td:eq(4)>span:eq(0)').html(obj.voltage[13] + 'V');
-						        $('#bat_voltage2_'+ obj.data_id).find(' tbody>tr:eq('+0 +') td:eq(7)>span:eq(0)').html(obj.voltage[14] + 'V');
-						        $('#bat_voltage2_'+ obj.data_id).find(' tbody>tr:eq('+0 +') td:eq(10)>span:eq(0)').html(obj.voltage[15] + 'V');
-						        $('#bat_voltage2_'+ obj.data_id).find(' tbody>tr:eq('+1 +') td:eq(1)>span:eq(0)').html(obj.voltage[18] + 'V');
-						        $('#bat_voltage2_'+ obj.data_id).find(' tbody>tr:eq('+1 +') td:eq(4)>span:eq(0)').html(obj.voltage[19] + 'V');
-						        $('#bat_voltage2_'+ obj.data_id).find(' tbody>tr:eq('+1 +') td:eq(7)>span:eq(0)').html(obj.voltage[20] + 'V');
-						        $('#bat_voltage2_'+ obj.data_id).find(' tbody>tr:eq('+1 +') td:eq(10)>span:eq(0)').html(obj.voltage[21] + 'V');
-				        }
-					if( type == "11"){
-							$('#bat_voltage_'+ obj.data_id).find(' tbody>tr:eq('+0 +') td:eq(1)>span:eq(0)').html(obj.voltage[0] + 'V');
-							$('#bat_voltage_'+ obj.data_id).find(' tbody>tr:eq('+0 +') td:eq(4)>span:eq(0)').html(obj.voltage[1] + 'V');
-							$('#bat_voltage_'+ obj.data_id).find(' tbody>tr:eq('+0 +') td:eq(7)>span:eq(0)').html(obj.voltage[2] + 'V');
-							$('#bat_voltage_'+ obj.data_id).find(' tbody>tr:eq('+0 +') td:eq(10)>span:eq(0)').html(obj.voltage[3] + 'V');
-							$('#bat_voltage_'+ obj.data_id).find(' tbody>tr:eq('+1 +') td:eq(1)>span:eq(0)').html(obj.voltage[4] + 'V');
-							$('#bat_voltage_'+ obj.data_id).find(' tbody>tr:eq('+1 +') td:eq(4)>span:eq(0)').html(obj.voltage[5] + 'V');
-							$('#bat_voltage_'+ obj.data_id).find(' tbody>tr:eq('+1 +') td:eq(7)>span:eq(0)').html(obj.voltage[6] + 'V');
-							$('#bat_voltage_'+ obj.data_id).find(' tbody>tr:eq('+1 +') td:eq(10)>span:eq(0)').html(obj.voltage[7] + 'V');
-							$('#bat_voltage_'+ obj.data_id).find(' tbody>tr:eq('+2 +') td:eq(1)>span:eq(0)').html(obj.voltage[8] + 'V');
-							$('#bat_voltage_'+ obj.data_id).find(' tbody>tr:eq('+2 +') td:eq(4)>span:eq(0)').html(obj.voltage[9] + 'V');
-							$('#bat_voltage_'+ obj.data_id).find(' tbody>tr:eq('+2 +') td:eq(7)>span:eq(0)').html(obj.voltage[10] + 'V');
-							
-							$('#bat_voltage2_'+ obj.data_id).find(' tbody>tr:eq('+0 +') td:eq(1)>span:eq(0)').html(obj.voltage[13] + 'V');
-							$('#bat_voltage2_'+ obj.data_id).find(' tbody>tr:eq('+0 +') td:eq(4)>span:eq(0)').html(obj.voltage[14] + 'V');
-							$('#bat_voltage2_'+ obj.data_id).find(' tbody>tr:eq('+0 +') td:eq(7)>span:eq(0)').html(obj.voltage[15] + 'V');
-							$('#bat_voltage2_'+ obj.data_id).find(' tbody>tr:eq('+0 +') td:eq(10)>span:eq(0)').html(obj.voltage[16] + 'V');
-							$('#bat_voltage2_'+ obj.data_id).find(' tbody>tr:eq('+1 +') td:eq(1)>span:eq(0)').html(obj.voltage[17] + 'V');
-							$('#bat_voltage2_'+ obj.data_id).find(' tbody>tr:eq('+1 +') td:eq(4)>span:eq(0)').html(obj.voltage[18] + 'V');
-							$('#bat_voltage2_'+ obj.data_id).find(' tbody>tr:eq('+1 +') td:eq(7)>span:eq(0)').html(obj.voltage[19] + 'V');
-							$('#bat_voltage2_'+ obj.data_id).find(' tbody>tr:eq('+1 +') td:eq(10)>span:eq(0)').html(obj.voltage[20] + 'V');
-							$('#bat_voltage2_'+ obj.data_id).find(' tbody>tr:eq('+2 +') td:eq(1)>span:eq(0)').html(obj.voltage[21] + 'V');
-							$('#bat_voltage2_'+ obj.data_id).find(' tbody>tr:eq('+2 +') td:eq(4)>span:eq(0)').html(obj.voltage[22] + 'V');
-							$('#bat_voltage2_'+ obj.data_id).find(' tbody>tr:eq('+2 +') td:eq(7)>span:eq(0)').html(obj.voltage[23] + 'V');	
-						
 					}
 					$('#bat_pi-' + obj.data_id +' tbody').empty();
 					if(obj.pi == null || obj.pi.length == 0){

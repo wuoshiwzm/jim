@@ -159,7 +159,7 @@ class MP_Xjdh extends CI_Model
         return $dbObj->insert('app_update');
     }
 
-    function RT_Set_Device_Threshold($data_id, $threshold_setting)
+    function RT_Set_Device_Threshold ($data_id, $threshold_setting)
     {
         $dbObj = $this->load->database('default', TRUE);
         $dbObj->where('data_id', $data_id);
@@ -178,8 +178,8 @@ class MP_Xjdh extends CI_Model
         }
         return true;
     }
-
-    function Batch_Set_Device_Threshold($idArr, $threshold_setting)
+    
+    function Batch_Set_Device_Threshold ($idArr, $threshold_setting)
     {
         $dbObj = $this->load->database('default', TRUE);
         $dbObj->where_in('id', $idArr);
@@ -285,12 +285,14 @@ class MP_Xjdh extends CI_Model
         if ($selCity)
             $dbObj->where('city_code', $selCity);
         if ($substationId == null && $Identifier == 'DoorXJL') {
-            $arr = array();
-            foreach (json_decode($_SESSION['SUBLIST']) as $subId) {
-                array_push($arr, $subId->id);
+            if(isset($_SESSION['SUBLIST'])){
+                $arr = array();
+                foreach (json_decode($_SESSION['SUBLIST']) as $subId) {
+                    array_push($arr, $subId->id);
+                }
+                if ($arr)
+                    $dbObj->where_in('substation.id', $arr);
             }
-            if ($arr)
-                $dbObj->where_in('substation.id', $arr);
         }
         if ($keyWord) {
             foreach ($gCounty as $key => $val) {
@@ -342,6 +344,16 @@ class MP_Xjdh extends CI_Model
             $dbObj->where('device.data_id', $dataId);
         if ($selCity)
             $dbObj->where('city_code', $selCity);
+        if ($substationId == null && $Identifier == 'DoorXJL') {
+            if(isset($_SESSION['SUBLIST'])){
+                $arr = array();
+                foreach (json_decode($_SESSION['SUBLIST']) as $subId) {
+                    array_push($arr, $subId->id);
+                }
+                if ($arr)
+                    $dbObj->where_in('substation.id', $arr);
+            }
+        }
         if ($keyWord) {
             foreach ($gCounty as $key => $val) {
                 foreach ($val as $k => $v) {
@@ -710,6 +722,7 @@ class MP_Xjdh extends CI_Model
             return $results;
         }
     }
+    
 
 
     function Get_takeAlarmCount($cityCode = false, $countyCode = false, $substationId = false, $roomId = false, $devModel = false,
@@ -769,6 +782,7 @@ class MP_Xjdh extends CI_Model
         log_message("debug", "sql_count " . $dbObj->last_query());
         return $count;
     }
+    
 
 
     function Get_takeAlarmList($cityCode = false, $countyCode = false, $substationId = false, $roomId = false, $devModel = false, $level = false, $startDatetime = false,
@@ -865,7 +879,7 @@ class MP_Xjdh extends CI_Model
         return $dbObj->get('substation')->result();
     }
 
-    function Get_Substations($cityCode = false, $countyCode = false, $substations = false, $substation = false, $subId = false)
+    function Get_Substations($cityCode = false, $countyCode = false, $substations = false, $substation = false, $subId = false, $keyWord = '')
     {
         $dbObj = $this->load->database('default', TRUE);
 
@@ -890,13 +904,13 @@ class MP_Xjdh extends CI_Model
         if ($subId) {
             $dbObj->where_in('id', $subId);
         }
-//        if ($keyWord) {
-//            $dbObj->group_start();
-//            $dbObj->like('substation.name', $keyWord);
-//            //$dbObj->or_like('substation.county', $keyWord);
-//            $dbObj->or_like('substation.type', $keyWord);
-//            $dbObj->group_end();
-//        }
+        if ($keyWord){
+        	$dbObj->group_start();
+        	$dbObj->like('substation.name', $keyWord);
+        	//$dbObj->or_like('substation.county', $keyWord);
+        	$dbObj->or_like('substation.type', $keyWord);
+        	$dbObj->group_end();
+        }
         $dbObj->order_by('city_code', 'asc');
         $dbObj->order_by('county_code', 'asc');
         $dbObj->order_by('name', 'asc');
@@ -1253,7 +1267,7 @@ class MP_Xjdh extends CI_Model
         $dbObj = $this->load->database('default', TRUE);
         return $dbObj->count_all_results("rkerecord");
     }
-
+        
 //         //if ($countyCode) {
 //           //  if (is_array($countyCode))
 //            //     $dbObj->where_in('substation.county_code', $countyCode);
@@ -1309,7 +1323,7 @@ class MP_Xjdh extends CI_Model
         }
         if ($substationId) {
             $dbObj->where('substation_id', $substationId);
-        }
+        }      
         $ret = $dbObj->get('device_threshold')->result();
         //echo $dbObj->last_query();
         return $ret;
@@ -1322,24 +1336,17 @@ class MP_Xjdh extends CI_Model
 //     	$dbObj->where('dev_type', $dev_type);
 //     	$dbObj->where('var_label',$var_label);
 //     	$dbObj->where('var_name',$var_name);
-//     	return $dbObj->get('device_threshold')->result();
+//     	return $dbObj->get('device_threshold')->result();	
 //     }
-
-
-    function __Var($id)
+    
+    function Get_DeviceThresholdByDevType ($dev_type = false, $var_name = false)
     {
         $dbObj = $this->load->database('default', TRUE);
-        return $dbObj->get_where("device_threshold", array("id" => $id))->row();
-    }
-
-    function Get_DeviceThresholdByDevType($dev_type = false, $var_name = false)
-    {
-        $dbObj = $this->load->database('default', TRUE);
-        $ret = $dbObj->get_where("device_threshold", array("dev_type" => $dev_type, 'var_name' => $var_name))->result();
+        $ret = $dbObj->get_where("device_threshold", array("dev_type" => $dev_type, 'var_name'=>$var_name))->result();
         return $ret;
     }
 
-    function Set_Device_Var($id, $setting)
+    function Set_Device_Threshold_Variable($id, $setting)
     {
         $dbObj = $this->load->database('default', TRUE);
         $dbObj->where('id', $id);
@@ -1347,52 +1354,40 @@ class MP_Xjdh extends CI_Model
         $dbObj->update('device_threshold');
         return 0;
     }
-
-    function Get_Device_Var($id)
+    
+    function Get_Device_Threshold($id)
     {
         $dbObj = $this->load->database('default', TRUE);
-        $dbObj->where('id', $id);
-        return $dbObj->get('device_threshold')->result();
+        $dbObj->where('id', $id);   
+        return $dbObj->get('device_threshold')->row();
     }
-
-    function Get_Device_Type($dev_type, $var_name, $substation_id, $city_code, $county_code)
-    {
-        $dbObj = $this->load->database('default', TRUE);
-        $dbObj->where('dev_type', $dev_type);
-        $dbObj->where('var_name', $var_name);
-        if ($substation_id) {
-            $dbObj->where('substation_id', $substation_id);
-        }
-        if (!empty($city_code)) {
-            $dbObj->where('city_code', $city_code);
-        }
-        if (!empty($county_code)) {
-            $dbObj->where('county_code', $county_code);
-        }
-        return $dbObj->get('device_threshold')->result();
-    }
-
-    function Del_Device_Var($id)
+    
+    
+    
+    function Del_Device_Threshold ($id)
     {
         $dbObj = $this->load->database('default', TRUE);
         $dbObj->where('id', $id);
         $dbObj->delete('device_threshold');
     }
-
-    function Save_Device_Var($id, $dev_type, $var_label, $var_name, $var_prid, $substation_id, $var_selCity)
+    
+   
+    function Save_Device_Threshold ($id, $dev_type, $var_label, $var_name, $city_code, $county_code, $substation_id)
     {
         $dbObj = $this->load->database('default', TRUE);
         $dbObj->set('dev_type', $dev_type);
         $dbObj->set('var_label', $var_label);
         $dbObj->set('var_name', $var_name);
-        $dbObj->set('substation_id', $substation_id);
-        $dbObj->set('city_code', $var_selCity);
-        $dbObj->set('county_code', $var_selCity);
+        $dbObj->set('city_code', $city_code);
+        $dbObj->set('county_code', $county_code);
+        $dbObj->set('substation_id', intval($substation_id));
         if ($id) {
             $dbObj->where('id', $id);
             $dbObj->update('device_threshold');
+            return $id;
         } else {
             $dbObj->insert('device_threshold');
+            return $dbObj->insert_id();
         }
     }
 
@@ -1943,24 +1938,14 @@ class MP_Xjdh extends CI_Model
         return $dbObj->get('device')->row();
     }
 
-
-    function Device_extra_para($data_id)
-    {
-        $dbObj = $this->load->database('default', TRUE);
-        $dbObj->where('device.data_id', $data_id);
-        $dbObj->select('extra_para');
-        return $dbObj->get('device')->row();
-    }
-
-
-    function Search_Rooms($q = array(), $offset = 0, $size = 0)
+    function Search_Rooms ($q = array(), $offset = 0, $size = 0)
     {
         $dbObj = $this->load->database('default', TRUE);
         $dbObj->join('substation', 'substation.id=room.substation_id');
         $dbObj = $this->load->database('default', TRUE);
         $dbObj->join('substation', 'substation.id=room.substation_id');
         foreach ($q as $key => $val) {
-
+            
             if ($val) {
                 $dbObj->like('substation.city', $val);
                 $dbObj->or_like('substation.county', $val);
@@ -1978,12 +1963,12 @@ class MP_Xjdh extends CI_Model
             return $dbObj->get('room', $size, $offset)->result();
     }
 
-    function Search_RoomsCount($q = array())
+    function Search_RoomsCount ($q = array())
     {
         $dbObj = $this->load->database('default', TRUE);
         $dbObj->join('substation', 'substation.id=room.substation_id');
         foreach ($q as $key => $val) {
-
+            
             if ($val) {
                 $dbObj->like('substation.city', $val);
                 $dbObj->or_like('substation.county', $val);
@@ -1994,7 +1979,7 @@ class MP_Xjdh extends CI_Model
         return $dbObj->count_all_results('room');
     }
 
-    function Add_MapData($code, $name, $path)
+    function Add_MapData ($code, $name, $path)
     {
         $dbObj = $this->load->database('default', TRUE);
         $dbObj->set('code', $code);
@@ -2003,17 +1988,17 @@ class MP_Xjdh extends CI_Model
         return $dbObj->insert('map_data');
     }
 
-    function Get_MapData($parentCode = 0, $code = false)
+    function Get_MapData ($parentCode = 0, $code = false)
     {
         $dbObj = $this->load->database('default', TRUE);
         $dbObj->where('parent_code', $parentCode);
         if ($code)
             $dbObj->where('code', $code);
-
+        
         return $dbObj->get('map_data')->result();
     }
 
-    function Get_CountySMDDevice($countyCode = false, $substation_id = false, $offset = 0, $size = 0)
+    function Get_CountySMDDevice ($countyCode = false, $substation_id = false, $offset = 0, $size = 0)
     {
         $dbObj = $this->load->database('default', TRUE);
         $dbObj->join('room', 'room.id=smd_device.room_id');
@@ -2111,8 +2096,8 @@ class MP_Xjdh extends CI_Model
 //         	}
 //         }
         $dbObj->set('distribution_equipment', $distributionEquipment);
-        $dbObj->set('threshold_setting', '');
-        $dbObj->set('rank', 0);
+        $dbObj->set('threshold_setting','');
+        $dbObj->set('rank',0);
         $dbObj->set('memo', $memo);
         $dbObj->insert('device');
         $dbObj->trans_complete();
@@ -2257,7 +2242,15 @@ class MP_Xjdh extends CI_Model
         $dbObj->set('confirm_datetime', 'now()', FALSE);
         return $dbObj->update('alert_realtime');
     }
-
+    
+    function Remove_Batch_Alert($arrayid){
+    	$dbObj = $this->load->database('default', TRUE);
+    	$dbObj->where_in('id', $arrayid);
+    	$dbObj->set('restore_datetime','now()', FALSE);
+    	$dbObj->set('status','now()', FALSE);
+    	return $dbObj->update('pre_alert');
+    }
+    
     function Get_All_Camera_By_CityCode($cityCode)
     {
         $dbObj = $this->load->database('default', TRUE);
@@ -2404,7 +2397,7 @@ class MP_Xjdh extends CI_Model
     }
 
     //常用局站
-    public function Get_UserStation_Count($user_id, $searchKey)
+    function Get_UserStation_Count($user_id, $searchKey)
     {
         $dbObj = $this->load->database('default', TRUE);
         $dbObj->join('substation', 'user_station.substation_id=substation.id');
@@ -2414,7 +2407,7 @@ class MP_Xjdh extends CI_Model
         return $dbObj->count_all_results("user_station");
     }
 
-    public function Get_UserStation_List($user_id, $searchKey, $offset = 0, $pageSize = 20)
+    function Get_UserStation_List($user_id, $searchKey, $offset = 0, $pageSize = 20)
     {
         $dbObj = $this->load->database('default', TRUE);
         $dbObj->join('substation', 'user_station.substation_id=substation.id');
@@ -2424,7 +2417,7 @@ class MP_Xjdh extends CI_Model
         return $dbObj->get('user_station', $offset, $pageSize)->result();
     }
 
-    public function Has_UserStation($user_id, $substation_id)
+    function Has_UserStation($user_id, $substation_id)
     {
         $dbObj = $this->load->database('default', TRUE);
         $dbObj->where("user_id", $user_id);
@@ -2432,7 +2425,7 @@ class MP_Xjdh extends CI_Model
         return $dbObj->count_all_results('user_station') > 0;
     }
 
-    public function Add_UserStation($user_id, $substation_id)
+    function Add_UserStation($user_id, $substation_id)
     {
         $dbObj = $this->load->database('default', TRUE);
         $dbObj->set("user_id", $user_id);
@@ -2440,7 +2433,7 @@ class MP_Xjdh extends CI_Model
         $dbObj->insert('user_station');
     }
 
-    public function Del_UserStation($user_id, $substation_id)
+    function Del_UserStation($user_id, $substation_id)
     {
         $dbObj = $this->load->database('default', TRUE);
         $dbObj->where("user_id", $user_id);
@@ -2448,7 +2441,7 @@ class MP_Xjdh extends CI_Model
         return $dbObj->delete('user_station');
     }
 
-    public function Save_Feedback($content, $user_id)
+    function Save_Feedback($content, $user_id)
     {
         $dbObj = $this->load->database('default', TRUE);
         $dbObj->set('user_id', $user_id);
@@ -2466,7 +2459,7 @@ class MP_Xjdh extends CI_Model
         return $dbObj->update('app_feedback');
     }
 
-    public function Get_FeedbackList($user_id = false, $status = 'replied', $offset = 0, $size = 0)
+    function Get_FeedbackList($user_id = false, $status = 'replied', $offset = 0, $size = 0)
     {
         $dbObj = $this->load->database('default', TRUE);
         if ($user_id)
@@ -2485,7 +2478,7 @@ class MP_Xjdh extends CI_Model
             return $dbObj->get('app_feedback', $size, $offset)->result();
     }
 
-    public function Get_Feedback($id)
+    function Get_Feedback ($id)
     {
         $dbObj = $this->load->database('default', TRUE);
         $dbObj->where('app_feedback.id', $id);
@@ -3124,10 +3117,14 @@ class MP_Xjdh extends CI_Model
         if (!empty($city_code))
             $dbObj->where('city_code', $city_code);
         if (!empty($name)) {
-            foreach ($gCounty as $key => $val) {
-                foreach ($val as $k => $v) {
-                    if ($v == $name) {
-                        $name = $k;
+            if($gCounty)
+            {
+                //2017-4-15 张杨：我都不知道这是在干啥
+                foreach ($gCounty as $key => $val) {
+                    foreach ($val as $k => $v) {
+                        if ($v == $name) {
+                            $name = $k;
+                        }
                     }
                 }
             }
@@ -3140,6 +3137,7 @@ class MP_Xjdh extends CI_Model
             $dbObj->where_in('id', $substationIdList);
         }
         $dbObj->select('*');
+        $dbObj->order_by("substation.county_code","asc");
         $dbObj->order_by("type asc", "convert(name using gbk) asc");
         if ($size == 0) {
             return $dbObj->get('substation')->result();
@@ -3236,1321 +3234,1371 @@ class MP_Xjdh extends CI_Model
 //		$dbObj->where('id',$id);
 //		return $dbObj->get('room')->result();
 //	}
-    function Get_devicepr()
-    {
-        $dbObj = $this->load->database('default', TRUE);
-        $dbObj->join('room', 'room.id=device.room_id', 'left');
-        $dbObj->where('device.model', 'temperature');
-        $dbObj->select('room.*,device.id as devId,device.name as devName');
-        return $dbObj->get('device')->result();
-    }
+	function Get_devicepr(){
+		$dbObj = $this->load->database('default', TRUE);
+		$dbObj->join('room','room.id=device.room_id','left');
+		$dbObj->where('device.model','temperature');
+		$dbObj->select('room.*,device.id as devId,device.name as devName');
+		return $dbObj->get('device')->result();
+	}
+	function Get_deviceDataId(){
+		$dbObj = $this->load->database('default', TRUE);
+		$dbObj->join('room','room.id=device.room_id','left');
+		$dbObj->where('device.model','power_302a');
+		$dbObj->select('room.*,device.id as devId,device.name as devName,device.data_id as dataId');
+		return $dbObj->get('device')->result();
+	}
+	function get_vdevice()
+	{
+		$dbObj = $this->load->database('default', TRUE);
+		$name = array("机房环境","监控设备");
+		$dbObj->where_in('name',$name);
+		return $dbObj->get('device')->result();
+	}
+	function set_vdevice_name($data_id,$name)
+	{
+		$dbObj = $this->load->database('default', TRUE);
+		$dbObj->where_in('data_id',$data_id);
+		$dbObj->set('name',$name);
+		return $dbObj->update('device');
+	}
+	function get_user_by_substation_id($substation_id)
+	{
+	    $dbObj = $this->load->database('default', TRUE);
+	    $dbObj->where('substation_id', $substation_id);
+	    return $dbObj->get('user')->result();
+	}
+	
+	function Add_Door_Operate($data_id, $operator_id, $user_id, $action)
+	{
+	    $assignerObj = User::GetUserById($operator_id);
+	    $userObj = User::GetUserById($user_id);
+        
+	    $msg = "";
+	    switch ($action)
+	    {
+	        case "assign":
+	            $msg = $assignerObj->full_name."授权".$userObj->full_name."门禁权限";
+	            break;
+	        case "revoke":
+	            $msg = $assignerObj->full_name."移除".$userObj->full_name."门禁权限";
+	            break;
+	        default:
+	            $msg = $assignerObj->full_name."对".$userObj->full_name."进行未知操作".$action;
+	            break;
+	    }
+	    $dbObj = $this->load->database('default', TRUE);
+	    $dbObj->set('data_id', $data_id);
+	    $dbObj->set('operator_id', $operator_id);
+	    $dbObj->set('user_id', $user_id);
+	    $dbObj->set('desc', $msg);
+	    $dbObj->set('added_datetime', 'now()', false);
+	    $dbObj->insert('door_operate');
+	}
+	
+	function Get_Door_Operate_Count($data_id=false,$user_id=false, $operator_name=false,$operator_mobile=false,$full_name=false, $mobile=false, $card='', $time_rangeArr='', $selCity = false, $gCounty=false)
+	{
+	    $dbObj = $this->load->database('default', TRUE);
+	    if($data_id)
+	       $dbObj->where('door_operate.data_id', $data_id);
+	    if($user_id)
+	        $dbObj->where('user_id', $user_id);
+	    if(!empty($operator_name))
+	    {
+	    	$dbObj->like('b.full_name', $operator_name);
+	    }
+	    if(!empty($operator_mobile))
+	    {
+	    	$dbObj->like('b.mobile', $operator_mobile);
+	    }
+	    if(!empty($full_name))
+	    {
+	    	$dbObj->like('a.full_name', $full_name);
+	    }
+	    if(!empty($mobile))
+	    {
+	    	$dbObj->like('a.mobile', $mobile);
+	    }
+	    if(count($time_rangeArr) == 2)
+	    {
+	    	$dbObj->where('door_operate.added_datetime >=',$time_rangeArr[0]." 00:00:00");
+	    	$dbObj->where('door_operate.added_datetime <=',$time_rangeArr[1]." 23:59:59");
+	    }
+	    $dbObj->order_by('door_operate.id', 'desc');
+	    $dbObj->join("user a", "door_operate.user_id=a.id");
+	    $dbObj->join("user b", "door_operate.operator_id=b.id");
+	    $dbObj->join('device', 'door_operate.data_id=device.data_id');
+	    $dbObj->join('room', 'room.id=device.room_id');
+	    $dbObj->join('substation', 'substation.id=room.substation_id');
+	    return $dbObj->count_all_results("door_operate");
+	}
+	
+	function Get_Door_Operate_List($data_id=false,$user_id=false,$operator_name=false,$operator_mobile=false,$full_name=false, $mobile=false, $card='', $time_rangeArr='',$size=20, $offset=0, $selCity = false, $gCounty = false)
+	{
+	    $dbObj = $this->load->database('default', TRUE);
+	    if($data_id)
+	       $dbObj->where('door_operate.data_id', $data_id);
+	    if($user_id)
+	        $dbObj->where('user_id', $user_id);
+	     
+	    if(!empty($operator_name))
+	    {
+	    	$dbObj->like('b.full_name', $operator_name);
+	    }
+	    if(!empty($operator_mobile))
+	    {
+	    	$dbObj->like('b.mobile', $operator_mobile);
+	    }
+	    if(!empty($full_name))
+	    {
+	    	$dbObj->like('a.full_name', $full_name);
+	    }
+	    if(!empty($mobile))
+	    {
+	    	$dbObj->like('a.mobile', $mobile);
+	    }
+	    if(count($time_rangeArr) == 2)
+	    {
+	    	$dbObj->where('door_operate.added_datetime >=',$time_rangeArr[0]." 00:00:00");
+	    	$dbObj->where('door_operate.added_datetime <=',$time_rangeArr[1]." 23:59:59");
+	    }
+	    $dbObj->order_by('door_operate.id', 'desc');
+	    $dbObj->join("user a", "door_operate.user_id=a.id");
+	    $dbObj->join("user b", "door_operate.operator_id=b.id");
+	    $dbObj->join('device', 'door_operate.data_id=device.data_id');
+	    $dbObj->join('room', 'room.id=device.room_id');
+	    $dbObj->join('substation', 'substation.id=room.substation_id');
+	    $dbObj->select("device.name,room.name as room_name,substation.city_code,substation.county_code,substation.name as substation_name,a.full_name,a.mobile,b.full_name as operator_name, b.mobile as operator_mobile,door_operate.desc, door_operate.added_datetime");
+	    return $dbObj->get('door_operate', $size, $offset)->result();
+	}
+	
+	function Get_Door_Record_Count( $data_id = false,$user_id = false, $cityCode=false, $countyCode=false, $substationId=false, $roomId=false, $username='', $mobile='', $card='', $time_rangeArr='',$selCity = false ,$gCounty=false)
+	{
+	     $dbObj = $this->load->database('default', TRUE);
+	if($data_id)
+	       $dbObj->where('door_record.data_id', $data_id);
+	    if($user_id)
+	        $dbObj->where('user_id', $user_id);
+	    if(!empty($username))
+	    {
+	        $dbObj->like('user.full_name', $username);
+	    }
+	    if(!empty($cityCode))
+	    {
+	    	$dbObj->where('substation.city_code', $cityCode);
+	    }
+	    if(!empty($countyCode))
+	    {
+	    	$dbObj->where('substation.county_code', $countyCode);
+	    }
+	    if(!empty($substationId))
+	    {
+	    	$dbObj->where('substation.id', $substationId);
+	    }
+	    if(!empty($roomId))
+	    {
+	    	$dbObj->where('room.id', $roomId);
+	    }
+	    if(!empty($mobile))
+	    {
+	        $dbObj->like('user.mobile', $mobile);
+	    }
+	    if(!empty($card))
+	    {
+	        $dbObj->where('card_no', $card);
+	    }
+	    if ($selCity){
+	    	$dbObj->where('substation.city_code',$selCity);
+	    }
+	    if(count($time_rangeArr) == 2)
+	    {
+	        $dbObj->where('door_record.added_datetime >=',$time_rangeArr[0]." 00:00:00");
+	        $dbObj->where('door_record.added_datetime <=',$time_rangeArr[1]." 23:59:59");
+	    }
+	    $dbObj->order_by('door_record.id', 'desc');
+	    $dbObj->join("user", "door_record.user_id=user.id",'left');
+	    $dbObj->join('device', 'door_record.data_id=device.data_id');
+	    $dbObj->join('room', 'room.id=device.room_id','left');
+	    $dbObj->join('substation', 'substation.id=room.substation_id','left');
+	    return $dbObj->count_all_results("door_record");
+	}
+	function Get_Operate_Door_List($user_id = false , $substationId = false, $roomId = false, $subName = false ,$cityCode = false, $countyCode = false, $time_rangeArr='',$size=20, $offset=0, $selCity= false )
+	{
+		$dbObj = $this->load->database('default', TRUE);
 
-    function Get_deviceDataId()
-    {
-        $dbObj = $this->load->database('default', TRUE);
-        $dbObj->join('room', 'room.id=device.room_id', 'left');
-        $dbObj->where('device.model', 'power_302a');
-        $dbObj->select('room.*,device.id as devId,device.name as devName,device.data_id as dataId');
-        return $dbObj->get('device')->result();
-    }
+		if($user_id)
+			$dbObj->where('door_operate.user_id', $user_id);
+		if(!empty($cityCode))
+		{
+			$dbObj->where('substation.city_code', $cityCode);
+		}
+		if(!empty($countyCode))
+		{
+			$dbObj->where('substation.county_code', $countyCode);
+		}
+		if(!empty($substationId))
+		{
+			$dbObj->where('substation.id', $substationId);
+		}
+		if(!empty($roomId))
+		{
+			$dbObj->where('room.id', $roomId);
+		}
+		if(!empty($subName))
+		{
+			$dbObj->where('device.name', $subName);
+		}		
+		if(count($time_rangeArr) == 2)
+		{
+			$dbObj->where('door_operate.added_datetime >=',$time_rangeArr[0]." 00:00:00");
+			$dbObj->where('door_operate.added_datetime <=',$time_rangeArr[1]." 23:59:59");
+		}
+		if ($selCity){
+			$dbObj->where('substation.city_code',$selCity);
+		}
+		$dbObj->order_by('door_operate.id', 'desc');
+		$dbObj->join("user a", "door_operate.user_id=a.id");
+		$dbObj->join("user b", "door_operate.operator_id=b.id");
+		$dbObj->join('device', 'door_operate.data_id=device.data_id');
+		$dbObj->join('room', 'room.id=device.room_id');
+		$dbObj->join('substation', 'substation.id=room.substation_id');
+		$dbObj->select("device.name,room.name as room_name,substation.city_code,substation.county_code,substation.name as substation_name,a.full_name,a.mobile,b.full_name as operator_name, b.mobile as operator_mobile,door_operate.desc, door_operate.added_datetime");
+		return $dbObj->get('door_operate', $size, $offset)->result();
+	}
+	function Get_Operate_Door_Count($user_id=false,$substationId = false, $roomId = false, $subName =false ,$cityCode =false, $countyCode =false, $time_rangeArr='', $selCity = false, $selCounty = false)
+	{
+		$dbObj = $this->load->database('default', TRUE);
+		
+		
+	    if($user_id)
+			$dbObj->where('door_operate.user_id', $user_id);
+		if(!empty($cityCode))
+		{
+			$dbObj->where('substation.city_code', $cityCode);
+		}
+		if(!empty($countyCode))
+		{
+			$dbObj->where('substation.county_code', $countyCode);
+		}
+		if(!empty($substationId))
+		{
+			$dbObj->where('substation.id', $substationId);
+		}
+		if(!empty($roomId))
+		{
+			$dbObj->where('room.id', $roomId);
+		}
+		if(!empty($subName))
+		{
+			$dbObj->where('device.name', $subName);
+		}
+		
+		if(count($time_rangeArr) == 2)
+		{
+			$dbObj->where('door_operate.added_datetime >=',$time_rangeArr[0]." 00:00:00");
+			$dbObj->where('door_operate.added_datetime <=',$time_rangeArr[1]." 23:59:59");
+		}
+		if ($selCity){
+			$dbObj->where('substation.city_code',$selCity);
+		}
+		
+		if ($selCounty){
+			$dbObj->where('substation.county_code',$selCounty);
+		}
+		$dbObj->order_by('door_operate.id', 'desc');
+		$dbObj->join("user a", "door_operate.user_id=a.id");
+		$dbObj->join("user b", "door_operate.operator_id=b.id");
+		$dbObj->join('device', 'door_operate.data_id=device.data_id');
+		$dbObj->join('room', 'room.id=device.room_id');
+		$dbObj->join('substation', 'substation.id=room.substation_id');
+		return $dbObj->count_all_results("door_operate");
+	}
+	function Get_Door_Record_List($data_id=false,$user_id=false, $cityCode=false, $countyCode=false, $substationId=false, $roomId=false, $username='', $mobile='', $card='', $time_rangeArr='',  $size=20, $offset=0 ,$selCity= false,$selCounty = false)
+	{
+	    $dbObj = $this->load->database('default', TRUE);
+	     if($data_id)
+	       $dbObj->where('door_record.data_id', $data_id);
+	    if($user_id)
+	        $dbObj->where('user_id', $user_id);
+	    if(!empty($cityCode))
+	    {
+	    	$dbObj->where('substation.city_code', $cityCode);
+	    }
+	    if(!empty($countyCode))
+	    {
+	    	$dbObj->where('substation.county_code', $countyCode);
+	    }
+	    if(!empty($substationId))
+	    {
+	    	$dbObj->where('substation.id', $substationId);
+	    }
+	    if(!empty($roomId))
+	    {
+	    	$dbObj->where('room.id', $roomId);
+	    }
+	    if(!empty($username))
+	    {
+	        $dbObj->like('user.full_name', $username);
+	    }
+	    if(!empty($mobile))
+	    {
+	        $dbObj->like('user.mobile', $mobile);
+	    }
+	    if(!empty($card))
+	    {
+	        $dbObj->where('card_no', $card);
+	    }
+	    if ($selCity){
+	    	$dbObj->where('substation.city_code',$selCity);
+	    }
+	    if ($selCounty){
+	    	$dbObj->where('substation.county_code',$selCounty);
+	    }
+	    if(count($time_rangeArr) == 2)
+	    {
+	        $dbObj->where('door_record.added_datetime >=',$time_rangeArr[0]." 00:00:00");
+	        $dbObj->where('door_record.added_datetime <=',$time_rangeArr[1]." 23:59:59");
+	    }
+	    $dbObj->order_by('door_record.id', 'desc');
+	    $dbObj->join("user", "door_record.user_id=user.id",'left');
+	    $dbObj->join('device', 'door_record.data_id=device.data_id');
+	    $dbObj->join('room', 'room.id=device.room_id','left');
+	    $dbObj->join('substation', 'substation.id=room.substation_id','left');
+	    $dbObj->select("device.name,room.name as room_name,substation.city_code,substation.county_code,substation.Stationcode,substation.name as substation_name,user.full_name,user.mobile,door_record.*");
+	    $ret = $dbObj->get('door_record', $size, $offset)->result();
+	    //echo $dbObj->last_query();
+	    return $ret;
+	}
+	
+	function Reset_UserDoor($user_id)
+	{
+	    $dbObj = $this->load->database('default', TRUE);
+	    $dbObj->where('user_id',$user_id);
+	    $dbObj->where('status','已下发');
+	    $dbObj->set('status','待下发');
+	    $dbObj->update('door_user');
+	}
+	function Reset_DoorUser($data_id)
+	{
+	    $dbObj = $this->load->database('default', TRUE);
+	    $dbObj->where('data_id',$data_id);
+	    $dbObj->where('status','已下发');
+	    $dbObj->set('status','待下发');
+	    $dbObj->update('door_user');
+	}
+	function Get_DoorUser($data_id, $user_id)
+	{
+	    $dbObj = $this->load->database('default', TRUE);
+	    $dbObj->where('data_id',$data_id);
+	    $dbObj->where('user_id', $user_id);
+	    $dbObj->where('status <>','待删除');
+	    return $dbObj->get('door_user')->row();
+	}
+	function Door_Add_User($data_id, $user_id, $assigner_id, $expire_date, $card_control, $remote_control)
+	{	    
+	    $this->Add_Door_Operate($data_id, $assigner_id, $user_id, "assign");
+	    $dbObj = $this->load->database('default', TRUE);
+	    $dbObj->where('data_id',$data_id);
+	    $dbObj->where('user_id', $user_id);
+	    $row = $dbObj->get("door_user")->row();
+	    
 
-    function get_vdevice()
-    {
-        $dbObj = $this->load->database('default', TRUE);
-        $name = array("机房环境", "监控设备");
-        $dbObj->where_in('name', $name);
-        return $dbObj->get('device')->result();
-    }
-
-    function set_vdevice_name($data_id, $name)
-    {
-        $dbObj = $this->load->database('default', TRUE);
-        $dbObj->where_in('data_id', $data_id);
-        $dbObj->set('name', $name);
-        return $dbObj->update('device');
-    }
-
-    function get_user_by_substation_id($substation_id)
-    {
-        $dbObj = $this->load->database('default', TRUE);
-        $dbObj->where('substation_id', $substation_id);
-        return $dbObj->get('user')->result();
-    }
-
-    function Add_Door_Operate($data_id, $operator_id, $user_id, $action)
-    {
-        $assignerObj = User::GetUserById($operator_id);
-        $userObj = User::GetUserById($user_id);
-
-        $msg = "";
-        switch ($action) {
-            case "assign":
-                $msg = $assignerObj->full_name . "授权" . $userObj->full_name . "门禁权限";
-                break;
-            case "revoke":
-                $msg = $assignerObj->full_name . "移除" . $userObj->full_name . "门禁权限";
-                break;
-            default:
-                $msg = $assignerObj->full_name . "对" . $userObj->full_name . "进行未知操作" . $action;
-                break;
-        }
-        $dbObj = $this->load->database('default', TRUE);
-        $dbObj->set('data_id', $data_id);
-        $dbObj->set('operator_id', $operator_id);
-        $dbObj->set('user_id', $user_id);
-        $dbObj->set('desc', $msg);
-        $dbObj->set('added_datetime', 'now()', false);
-        $dbObj->insert('door_operate');
-    }
-
-    function Get_Door_Operate_Count($data_id = false, $user_id = false, $operator_name = false, $operator_mobile = false, $full_name = false, $mobile = false, $card = '', $time_rangeArr = '', $selCity = false, $gCounty = false)
-    {
-        $dbObj = $this->load->database('default', TRUE);
-        if ($data_id)
-            $dbObj->where('door_operate.data_id', $data_id);
-        if ($user_id)
-            $dbObj->where('user_id', $user_id);
-        if (!empty($operator_name)) {
-            $dbObj->like('b.full_name', $operator_name);
-        }
-        if (!empty($operator_mobile)) {
-            $dbObj->like('b.mobile', $operator_mobile);
-        }
-        if (!empty($full_name)) {
-            $dbObj->like('a.full_name', $full_name);
-        }
-        if (!empty($mobile)) {
-            $dbObj->like('a.mobile', $mobile);
-        }
-        if (count($time_rangeArr) == 2) {
-            $dbObj->where('door_operate.added_datetime >=', $time_rangeArr[0] . " 00:00:00");
-            $dbObj->where('door_operate.added_datetime <=', $time_rangeArr[1] . " 23:59:59");
-        }
-        $dbObj->order_by('door_operate.id', 'desc');
-        $dbObj->join("user a", "door_operate.user_id=a.id");
-        $dbObj->join("user b", "door_operate.operator_id=b.id");
-        $dbObj->join('device', 'door_operate.data_id=device.data_id');
-        $dbObj->join('room', 'room.id=device.room_id');
-        $dbObj->join('substation', 'substation.id=room.substation_id');
-        return $dbObj->count_all_results("door_operate");
-    }
-
-    function Get_Door_Operate_List($data_id = false, $user_id = false, $operator_name = false, $operator_mobile = false, $full_name = false, $mobile = false, $card = '', $time_rangeArr = '', $size = 20, $offset = 0, $selCity = false, $gCounty)
-    {
-        $dbObj = $this->load->database('default', TRUE);
-        if ($data_id)
-            $dbObj->where('door_operate.data_id', $data_id);
-        if ($user_id)
-            $dbObj->where('user_id', $user_id);
-
-        if (!empty($operator_name)) {
-            $dbObj->like('b.full_name', $operator_name);
-        }
-        if (!empty($operator_mobile)) {
-            $dbObj->like('b.mobile', $operator_mobile);
-        }
-        if (!empty($full_name)) {
-            $dbObj->like('a.full_name', $full_name);
-        }
-        if (!empty($mobile)) {
-            $dbObj->like('a.mobile', $mobile);
-        }
-        if (count($time_rangeArr) == 2) {
-            $dbObj->where('door_operate.added_datetime >=', $time_rangeArr[0] . " 00:00:00");
-            $dbObj->where('door_operate.added_datetime <=', $time_rangeArr[1] . " 23:59:59");
-        }
-        $dbObj->order_by('door_operate.id', 'desc');
-        $dbObj->join("user a", "door_operate.user_id=a.id");
-        $dbObj->join("user b", "door_operate.operator_id=b.id");
-        $dbObj->join('device', 'door_operate.data_id=device.data_id');
-        $dbObj->join('room', 'room.id=device.room_id');
-        $dbObj->join('substation', 'substation.id=room.substation_id');
-        $dbObj->select("device.name,room.name as room_name,substation.city_code,substation.county_code,substation.name as substation_name,a.full_name,a.mobile,b.full_name as operator_name, b.mobile as operator_mobile,door_operate.desc, door_operate.added_datetime");
-        return $dbObj->get('door_operate', $size, $offset)->result();
-    }
-
-    function Get_Door_Record_Count($data_id = false, $user_id = false, $cityCode = false, $countyCode = false, $substationId = false, $roomId = false, $username = '', $mobile = '', $card = '', $time_rangeArr = '', $selCity = false, $gCounty = false)
-    {
-        $dbObj = $this->load->database('default', TRUE);
-        if ($data_id)
-            $dbObj->where('door_record.data_id', $data_id);
-        if ($user_id)
-            $dbObj->where('user_id', $user_id);
-        if (!empty($username)) {
-            $dbObj->like('user.full_name', $username);
-        }
-        if (!empty($cityCode)) {
-            $dbObj->where('substation.city_code', $cityCode);
-        }
-        if (!empty($countyCode)) {
-            $dbObj->where('substation.county_code', $countyCode);
-        }
-        if (!empty($substationId)) {
-            $dbObj->where('substation.id', $substationId);
-        }
-        if (!empty($roomId)) {
-            $dbObj->where('room.id', $roomId);
-        }
-        if (!empty($mobile)) {
-            $dbObj->like('user.mobile', $mobile);
-        }
-        if (!empty($card)) {
-            $dbObj->where('card_no', $card);
-        }
-        if ($selCity) {
-            $dbObj->where('substation.city_code', $selCity);
-        }
-        if (count($time_rangeArr) == 2) {
-            $dbObj->where('door_record.added_datetime >=', $time_rangeArr[0] . " 00:00:00");
-            $dbObj->where('door_record.added_datetime <=', $time_rangeArr[1] . " 23:59:59");
-        }
-        $dbObj->order_by('door_record.id', 'desc');
-        $dbObj->join("user", "door_record.user_id=user.id", 'left');
-        $dbObj->join('device', 'door_record.data_id=device.data_id');
-        $dbObj->join('room', 'room.id=device.room_id', 'left');
-        $dbObj->join('substation', 'substation.id=room.substation_id', 'left');
-        return $dbObj->count_all_results("door_record");
-    }
-
-    function Get_Operate_Door_List($user_id = false, $substationId = false, $roomId = false, $subName = false, $cityCode = false, $countyCode = false, $time_rangeArr = '', $size = 20, $offset = 0, $selCity = false)
-    {
-        $dbObj = $this->load->database('default', TRUE);
-
-        if ($user_id)
-            $dbObj->where('door_operate.user_id', $user_id);
-        if (!empty($cityCode)) {
-            $dbObj->where('substation.city_code', $cityCode);
-        }
-        if (!empty($countyCode)) {
-            $dbObj->where('substation.county_code', $countyCode);
-        }
-        if (!empty($substationId)) {
-            $dbObj->where('substation.id', $substationId);
-        }
-        if (!empty($roomId)) {
-            $dbObj->where('room.id', $roomId);
-        }
-        if (!empty($subName)) {
-            $dbObj->where('device.name', $subName);
-        }
-        if (count($time_rangeArr) == 2) {
-            $dbObj->where('door_operate.added_datetime >=', $time_rangeArr[0] . " 00:00:00");
-            $dbObj->where('door_operate.added_datetime <=', $time_rangeArr[1] . " 23:59:59");
-        }
-        if ($selCity) {
-            $dbObj->where('substation.city_code', $selCity);
-        }
-        $dbObj->order_by('door_operate.id', 'desc');
-        $dbObj->join("user a", "door_operate.user_id=a.id");
-        $dbObj->join("user b", "door_operate.operator_id=b.id");
-        $dbObj->join('device', 'door_operate.data_id=device.data_id');
-        $dbObj->join('room', 'room.id=device.room_id');
-        $dbObj->join('substation', 'substation.id=room.substation_id');
-        $dbObj->select("device.name,room.name as room_name,substation.city_code,substation.county_code,substation.name as substation_name,a.full_name,a.mobile,b.full_name as operator_name, b.mobile as operator_mobile,door_operate.desc, door_operate.added_datetime");
-        return $dbObj->get('door_operate', $size, $offset)->result();
-    }
-
-    function Get_Operate_Door_Count($user_id = false, $substationId = false, $roomId = false, $subName = false, $cityCode = false, $countyCode = false, $time_rangeArr = '', $selCity = false, $selCounty = false)
-    {
-        $dbObj = $this->load->database('default', TRUE);
-
-
-        if ($user_id)
-            $dbObj->where('door_operate.user_id', $user_id);
-        if (!empty($cityCode)) {
-            $dbObj->where('substation.city_code', $cityCode);
-        }
-        if (!empty($countyCode)) {
-            $dbObj->where('substation.county_code', $countyCode);
-        }
-        if (!empty($substationId)) {
-            $dbObj->where('substation.id', $substationId);
-        }
-        if (!empty($roomId)) {
-            $dbObj->where('room.id', $roomId);
-        }
-        if (!empty($subName)) {
-            $dbObj->where('device.name', $subName);
-        }
-
-        if (count($time_rangeArr) == 2) {
-            $dbObj->where('door_operate.added_datetime >=', $time_rangeArr[0] . " 00:00:00");
-            $dbObj->where('door_operate.added_datetime <=', $time_rangeArr[1] . " 23:59:59");
-        }
-        if ($selCity) {
-            $dbObj->where('substation.city_code', $selCity);
-        }
-
-        if ($selCounty) {
-            $dbObj->where('substation.county_code', $selCounty);
-        }
-        $dbObj->order_by('door_operate.id', 'desc');
-        $dbObj->join("user a", "door_operate.user_id=a.id");
-        $dbObj->join("user b", "door_operate.operator_id=b.id");
-        $dbObj->join('device', 'door_operate.data_id=device.data_id');
-        $dbObj->join('room', 'room.id=device.room_id');
-        $dbObj->join('substation', 'substation.id=room.substation_id');
-        return $dbObj->count_all_results("door_operate");
-    }
-
-    function Get_Door_Record_List($data_id = false, $user_id = false, $cityCode = false, $countyCode = false, $substationId = false, $roomId = false, $username = '', $mobile = '', $card = '', $time_rangeArr = '', $size = 20, $offset = 0, $selCity = false, $selCounty = false)
-    {
-        $dbObj = $this->load->database('default', TRUE);
-        if ($data_id)
-            $dbObj->where('door_record.data_id', $data_id);
-        if ($user_id)
-            $dbObj->where('user_id', $user_id);
-        if (!empty($cityCode)) {
-            $dbObj->where('substation.city_code', $cityCode);
-        }
-        if (!empty($countyCode)) {
-            $dbObj->where('substation.county_code', $countyCode);
-        }
-        if (!empty($substationId)) {
-            $dbObj->where('substation.id', $substationId);
-        }
-        if (!empty($roomId)) {
-            $dbObj->where('room.id', $roomId);
-        }
-        if (!empty($username)) {
-            $dbObj->like('user.full_name', $username);
-        }
-        if (!empty($mobile)) {
-            $dbObj->like('user.mobile', $mobile);
-        }
-        if (!empty($card)) {
-            $dbObj->where('card_no', $card);
-        }
-        if ($selCity) {
-            $dbObj->where('substation.city_code', $selCity);
-        }
-        if ($selCounty) {
-            $dbObj->where('substation.county_code', $selCounty);
-        }
-        if (count($time_rangeArr) == 2) {
-            $dbObj->where('door_record.added_datetime >=', $time_rangeArr[0] . " 00:00:00");
-            $dbObj->where('door_record.added_datetime <=', $time_rangeArr[1] . " 23:59:59");
-        }
-        $dbObj->order_by('door_record.id', 'desc');
-        $dbObj->join("user", "door_record.user_id=user.id", 'left');
-        $dbObj->join('device', 'door_record.data_id=device.data_id');
-        $dbObj->join('room', 'room.id=device.room_id', 'left');
-        $dbObj->join('substation', 'substation.id=room.substation_id', 'left');
-        $dbObj->select("device.name,room.name as room_name,substation.city_code,substation.county_code,substation.Stationcode,substation.name as substation_name,user.full_name,user.mobile,door_record.*");
-        $ret = $dbObj->get('door_record', $size, $offset)->result();
-        //echo $dbObj->last_query();
-        return $ret;
-    }
-
-    function Reset_UserDoor($user_id)
-    {
-        $dbObj = $this->load->database('default', TRUE);
-        $dbObj->where('user_id', $user_id);
-        $dbObj->where('status', '已下发');
-        $dbObj->set('status', '待下发');
-        $dbObj->update('door_user');
-    }
-
-    function Reset_DoorUser($data_id)
-    {
-        $dbObj = $this->load->database('default', TRUE);
-        $dbObj->where('data_id', $data_id);
-        $dbObj->where('status', '已下发');
-        $dbObj->set('status', '待下发');
-        $dbObj->update('door_user');
-    }
-
-    function Get_DoorUser($data_id, $user_id)
-    {
-        $dbObj = $this->load->database('default', TRUE);
-        $dbObj->where('data_id', $data_id);
-        $dbObj->where('user_id', $user_id);
-        $dbObj->where('status <>', '待删除');
-        return $dbObj->get('door_user')->row();
-    }
-
-    function Door_Add_User($data_id, $user_id, $assigner_id, $expire_date, $card_control, $remote_control)
-    {
-        $this->Add_Door_Operate($data_id, $assigner_id, $user_id, "assign");
-        $dbObj = $this->load->database('default', TRUE);
-        $dbObj->where('data_id', $data_id);
-        $dbObj->where('user_id', $user_id);
-        $row = $dbObj->get("door_user")->row();
-
-
-        $dbObj->set('assigner_id', $assigner_id);
-        $dbObj->set('status', '待下发');
-        $dbObj->set('added_datetime', 'now()', false);
-        if (!empty($expire_date)) {
-            $dbObj->set("expire_date", $expire_date);
-        } else {
-            $dbObj->set('expire_date', '2050-12-31');
-        }
-        if ($card_control == "true") {
-            $dbObj->set('card_control', 1);
-        } else {
-            $dbObj->set('card_control', 0);
-        }
-        if ($remote_control == "true") {
-            $dbObj->set('remote_control', 1);
-        } else {
-            $dbObj->set('remote_control', 0);
-        }
-        if (count($row)) {
-            $dbObj->where('id', $row->id);
-            $dbObj->update('door_user');
-        } else {
-            $dbObj->set('data_id', $data_id);
-            $dbObj->set('user_id', $user_id);
-            $dbObj->insert('door_user');
-        }
-    }
-
-    function User_Remove_DoorArr($user_id, $operator_id, $dataIdArr)
-    {
-        foreach ($dataIdArr as $data_id) {
-            $this->Add_Door_Operate($data_id, $operator_id, $user_id, "revoke");
-        }
-
-        $dbObj = $this->load->database('default', TRUE);
-        $userObj = User::GetUserById($user_id);
-        $dbObj->where_in('data_id', $dataIdArr);
-        $dbObj->where('user_id', $user_id);
-        if (empty($userObj->accessid)) {
-
-            //delete directly
-            $dbObj->delete('door_user');
-        } else {
-            $delDbObj = clone($dbObj);
-            $dbObj->where('card_control', 1);
-            $dbObj->set('status', '待删除');
-            $dbObj->update('door_user');
-            $delDbObj->where('card_control', 0);
-            $delDbObj->delete('door_user');
-            echo $delDbObj->last_query();
-            die("hello");
-        }
-    }
-
-    function Door_Remove_UserArr($data_id, $operator_id, $doorUserIdArr)
-    {
-        foreach ($doorUserIdArr as $user_id) {
-            $this->Add_Door_Operate($data_id, $operator_id, $user_id, "revoke");
-        }
-        $dbObj = $this->load->database('default', TRUE);
-        $dbObj->where('data_id', $data_id);
-        $dbObj->where_in('user_id', $doorUserIdArr);
-        $delDbObj = clone($dbObj);
-        $dbObj->where('card_control', 1);
-        $dbObj->set('status', '待删除');
-        $dbObj->update('door_user');
-        $delDbObj->where('card_control', 0);
-        $delDbObj->delete('door_user');
-        //全查一遍,移除待删除但是没卡号的
-        $dbObj->join('user', 'door_user.user_id=user.id');
-        $dbObj->where('user.accessid', '');
-        $dbObj->where('door_user.status', '待删除');
-        $dbObj->select('door_user.id');
-        $duList = $dbObj->get('door_user')->result();
-        $idArr = array();
-        foreach ($duList as $duObj) {
-            array_push($idArr, $duObj->id);
-        }
-        if (count($idArr)) {
-            $dbObj->where_in("id", $idArr);
-            $dbObj->delete('door_user');
-        }
-    }
-
-    function Get_Door_User_Count($cityCode = false, $countyCode = false, $substationId = false, $username = false, $full_name = false, $mobile = false, $accessid = false, $assigner_name = false, $data_id, $selCity = false)
-    {
-        $dbObj = $this->load->database('default', TRUE);
-
+	    $dbObj->set('assigner_id', $assigner_id);
+	    $dbObj->set('status','待下发');
+	    $dbObj->set('added_datetime', 'now()', false);
+	    if(!empty($expire_date))
+	    {
+	        $dbObj->set("expire_date", $expire_date);
+	    }else{
+	        $dbObj->set('expire_date', '2050-12-31');
+	    }
+	    if($card_control == "true")
+	    {
+	        $dbObj->set('card_control', 1);
+	    }else{
+	        $dbObj->set('card_control', 0);
+	    }
+	    if($remote_control == "true")
+	    {
+	        $dbObj->set('remote_control', 1);
+	    }else{
+	        $dbObj->set('remote_control', 0);
+	    }	    
+	    if(count($row))
+	    {
+	        $dbObj->where('id', $row->id);	        
+	        $dbObj->update('door_user');
+	    }else{
+    	    $dbObj->set('data_id', $data_id);
+    	    $dbObj->set('user_id', $user_id);
+    	    $dbObj->insert('door_user');
+	    }
+	}
+	function User_Remove_DoorArr($user_id, $operator_id, $dataIdArr)
+	{
+	    foreach($dataIdArr as $data_id)
+	    {
+	        $this->Add_Door_Operate($data_id, $operator_id, $user_id, "revoke");
+	    }
+	     
+	    $dbObj = $this->load->database('default', TRUE);
+	    $userObj = User::GetUserById($user_id);
+	    $dbObj->where_in('data_id', $dataIdArr);
+	    $dbObj->where('user_id', $user_id);
+	    if(empty($userObj->accessid))
+	    {
+	        
+	        //delete directly
+	        $dbObj->delete('door_user');
+	    }else{
+	        $delDbObj = clone($dbObj);
+    	    $dbObj->where('card_control',1);    	    
+    	    $dbObj->set('status','待删除');
+    	    $dbObj->update('door_user');
+    	    $delDbObj->where('card_control', 0);
+    	    $delDbObj->delete('door_user');
+    	    echo $delDbObj->last_query();die("hello");
+	    }
+	}
+	
+	function Door_Remove_UserArr($data_id, $operator_id, $doorUserIdArr)
+	{
+	    foreach($doorUserIdArr as $user_id)
+	    {
+	        $this->Add_Door_Operate($data_id, $operator_id, $user_id, "revoke");
+	    }	    
+	    $dbObj = $this->load->database('default', TRUE);
+	    $dbObj->where('data_id', $data_id);
+	    $dbObj->where_in('user_id', $doorUserIdArr);
+	    $delDbObj = clone($dbObj);
+	    $dbObj->where('card_control',1);
+	    $dbObj->set('status','待删除');
+	    $dbObj->update('door_user');
+	    $delDbObj->where('card_control', 0);
+	    $delDbObj->delete('door_user');
+	    //全查一遍,移除待删除但是没卡号的
+	    $dbObj->join('user','door_user.user_id=user.id');
+	    $dbObj->where('user.accessid','');
+	    $dbObj->where('door_user.status','待删除');
+	    $dbObj->select('door_user.id');
+	    $duList = $dbObj->get('door_user')->result();
+	    $idArr = array();
+	    foreach($duList as $duObj)
+	    {
+	        array_push($idArr, $duObj->id);
+	    }
+	    if(count($idArr))
+	    {
+	       $dbObj->where_in("id", $idArr);
+	       $dbObj->delete('door_user');
+	    }
+	}
+	function Get_Door_User_Count($cityCode = false, $countyCode = false, $substationId = false, $username=false,$full_name=false, $mobile=false, $accessid=false, $assigner_name=false, $data_id, $selCity=false)
+	{
+	    $dbObj = $this->load->database('default', TRUE);
+	    
         $dbObj->where('door_user.data_id', $data_id);
-        $dbObj->join("user a", "door_user.user_id=a.id");
-        $dbObj->join("user b", "door_user.assigner_id=b.id", 'left');
-        $dbObj->join('substation', 'a.substation_id=substation.id', 'left');
-        $dbObj->join('device', 'door_user.data_id=device.data_id');
-        $dbObj->join('smd_device', 'smd_device.device_no=device.smd_device_no');
-        if ($cityCode)
-            $dbObj->where('substation.city_code', $cityCode);
-        if ($countyCode)
-            $dbObj->where('substation.county_code', $countyCode);
-        if ($substationId)
-            $dbObj->where('substation.id', $substationId);
-        if ($selCity)
-            $dbObj->where('substation.city_code', $selCity);
-        if ($username)
-            $dbObj->like('a.username', $username);
-        if ($full_name)
-            $dbObj->like('a.full_name', $full_name);
-        if ($mobile)
-            $dbObj->like('a.mobile', $mobile);
-        if ($accessid)
-            $dbObj->like('a.accessid', $accessid);
-        if ($assigner_name)
-            $dbObj->like('b.full_name', $assigner_name);
-        return $dbObj->count_all_results('door_user');
-    }
+	    $dbObj->join("user a", "door_user.user_id=a.id");
+	    $dbObj->join("user b", "door_user.assigner_id=b.id",'left'); 
+	    $dbObj->join('substation', 'a.substation_id=substation.id', 'left');
+	    $dbObj->join('device', 'door_user.data_id=device.data_id');
+	    $dbObj->join('smd_device', 'smd_device.device_no=device.smd_device_no');  
+	    if ($cityCode)
+	    	$dbObj->where('substation.city_code', $cityCode);
+	    if ($countyCode)
+	    	$dbObj->where('substation.county_code', $countyCode);
+	    if ($substationId)
+	    	$dbObj->where('substation.id', $substationId);
+	    if ($selCity)
+	    	$dbObj->where('substation.city_code',$selCity);
+	    if ($username)
+	    	$dbObj->like('a.username', $username);
+	    if ($full_name)
+	    	$dbObj->like('a.full_name', $full_name);
+	    if ($mobile)
+	    	$dbObj->like('a.mobile', $mobile);
+	    if ($accessid)
+	    	$dbObj->like('a.accessid',$accessid);
+	    if ($assigner_name)
+	    	$dbObj->like('b.full_name',$assigner_name);
+	    return $dbObj->count_all_results('door_user');
+	}
+	
+	function Get_Door_User_List($cityCode = false, $countyCode = false,$substationId = false,$username=false,$full_name=false, $mobile=false, $accessid=false, $assigner_name=false, $data_id, $size = 20, $offset=0, $selCity=false)
+	{
+	    $dbObj = $this->load->database('default', TRUE);
+	    $dbObj->where('door_user.data_id', $data_id);
+	    $dbObj->join("user a", "door_user.user_id=a.id");
+	    $dbObj->join("user b", "door_user.assigner_id=b.id",'left'); 
+	    $dbObj->join('substation', 'a.substation_id=substation.id', 'left');
+	    
+	    $dbObj->join('device', 'door_user.data_id=device.data_id');
+	    $dbObj->join('smd_device', 'smd_device.device_no=device.smd_device_no');
+	    if ($cityCode)
+	    	$dbObj->where('substation.city_code', $cityCode);
+	    if ($countyCode)
+	    	$dbObj->where('substation.county_code', $countyCode);
+	    if ($substationId)
+	    	$dbObj->where('substation.id', $substationId);
+	    if ($selCity)
+	    	$dbObj->where('substation.city_code',$selCity);
+	    if ($username)
+	    	$dbObj->like('a.username', $username);
+	    if ($full_name)	    	
+	        $dbObj->like('a.full_name', $full_name);	     
+	    if ($mobile)
+	    	$dbObj->like('a.mobile', $mobile);
+	    if ($accessid)
+	    	$dbObj->like('a.accessid',$accessid);
+	    if ($assigner_name)
+	    	$dbObj->like('b.full_name',$assigner_name);
+	    if ($size == 0){
+	    	$dbObj->select("door_user.delete_check_count,door_user.user_id,door_user.card_control,door_user.remote_control,a.username, a.full_name,a.mobile,a.accessid,substation.city_code,substation.county_code,substation.Stationcode,substation.name as statioin_name,b.full_name as assigner_name, door_user.added_datetime, door_user.status, door_user.down_datetime,door_user.expire_date,device.active as device_active,smd_device.active as smd_device_active");	    	
+	    	return $dbObj->get('door_user',$size, $offset)->result();
+	    }else{
+	    	$dbObj->select("door_user.delete_check_count,door_user.user_id,door_user.card_control,door_user.remote_control,a.username, a.full_name,a.mobile,a.accessid,substation.city_code,substation.county_code,substation.Stationcode,substation.name as statioin_name,b.full_name as assigner_name, door_user.added_datetime, door_user.status, door_user.down_datetime,door_user.expire_date,device.active as device_active,smd_device.active as smd_device_active");	    	
+	    	return $dbObj->get('door_user', $size, $offset)->result();
+	    }
+	    
+	}
+	
+	function Get_User_Door_Count ($user_id, $cityCode = false, $countyCode = false,$substationId = false, $roomId = false, $smd_device_no = false, $devModel = array(), $active = 'all', $devName = '',$dataId = false, $selCity = false, $keyWord = false, $gCounty = false)
+	{
+	    $dbObj = $this->load->database('default', TRUE);
+	    $dbObj->join('room', 'room.id=device.room_id');
+	    $dbObj->join('substation', 'substation.id=room.substation_id');
+	    $dbObj->join('smd_device', 'smd_device.device_no=device.smd_device_no');
+	    if ($cityCode)
+	        $dbObj->where('substation.city_code', $cityCode);
+	    if ($countyCode)
+	        $dbObj->where('substation.county_code', $countyCode);
+	    if ($substationId)
+	        $dbObj->where('substation.id', $substationId);
+	    if ($roomId)
+	        $dbObj->where('room.id', $roomId);
+	    if ($smd_device_no)
+	        $dbObj->where('smd_device.device_no', $smd_device_no);
+	    if (count($devModel))
+	        $dbObj->where_in('device.model', $devModel);
+	    if ($active == 'active' || $active == 'deactive')
+	        $dbObj->where('device.active', $active == 'active');
+	    if (strlen($devName))
+	        $dbObj->like('device.name', $devName);
+	    if ($dataId)
+	        $dbObj->where('device.data_id', $dataId);
+	    $dbObj->join('door_user','device.data_id=door_user.data_id');
+	    if ($user_id)
+	    $dbObj->where('door_user.user_id', $user_id);
+	    if ($selCity){
+	    	$dbObj->where('substation.city_code',$selCity);
+	    }
+	    if ($keyWord){
+	    	foreach($gCounty as $key => $val){
+	    		foreach($val as $k => $v){
+	    			if($v == $keyWord){
+	    				$keyWord = $k;
+	    			}
+	    		}
+	    	}
+	    	$dbObj->group_start();
+	    	$dbObj->like('substation.name', $keyWord);
+	    	$dbObj->or_like('room.name', $keyWord);
+	    	$dbObj->or_like('device.name', $keyWord);
+	    	$dbObj->or_like('substation.county_code', $keyWord);
+	    	$dbObj->or_like('Stationcode', $keyWord);
+	    	$dbObj->group_end();
+	    }
+	    return $dbObj->count_all_results("device");
+	}
+	function Get_User_Door_List ($user_id, $cityCode = false, $countyCode = false,$substationId = false, $roomId = false, $smd_device_no = false, $devModel = array(), $active = null, $devName = '', $offset = 0,
+	        $size = 20, $dataId = false, $selCity = false, $keyWord = false, $gCounty = false)
+	{
+	    $dbObj = $this->load->database('default', TRUE);
+	    $dbObj->join('room', 'room.id=device.room_id');
+	    $dbObj->join('substation', 'substation.id=room.substation_id');
+	    $dbObj->join('smd_device', 'smd_device.device_no=device.smd_device_no');
+	    if ($cityCode)
+	        $dbObj->where('substation.city_code', $cityCode);
+	    if ($countyCode)
+	        $dbObj->where('substation.county_code', $countyCode);
+	    if ($substationId)
+	        $dbObj->where('substation.id', $substationId);
+	    if ($roomId)
+	        $dbObj->where('room.id', $roomId);
+	    if ($smd_device_no)
+	        $dbObj->where('smd_device.device_no', $smd_device_no);
+	    if (count($devModel))
+	        $dbObj->where_in('device.model', $devModel);
+	    if ($active == 'active' || $active == 'deactive')
+	        $dbObj->where('device.active', $active == 'active');
+	    if (strlen($devName))
+	        $dbObj->like('device.name', $devName);
+	    if ($dataId)
+	        $dbObj->where('device.data_id', $dataId);
+	    $dbObj->join('door_user','device.data_id=door_user.data_id');
+	    if ($user_id)
+	        $dbObj->where('door_user.user_id', $user_id);
+	    if ($selCity){
+	    	$dbObj->where('substation.city_code',$selCity);
+	    }
+	    if ($keyWord){
+	    	foreach($gCounty as $key => $val){
+	    		foreach($val as $k => $v){
+	    			if($v == $keyWord){
+	    				$keyWord = $k;
+	    			}
+	    		}
+	    	}
+	    	$dbObj->group_start();
+	    	$dbObj->like('substation.name', $keyWord);
+	    	$dbObj->or_like('room.name', $keyWord);
+	    	$dbObj->or_like('device.name', $keyWord);
+	    	$dbObj->or_like('substation.county_code', $keyWord);
+	    	$dbObj->or_like('Stationcode', $keyWord);
+	    	$dbObj->group_end();
+	    }
+	    $dbObj->select('door_user.card_control, door_user.remote_control,door_user.status,device.*,room.id as roomId,room.name as room_name,substation.city_code,substation.county_code,substation.Stationcode,smd_device.name as smd_device_name,smd_device.active as smd_device_active,smd_device.ip,substation.name as suname');
+	    if($size != -1){
+	        $ret = $dbObj->get('device', $size, $offset)->result();
+	        return $ret;
+	    }else{
+	        $ret = $dbObj->get('device')->result();
+	        return $ret;
+	    }
+	    
+	}
+	
+	function Get_Device_By_RoomId($room_id, $model)
+	{
+	    $dbObj = $this->load->database('default', TRUE);
+	    $dbObj->where('room_id', $room_id);
+	    $dbObj->where_in("model", $model);
+	    return $dbObj->get('device')->result();
+	}
+	function up_door_record($userid = false,$openMessage = false,$accessid = false,$action = false,$dataId = false){
+		$dbObj = $this->load->database('default', TRUE);
+		if($dataId)
+			$dbObj->set('data_id',$dataId);
+		if($userid)
+			$dbObj->set('user_id',$userid);
+		$dbObj->set('card_no','');
+		if($action)
+			$dbObj->set('action',$action);
+		if($openMessage)
+		$dbObj->set('desc',$openMessage);
+		$dbObj->set('added_datetime','now()',false);
+		return $dbObj->insert('door_record');
+	}
 
-    function Get_Door_User_List($cityCode = false, $countyCode = false, $substationId = false, $username = false, $full_name = false, $mobile = false, $accessid = false, $assigner_name = false, $data_id, $size = 20, $offset = 0, $selCity = false)
-    {
-        $dbObj = $this->load->database('default', TRUE);
-        $dbObj->where('door_user.data_id', $data_id);
-        $dbObj->join("user a", "door_user.user_id=a.id");
-        $dbObj->join("user b", "door_user.assigner_id=b.id", 'left');
-        $dbObj->join('substation', 'a.substation_id=substation.id', 'left');
-
-        $dbObj->join('device', 'door_user.data_id=device.data_id');
-        $dbObj->join('smd_device', 'smd_device.device_no=device.smd_device_no');
-        if ($cityCode)
-            $dbObj->where('substation.city_code', $cityCode);
-        if ($countyCode)
-            $dbObj->where('substation.county_code', $countyCode);
-        if ($substationId)
-            $dbObj->where('substation.id', $substationId);
-        if ($selCity)
-            $dbObj->where('substation.city_code', $selCity);
-        if ($username)
-            $dbObj->like('a.username', $username);
-        if ($full_name)
-            $dbObj->like('a.full_name', $full_name);
-        if ($mobile)
-            $dbObj->like('a.mobile', $mobile);
-        if ($accessid)
-            $dbObj->like('a.accessid', $accessid);
-        if ($assigner_name)
-            $dbObj->like('b.full_name', $assigner_name);
-        if ($size == 0) {
-            $dbObj->select("door_user.delete_check_count,door_user.user_id,door_user.card_control,door_user.remote_control,a.username, a.full_name,a.mobile,a.accessid,substation.city_code,substation.county_code,substation.Stationcode,substation.name as statioin_name,b.full_name as assigner_name, door_user.added_datetime, door_user.status, door_user.down_datetime,door_user.expire_date,device.active as device_active,smd_device.active as smd_device_active");
-            return $dbObj->get('door_user', $size, $offset)->result();
-        } else {
-            $dbObj->select("door_user.delete_check_count,door_user.user_id,door_user.card_control,door_user.remote_control,a.username, a.full_name,a.mobile,a.accessid,substation.city_code,substation.county_code,substation.Stationcode,substation.name as statioin_name,b.full_name as assigner_name, door_user.added_datetime, door_user.status, door_user.down_datetime,door_user.expire_date,device.active as device_active,smd_device.active as smd_device_active");
-            return $dbObj->get('door_user', $size, $offset)->result();
-        }
-
-    }
-
-    function Get_User_Door_Count($user_id, $cityCode = false, $countyCode = false, $substationId = false, $roomId = false, $smd_device_no = false, $devModel = array(), $active = 'all', $devName = '', $dataId = false, $selCity = false, $keyWord = false, $gCounty = false)
-    {
-        $dbObj = $this->load->database('default', TRUE);
-        $dbObj->join('room', 'room.id=device.room_id');
-        $dbObj->join('substation', 'substation.id=room.substation_id');
-        $dbObj->join('smd_device', 'smd_device.device_no=device.smd_device_no');
-        if ($cityCode)
-            $dbObj->where('substation.city_code', $cityCode);
-        if ($countyCode)
-            $dbObj->where('substation.county_code', $countyCode);
-        if ($substationId)
-            $dbObj->where('substation.id', $substationId);
-        if ($roomId)
-            $dbObj->where('room.id', $roomId);
-        if ($smd_device_no)
-            $dbObj->where('smd_device.device_no', $smd_device_no);
-        if (count($devModel))
-            $dbObj->where_in('device.model', $devModel);
-        if ($active == 'active' || $active == 'deactive')
-            $dbObj->where('device.active', $active == 'active');
-        if (strlen($devName))
-            $dbObj->like('device.name', $devName);
-        if ($dataId)
-            $dbObj->where('device.data_id', $dataId);
-        $dbObj->join('door_user', 'device.data_id=door_user.data_id');
-        if ($user_id)
-            $dbObj->where('door_user.user_id', $user_id);
-        if ($selCity) {
-            $dbObj->where('substation.city_code', $selCity);
-        }
-        if ($keyWord) {
-            foreach ($gCounty as $key => $val) {
-                foreach ($val as $k => $v) {
-                    if ($v == $keyWord) {
-                        $keyWord = $k;
-                    }
-                }
-            }
-            $dbObj->group_start();
-            $dbObj->like('substation.name', $keyWord);
-            $dbObj->or_like('room.name', $keyWord);
-            $dbObj->or_like('device.name', $keyWord);
-            $dbObj->or_like('substation.county_code', $keyWord);
-            $dbObj->or_like('Stationcode', $keyWord);
-            $dbObj->group_end();
-        }
-        return $dbObj->count_all_results("device");
-    }
-
-    function Get_User_Door_List($user_id, $cityCode = false, $countyCode = false, $substationId = false, $roomId = false, $smd_device_no = false, $devModel = array(), $active = null, $devName = '', $offset = 0,
-                                $size = 20, $dataId = false, $selCity = false, $keyWord = false, $gCounty = false)
-    {
-        $dbObj = $this->load->database('default', TRUE);
-        $dbObj->join('room', 'room.id=device.room_id');
-        $dbObj->join('substation', 'substation.id=room.substation_id');
-        $dbObj->join('smd_device', 'smd_device.device_no=device.smd_device_no');
-        if ($cityCode)
-            $dbObj->where('substation.city_code', $cityCode);
-        if ($countyCode)
-            $dbObj->where('substation.county_code', $countyCode);
-        if ($substationId)
-            $dbObj->where('substation.id', $substationId);
-        if ($roomId)
-            $dbObj->where('room.id', $roomId);
-        if ($smd_device_no)
-            $dbObj->where('smd_device.device_no', $smd_device_no);
-        if (count($devModel))
-            $dbObj->where_in('device.model', $devModel);
-        if ($active == 'active' || $active == 'deactive')
-            $dbObj->where('device.active', $active == 'active');
-        if (strlen($devName))
-            $dbObj->like('device.name', $devName);
-        if ($dataId)
-            $dbObj->where('device.data_id', $dataId);
-        $dbObj->join('door_user', 'device.data_id=door_user.data_id');
-        if ($user_id)
-            $dbObj->where('door_user.user_id', $user_id);
-        if ($selCity) {
-            $dbObj->where('substation.city_code', $selCity);
-        }
-        if ($keyWord) {
-            foreach ($gCounty as $key => $val) {
-                foreach ($val as $k => $v) {
-                    if ($v == $keyWord) {
-                        $keyWord = $k;
-                    }
-                }
-            }
-            $dbObj->group_start();
-            $dbObj->like('substation.name', $keyWord);
-            $dbObj->or_like('room.name', $keyWord);
-            $dbObj->or_like('device.name', $keyWord);
-            $dbObj->or_like('substation.county_code', $keyWord);
-            $dbObj->or_like('Stationcode', $keyWord);
-            $dbObj->group_end();
-        }
-        $dbObj->select('door_user.card_control, door_user.remote_control,door_user.status,device.*,room.id as roomId,room.name as room_name,substation.city_code,substation.county_code,substation.Stationcode,smd_device.name as smd_device_name,smd_device.active as smd_device_active,smd_device.ip,substation.name as suname');
-        if ($size != -1) {
-            $ret = $dbObj->get('device', $size, $offset)->result();
-            return $ret;
-        } else {
-            $ret = $dbObj->get('device')->result();
-            return $ret;
-        }
-
-    }
-
-    function Get_Device_By_RoomId($room_id, $model)
-    {
-        $dbObj = $this->load->database('default', TRUE);
-        $dbObj->where('room_id', $room_id);
-        $dbObj->where_in("model", $model);
-        return $dbObj->get('device')->result();
-    }
-
-    function up_door_record($userid = false, $openMessage = false, $accessid = false, $action = false, $dataId = false)
-    {
-        $dbObj = $this->load->database('default', TRUE);
-        if ($dataId)
-            $dbObj->set('data_id', $dataId);
-        if ($userid)
-            $dbObj->set('user_id', $userid);
-        $dbObj->set('card_no', '');
-        if ($action)
-            $dbObj->set('action', $action);
-        if ($openMessage)
-            $dbObj->set('desc', $openMessage);
-        $dbObj->set('added_datetime', 'now()', false);
-        return $dbObj->insert('door_record');
-    }
-
-    function Get_door_record($userId)
-    {
-        $dbObj = $this->load->database('default', TRUE);
-        $dbObj->where('user_id', $userId);
-        $dbObj->where('desc !=', '');
-        return $dbObj->get('door_record')->row();
-    }
-
-    function Count_Img($id)
-    {
-        $dbObj = $this->load->database('default', TRUE);
-        $dbObj->where('substation_id', $id);
-        $dbObj->group_by('substation_id');
-        return $dbObj->count_all_results("stationimage");
-    }
-
-    function Get_Spdev_List()
-    {
-        $dbObj = $this->load->database('default', TRUE);
-        return $dbObj->get('spdev_protocol')->result();
-    }
-
-    function Get_SevName($roomid = false)
-    {
-        $dbObj = $this->load->database('default', TRUE);
-        $dbObj->where('room_id', $roomid);
-        $dbObj->select('name');
-        return $dbObj->get('device')->result();
-    }
-
-    function spdevManage($name = false, $baud_rate = false, $cmd = false, $reply = false, $offset = 0, $size = 0)
-    {
-        $dbObj = $this->load->database('default', TRUE);
+	function Count_Img($id){
+		$dbObj = $this->load->database('default', TRUE);
+		$dbObj->where('substation_id',$id);
+		$dbObj->group_by('substation_id');
+		return $dbObj->count_all_results("stationimage");
+	}
+	function Get_Spdev_List()
+	{
+	    $dbObj = $this->load->database('default', TRUE);
+	    return $dbObj->get('spdev_protocol')->result();
+	}
+	function Get_SevName($roomid = false){
+		$dbObj = $this->load->database('default', TRUE);
+		$dbObj->where('room_id',$roomid);
+		$dbObj->select('name');
+		return $dbObj->get('device')->result();
+	}	
+	function spdevManage($name = false, $baud_rate = false, $cmd = false, $reply = false, $offset = 0, $size = 0){
+        $dbObj = $this->load->database('default', TRUE);   
         if ($name)
-            $dbObj->like('name', $name);
+        	$dbObj->like('name', $name); 
         if ($baud_rate)
-            $dbObj->like('baud_rate', $baud_rate);
+        	$dbObj->like('baud_rate', $baud_rate);
         if ($cmd)
-            $dbObj->like('cmd', $cmd);
+        	$dbObj->like('cmd', $cmd);
         if ($reply)
-            $dbObj->like('reply', $reply);
-        if ($size == 0) {
-            $ret = $dbObj->get('spdev_protocol')->result();
-            return $ret;
-        } else {
+        	$dbObj->like('reply', $reply);
+        if ($size == 0){
+        	$ret = $dbObj->get('spdev_protocol')->result();
+        	return $ret;
+        }else{
             $ret = $dbObj->get('spdev_protocol', $size, $offset)->result();
-            return $ret;
-        }
+	        return $ret;
+            }    	
     }
-
-    function Get_Spdev_Count($name = false, $baud_rate = false, $cmd = false, $reply = false)
-    {
-        $dbObj = $this->load->database('default', TRUE);
+    function Get_Spdev_Count($name = false, $baud_rate = false, $cmd = false, $reply = false){
+        $dbObj = $this->load->database('default', TRUE);       
         if ($name)
-            $dbObj->like('name', $name);
+        	$dbObj->like('name', $name);
         if ($baud_rate)
-            $dbObj->like('baud_rate', $baud_rate);
+        	$dbObj->like('baud_rate', $baud_rate);
         if ($cmd)
-            $dbObj->like('cmd', $cmd);
+        	$dbObj->like('cmd', $cmd);
         if ($reply)
-            $dbObj->like('reply', $reply);
+        	$dbObj->like('reply', $reply);    
         return $dbObj->count_all_results("spdev_protocol");
     }
 
-    function DeleteManage($Manageid = false)
-    {
-        $dbObj = $this->load->database('default', TRUE);
-        $dbObj->where('id', $Manageid);
-        return $dbObj->delete('spdev_protocol');
-    }
+	function DeleteManage($Manageid = false){
+	    $dbObj = $this->load->database('default', TRUE);	
+		$dbObj->where('id',$Manageid);
+		return $dbObj->delete('spdev_protocol');
+	}
 
-    function Get_Power302aEC_DataId($cityCode, $countyCode, $substationId, $roomId, $ecType)
+	function Get_Power302aEC_DataId($cityCode, $countyCode, $substationId, $roomId, $ecType)
+	{
+	    $dbObj = $this->load->database('default', TRUE);
+	    //First, Find all data_id
+	    if(!empty($roomId))
+	    {
+	        $dbObj->where('room_id', $roomId);
+	    }else if(!empty($substationId))
+	    {
+	        $dbObj->join('room','device.room_id=room.id');
+	        $dbObj->where('room.substation_id', $substationId);
+	    }else if(!empty($countyCode))
+	    {
+	        $dbObj->join('room','device.room_id=room.id');
+	        $dbObj->join("substation", "room.substation_id=substation.id");
+	        $dbObj->where('substation.county_code', $countyCode);
+	    }else if(!empty($cityCode))
+	    {
+	        $dbObj->join('room','device.room_id=room.id');
+	        $dbObj->join("substation", "room.substation_id=substation.id");
+	        $dbObj->where('substation.city_code', $cityCode);
+	    }
+	    $dbObj->where('model','power_302a');
+	    if($ecType == "0")
+	    {
+	        $dbObj->like("device.name","市电进入");
+	    }else if($ecType == "1" || $ecType == "4" )
+	    {
+	        $dbObj->like("device.name","开关电源");
+	    }else if($ecType == "2")
+	    {
+	        $dbObj->like("device.name","空调");
+	    }
+	    $dbObj->select("data_id");
+	    $devList = $dbObj->get('device')->result();
+	    $dataIdArr = array();
+	    foreach($devList as $devObj)
+	    {
+	        array_push($dataIdArr, intval($devObj->data_id));
+	    }
+	    return $dataIdArr;
+	}
+	
+    function Get_Power302aEC_List($dataIdArr,$ecGroup,$startDate ,$endDate, $lastList = false)
     {
-        $dbObj = $this->load->database('default', TRUE);
-        //First, Find all data_id
-        if (!empty($roomId)) {
-            $dbObj->where('room_id', $roomId);
-        } else if (!empty($substationId)) {
-            $dbObj->join('room', 'device.room_id=room.id');
-            $dbObj->where('room.substation_id', $substationId);
-        } else if (!empty($countyCode)) {
-            $dbObj->join('room', 'device.room_id=room.id');
-            $dbObj->join("substation", "room.substation_id=substation.id");
-            $dbObj->where('substation.county_code', $countyCode);
-        } else if (!empty($cityCode)) {
-            $dbObj->join('room', 'device.room_id=room.id');
-            $dbObj->join("substation", "room.substation_id=substation.id");
-            $dbObj->where('substation.city_code', $cityCode);
-        }
-        $dbObj->where('model', 'power_302a');
-        if ($ecType == "0") {
-            $dbObj->like("device.name", "市电进入");
-        } else if ($ecType == "1") {
-            $dbObj->like("device.name", "开关电源");
-        } else if ($ecType == "2") {
-            $dbObj->like("device.name", "空调");
-        }
-        $dbObj->select("data_id");
-        $devList = $dbObj->get('device')->result();
-        $dataIdArr = array();
-        foreach ($devList as $devObj) {
-            array_push($dataIdArr, intval($devObj->data_id));
-        }
-        return $dataIdArr;
-    }
-
-
-    function Get_Power302aEC_List($dataIdArr, $ecGroup, $startDate, $endDate)
-    {
+    	if($lastList == true){
+    		if($ecGroup == '0'){
+    			$endDate = $startDate = date('Y-m-d',strtotime("$startDate- 1 day"));
+    		}else if($ecGroup == '1'||$ecGroup == '4'){
+    			$endDate = $startDate = date('Y-m-d',strtotime("$startDate- 1 day"));
+    		}else if($ecGroup == '2'){
+    				$startDate = date('Y-m',strtotime("$startDate- 1 month")).'-01';
+    				$endDate = date('Y-m-d',strtotime("$startDate+ 1 month"));
+    		}else if($ecGroup == '3'){
+    				$endDate = date('Y',strtotime("$startDate- 1 year")).'-12-31';
+    				$startDate = date('Y',strtotime("$startDate- 1 year")).'-01-01';
+    		}		
+    	}
         $operation = array();
-        $operation[] = array('$match' => array("data_id" => array('$in' => $dataIdArr), "Date" => array('$gte' => $startDate, '$lte' => $endDate)));
-        switch ($ecGroup) {
-            case "0": {
-                //时
-                //$operation[] = [ '$group' => [ '_id' => [ "Date"=>'$Date', "Time"=>'$Time'] ,
-                $operation[] = ['$group' => ['_id' => ["Date" => '$Date', "Time" => ['$substr' => ['$Time', 0, 2]]],
-                    'epa_sum' => ['$sum' => '$epa'],
-                    // 'epa_sum' => ['$sum'=>['$max'=>'$epa']],
-                    'epb_sum' => ['$sum' => '$epb'],
-                    'epc_sum' => ['$sum' => '$epc'],
-                    'ept_sum' => ['$sum' => '$ept']
-                ]];
-                $operation[] = ['$sort' => ['_id.Date' => 1, '_id.Time' => 1]];
-                break;
+        $operation[] = array('$match' => array("data_id"=>array('$in'=>$dataIdArr), "Date"=>array('$gte'=>$startDate, '$lte'=>$endDate)));
+        switch($ecGroup)
+        {
+         case "0":{
+         //时
+         	if($lastList == true){
+         		$operation[] = [ '$group' => [ '_id' => [ "Date"=>'$Date', "Time"=>[ '$substr'=> ['23:59:59', 0, 2] ],'data_id'=>'$data_id'] ,
+											         		'epa_max' => ['$max'=>'$epa'],
+											         		'epb_max' => ['$max'=>'$epb'],
+											         		'epc_max' => ['$max'=>'$epc'],
+											         		'ept_max' => ['$max'=>'$ept']
+         		]];
+         	}else{
+              $operation[] = [ '$group' => [ '_id' => [ "Date"=>'$Date', "Time"=>[ '$substr'=> ['$Time', 0, 2] ],'data_id'=>'$data_id'] ,
+					                                        'epa_max' => ['$max'=>'$epa'],
+					                                        'epb_max' => ['$max'=>'$epb'],
+					                                        'epc_max' => ['$max'=>'$epc'],
+					                                        'ept_max' => ['$max'=>'$ept']
+              ]];
+         	}
+              
+              $operation[] = [ '$sort' => [ '_id.Date' => 1, '_id.Time' =>1] ];
+              break;
+         }
+         case "1":
+         //日
+              $operation[] = [ '$group' => [ '_id' => [ "Date"=>'$Date','data_id'=>'$data_id'] ,
+                                                            'epa_max' => ['$max'=>'$epa'],
+                                                            'epb_max' => ['$max'=>'$epb'],
+                                                            'epc_max' => ['$max'=>'$epc'],
+                                                            'ept_max' => ['$max'=>'$ept']
+              ]];
+              $operation[] = [ '$sort' => [ '_id.Date' => 1] ];
+              break;
+          case "2":
+          //月
+          	  $operation[] = [ '$group' => [ '_id' => [ 'year' => [ '$substr'=> ['$Date', 0, 4] ],
+											          	 	'month' => [ '$substr'=> ['$Date',5,2] ],'data_id'=>'$data_id'],
+											          	 	'epa_max' => ['$max'=>'$epa'],
+											          	 	'epb_max' => ['$max'=>'$epb'],
+											          	 	'epc_max' => ['$max'=>'$epc'],
+											          	 	'ept_max' => ['$max'=>'$ept']
+          	  ]];          	 
+              $operation[] = [ '$sort' => [ '_id.year' => 1, '_id.month'=>1] ];
+              break;
+           case "3":
+           //年
+              $operation[] = [ '$group' => [ '_id' => [ 'year' => [ '$substr'=> ['$Date', 0, 4] ],'data_id'=>'$data_id'],
+                                                            'epa_max' => ['$max'=>'$epa'],
+                                                            'epb_max' => ['$max'=>'$epb'],
+                                                            'epc_max' => ['$max'=>'$epc'],
+                                                            'ept_max' => ['$max'=>'$ept']
+              ]];
+              $operation[] = [ '$sort' => [ '_id.year' => 1] ];
+              break;
+	        case "4":
+	          $operation[] = [ '$group' => [ '_id' => [ "Date"=>'$Date','data_id'=>'$data_id'] ,
+												        	'ept_max' => ['$max'=>'$ept']
+	          ]];
+	          $operation[] = [ '$sort' => [ '_id.Date' => 1] ];
+	          break;
             }
-            case "1":
-                //日
-                $operation[] = ['$group' => ['_id' => ["Date" => '$Date'],
-                    'epa_sum' => ['$sum' => '$epa'],
-                    'epb_sum' => ['$sum' => '$epb'],
-                    'epc_sum' => ['$sum' => '$epc'],
-                    'ept_sum' => ['$sum' => '$ept']
-                ]];
-                $operation[] = ['$sort' => ['_id.Date' => 1]];
-                break;
-            case "2":
-                //月
-                $operation[] = ['$group' => ['_id' => ['year' => ['$substr' => ['$Date', 0, 4]],
-                    'month' => ['$substr' => ['$Date', 5, 2]]],
-                    'epa_sum' => ['$sum' => '$epa'],
-                    'epb_sum' => ['$sum' => '$epb'],
-                    'epc_sum' => ['$sum' => '$epc'],
-                    'ept_sum' => ['$sum' => '$ept']
-                ]];
-                $operation[] = ['$sort' => ['_id.year' => 1, '_id.month' => 1]];
-                break;
-            case "3":
-                //年
-                $operation[] = ['$group' => ['_id' => ['year' => ['$substr' => ['$Date', 0, 4]]],
-                    'epa_sum' => ['$sum' => '$epa'],
-                    'epb_sum' => ['$sum' => '$epb'],
-                    'epc_sum' => ['$sum' => '$epc'],
-                    'ept_sum' => ['$sum' => '$ept']
-                ]];
-                $operation[] = ['$sort' => ['_id.year' => 1]];
-                break;
-            case "4":
-                $operation[] = ['$group' => ['_id' => "NULL",
-                    'ept_sum' => ['$sum' => '$ept']
-                ]];
-                break;
-        }
-        $docs = $this->mongo_db->aggregate("power302a", $operation);
-        return $docs;
+            $docs = $this->mongo_db->aggregate("power302a",$operation);
+   
+            $array = array(); $Obj = new stdClass(); $is_true = false;
+            if($ecGroup == '4'){
+            	for($i=0;$i<count($docs);$i++){
+            		$Obj->ept_sum = $Obj->ept_sum + $docs[$i]->ept_max;
+            	}
+            	array_push($array,$Obj);
+            }else{
+            	for($i=0;$i<count($docs);$i++){
+            		if(!$is_true){
+            			if($ecGroup == '0'){
+            				$Obj->_id['Date'] = $docs[$i]->_id['Date'];
+            				$Obj->_id['Time'] = $docs[$i]->_id['Time'];
+            			}else if($ecGroup == '1'){
+            				$Obj->_id['Date'] = $docs[$i]->_id['Date'];
+            			}else if($ecGroup == '2'){
+            				$Obj->_id['year'] = $docs[$i]->_id['year'];
+            				$Obj->_id['month'] = $docs[$i]->_id['month'];
+            			}else if($ecGroup == '3'){
+            				$Obj->_id['year'] = $docs[$i]->_id['year'];
+            			}
+            			$Obj->epa_sum = $docs[$i]->epa_max;
+            			$Obj->epb_sum = $docs[$i]->epb_max;
+            			$Obj->epc_sum = $docs[$i]->epc_max;
+            			$Obj->ept_sum = $docs[$i]->ept_max;
+            		}
+            		if($ecGroup == '0'){
+            			$judge = ($docs[$i]->_id['Date'] == $docs[$i+1]->_id['Date']) &&($docs[$i]->_id['Time'] == $docs[$i+1]->_id['Time']);
+            		}else if($ecGroup == '1'){
+            			$judge = ($docs[$i]->_id['Date'] == $docs[$i+1]->_id['Date']);
+            		}else if($ecGroup == '2'){
+            			$judge = ($docs[$i]->_id['year'] == $docs[$i+1]->_id['year']) &&($docs[$i]->_id['month'] == $docs[$i+1]->_id['month']);
+            		}else if($ecGroup == '3'){
+            			$judge = ($docs[$i]->_id['year'] == $docs[$i+1]->_id['year']);
+            		}
+            		if($judge){
+            			if($ecGroup == '0'){
+            				$Obj->_id['Date'] = $docs[$i+1]->_id['Date'];
+            				$Obj->_id['Time'] = $docs[$i+1]->_id['Time'];
+            			}else if($ecGroup == '1'){
+            				$Obj->_id['Date'] = $docs[$i+1]->_id['Date'];
+            			}else if($ecGroup == '2'){
+            				$Obj->_id['year'] = $docs[$i+1]->_id['year'];
+            				$Obj->_id['month'] = $docs[$i+1]->_id['month'];
+            			}else if($ecGroup == '3'){
+            				$Obj->_id['year'] = $docs[$i+1]->_id['year'];
+            			}
+            			$Obj->epa_sum = $Obj->epa_sum + $docs[$i+1]->epa_max;
+            			$Obj->epb_sum = $Obj->epb_sum + $docs[$i+1]->epb_max;
+            			$Obj->epc_sum = $Obj->epc_sum + $docs[$i+1]->epc_max;
+            			$Obj->ept_sum = $Obj->ept_sum + $docs[$i+1]->ept_max;
+            			$is_true = true;
+            		}else{
+            			array_push($array,$Obj);
+            			$Obj = new stdClass();
+            			$is_true = false;
+            		}
+            	}
+            }
+           
+        return $array;
     }
+	
+	function Get_Power302a_List($dataId = false,$startTime = false,$endTime = false,$offset = 0, $size = 0)
+	{
+		if(!empty($startTime)){
+			$this->mongo_db->where_gte('Date', $startTime);
+		}
+		if(!empty($endTime)){
+			$this->mongo_db->where_lte('Date', $endTime);
+		}
+		$this->mongo_db->where("data_id",intval($dataId));
+		return $this->mongo_db->select('*')->offset($offset)->limit($size)->get("power302a");
+	}
 
-    function Get_LastPower302a_List($dataIdArr = array(), $startTime)
+	function Get_Power302a_Count($dataId,$startTime = false,$endTime = false)
+	{
+		if(!empty($startTime)){
+			$this->mongo_db->where_gte('Date', $startTime);
+		}
+		if(!empty($endTime)){
+			$this->mongo_db->where_lte('Date', $endTime);
+		}
+		$this->mongo_db->where('data_id',intval($dataId));
+		return $this->mongo_db->count('power302a');
+	}
+
+	function Get_Device_History_List($model = false,$dataId = false,$startTime = false,$endTime = false,$offset = 0, $size = 0)
+	{
+		if(!empty($startTime)){
+			$this->mongo_db->where_gte('Date', $startTime);
+		}
+		if(!empty($endTime)){
+			$this->mongo_db->where_lte('Date', $endTime);
+		}
+		$this->mongo_db->where("data_id",intval($dataId));
+		if($model == "power_302a")
+			$model = 'power302a';
+		if($model =="battery_24")
+			$model = 'battery24';
+		if($model =="battery_32")
+			$model = 'battery32';
+		if($model =="battery24_voltage")
+			$model = 'Battery24Voltage';
+		if($model =="humid")
+			$model = 'HumidSensor';
+		if($model =="temperature")
+			$model = 'TemperatureSensor';
+		if($model == "water")
+			$model = 'WaterSensor';
+		if($model == 'motor_battery')
+			$model = 'MotorBatteryVoltage';
+		return $this->mongo_db->select('*')->offset($offset)->limit($size)->get($model);
+	}
+	
+	function Get_Device_History_Count($model = false, $dataId = false, $startTime = false, $endTime = false)
+	{	 
+		if(!empty($startTime)){
+			$this->mongo_db->where_gte('Date', $startTime);
+		}
+		if(!empty($endTime)){
+			$this->mongo_db->where_lte('Date', $endTime);
+		}
+		$this->mongo_db->where('data_id',intval($dataId));
+		if($model == "power_302a")
+			$model = 'power302a';
+		if($model =="battery_24")
+			$model = 'battery24';
+		if($model =="battery_32")
+			$model = 'battery32';
+		if($model =="battery24_voltage")
+			$model = 'Battery24Voltage';
+		if($model =="humid")
+			$model = 'HumidSensor';
+		if($model =="temperature")
+			$model = 'TemperatureSensor';
+		if($model == "water")
+			$model = 'WaterSensor';
+		if($model == 'motor_battery')
+			$model = 'MotorBatteryVoltage';
+		
+		return $this->mongo_db->count($model);
+	}
+	
+	function Get_powermeter_history_LY(){
+		$dbObj = $this->load->database('default', TRUE);
+		$old = date('Y-m-d',time());
+		$arr = explode("-",$old);	
+		$new = date("Y-m-d", mktime(0,0,0,$arr[1],$arr[2],$arr[0]-1));
+			$dbObj->where('update_datetime', $new . ' 00:01:00');	
+			return $dbObj->get('device_power302a_history')->result();
+	}
+
+	function Get_powermeter_history_TY(){
+		$dbObj = $this->load->database('default', TRUE);
+		$old = date('Y-m-d',time());
+		$dbObj->where('update_datetime', $old . ' 00:01:00');
+		return $dbObj->get('device_power302a_history')->result();
+	}
+    function Update_spdevs($id, $name, $baud_rate, $cmd, $reply){
+	    $dbObj = $this->load->database('default', TRUE);
+	    $dbObj->where('id',$id);
+	    $dbObj->set('name',$name);
+	    $dbObj->set('baud_rate',$baud_rate);
+	    $dbObj->set('cmd',$cmd);
+	    $dbObj->set('reply',$reply);
+	    return $dbObj->update('spdev_protocol');
+    }
+     function Save_spdevs($name, $baud_rate, $cmd, $reply){
+	    $dbObj = $this->load->database('default', TRUE);
+	    $dbObj->set('name', $name);
+	    $dbObj->set('baud_rate',$baud_rate);
+	    $dbObj->set('cmd', $cmd);
+	    $dbObj->set('reply', $reply);
+	    return $dbObj->insert('spdev_protocol');
+    }
+    function Get_spdev_protocol ($substation_id){
+	    $dbObj = $this->load->database('default', TRUE);
+	    $dbObj->where('id', $substation_id);
+	    return $dbObj->get('spdev_protocol')->row();
+    } 
+    function Change_Status ($device_id, $status)
     {
-        $this->mongo_db->where_in('data_id', $dataIdArr);
-        $this->mongo_db->where_lt('Date', $startTime);
-        $this->mongo_db->order_by('Date', 'desc');
-        $this->mongo_db->order_by('Time', 'desc');
-        return $this->mongo_db->select('*')->limit(1)->get("power302a");
+    	$dbObj = $this->load->database('default', TRUE);
+    	$dbObj->where('user_id', $device_id);
+    	$dbObj->set('status', $status);
+    	return $dbObj->update('door_user');   
+    	
     }
-
-    function Get_Power302a_List($dataId = false, $startTime = false, $endTime = false, $offset = 0, $size = 0)
+    function Get_NetWork ($type = false, $property = false, $element = false, $name = false, $substation_id = false, $array)
     {
-        if (!empty($startTime)) {
-            $this->mongo_db->where_gte('Date', $startTime);
-        }
-        if (!empty($endTime)) {
-            $this->mongo_db->where_lte('Date', $endTime);
-        }
-        $this->mongo_db->where("data_id", intval($dataId));
-        return $this->mongo_db->select('*')->offset($offset)->limit($size)->get("power302a");
+    	 $dbObj = $this->load->database('default', TRUE); 
+    	 $dbObj->join('substation_network', 'power_network.id=substation_network.network_id','left');
+    	 if ($type)
+    	 	$dbObj->where('type', $type);
+    	 if ($property)
+    	 	$dbObj->where('property', $property);
+    	 if ($element)
+    	 	$dbObj->where('element', $element);
+    	 if ($name)
+    	 	$dbObj->like('name', $name);
+    	 if ($array)
+    	 	$dbObj->where('network_id', $array);
+    	 if ($substation_id)
+    	 	$dbObj->where('substation_id', $substation_id);
+    	 $dbObj->select('substation_network.*,power_network.id as network_id,power_network.*');
+    	 return $ret = $dbObj->get('power_network')->row(); 
     }
-
-    function Get_Power302a_Count($dataId, $startTime = false, $endTime = false)
+    function Get_NetWork_List ($type = false, $property = false, $element = false, $name = false, $offset = 0, $size = 0)
     {
-        if (!empty($startTime)) {
-            $this->mongo_db->where_gte('Date', $startTime);
-        }
-        if (!empty($endTime)) {
-            $this->mongo_db->where_lte('Date', $endTime);
-        }
-        $this->mongo_db->where('data_id', intval($dataId));
-        return $this->mongo_db->count('power302a');
+    	$dbObj = $this->load->database('default', TRUE);
+    	if ($type)
+    		$dbObj->where('type', $type);
+    	if ($property)
+    		$dbObj->where('property', $property);
+    	if ($element)
+    		$dbObj->where('element', $element);
+    	if ($name)
+    		$dbObj->like('name', $name);
+    	$dbObj->select('*');
+    	if ($size == 0){
+    	    return $ret = $dbObj->get('power_network')->result();
+    	}else{
+    		return $ret = $dbObj->get('power_network', $size, $offset)->result();	
+    	}
+    	
     }
-
-    function Get_Device_History_List($model = false, $dataId = false, $startTime = false, $endTime = false, $offset = 0, $size = 0)
+    
+    function Get_NetWork_Not_Where ($type = false, $substation_id = false, $array)
     {
-        if (!empty($startTime)) {
-            $this->mongo_db->where_gte('Date', $startTime);
-        }
-        if (!empty($endTime)) {
-            $this->mongo_db->where_lte('Date', $endTime);
-        }
-        $this->mongo_db->where("data_id", intval($dataId));
-        if ($model == "power_302a")
-            $model = 'power302a';
-        if ($model == "battery_24")
-            $model = 'battery24';
-        if ($model == "battery_32")
-            $model = 'battery32';
-        if ($model == "battery24_voltage")
-            $model = 'Battery24Voltage';
-        if ($model == "humid")
-            $model = 'HumidSensor';
-        if ($model == "temperature")
-            $model = 'TemperatureSensor';
-        if ($model == "water")
-            $model = 'WaterSensor';
-        if ($model = 'motor_battery')
-            $model = 'MotorBatteryVoltage';
-        return $this->mongo_db->select('*')->offset($offset)->limit($size)->get($model);
+    	$dbObj = $this->load->database('default', TRUE);
+    	if ($type)
+    		$dbObj->where('type', $type);
+    	if ($array)
+    		$dbObj->where_not_in('power_network.id', $array);
+    	$dbObj->select('power_network.id as network_id,power_network.*');
+    	return $ret = $dbObj->get('power_network')->result();
     }
 
-    function Get_Device_History_Count($model = false, $dataId, $startTime = false, $endTime = false)
+    function Get_Perfor_Not_Where ($substation_id = false, $array)
     {
-        if (!empty($startTime)) {
-            $this->mongo_db->where_gte('Date', $startTime);
-        }
-        if (!empty($endTime)) {
-            $this->mongo_db->where_lte('Date', $endTime);
-        }
-        $this->mongo_db->where('data_id', intval($dataId));
-        if ($model == "power_302a")
-            $model = 'power302a';
-        if ($model == "battery_24")
-            $model = 'battery24';
-        if ($model == "battery_32")
-            $model = 'battery32';
-        if ($model == "battery24_voltage")
-            $model = 'Battery24Voltage';
-        if ($model == "humid")
-            $model = 'HumidSensor';
-        if ($model == "temperature")
-            $model = 'TemperatureSensor';
-        if ($model == "water")
-            $model = 'WaterSensor';
-        return $this->mongo_db->count($model);
+    	$dbObj = $this->load->database('default', TRUE);
+    	if ($array)
+    		$dbObj->where_not_in('performance_manage.id', $array);
+    	$dbObj->select('performance_manage.id as perfor_id,performance_manage.*');
+    	return $ret = $dbObj->get('performance_manage')->result();
     }
-
-    function Get_powermeter_history_LY()
+    
+    function Get_PerFor ($substation_id,$array)
     {
-        $dbObj = $this->load->database('default', TRUE);
-        $old = date('Y-m-d', time());
-        $arr = explode("-", $old);
-        $new = date("Y-m-d", mktime(0, 0, 0, $arr[1], $arr[2], $arr[0] - 1));
-        $dbObj->where('update_datetime', $new . ' 00:01:00');
-        return $dbObj->get('device_power302a_history')->result();
+    	$dbObj = $this->load->database('default', TRUE);
+    	$dbObj->join('substation_perfor', 'performance_manage.id=substation_perfor.perfor_id','left');
+    	if ($array)
+    		$dbObj->where('perfor_id', $array);
+    	if ($substation_id)
+    		$dbObj->where('substation_id', $substation_id);
+    	$dbObj->select('substation_perfor.*,performance_manage.id as perfor_id,performance_manage.*');
+    	return $ret = $dbObj->get('performance_manage')->row();
     }
-
-    function Get_powermeter_history_TY()
-    {
-        $dbObj = $this->load->database('default', TRUE);
-        $old = date('Y-m-d', time());
-        $dbObj->where('update_datetime', $old . ' 00:01:00');
-        return $dbObj->get('device_power302a_history')->result();
-    }
-
-    function Update_spdevs($id, $name, $baud_rate, $cmd, $reply)
-    {
-        $dbObj = $this->load->database('default', TRUE);
-        $dbObj->where('id', $id);
-        $dbObj->set('name', $name);
-        $dbObj->set('baud_rate', $baud_rate);
-        $dbObj->set('cmd', $cmd);
-        $dbObj->set('reply', $reply);
-        return $dbObj->update('spdev_protocol');
-    }
-
-    function Save_spdevs($name, $baud_rate, $cmd, $reply)
-    {
-        $dbObj = $this->load->database('default', TRUE);
-        $dbObj->set('name', $name);
-        $dbObj->set('baud_rate', $baud_rate);
-        $dbObj->set('cmd', $cmd);
-        $dbObj->set('reply', $reply);
-        return $dbObj->insert('spdev_protocol');
-    }
-
-    function Get_spdev_protocol($substation_id)
-    {
-        $dbObj = $this->load->database('default', TRUE);
-        $dbObj->where('id', $substation_id);
-        return $dbObj->get('spdev_protocol')->row();
-    }
-
-    function Change_Status($device_id, $status)
-    {
-        $dbObj = $this->load->database('default', TRUE);
-        $dbObj->where('user_id', $device_id);
-        $dbObj->set('status', $status);
-        return $dbObj->update('door_user');
-
-    }
-
-    function Get_NetWork($type = false, $property = false, $element = false, $name = false, $substation_id = false, $array)
-    {
-        $dbObj = $this->load->database('default', TRUE);
-        $dbObj->join('substation_network', 'power_network.id=substation_network.network_id', 'left');
-        if ($type)
-            $dbObj->where('type', $type);
-        if ($property)
-            $dbObj->where('property', $property);
-        if ($element)
-            $dbObj->where('element', $element);
-        if ($name)
-            $dbObj->like('name', $name);
-        if ($array)
-            $dbObj->where('network_id', $array);
-        if ($substation_id)
-            $dbObj->where('substation_id', $substation_id);
-        $dbObj->select('substation_network.*,power_network.id as network_id,power_network.*');
-        return $ret = $dbObj->get('power_network')->row();
-    }
-
-    function Get_NetWork_List($type = false, $property = false, $element = false, $name = false, $offset = 0, $size = 0)
-    {
-        $dbObj = $this->load->database('default', TRUE);
-        if ($type)
-            $dbObj->where('type', $type);
-        if ($property)
-            $dbObj->where('property', $property);
-        if ($element)
-            $dbObj->where('element', $element);
-        if ($name)
-            $dbObj->like('name', $name);
-        $dbObj->select('*');
-        if ($size == 0) {
-            return $ret = $dbObj->get('power_network')->result();
-        } else {
-            return $ret = $dbObj->get('power_network', $size, $offset)->result();
-        }
-
-    }
-
-    function Get_NetWork_Not_Where($type = false, $substation_id = false, $array)
-    {
-        $dbObj = $this->load->database('default', TRUE);
-        if ($type)
-            $dbObj->where('type', $type);
-        if ($array)
-            $dbObj->where_not_in('power_network.id', $array);
-        $dbObj->select('power_network.id as network_id,power_network.*');
-        return $ret = $dbObj->get('power_network')->result();
-    }
-
-    function Get_Perfor_Not_Where($substation_id = false, $array)
-    {
-        $dbObj = $this->load->database('default', TRUE);
-        if ($array)
-            $dbObj->where_not_in('performance_manage.id', $array);
-        $dbObj->select('performance_manage.id as perfor_id,performance_manage.*');
-        return $ret = $dbObj->get('performance_manage')->result();
-    }
-
-    function Get_PerFor($substation_id, $array)
-    {
-        $dbObj = $this->load->database('default', TRUE);
-        $dbObj->join('substation_perfor', 'performance_manage.id=substation_perfor.perfor_id', 'left');
-        if ($array)
-            $dbObj->where('perfor_id', $array);
-        if ($substation_id)
-            $dbObj->where('substation_id', $substation_id);
-        $dbObj->select('substation_perfor.*,performance_manage.id as perfor_id,performance_manage.*');
-        return $ret = $dbObj->get('performance_manage')->row();
-    }
-
     function Get_NetWorkCount($type = false, $property = false, $element = false, $name = false)
     {
-        $dbObj = $this->load->database('default', TRUE);
-        $dbObj->join('substation_network', 'power_network.id=substation_network.network_id', 'left');
-        if ($type)
-            $dbObj->where('type', $type);
-        if ($property)
-            $dbObj->where('property', $property);
-        if ($element)
-            $dbObj->where('element', $element);
-        if ($name)
-            $dbObj->like('name', $name);
-        return $dbObj->count_all_results("power_network");
+    	$dbObj = $this->load->database('default', TRUE);
+    	$dbObj->join('substation_network', 'power_network.id=substation_network.network_id','left');
+    	if ($type)
+    	 	$dbObj->where('type', $type);
+    	if ($property)
+    		$dbObj->where('property', $property);
+    	if ($element)
+    	 	$dbObj->where('element', $element);
+    	if ($name)
+    	 	$dbObj->like('name', $name);
+    	return $dbObj->count_all_results("power_network");
     }
-
-    function DeleteNetwork($id)
+    function DeleteNetwork($id){
+    	$dbObj = $this->load->database('default', TRUE);
+    	$dbObj->where('id',$id);
+    	return $dbObj->delete('power_network');
+    }  
+    function Update_network($id, $type, $property, $element, $name, $meaning, $requirements, $reference, $remarks, $config){
+    	$dbObj = $this->load->database('default', TRUE);
+    	$dbObj->where('id',$id);
+    	$dbObj->set('type',$type);
+    	$dbObj->set('property',$property);
+    	$dbObj->set('element',$element);
+    	$dbObj->set('name',$name);
+    	$dbObj->set('meaning',$meaning);
+    	$dbObj->set('requirements',$requirements);
+    	$dbObj->set('reference',$reference);
+    	$dbObj->set('remarks',$remarks);
+    	$dbObj->set('config',$config);
+    	return $dbObj->update('power_network');
+    }
+    function Save_network($type, $property, $element, $name, $meaning, $requirements, $reference, $remarks, $config){
+    	$dbObj = $this->load->database('default', TRUE);
+    	$dbObj->set('type',$type);
+    	$dbObj->set('property',$property);
+    	$dbObj->set('element',$element);
+    	$dbObj->set('name',$name);
+    	$dbObj->set('meaning',$meaning);
+    	$dbObj->set('requirements',$requirements);
+    	$dbObj->set('reference',$reference);
+    	$dbObj->set('remarks',$remarks);
+    	$dbObj->set('config',$config);
+    	return $dbObj->insert('power_network');
+    }
+    function Get_network_protocol ($substation_id){
+    	$dbObj = $this->load->database('default', TRUE);
+    	$dbObj->where('id', $substation_id);
+    	return $dbObj->get('power_network')->row();
+    }
+    function Get_Network_By_Id($id){
+    	$dbObj = $this->load->database('default', TRUE);
+    	$dbObj->where('id', $id);
+    	$dbObj->select('config');
+    	return  $dbObj->get('power_network')->row();
+    }
+    function Get_substation_network($id, $substation_id){
+    	$dbObj = $this->load->database('default', TRUE);
+    	$dbObj->where('network_id', $id);
+    	$dbObj->where('substation_id', $substation_id);
+    	$dbObj->select('*');
+    	return  $dbObj->get('substation_network')->row();
+    }
+    
+    function Network_Id($substation_id){
+    	$dbObj = $this->load->database('default', TRUE);
+    	$dbObj->where('substation_id', $substation_id);
+    	$dbObj->select('*');
+    	return  $dbObj->get('substation_network')->result();
+    }
+    
+    function Perfor_Id($substation_id){
+    	$dbObj = $this->load->database('default', TRUE);
+    	$dbObj->where('substation_id', $substation_id);
+    	$dbObj->select('*');
+    	return  $dbObj->get('substation_perfor')->result();
+    }
+    
+    function Save_Substation_NetWork ($id, $substation_id, $settings, $pi_setting, $substation_network_id)
     {
-        $dbObj = $this->load->database('default', TRUE);
-        $dbObj->where('id', $id);
-        return $dbObj->delete('power_network');
-    }
-
-    function Update_network($id, $type, $property, $element, $name, $meaning, $requirements, $reference, $remarks, $config)
+    	$dbObj = $this->load->database('default', TRUE);
+    	if($substation_id == 0){
+    		return false;
+    	}
+    	if($substation_network_id){
+    		$dbObj->where('substation_id', $substation_id);
+    		$dbObj->where('network_id', $id);
+    		$dbObj->set('pi_setting', $settings);
+    	    return $dbObj->update('substation_network');
+    	}else{
+    		$dbObj->set('substation_id', $substation_id);
+    		$dbObj->set('network_id', $id);
+    		$dbObj->set('pi_setting', $settings);
+    		return $dbObj->insert('substation_network');
+    	}
+    } 
+    function Save_Substation_PerFor ($id, $substation_id, $settings, $pi_setting, $substation_perfor_id)
     {
-        $dbObj = $this->load->database('default', TRUE);
-        $dbObj->where('id', $id);
-        $dbObj->set('type', $type);
-        $dbObj->set('property', $property);
-        $dbObj->set('element', $element);
-        $dbObj->set('name', $name);
-        $dbObj->set('meaning', $meaning);
-        $dbObj->set('requirements', $requirements);
-        $dbObj->set('reference', $reference);
-        $dbObj->set('remarks', $remarks);
-        $dbObj->set('config', $config);
-        return $dbObj->update('power_network');
+    	$dbObj = $this->load->database('default', TRUE);
+    	if($substation_id == 0){
+    		return false;
+    	}
+    	if($substation_perfor_id){
+    		$dbObj->where('substation_id', $substation_id);
+    		$dbObj->where('perfor_id', $id);
+    		$dbObj->set('pi_setting', $settings);
+    		return $dbObj->update('substation_perfor');
+    	}else{
+    		$dbObj->set('substation_id', $substation_id);
+    		$dbObj->set('perfor_id', $id);
+    		$dbObj->set('pi_setting', $settings);
+    		return $dbObj->insert('substation_perfor');
+    	}
     }
-
-    function Save_network($type, $property, $element, $name, $meaning, $requirements, $reference, $remarks, $config)
+    function Get_Performance ($device_type = false,$quota = false,$output_device = false,$acquisition_methods = false, $offset = false,$size = false)
     {
-        $dbObj = $this->load->database('default', TRUE);
-        $dbObj->set('type', $type);
-        $dbObj->set('property', $property);
-        $dbObj->set('element', $element);
-        $dbObj->set('name', $name);
-        $dbObj->set('meaning', $meaning);
-        $dbObj->set('requirements', $requirements);
-        $dbObj->set('reference', $reference);
-        $dbObj->set('remarks', $remarks);
-        $dbObj->set('config', $config);
-        return $dbObj->insert('power_network');
+    	$dbObj = $this->load->database('default', TRUE);
+    	if ($device_type)
+    		$dbObj->like('device_type', $device_type);
+    	if ($quota)
+    		$dbObj->like('quota', $quota);
+    	if ($output_device)
+    		$dbObj->like('output_device', $output_device);
+    	if ($acquisition_methods)
+    		$dbObj->like('acquisition_methods', $acquisition_methods);  
+    	if ($size == 0)
+    		return $dbObj->get('performance_manage')->result();
+    	else
+    		return $dbObj->get('performance_manage',$size,$offset)->result();
+    	
     }
-
-    function Get_network_protocol($substation_id)
+    function Get_PerformanceCount($device_type = false,$quota = false,$output_device = false,$acquisition_methods = false)
     {
-        $dbObj = $this->load->database('default', TRUE);
-        $dbObj->where('id', $substation_id);
-        return $dbObj->get('power_network')->row();
+    	$dbObj = $this->load->database('default', TRUE);
+    	if ($device_type)
+    		$dbObj->like('device_type', $device_type);
+    	if ($quota)
+    		$dbObj->like('quota', $quota);
+    	if ($output_device)
+    		$dbObj->like('output_device', $output_device);
+    	if ($acquisition_methods)
+    		$dbObj->like('acquisition_methods', $acquisition_methods);  	
+    	return $dbObj->count_all_results("performance_manage"); 	
     }
-
-    function Get_Network_By_Id($id)
+    
+    function Get_perfor_protocol ($id){
+    	$dbObj = $this->load->database('default', TRUE);
+    	$dbObj->where('id', $id);
+    	return $dbObj->get('performance_manage')->row();
+    }
+    function Update_perfor($id, $major, $device_type, $quota, $cycle, $night, $day, $output_device, $acquisition_methods, $type, $responsible, $set_basis, $output_mode, $remarks, $config){
+    	$dbObj = $this->load->database('default', TRUE);
+    	$dbObj->where('id',$id);
+    	$dbObj->set('major',$major);
+    	$dbObj->set('device_type',$device_type);
+    	$dbObj->set('quota',$quota);
+    	$dbObj->set('cycle',$cycle);
+    	$dbObj->set('night',$night);
+    	$dbObj->set('day',$day);
+    	$dbObj->set('output_device',$output_device);
+    	$dbObj->set('acquisition_methods',$acquisition_methods);
+    	$dbObj->set('type',$type);
+    	$dbObj->set('responsible',$responsible);
+    	$dbObj->set('set_basis',$set_basis);
+    	$dbObj->set('output_mode',$output_mode);
+    	$dbObj->set('remarks',$remarks);
+    	$dbObj->set('config',$config);
+    	return $dbObj->update('performance_manage');
+    }
+    function Save_perfor($major, $device_type, $quota, $cycle, $night, $day, $output_device, $acquisition_methods, $type, $responsible, $set_basis, $output_mode, $remarks, $config){
+    	$dbObj = $this->load->database('default', TRUE);
+    	$dbObj->set('major',$major);
+    	$dbObj->set('device_type',$device_type);
+    	$dbObj->set('quota',$quota);
+    	$dbObj->set('cycle',$cycle);
+    	$dbObj->set('night',$night);
+    	$dbObj->set('day',$day);
+    	$dbObj->set('output_device',$output_device);
+    	$dbObj->set('acquisition_methods',$acquisition_methods);
+    	$dbObj->set('type',$type);
+    	$dbObj->set('responsible',$responsible);
+    	$dbObj->set('set_basis',$set_basis);
+    	$dbObj->set('output_mode',$output_mode);
+    	$dbObj->set('remarks',$remarks);
+    	$dbObj->set('config',$config);
+    	return $dbObj->insert('performance_manage');
+    }
+    function DeletePerfor($id){
+    	$dbObj = $this->load->database('default', TRUE);
+    	$dbObj->where('id',$id);
+    	return $dbObj->delete('performance_manage');
+    }
+    function Get_Perfor_By_Id($id){
+    	$dbObj = $this->load->database('default', TRUE);
+    	$dbObj->where('id', $id);
+    	$dbObj->select('config');
+    	return  $dbObj->get('performance_manage')->row();
+    }
+    function Save_PerforPi ($id, $settings)
     {
-        $dbObj = $this->load->database('default', TRUE);
-        $dbObj->where('id', $id);
-        $dbObj->select('config');
-        return $dbObj->get('power_network')->row();
+    	$dbObj = $this->load->database('default', TRUE);
+    	$dbObj->where('id', $id);
+    	$dbObj->set('settings', $settings);
+    	return $dbObj->update('performance_manage');
     }
-
-    function Get_substation_network($id, $substation_id)
+    function Get_NetworkList ($id = false)
     {
-        $dbObj = $this->load->database('default', TRUE);
-        $dbObj->where('network_id', $id);
-        $dbObj->where('substation_id', $substation_id);
-        $dbObj->select('*');
-        return $dbObj->get('substation_network')->row();
+    	$dbObj = $this->load->database('default', TRUE);
+    	if($id)
+    		$dbObj->where('id', $id);
+    	return $dbObj->get('power_network')->row();
     }
-
-    function Network_Id($substation_id)
+    function Get_PerforList ($id = false)
     {
-        $dbObj = $this->load->database('default', TRUE);
-        $dbObj->where('substation_id', $substation_id);
-        $dbObj->select('*');
-        return $dbObj->get('substation_network')->result();
+    	$dbObj = $this->load->database('default', TRUE);
+    	if($id)
+    		$dbObj->where('id', $id);
+    	return $dbObj->get('performance_manage')->row();
     }
-
-    function Perfor_Id($substation_id)
+    function Save_NetWorkValue ($id, $substation_id, $value, $state)
     {
-        $dbObj = $this->load->database('default', TRUE);
-        $dbObj->where('substation_id', $substation_id);
-        $dbObj->select('*');
-        return $dbObj->get('substation_perfor')->result();
+    	$dbObj = $this->load->database('default', TRUE);
+    	$dbObj->where('network_id', $id);
+    	$dbObj->where('substation_id', $substation_id);
+    	$dbObj->set('value', $value);
+    	$dbObj->set('state', $state);
+    	return $dbObj->update('substation_network');
     }
-
-    function Save_Substation_NetWork($id, $substation_id, $settings, $pi_setting, $substation_network_id)
+    function Save_PerForValue ($id, $substation_id, $value, $state)
     {
-        $dbObj = $this->load->database('default', TRUE);
-        if ($substation_id == 0) {
-            return false;
-        }
-        if ($substation_network_id) {
-            $dbObj->where('substation_id', $substation_id);
-            $dbObj->where('network_id', $id);
-            $dbObj->set('pi_setting', $settings);
-            return $dbObj->update('substation_network');
-        } else {
-            $dbObj->set('substation_id', $substation_id);
-            $dbObj->set('network_id', $id);
-            $dbObj->set('pi_setting', $settings);
-            return $dbObj->insert('substation_network');
-        }
+    	$dbObj = $this->load->database('default', TRUE);
+    	$dbObj->where('perfor_id', $id);
+    	$dbObj->where('substation_id', $substation_id);
+    	$dbObj->set('value', $value);
+    	$dbObj->set('state', $state);
+    	return $dbObj->update('substation_perfor');
     }
-
-    function Save_Substation_PerFor($id, $substation_id, $settings, $pi_setting, $substation_perfor_id)
+    function Get_NetWork_Value ($substation_id, $network_id)
     {
-        $dbObj = $this->load->database('default', TRUE);
-        if ($substation_id == 0) {
-            return false;
-        }
-        if ($substation_perfor_id) {
-            $dbObj->where('substation_id', $substation_id);
-            $dbObj->where('perfor_id', $id);
-            $dbObj->set('pi_setting', $settings);
-            return $dbObj->update('substation_perfor');
-        } else {
-            $dbObj->set('substation_id', $substation_id);
-            $dbObj->set('perfor_id', $id);
-            $dbObj->set('pi_setting', $settings);
-            return $dbObj->insert('substation_perfor');
-        }
+    	$dbObj = $this->load->database('default', TRUE);
+    	
+    	$ret = array();
+    	foreach($network_id as $key=>$val){
+    		$dbObj->where('substation_id', $substation_id);
+    		$dbObj->where('network_id', $val);
+    		$dbObj->select('value');
+    		$value = $dbObj->get('substation_network')->result();
+    		array_push($ret,$value);
+    	}
+    	return $ret;
     }
-
-    function Get_Performance($device_type = false, $quota = false, $output_device = false, $acquisition_methods = false, $offset = false, $size = false)
+    function Get_PerFor_Value ($substation_id, $perfor_id)
     {
-        $dbObj = $this->load->database('default', TRUE);
-        if ($device_type)
-            $dbObj->like('device_type', $device_type);
-        if ($quota)
-            $dbObj->like('quota', $quota);
-        if ($output_device)
-            $dbObj->like('output_device', $output_device);
-        if ($acquisition_methods)
-            $dbObj->like('acquisition_methods', $acquisition_methods);
-        if ($size == 0)
-            return $dbObj->get('performance_manage')->result();
-        else
-            return $dbObj->get('performance_manage', $size, $offset)->result();
-
+    	$dbObj = $this->load->database('default', TRUE);
+    	 
+    	$ret = array();
+    	foreach($perfor_id as $key=>$val){
+    		$dbObj->where('substation_id', $substation_id);
+    		$dbObj->where('perfor_id', $val);
+    		$dbObj->select('value');
+    		$value = $dbObj->get('substation_perfor')->result();
+    		array_push($ret,$value);
+    	}
+    	return $ret;
     }
-
-    function Get_PerformanceCount($device_type = false, $quota = false, $output_device = false, $acquisition_methods = false)
-    {
-        $dbObj = $this->load->database('default', TRUE);
-        if ($device_type)
-            $dbObj->like('device_type', $device_type);
-        if ($quota)
-            $dbObj->like('quota', $quota);
-        if ($output_device)
-            $dbObj->like('output_device', $output_device);
-        if ($acquisition_methods)
-            $dbObj->like('acquisition_methods', $acquisition_methods);
-        return $dbObj->count_all_results("performance_manage");
+    function Get_substation_perfor($id, $substation_id){
+    	$dbObj = $this->load->database('default', TRUE);
+    	$dbObj->where('perfor_id', $id);
+    	$dbObj->where('substation_id', $substation_id);
+    	$dbObj->select('*');
+    	return  $dbObj->get('substation_perfor')->row();
     }
-
-    function Get_perfor_protocol($id)
-    {
-        $dbObj = $this->load->database('default', TRUE);
-        $dbObj->where('id', $id);
-        return $dbObj->get('performance_manage')->row();
-    }
-
-    function Update_perfor($id, $major, $device_type, $quota, $cycle, $night, $day, $output_device, $acquisition_methods, $type, $responsible, $set_basis, $output_mode, $remarks, $config)
-    {
-        $dbObj = $this->load->database('default', TRUE);
-        $dbObj->where('id', $id);
-        $dbObj->set('major', $major);
-        $dbObj->set('device_type', $device_type);
-        $dbObj->set('quota', $quota);
-        $dbObj->set('cycle', $cycle);
-        $dbObj->set('night', $night);
-        $dbObj->set('day', $day);
-        $dbObj->set('output_device', $output_device);
-        $dbObj->set('acquisition_methods', $acquisition_methods);
-        $dbObj->set('type', $type);
-        $dbObj->set('responsible', $responsible);
-        $dbObj->set('set_basis', $set_basis);
-        $dbObj->set('output_mode', $output_mode);
-        $dbObj->set('remarks', $remarks);
-        $dbObj->set('config', $config);
-        return $dbObj->update('performance_manage');
-    }
-
-    function Save_perfor($major, $device_type, $quota, $cycle, $night, $day, $output_device, $acquisition_methods, $type, $responsible, $set_basis, $output_mode, $remarks, $config)
-    {
-        $dbObj = $this->load->database('default', TRUE);
-        $dbObj->set('major', $major);
-        $dbObj->set('device_type', $device_type);
-        $dbObj->set('quota', $quota);
-        $dbObj->set('cycle', $cycle);
-        $dbObj->set('night', $night);
-        $dbObj->set('day', $day);
-        $dbObj->set('output_device', $output_device);
-        $dbObj->set('acquisition_methods', $acquisition_methods);
-        $dbObj->set('type', $type);
-        $dbObj->set('responsible', $responsible);
-        $dbObj->set('set_basis', $set_basis);
-        $dbObj->set('output_mode', $output_mode);
-        $dbObj->set('remarks', $remarks);
-        $dbObj->set('config', $config);
-        return $dbObj->insert('performance_manage');
-    }
-
-    function DeletePerfor($id)
-    {
-        $dbObj = $this->load->database('default', TRUE);
-        $dbObj->where('id', $id);
-        return $dbObj->delete('performance_manage');
-    }
-
-    function Get_Perfor_By_Id($id)
-    {
-        $dbObj = $this->load->database('default', TRUE);
-        $dbObj->where('id', $id);
-        $dbObj->select('config');
-        return $dbObj->get('performance_manage')->row();
-    }
-
-    function Save_PerforPi($id, $settings)
-    {
-        $dbObj = $this->load->database('default', TRUE);
-        $dbObj->where('id', $id);
-        $dbObj->set('settings', $settings);
-        return $dbObj->update('performance_manage');
-    }
-
-    function Get_NetworkList($id = false)
-    {
-        $dbObj = $this->load->database('default', TRUE);
-        if ($id)
-            $dbObj->where('id', $id);
-        return $dbObj->get('power_network')->row();
-    }
-
-    function Get_PerforList($id = false)
-    {
-        $dbObj = $this->load->database('default', TRUE);
-        if ($id)
-            $dbObj->where('id', $id);
-        return $dbObj->get('performance_manage')->row();
-    }
-
-    function Save_NetWorkValue($id, $substation_id, $value, $state)
-    {
-        $dbObj = $this->load->database('default', TRUE);
-        $dbObj->where('network_id', $id);
-        $dbObj->where('substation_id', $substation_id);
-        $dbObj->set('value', $value);
-        $dbObj->set('state', $state);
-        return $dbObj->update('substation_network');
-    }
-
-    function Save_PerForValue($id, $substation_id, $value, $state)
-    {
-        $dbObj = $this->load->database('default', TRUE);
-        $dbObj->where('perfor_id', $id);
-        $dbObj->where('substation_id', $substation_id);
-        $dbObj->set('value', $value);
-        $dbObj->set('state', $state);
-        return $dbObj->update('substation_perfor');
-    }
-
-    function Get_NetWork_Value($substation_id, $network_id)
-    {
-        $dbObj = $this->load->database('default', TRUE);
-
-        $ret = array();
-        foreach ($network_id as $key => $val) {
-            $dbObj->where('substation_id', $substation_id);
-            $dbObj->where('network_id', $val);
-            $dbObj->select('value');
-            $value = $dbObj->get('substation_network')->result();
-            array_push($ret, $value);
-        }
-        return $ret;
-    }
-
-    function Get_PerFor_Value($substation_id, $perfor_id)
-    {
-        $dbObj = $this->load->database('default', TRUE);
-
-        $ret = array();
-        foreach ($perfor_id as $key => $val) {
-            $dbObj->where('substation_id', $substation_id);
-            $dbObj->where('perfor_id', $val);
-            $dbObj->select('value');
-            $value = $dbObj->get('substation_perfor')->result();
-            array_push($ret, $value);
-        }
-        return $ret;
-    }
-
-    function Get_substation_perfor($id, $substation_id)
-    {
-        $dbObj = $this->load->database('default', TRUE);
-        $dbObj->where('perfor_id', $id);
-        $dbObj->where('substation_id', $substation_id);
-        $dbObj->select('*');
-        return $dbObj->get('substation_perfor')->row();
-    }
-
+    
     function Set_Door_User_Times($data_id, $user_id, $times)
     {
         $dbObj = $this->load->database('default', TRUE);
@@ -4559,387 +4607,1066 @@ class MP_Xjdh extends CI_Model
         $dbObj->set('delete_check_count', $times);
         $dbObj->update('door_user');
     }
-
     function Get_SignalName()
     {
-        $dbObj = $this->load->database('default', TRUE);
-        $dbObj->select('signal_name');
-        $dbObj->distinct('signal_name');
-        return $dbObj->get('alert')->result();
+    	$dbObj = $this->load->database('default', TRUE);
+    	$dbObj->select('signal_name');
+    	$dbObj->distinct('signal_name');
+    	return $dbObj->get('alert')->result();
     }
-
     function Get_NetworKSubstationSetting($substation_id)
     {
-        $dbObj = $this->load->database('default', TRUE);
-        $dbObj->join('substation_network', 'power_network.id=substation_network.network_id', 'left');
-        $dbObj->where('substation_id', $substation_id);
-        $dbObj->select('substation_network.id, power_network.name, substation_network.value, power_network.requirements, power_network.property');
-        return $dbObj->get('power_network')->result();
+    	$dbObj = $this->load->database('default', TRUE);
+    	$dbObj->join('substation_network', 'power_network.id=substation_network.network_id','left');
+    	$dbObj->where('substation_id', $substation_id);
+    	$dbObj->select('substation_network.id, power_network.name, substation_network.value, power_network.requirements, power_network.property');
+    	return  $dbObj->get('power_network')->result();
     }
-
+    
     function Get_PerforSubstationSetting($substation_id)
     {
-        $dbObj = $this->load->database('default', TRUE);
-        $dbObj->join('substation_perfor', 'performance_manage.id=substation_perfor.perfor_id', 'left');
-        $dbObj->where('substation_id', $substation_id);
-        $dbObj->select('substation_perfor.id, performance_manage.device_type, substation_perfor.value, performance_manage.quota,performance_manage.day,performance_manage.night');
-        return $dbObj->get('performance_manage')->result();
+    	$dbObj = $this->load->database('default', TRUE);
+    	$dbObj->join('substation_perfor', 'performance_manage.id=substation_perfor.perfor_id','left');
+    	$dbObj->where('substation_id', $substation_id);
+    	$dbObj->select('substation_perfor.id, performance_manage.device_type, substation_perfor.value, performance_manage.quota,performance_manage.day,performance_manage.night');
+    	return  $dbObj->get('performance_manage')->result();
     }
-
-    function Save_NetworKSubstationConfig($substation_id, $nk_script, $nk_value, $is_subid)
+    
+    function Save_NetworKSubstationConfig ($substation_id, $nk_script, $nk_value, $is_subid)
+    {
+    	$dbObj = $this->load->database('default', TRUE);
+    	if ($nk_script)
+    		$dbObj->set('nk_script', $nk_script);
+    	if ($nk_value)
+    		$dbObj->set('nk_value', $nk_value);
+    	if ($substation_id != $is_subid){
+    		$dbObj->set('substation_id', $substation_id);
+    		return $dbObj->insert('network_substation_config');
+    	}else{
+    		$dbObj->where('substation_id', $substation_id);
+    		return $dbObj->update('network_substation_config');
+    	}	
+    }
+    
+    function Save_PerforSubstationConfig ($substation_id, $nk_script, $nk_value, $is_subid)
+    {
+    	$dbObj = $this->load->database('default', TRUE);
+    	if ($nk_script)
+    		$dbObj->set('nk_script', $nk_script);
+    	if ($nk_value)
+    		$dbObj->set('nk_value', $nk_value);
+    	if ($substation_id != $is_subid){
+    		$dbObj->set('substation_id', $substation_id);
+    		return $dbObj->insert('perfor_substation_config');
+    	}else{
+    		$dbObj->where('substation_id', $substation_id);
+    		return $dbObj->update('perfor_substation_config');
+    	}
+    }
+    
+    function Delete_NetworkConfig ($substation_id)
+    {
+    	$dbObj = $this->load->database('default', TRUE);
+    	$dbObj->where('substation_id', $substation_id);
+    	$dbObj->delete('network_substation_config');
+    }
+    function Delete_PerforConfig ($substation_id)
+    {
+    	$dbObj = $this->load->database('default', TRUE);
+    	$dbObj->where('substation_id', $substation_id);
+    	$dbObj->delete('perfor_substation_config');
+    }
+    function Get_Door_Report_List($cityCode=false, $countyCode=false, $substationId=false, $roomId=false, $keyWord=false, $startDatetime = false, $endDatetime = false,  $size=0, $offset=0)
+    {
+    	$dbObj = $this->load->database('default', TRUE);
+    	$dbObj->order_by('door_record.id', 'desc');
+    	$dbObj->join("user", "door_record.user_id=user.id",'left');
+    	$dbObj->join('device', 'door_record.data_id=device.data_id');
+    	$dbObj->join('room', 'room.id=device.room_id','left');
+    	$dbObj->join('substation', 'substation.id=room.substation_id','left');
+    	
+    	if ($cityCode)
+    		$dbObj->where('substation.city_code', $cityCode);
+    	if ($countyCode)
+    		$dbObj->where('substation.county_code', $countyCode);
+    	if ($substationId)
+    		$dbObj->where('substation.id', $substationId);
+    	if ($roomId)
+    		$dbObj->where('room.id', $roomId);
+    	if($startDatetime){
+    	    $dbObj->where('door_record.added_datetime >=',$startDatetime." 00:00:00");
+    	}
+    	if($endDatetime){
+    		$dbObj->where('door_record.added_datetime <=',$endDatetime." 23:59:59");
+    	}
+    	if ($keyWord){
+    		foreach($gCounty as $key => $val){
+    			foreach($val as $k => $v){
+    				if($v == $keyWord){
+    					$keyWord = $k;
+    				}
+    			}
+    		}
+    		$dbObj->group_start();
+    		$dbObj->like('substation.name', $keyWord);
+    		$dbObj->or_like('room.name', $keyWord);
+    		$dbObj->or_like('substation.county_code', $keyWord);
+    		$dbObj->or_like('Stationcode', $keyWord);
+    		$dbObj->or_like('user.full_name', $keyWord);
+    		$dbObj->or_like('door_record.card_no', $keyWord);
+    		$dbObj->or_like('user.mobile', $keyWord);
+    		$dbObj->group_end();
+    	}
+    	
+    	$dbObj->select("device.name,room.name as room_name,substation.city_code,substation.county_code,substation.Stationcode,substation.name as substation_name,user.full_name,user.mobile,door_record.*");
+    	$ret = $dbObj->get('door_record', $size, $offset)->result();
+    	return $ret;	
+    }
+    
+    function Get_Door_Report_Count($cityCode=false, $countyCode=false, $substationId=false, $roomId=false, $keyWord=false, $startDatetime = false, $endDatetime = false)
     {
         $dbObj = $this->load->database('default', TRUE);
-        if ($nk_script)
-            $dbObj->set('nk_script', $nk_script);
-        if ($nk_value)
-            $dbObj->set('nk_value', $nk_value);
-        if ($substation_id != $is_subid) {
-            $dbObj->set('substation_id', $substation_id);
-            return $dbObj->insert('network_substation_config');
-        } else {
-            $dbObj->where('substation_id', $substation_id);
-            return $dbObj->update('network_substation_config');
-        }
-    }
-
-    function Save_PerforSubstationConfig($substation_id, $nk_script, $nk_value, $is_subid)
-    {
-        $dbObj = $this->load->database('default', TRUE);
-        if ($nk_script)
-            $dbObj->set('nk_script', $nk_script);
-        if ($nk_value)
-            $dbObj->set('nk_value', $nk_value);
-        if ($substation_id != $is_subid) {
-            $dbObj->set('substation_id', $substation_id);
-            return $dbObj->insert('perfor_substation_config');
-        } else {
-            $dbObj->where('substation_id', $substation_id);
-            return $dbObj->update('perfor_substation_config');
-        }
-    }
-
-    function Delete_NetworkConfig($substation_id)
-    {
-        $dbObj = $this->load->database('default', TRUE);
-        $dbObj->where('substation_id', $substation_id);
-        $dbObj->delete('network_substation_config');
-    }
-
-    function Delete_PerforConfig($substation_id)
-    {
-        $dbObj = $this->load->database('default', TRUE);
-        $dbObj->where('substation_id', $substation_id);
-        $dbObj->delete('perfor_substation_config');
-    }
-
-    function Get_Door_Report_List($cityCode = false, $countyCode = false, $substationId = false, $roomId = false, $keyWord = false, $startDatetime = false, $endDatetime = false, $size = 0, $offset = 0)
-    {
-        $dbObj = $this->load->database('default', TRUE);
-        $dbObj->order_by('door_record.id', 'desc');
-        $dbObj->join("user", "door_record.user_id=user.id", 'left');
-        $dbObj->join('device', 'door_record.data_id=device.data_id');
-        $dbObj->join('room', 'room.id=device.room_id', 'left');
-        $dbObj->join('substation', 'substation.id=room.substation_id', 'left');
-
-        if ($cityCode)
-            $dbObj->where('substation.city_code', $cityCode);
-        if ($countyCode)
-            $dbObj->where('substation.county_code', $countyCode);
-        if ($substationId)
-            $dbObj->where('substation.id', $substationId);
-        if ($roomId)
-            $dbObj->where('room.id', $roomId);
-        if ($startDatetime) {
-            $dbObj->where('door_record.added_datetime >=', $startDatetime . " 00:00:00");
-        }
-        if ($endDatetime) {
-            $dbObj->where('door_record.added_datetime <=', $endDatetime . " 23:59:59");
-        }
-        if ($keyWord) {
-            foreach ($gCounty as $key => $val) {
-                foreach ($val as $k => $v) {
-                    if ($v == $keyWord) {
-                        $keyWord = $k;
-                    }
-                }
-            }
-            $dbObj->group_start();
-            $dbObj->like('substation.name', $keyWord);
-            $dbObj->or_like('room.name', $keyWord);
-            $dbObj->or_like('substation.county_code', $keyWord);
-            $dbObj->or_like('Stationcode', $keyWord);
-            $dbObj->or_like('user.full_name', $keyWord);
-            $dbObj->or_like('door_record.card_no', $keyWord);
-            $dbObj->or_like('user.mobile', $keyWord);
-            $dbObj->group_end();
-        }
-
-        $dbObj->select("device.name,room.name as room_name,substation.city_code,substation.county_code,substation.Stationcode,substation.name as substation_name,user.full_name,user.mobile,door_record.*");
-        $ret = $dbObj->get('door_record', $size, $offset)->result();
-        return $ret;
-    }
-
-    function Get_Door_Report_Count($cityCode = false, $countyCode = false, $substationId = false, $roomId = false, $keyWord = false, $startDatetime = false, $endDatetime = false)
-    {
-        $dbObj = $this->load->database('default', TRUE);
-        $dbObj->order_by('door_record.id', 'desc');
-        $dbObj->join("user", "door_record.user_id=user.id", 'left');
-        $dbObj->join('device', 'door_record.data_id=device.data_id');
-        $dbObj->join('room', 'room.id=device.room_id', 'left');
-        $dbObj->join('substation', 'substation.id=room.substation_id', 'left');
-
-        if ($cityCode)
-            $dbObj->where('substation.city_code', $cityCode);
-        if ($countyCode)
-            $dbObj->where('substation.county_code', $countyCode);
-        if ($substationId)
-            $dbObj->where('substation.id', $substationId);
-        if ($roomId)
-            $dbObj->where('room.id', $roomId);
-        if ($startDatetime) {
-            $dbObj->where('door_record.added_datetime >=', $startDatetime . " 00:00:00");
-        }
-        if ($endDatetime) {
-            $dbObj->where('door_record.added_datetime <=', $endDatetime . " 23:59:59");
-        }
-        if ($keyWord) {
-            foreach ($gCounty as $key => $val) {
-                foreach ($val as $k => $v) {
-                    if ($v == $keyWord) {
-                        $keyWord = $k;
-                    }
-                }
-            }
-            $dbObj->group_start();
-            $dbObj->like('substation.name', $keyWord);
-            $dbObj->or_like('room.name', $keyWord);
-            $dbObj->or_like('substation.county_code', $keyWord);
-            $dbObj->or_like('Stationcode', $keyWord);
-            $dbObj->or_like('user.full_name', $keyWord);
-            $dbObj->or_like('door_record.card_no', $keyWord);
-            $dbObj->or_like('user.mobile', $keyWord);
-            $dbObj->group_end();
-        }
-        return $dbObj->count_all_results("door_record");
+    	$dbObj->order_by('door_record.id', 'desc');
+    	$dbObj->join("user", "door_record.user_id=user.id",'left');
+    	$dbObj->join('device', 'door_record.data_id=device.data_id');
+    	$dbObj->join('room', 'room.id=device.room_id','left');
+    	$dbObj->join('substation', 'substation.id=room.substation_id','left');
+    	
+    	if ($cityCode)
+    		$dbObj->where('substation.city_code', $cityCode);
+    	if ($countyCode)
+    		$dbObj->where('substation.county_code', $countyCode);
+    	if ($substationId)
+    		$dbObj->where('substation.id', $substationId);
+    	if ($roomId)
+    		$dbObj->where('room.id', $roomId);
+    	if($startDatetime){
+    	    $dbObj->where('door_record.added_datetime >=',$startDatetime." 00:00:00");
+    	}
+    	if($endDatetime){
+    		$dbObj->where('door_record.added_datetime <=',$endDatetime." 23:59:59");
+    	}
+    	if ($keyWord){
+    		foreach($gCounty as $key => $val){
+    			foreach($val as $k => $v){
+    				if($v == $keyWord){
+    					$keyWord = $k;
+    				}
+    			}
+    		}
+    		$dbObj->group_start();
+    		$dbObj->like('substation.name', $keyWord);
+    		$dbObj->or_like('room.name', $keyWord);
+    		$dbObj->or_like('substation.county_code', $keyWord);
+    		$dbObj->or_like('Stationcode', $keyWord);
+    		$dbObj->or_like('user.full_name', $keyWord);
+    		$dbObj->or_like('door_record.card_no', $keyWord);
+    		$dbObj->or_like('user.mobile', $keyWord);
+    		$dbObj->group_end();
+    	}
+    	return $dbObj->count_all_results("door_record");
     }
 
     function check_mobile($mobile)
     {
-        $dbObj = $this->load->database('default', TRUE);
-        if ($mobile)
-            $dbObj->where('mobile', $mobile);
-        $dbObj->select('user.mobile,user.user_role');
-        return $dbObj->get('user')->row();
+    	$dbObj = $this->load->database('default', TRUE);
+    	if($mobile)
+    		$dbObj->where('mobile',$mobile);
+    	$dbObj->select('user.mobile,user.user_role');
+    	return $dbObj->get('user')->row();
     }
-
     function add_door_user_on_user($name, $mobile, $card_number)
     {
-        $dbObj = $this->load->database('default', TRUE);
-        $dbObj->where('full_name', $name);
-        $row = $dbObj->get("user")->row();
-
-        if (count($row)) {
-            $dbObj->where('full_name', $name);
-            $dbObj->set('user.mobile', $mobile);
-            $dbObj->set('accessid', $card_number);
-            $dbObj->set('user_role', 'door_user');
-            $dbObj->update('user');
-        } else {
-            $dbObj->set('full_name', $name);
-            $dbObj->set('mobile', $mobile);
-            $dbObj->set('accessid', $card_number);
-            $dbObj->set('user_role', 'door_user');
-            $dbObj->insert('user');
-        }
+    	$dbObj = $this->load->database('default', TRUE);
+    	$dbObj->where('full_name',$name);
+    	$row = $dbObj->get("user")->row();
+    	
+    	if(count($row))
+    	{   
+    		$dbObj->where('full_name',$name);
+    		$dbObj->set('user.mobile',$mobile);
+    		$dbObj->set('accessid',$card_number);
+    		$dbObj->set('user_role','door_user');
+    		$dbObj->update('user');
+    	}else{
+    		$dbObj->set('full_name',$name);
+    		$dbObj->set('mobile',$mobile);
+    		$dbObj->set('accessid',$card_number);
+    		$dbObj->set('user_role','door_user');
+    		$dbObj->insert('user');
+    	}
     }
-
     function add_door_user($door_id = false, $start_datetime = false, $end_datetime = false, $user_id = false)
     {
-        $dbObj = $this->load->database('default', TRUE);
-        $dbObj->where('door_user.data_id', $door_id);
-        $dbObj->where('door_user.user_id', $user_id);
-        $row = $dbObj->get("door_user")->row();
-        if (count($row)) {
-            $dbObj->where('data_id', $door_id);
-            $dbObj->set('user_id', $user_id);
-            if ($start_datetime)
-                $dbObj->set('down_datetime', $start_datetime);
-            if ($end_datetime)
-                $dbObj->set('expire_date', $end_datetime);
-            return $dbObj->update('door_user');
-        } else {
-            $dbObj->set('data_id', $door_id);
-            $dbObj->set('user_id', $user_id);
-            if ($start_datetime)
-                $dbObj->set('down_datetime', $start_datetime);
-            if ($end_datetime)
-                $dbObj->set('expire_date', $end_datetime);
-            return $dbObj->insert('door_user');
-        }
+    	$dbObj = $this->load->database('default', TRUE);
+    	$dbObj->where('door_user.data_id',$door_id);
+    	$dbObj->where('door_user.user_id',$user_id);
+    	$row = $dbObj->get("door_user")->row();
+    	if(count($row))
+    	{
+    		$dbObj->where('data_id',$door_id);
+    		$dbObj->set('user_id',$user_id);
+    		if($start_datetime)
+    			$dbObj->set('down_datetime',$start_datetime);
+    		if($end_datetime)
+    			$dbObj->set('expire_date',$end_datetime);
+    		return $dbObj->update('door_user');
+    	}else{
+    		$dbObj->set('data_id',$door_id);
+    		$dbObj->set('user_id',$user_id);
+    		if($start_datetime)
+    			$dbObj->set('down_datetime',$start_datetime);
+    		if($end_datetime)
+    			$dbObj->set('expire_date',$end_datetime);
+    		return $dbObj->insert('door_user');
+    	}
     }
-
     function get_user_id_by_name($name)
     {
-        $dbObj = $this->load->database('default', TRUE);
-        $dbObj->where('full_name', $name);
-        $dbObj->select('id');
-        return $dbObj->get('user')->row();
+    	$dbObj = $this->load->database('default', TRUE);
+    	$dbObj->where('full_name',$name);
+    	$dbObj->select('id');
+    	return $dbObj->get('user')->row();
     }
 
-    function Get_Device_Data_Id_List($cityCode = false, $countyCode = false)
-    {
+    function get_user_fullname($id){
         $dbObj = $this->load->database('default', TRUE);
-        $dbObj->join('room', 'room.id=device.room_id');
+        $dbObj->where('id',$id);
+        $dbObj->select('full_name');
+        return $dbObj->get('user')->row()->full_name;
+    }
+
+    function get_device_name($data_id){
+        $dbObj = $this->load->database('default', TRUE);
+        $dbObj->where('data_id',$data_id);
+        $dbObj->select('name');
+        return $dbObj->get('device')->row()->name;
+    }
+
+    function getArrangeByID($arrangeID){
+        $dbObj = $this->load->database('default', TRUE);
+        $dbObj->where('id',$arrangeID);
+        return $arrange = $dbObj->get('check_arrange')->row();
+    }
+
+    function Get_substation_info($subID){
+        $dbObj = $this->load->database('default', TRUE);
+        $dbObj->where('id',$subID);
+        return $arrange = $dbObj->get('substation')->row();
+    }
+
+    function get_user_subs($userID){
+        $dbObj = $this->load->database('default', TRUE);
+        $dbObj->where('user_id',$userID);
+        return $arrange = $dbObj->get('check_arrange')->result();
+    }
+
+    /**
+     * @param null $arrangeID
+     * @param null $userID
+     * @param null $substationID
+     * @param null $status
+     * 获取安排信息
+     */
+    function getArrange($arrangeID=NULL,$userID=NULL,$substationID=NULL,$status=NULL){
+        $dbObj = $this->load->database('default', TRUE);
+
+        if(!is_null($arrangeID) && !is_null($userID) && !is_null($substationID) && !is_null($status)){
+            $dbObj->where('id',$arrangeID);
+            return $res = $dbObj->get('check_arrange')->row();
+        }else{
+            if(!is_null($substationID)){
+                $dbObj->where('substaion_id',$substationID);
+            }
+            if(!is_null($userID)){
+                $dbObj->where('user_id',$userID);
+            }
+            if(!is_null($status)){
+                $dbObj->where('status',$status);
+            }
+        }
+        $res = $dbObj->get('check_arrange')->result();
+        return $res;
+    }
+    function Get_Device_Data_Id_List ($cityCode = false, $countyCode = false)
+    {
+    	$dbObj = $this->load->database('default', TRUE);
+    	$dbObj->join('room', 'room.id=device.room_id');
+    	$dbObj->join('substation', 'substation.id=room.substation_id');
+    	$dbObj->where('device.model', 'power_302a');
+    	if ($cityCode)
+    		$dbObj->where('substation.city_code', $cityCode);
+    	if ($countyCode)
+    		$dbObj->where('substation.county_code', $countyCode);
+    	$dbObj->select('device.data_id');
+    	return $dbObj->get('device')->result();
+    }
+    function Count_power302a_ept($dataId = false,$startTime = false,$endTime = false)
+    {
+    	if(!empty($startTime)){
+    		$this->mongo_db->where_gte('Date', $startTime);
+    	}
+    	if(!empty($endTime)){
+    		$this->mongo_db->where_lte('Date', $endTime);
+    	}
+    	$this->mongo_db->where("data_id",intval($dataId));
+    	$this->mongo_db->max('ept', 'eptmax');
+    	$this->mongo_db->min('ept', 'eptmin');
+    	return $this->mongo_db->get("power302a")-row();
+    }
+    
+    function Get_Camera_Motion_List($dataId = false,$startTime = false,$endTime = false,$offset = 0, $size = 20)
+    {
+    	if(!empty($startTime)){
+    		$this->mongo_db->where_gte('Date', $startTime);
+    	}
+    	if(!empty($endTime)){
+    		$this->mongo_db->where_lte('Date', $endTime);
+    	}
+        if($dataId){
+            $this->mongo_db->where("data_id",intval($dataId));
+        }
+    	return $this->mongo_db->select(array("data_id","Date","Time","FileName"))->offset($offset)->limit($size)->get("camera_motion");
+    }
+    
+    function Get_Room_Id_List($cityCode = false, $countyCode = false,$substationId = false, $roomId = false, $dataId = false)
+    {
+    	$dbObj = $this->load->database('default', TRUE);
+    	$dbObj->join('room', 'room.id=device.room_id');
         $dbObj->join('substation', 'substation.id=room.substation_id');
-        $dbObj->where('device.model', 'power_302a');
-        if ($cityCode)
-            $dbObj->where('substation.city_code', $cityCode);
-        if ($countyCode)
-            $dbObj->where('substation.county_code', $countyCode);
-        $dbObj->select('device.data_id');
-        return $dbObj->get('device')->result();
+    	if ($dataId)
+    		$dbObj->where('device.data_id', $dataId);
+    	if ($cityCode)
+    		$dbObj->where('substation.city_code', $cityCode);
+    	if ($countyCode)
+    		$dbObj->where('substation.county_code', $countyCode);
+    	if ($substationId)
+    		$dbObj->where('substation.id', $substationId);
+    	if ($roomId)
+    		$dbObj->where('room.id', $roomId);
+    	$dbObj->select('substation.city_code,substation.county_code,substation.name as suname,room.name as room_name,room.id as room_id');
+    	return $dbObj->get('device')->row();
     }
-
-    function Count_power302a_ept($dataId = false, $startTime = false, $endTime = false)
+    
+    function Get_PreAlert_Count ($cityCode = false, $countyCode = false, $substationId = false, $roomId = false, $devModel = array(), $level = false,  $startDatetime = false,$endDatetime = false, $getsignalName = false)
     {
-        if (!empty($startTime)) {
-            $this->mongo_db->where_gte('Date', $startTime);
-        }
-        if (!empty($endTime)) {
-            $this->mongo_db->where_lte('Date', $endTime);
-        }
-        $this->mongo_db->where("data_id", intval($dataId));
-        $this->mongo_db->max('ept', 'eptmax');
-        $this->mongo_db->min('ept', 'eptmin');
-        return $this->mongo_db->get("power302a") - row();
+    	$dbObj = $this->load->database('default', TRUE);
+    	$dbObj->select('pre_alert.id');
+    	$dbObj->where('pre_alert.status','unresolved');
+    	$dbObj->order_by('pre_alert.added_datetime', 'desc');
+    	if (!empty($level))
+    		$dbObj->where('pre_alert.level', $level);
+    	if (!empty($getsignalName))
+    		$dbObj->where('pre_alert.signal_name', $getsignalName);
+    	if (!empty($startDatetime))
+    		$dbObj->where('pre_alert.added_datetime >', $startDatetime . ' 00:00:00');
+    	if (!empty($endDatetime))
+    		$dbObj->where('pre_alert.added_datetime <', $endDatetime . ' 23:59:59');
+    	
+    	
+    	$dbObj->group_start();
+    	if(!in_array("smd_device", $devModel)){
+    		//device
+    		$subDbObj = $this->load->database('default', TRUE);
+    		$subDbObj->select('pre_alert.id');
+    		$subDbObj->join('device', 'pre_alert.data_id = device.data_id','left');
+    		$subDbObj->join('room', 'room.id = device.room_id','left');
+    		$subDbObj->join('substation', 'substation.id = room.substation_id','left');
+    		if (!empty($cityCode))
+    			$subDbObj->where('substation.city_code', $cityCode);
+    		if (!empty($countyCode))
+    			$subDbObj->where('substation.county_code', $countyCode);
+    		if (!empty($substationId))
+    			$subDbObj->where('substation.id', $substationId);
+    		if (!empty($roomId))
+    			$subDbObj->where('device.room_id', $roomId);
+    		if (count($devModel))
+    			$subDbObj->where_in("device.model", $devModel);
+    		$subDbObj->from('pre_alert');
+    		$subQuery = $subDbObj->_compile_select();
+    		$dbObj->where('pre_alert.id in ( '.$subQuery.' ) ',NULL, FALSE);
+    	}else{
+		    $subDbObj = $this->load->database('default', TRUE);
+		    $subDbObj->select('pre_alert.id');
+		    $subDbObj->join('smd_device', 'pre_alert.data_id = smd_device.device_no','left');
+		    $subDbObj->join('room', 'room.id = smd_device.room_id','left');
+		    $subDbObj->join('substation', 'substation.id = room.substation_id','left');
+		    if (!empty($cityCode))
+		    	$subDbObj->where('substation.city_code', $cityCode);
+		    if (!empty($countyCode))
+		    	$subDbObj->where('substation.county_code', $countyCode);
+		    if (!empty($substationId))
+		    	$subDbObj->where('substation.id', $substationId);
+		    if (!empty($roomId))
+		    	$subDbObj->where('smd_device.room_id', $roomId);
+		    $subDbObj->from('pre_alert');
+		    $subQuery = $subDbObj->_compile_select();	    	
+		    $dbObj->or_where('pre_alert.id in ( '.$subQuery.' ) ',NULL, FALSE);
+    	}
+    	$dbObj->group_end();    
+    	
+    	
+    	$ret = $dbObj->count_all_results("pre_alert");
+    	return $ret;
+    	//return $dbObj->last_query();
     }
-
-    function Get_Camera_Motion_List($dataId = false, $startTime = false, $endTime = false, $offset = 0, $size = 20)
+    
+    function Get_PreAlert_List ($cityCode = false, $countyCode = false, $substationId = false, $roomId = false, $devModel = array(), $level = false,  $startDatetime = false,$endDatetime = false, $getsignalName = false, $offset = 0, $size = 0)
     {
-        if (!empty($startTime)) {
-            $this->mongo_db->where_gte('Date', $startTime);
-        }
-        if (!empty($endTime)) {
-            $this->mongo_db->where_lte('Date', $endTime);
-        }
-        if ($dataId) {
-            $this->mongo_db->where("data_id", intval($dataId));
-        }
-        return $this->mongo_db->select(array("data_id", "Date", "Time", "FileName"))->offset($offset)->limit($size)->get("camera_motion");
-    }
+    	$dbObj = $this->load->database('default', TRUE);
+    	$dbObj->select('pre_alert.id');
+    	$dbObj->where('pre_alert.status','unresolved');
+    	$dbObj->order_by('pre_alert.added_datetime', 'desc');
+    	if (!empty($level))
+    		$dbObj->where('pre_alert.level', $level);
+    	if (!empty($getsignalName))
+    		$dbObj->where('pre_alert.signal_name', $getsignalName);
+    	if (!empty($startDatetime))
+    		$dbObj->where('pre_alert.added_datetime >', $startDatetime . ' 00:00:00');
+    	if (!empty($endDatetime))
+    		$dbObj->where('pre_alert.added_datetime <', $endDatetime . ' 23:59:59');
+    	$dbObj->group_start();
+    	if(!in_array("smd_device", $devModel)){
+    		//device
+    		$subDbObj = $this->load->database('default', TRUE);
+    		$subDbObj->select('pre_alert.id');
+    		$subDbObj->join('device', 'pre_alert.data_id = device.data_id','left');
+    		$subDbObj->join('room', 'room.id = device.room_id','left');
+    		$subDbObj->join('substation', 'substation.id = room.substation_id','left');
+    		if (!empty($cityCode))
+    			$subDbObj->where('substation.city_code', $cityCode);
+    		if (!empty($countyCode))
+    			$subDbObj->where('substation.county_code', $countyCode);
+    		if (!empty($substationId))
+    			$subDbObj->where('substation.id', $substationId);
+    		if (!empty($roomId))
+    			$subDbObj->where('device.room_id', $roomId);
+    		if (count($devModel))
+    			$subDbObj->where_in("device.model", $devModel);
+    		$subDbObj->from('pre_alert');
+    		$subQuery = $subDbObj->_compile_select();
+    		$dbObj->where('pre_alert.id in ( '.$subQuery.' ) ',NULL, FALSE);
+    	}else{
+		    $subDbObj = $this->load->database('default', TRUE);
+		    $subDbObj->select('pre_alert.id');
+		    $subDbObj->join('smd_device', 'pre_alert.data_id = smd_device.device_no','left');
+		    $subDbObj->join('room', 'room.id = smd_device.room_id','left');
+		    $subDbObj->join('substation', 'substation.id = room.substation_id','left');
+		    if (!empty($cityCode))
+		    	$subDbObj->where('substation.city_code', $cityCode);
+		    if (!empty($countyCode))
+		    	$subDbObj->where('substation.county_code', $countyCode);
+		    if (!empty($substationId))
+		    	$subDbObj->where('substation.id', $substationId);
+		    if (!empty($roomId))
+		    	$subDbObj->where('smd_device.room_id', $roomId);
+		    $subDbObj->from('pre_alert');
+		    $subQuery = $subDbObj->_compile_select();	    	
+		    $dbObj->or_where('pre_alert.id in ( '.$subQuery.' ) ',NULL, FALSE);
+    	}
+    	$dbObj->group_end();   
+    	$alertIdList = $dbObj->get('pre_alert', $size, $offset)->result();
+   	    $alertIdArray = array(); $alertDevIdArray = array(); $alertSmdIdArray = array();
+    	foreach($alertIdList as $idObj)
+    	{
+    		if($idObj->id>100000){
+    			array_push($alertDevIdArray, $idObj->id);
+    		}else{
+    			array_push($alertSmdIdArray, $idObj->id);
+    		}
+    	}
+    	$preAlertList = array();
+    	if($alertDevIdArray){
+    		{
+    			$dbObj->where_in('pre_alert.id', $alertDevIdArray);
+    			$dbObj->join('device', 'pre_alert.data_id = device.data_id','left');
+    			$dbObj->join('room', 'room.id = device.room_id','left');
+    			$dbObj->join('substation', 'substation.id = room.substation_id','left');
+    			$dbObj->order_by('pre_alert.added_datetime', 'desc');
+    			$dbObj->select('pre_alert.*,room.name as room_name,room.location as room_location,room.id as room_id,room.code as room_code,device.name as dev_name,device.model,substation.city_code,substation.county_code,substation.name as substation_name,substation.city,substation.county');
+    			$preAlertList = array_merge($preAlertList, $dbObj->get('pre_alert')->result());
+    		}
+    	}
+    	if($alertSmdIdArray){
+    		{
+    			$dbObj->where_in('pre_alert.id', $alertSmdIdArray);
+    			$dbObj->join('smd_device', 'pre_alert.data_id = smd_device.device_no','left');
+    			$dbObj->join('room', 'room.id = smd_device.room_id','left');
+    			$dbObj->join('substation', 'substation.id = room.substation_id','left');
+    			$dbObj->order_by('pre_alert.added_datetime', 'desc');
+    			$dbObj->select('pre_alert.*,room.name as room_name,room.location as room_location,room.id as room_id,room.code as room_code,smd_device.name as dev_name,substation.city_code,substation.county_code,substation.name as substation_name,substation.city,substation.county,smd_device.device_no');
+    			$preAlertList = array_merge($preAlertList, $dbObj->get('pre_alert')->result());
+    		}
+    	}    	
+    	return $preAlertList;
+    } 
 
-    function Get_Room_Id_List($cityCode = false, $countyCode = false, $substationId = false, $roomId = false, $dataId = false)
+    
+    function Get_AlarmReportCount ($cityCode, $countyCode, $substationId, $roomId, $devModelArray,
+    		$level, $statusArr, $startDatetime, $endDatetime, $word, $selSignalName, $userLevel, $substationIdArray)
     {
-        $dbObj = $this->load->database('default', TRUE);
-        $dbObj->join('room', 'room.id=device.room_id');
-        $dbObj->join('substation', 'substation.id=room.substation_id');
-        if ($dataId)
-            $dbObj->where('device.data_id', $dataId);
-        if ($cityCode)
-            $dbObj->where('substation.city_code', $cityCode);
-        if ($countyCode)
-            $dbObj->where('substation.county_code', $countyCode);
-        if ($substationId)
-            $dbObj->where('substation.id', $substationId);
-        if ($roomId)
-            $dbObj->where('room.id', $roomId);
-        $dbObj->select('substation.city_code,substation.county_code,substation.name as suname,room.name as room_name,room.id as room_id');
-        return $dbObj->get('device')->row();
+    	$dbObj = $this->load->database('default', TRUE);
+    	if (!empty($cityCode)) {
+    		$dbObj->where('substation.city_code', $cityCode);
+    	}
+    	if (!empty($countyCode)) {
+    		$dbObj->where('substation.county_code', $countyCode);
+    	}
+    	if ($substationId) {
+    		$dbObj->where('substation.id', $substationId);
+    	}
+    	if( $roomId) {
+    		$dbObj->where('alert_realtime.room_id', $roomId);
+    	}
+    	if(count($devModelArray)){
+    		$dbObj->where_in("dev_model", $devModelArray);
+    	}
+    	if ($level){
+    		$dbObj->where('level', $level);
+    	}
+    	if(count($statusArr))
+    	{
+    		$dbObj->group_start();
+    		if(in_array('unresolved', $statusArr)){
+    			$dbObj->or_where('alert_realtime.status', 'unresolved');
+    		}
+    		if(in_array('solved', $statusArr)){
+    			$dbObj->or_group_start();
+    			$dbObj->where('alert_realtime.status', 'solved');
+    			$dbObj->where('confirm_datetime','0000-00-00 00:00:00');
+    			$dbObj->group_end();
+    		}
+    		if(in_array('confirmed', $statusArr))
+    		{
+    			$dbObj->or_group_start();
+    			$dbObj->where('alert_realtime.status', 'solved');
+    			$dbObj->where('confirm_datetime <>','0000-00-00 00:00:00');
+    			$dbObj->group_end();
+    		}
+    		$dbObj->group_end();
+    	}
+    	if (!empty($startDatetime)) {
+    		$dbObj->where('added_datetime >', $startDatetime);
+    	}
+    	if (!empty($endDatetime)){
+    		$dbObj->where('added_datetime <', $endDatetime . ' 23:59:59');
+    	}
+    	if($selSignalName) {
+    		$dbObj->where('alert_realtime.signal_name', $selSignalName);
+    	}
+    	if($userLevel == 3)
+    	{
+    		$dbObj->where_in('substation.id', $substationIdArray);
+    	}
+    	$dbObj->join('room', 'room.id=alert_realtime.room_id');
+    	$dbObj->join('substation', 'substation.id=room.substation_id');
+    	$count = $dbObj->count_all_results('alert_realtime');
+    	//log_message("debug","sql_count ".$dbObj->last_query());
+    	return $count;
     }
-
-    function Get_takeAlarm_dataId()
+    
+    
+    function Get_AlarmReportList ($cityCode, $countyCode, $substationId, $roomId, $devModelArray,
+    		$level, $statusArr, $startDatetime, $endDatetime, $word, $selSignalName, $userLevel, $substationIdArray, $offset = 0, $limit = 20, $lastId = -1)
     {
-        $dbObj = $this->load->database('default', TRUE);
-        $dbObj->where('status', 'unresolved');
-        $dbObj->select('*');
-        return $dbObj->get('pre_alert')->result();
-
+    	$dbObj = $this->load->database('default', TRUE);
+    	if (!empty($cityCode)) {
+    		$dbObj->where('substation.city_code', $cityCode);
+    	}
+    	if (!empty($countyCode)) {
+    		$dbObj->where('substation.county_code', $countyCode);
+    	}
+    	if ($substationId) {
+    		$dbObj->where('substation.id', $substationId);
+    	}
+    	if( $roomId) {
+    		$dbObj->where('alert_realtime.room_id', $roomId);
+    	}
+    	if(count($devModelArray)){
+    		$dbObj->where_in("dev_model", $devModelArray);
+    	}
+    	if ($level){
+    		$dbObj->where('level', $level);
+    	}
+    	if(count($statusArr))
+    	{
+    		$dbObj->group_start();
+    		if(in_array('unresolved', $statusArr)){
+    			$dbObj->or_where('alert_realtime.status', 'unresolved');
+    		}
+    		if(in_array('solved', $statusArr)){
+    			$dbObj->or_group_start();
+    			$dbObj->where('alert_realtime.status', 'solved');
+    			$dbObj->where('confirm_datetime','0000-00-00 00:00:00');
+    			$dbObj->group_end();
+    		}
+    		if(in_array('confirmed', $statusArr))
+    		{
+    			$dbObj->or_group_start();
+    			$dbObj->where('alert_realtime.status', 'solved');
+    			$dbObj->where('confirm_datetime <>','0000-00-00 00:00:00');
+    			$dbObj->group_end();
+    		}
+    		$dbObj->group_end();
+    	}
+    	if (!empty($startDatetime)) {
+    		$dbObj->where('added_datetime >', $startDatetime . ' 00:00:00');
+    	}
+    	if (!empty($endDatetime)){
+    		$dbObj->where('added_datetime <', $endDatetime . ' 23:59:59');
+    	}
+    	if($selSignalName) {
+    		$dbObj->where('alert_realtime.signal_name', $selSignalName);
+    	}
+    	if($userLevel == 3)
+    	{
+    		$dbObj->where_in('substation.id', $substationIdArray);
+    	}
+    	$dbObj->join('room', 'room.id=alert_realtime.room_id');
+    	$dbObj->join('substation', 'substation.id=room.substation_id');
+    	if($lastId != -1) {
+    		$dbObj->where('alert_realtime.id >', $lastId);
+    	}
+    	$dbObj->order_by('alert_realtime.id', 'desc');
+    	$dbObj->select(
+    			'alert_realtime.*,room.name as room_name,room.location as room_location,room.code as room_code,substation.city_code,substation.county_code,substation.name as substation_name, substation.city, substation.county');
+    	if($limit == -1 || $offset == -1)
+    	{
+    		$results = $dbObj->get('alert_realtime', 20, 0)->result();
+    		//echo $dbObj->last_query();
+    		return $results;
+    	}else{
+    		$results = $dbObj->get('alert_realtime', $limit, $offset)->result();
+    		//echo $dbObj->last_query();
+    		return $results;
+    	}
     }
-
-    function Get_takeAlarm_List($data_id = false, $cityCode = false, $countyCode = false, $substationId = false, $roomId = false, $devModel = false, $level = false, $startDatetime = false,
-                                $endDatetime = false, $word = '', $lastId = false, $status = false, $getsignalName = false)
+    
+    
+    function Get_AlarmCountList ($cityCode, $countyCode, $substationId, $roomId, $devModelArray,
+    		$level, $statusArr, $startDatetime, $endDatetime, $word, $selSignalName, $userLevel, $substationIdArray,$ecGroup = false)
     {
-        $dbObj = $this->load->database('default', TRUE);
-
-        if (strlen($data_id) > 6) {
-            $dbObj->join('device', 'pre_alert.data_id=device.data_id');
-            $dbObj->join('room', 'room.id=device.room_id');
-            $dbObj->join('substation', 'substation.id=room.substation_id');
-            if ($roomId)
-                $dbObj->where('device.room_id', $roomId);
-        } else {
-            $dbObj->join('smd_device', 'pre_alert.data_id=smd_device.device_no');
-            $dbObj->join('room', 'room.id=smd_device.room_id');
-            $dbObj->join('substation', 'substation.id=room.substation_id');
-            if ($roomId)
-                $dbObj->where('smd_device.room_id', $roomId);
+    	$dbObj = $this->load->database('default', TRUE);
+    	
+    	if($ecGroup == "0"){  //日
+    		$dbObj->select('DATE_FORMAT(added_datetime,\'%Y-%m-%d\') days, count(alert_realtime.id) as alarmcount');
+    		$dbObj->group_by(days);
+    	}else if($ecGroup == "1"){ //时
+    		$dbObj->select('DATE_FORMAT(added_datetime,\'%Y-%m-%d %H:00:00\') hours, count(alert_realtime.id) as alarmcount');
+    		$dbObj->group_by(hours);
+    	}else if($ecGroup == "2"){ //月
+    		$dbObj->select('DATE_FORMAT(added_datetime,\'%Y-%m\') months, count(alert_realtime.id) as alarmcount');
+    		$dbObj->group_by(months);
+    	}else if($ecGroup == "3"){ //年
+    		$dbObj->select('DATE_FORMAT(added_datetime,\'%Y\') years, count(alert_realtime.id) as alarmcount');
+    		$dbObj->group_by(years);
+    	}
+    	if (!empty($cityCode)) {
+    		$dbObj->where('substation.city_code', $cityCode);
+    	}
+    	if (!empty($countyCode)) {
+    		$dbObj->where('substation.county_code', $countyCode);
+    	}
+    	if ($substationId) {
+    		$dbObj->where('substation.id', $substationId);
+    	}
+    	if( $roomId) {
+    		$dbObj->where('alert_realtime.room_id', $roomId);
+    	}
+    	if(count($devModelArray)){
+    		$dbObj->where_in("dev_model", $devModelArray);
+    	}
+    	if ($level){
+    		$dbObj->where('level', $level);
+    	}
+    	if(count($statusArr))
+    	{
+    		if(in_array('unresolved', $statusArr)){
+    			$dbObj->where('alert_realtime.status', 'unresolved');    	
+    		}
+    		if(in_array('solved', $statusArr)){
+    			$dbObj->where('alert_realtime.status', 'solved');
+    			$dbObj->where('confirm_datetime','0000-00-00 00:00:00');
+    		}
+    		if(in_array('confirmed', $statusArr))
+    		{
+    			$dbObj->where('alert_realtime.status', 'solved');
+    			$dbObj->where('confirm_datetime <>','0000-00-00 00:00:00');
+    		}
+    	}
+        if ($startDatetime) {
+            $dbObj->where('added_datetime >', $startDatetime . ' 00:00:00');
         }
-        $dbObj->where('status', 'unresolved');
-        if ($level)
-            $dbObj->where('pre_alert.level', $level);
-        if (strlen($data_id))
-            $dbObj->where('pre_alert.data_id', $data_id);
-        if ($getsignalName)
-            $dbObj->where('pre_alert.signal_name', $getsignalName);
-        if ($cityCode)
-            $dbObj->where('substation.city_code', $cityCode);
-        if ($countyCode)
-            $dbObj->where('substation.county_code', $countyCode);
-        if ($substationId)
-            $dbObj->where('substation.id', $substationId);
-        if ($devModel)
-            $dbObj->where("model", $devModel);
-        if ($startDatetime)
-            $dbObj->where('added_datetime >', $startDatetime . '00:00:00');
-        if ($endDatetime)
-            $dbObj->where('added_datetime <', $endDatetime . '23:59:59');
-        $dbObj->order_by('pre_alert.added_datetime', 'desc');
-        if (strlen($data_id) > 6) {
-            $dbObj->select('pre_alert.*,room.name as room_name,room.location as room_location,room.id as room_id,room.code as room_code,device.name as dev_name,device.model,substation.city_code,substation.county_code,substation.name as substation_name,substation.city,substation.county');
-        } else {
-            $dbObj->select('pre_alert.*,room.name as room_name,room.location as room_location,room.id as room_id,room.code as room_code,smd_device.name as dev_name,substation.city_code,substation.county_code,substation.name as substation_name,substation.city,substation.county,smd_device.device_no');
+        if ($endDatetime){
+            $dbObj->where('added_datetime <', $endDatetime . ' 23:59:59');
         }
-
-        return $dbObj->get('pre_alert')->row();
+    	if($selSignalName) {
+    		$dbObj->where('alert_realtime.signal_name', $selSignalName);
+    	}
+    	if($userLevel == 3)
+    	{
+    		$dbObj->where_in('substation.id', $substationIdArray);
+    	}
+    	$dbObj->join('room', 'room.id=alert_realtime.room_id');
+    	$dbObj->join('substation', 'substation.id=room.substation_id');
+    	$dbObj->order_by('alert_realtime.id', 'desc');
+    	$query = $dbObj->get('alert_realtime')->result();
+    	return $query;
 
     }
-
-    function Get_takeAlarm_SmdList($smdIdArr = false, $cityCode = false, $countyCode = false, $substationId = false, $roomId = false, $devModel = false, $level = false, $startDatetime = false,
-                                   $endDatetime = false, $word = '', $lastId = false, $status = false, $getsignalName = false)
+    
+    function Get_AlarmRankList ($cityCode, $countyCode, $statusArr, $startDatetime, $endDatetime, $ecType, $level)
     {
-        $dbObj = $this->load->database('default', TRUE);
-
-        $dbObj->join('smd_device', 'pre_alert.data_id=smd_device.device_no');
-        $dbObj->join('room', 'room.id=smd_device.room_id');
-        $dbObj->join('substation', 'substation.id=room.substation_id');
-//     	if (is_array($smdIdArr))
-//     		$dbObj->where_in('pre_alert.id', $smdIdArr);
-//     	if ($roomId)
-//     		$dbObj->where('smd_device.room_id', $roomId);
-//     	if ($level)
-//     		$dbObj->where('pre_alert.level', $level);
-//     	if (strlen($data_id))
-//     		$dbObj->where('pre_alert.data_id', $data_id);
-//     	if($getsignalName)
-//     		$dbObj->where('pre_alert.signal_name', $getsignalName);
-//     	if ($cityCode)
-//     		$dbObj->where('substation.city_code', $cityCode);
-//     	if ($countyCode)
-//     		$dbObj->where('substation.county_code', $countyCode);
-//     	if ($substationId)
-//     		$dbObj->where('substation.id', $substationId);
-//     	if($devModel)
-//     		$dbObj->where_in("model", $devModel);
-//     	if($startDatetime)
-//     		$dbObj->where('added_datetime >', $startDatetime . '00:00:00');
-//     	if($endDatetime)
-//     		$dbObj->where('added_datetime <', $endDatetime . '23:59:59');
-//     	$dbObj->order_by('pre_alert.added_datetime', 'desc');
-//     		$dbObj->select('pre_alert.*,room.name as room_name,room.location as room_location,room.id as room_id,room.code as room_code,smd_device.name as dev_name,substation.city_code,substation.county_code,substation.name as substation_name,substation.city,substation.county');
-        return $dbObj->get('pre_alert')->result();
-
+    	$dbObj = $this->load->database('default', TRUE);
+    	if($ecType == '0'){
+    		$dbObj->join('room', 'room.id = alert_realtime.room_id');
+    		$dbObj->join('substation', 'substation.id = room.substation_id');
+    		$dbObj->select('substation.name as subname, count(substation.name) as subAlarmCount');
+    		$dbObj->group_by('substation.name');
+    		$dbObj->order_by('count(substation.name)', 'desc');
+    	
+    	}else if($ecType == '1'){
+    		$dbObj->join('room', 'room.id=alert_realtime.room_id');
+    		$dbObj->join('substation', 'substation.id=room.substation_id');
+    		$dbObj->join('device', 'alert_realtime.data_id=device.data_id');
+    		$dbObj->select('substation.name as subname, room.name as roomname, device.name as devname, count(device.name) as devAlarmCount');
+    		$dbObj->group_by('device.name');
+    		$dbObj->order_by('count(device.name)', 'desc');
+    	}
+    	if (!empty($cityCode)) {
+    		$dbObj->where('substation.city_code', $cityCode);
+    	}
+    	if (!empty($countyCode)) {
+    		$dbObj->where('substation.county_code', $countyCode);
+    	}
+    	if ($level){
+    		$dbObj->where('level', $level);
+    	}
+    	if(count($statusArr))
+    	{
+    		if(in_array('unresolved', $statusArr)){
+    			$dbObj->where('alert_realtime.status', 'unresolved');
+    		}
+    		if(in_array('solved', $statusArr)){
+    			$dbObj->where('alert_realtime.status', 'solved');
+    			$dbObj->where('confirm_datetime','0000-00-00 00:00:00');
+    		}
+    		if(in_array('confirmed', $statusArr))
+    		{
+    			$dbObj->where('alert_realtime.status', 'solved');
+    			$dbObj->where('confirm_datetime <>','0000-00-00 00:00:00');
+    		}
+    	}
+    	if ($startDatetime) {
+    		$dbObj->where('added_datetime >', $startDatetime . ' 00:00:00');
+    	}
+    	if ($endDatetime){
+    		$dbObj->where('added_datetime <', $endDatetime . ' 23:59:59');
+    	}
+    	
+    	$query = $dbObj->get('alert_realtime')->result();
+    	$result = array_slice($query, 0,10);	
+    	return $result;
+    
     }
+    
+    function Get_FaultCount ($cityCode, $countyCode, $statusArr, $startDatetime, $endDatetime, $devModelArray, $level, $category, $ecType)
+    {
+    	$dbObj = $this->load->database('default', TRUE);
+    	 
+    	$dbObj->join('room', 'room.id=alert_realtime.room_id');
+    	$dbObj->join('substation', 'substation.id=room.substation_id');
+    	$dbObj->join('device', 'alert_realtime.data_id=device.data_id');
+    	 
+    	if (!empty($cityCode)) {
+    		$dbObj->where('substation.city_code', $cityCode);
+    	}
+    	if (!empty($countyCode)) {
+    		$dbObj->where('substation.county_code', $countyCode);
+    	}
+    	if ($level){
+    		$dbObj->where('level', $level);
+    	}
+    	if(count($statusArr))
+    	{
+    		if(in_array('unresolved', $statusArr)){
+    			$dbObj->where('alert_realtime.status', 'unresolved');
+    		}
+    		if(in_array('solved', $statusArr)){
+    			$dbObj->where('alert_realtime.status', 'solved');
+    			$dbObj->where('confirm_datetime','0000-00-00 00:00:00');
+    		}
+    		if(in_array('confirmed', $statusArr))
+    		{
+    			$dbObj->where('alert_realtime.status', 'solved');
+    			$dbObj->where('confirm_datetime <>','0000-00-00 00:00:00');
+    		}
+    	}
+    	if ($startDatetime) {
+    		$dbObj->where('added_datetime >', $startDatetime . ' 00:00:00');
+    	}
+    	if ($endDatetime){
+    		$dbObj->where('added_datetime <', $endDatetime . ' 23:59:59');
+    	}
+    
+    	$dbObj->where('restore_datetime <>','0000-00-00 00:00:00');
+    	 
+    	if($ecType == '0'){   //停电
+    		$dbObj->where_in("device.model", $devModelArray);
+    	}else if($ecType == '1'){
+    
+    	}
+    	if($category == '0'){  //按次数统计
+    		$dbObj->select('substation.name as subname, substation.city_code, substation.county_code, count(substation.name) as subAlarmCount');
+    		$dbObj->group_by('substation.name');
+    		$dbObj->order_by('count(substation.name)', 'desc');
+    	}else if($category == '1'){  //按时长统计
+    		$dbObj->select(array('substation.name as subname','substation.city_code', 'substation.county_code', "sum(TIME_TO_SEC(TIMEDIFF(restore_datetime,added_datetime))) as sum"));
+     		$dbObj->group_by('substation.name');
+     		$dbObj->order_by('sum(TIME_TO_SEC(TIMEDIFF(restore_datetime, added_datetime)))', 'desc', false);
+    	}
+    
+    	$query = $dbObj->get('alert_realtime', $size, $offset)->result();
+    	
+    	return count($query);
+    
+    }
+    
+    
+    function Get_FaultList ($cityCode, $countyCode, $statusArr, $startDatetime, $endDatetime, $devModelArray, $level, $category, $ecType, $offset = 0, $size = 0)
+    {
+    	$dbObj = $this->load->database('default', TRUE);
+    	
+    	$dbObj->join('room', 'room.id=alert_realtime.room_id');
+    	$dbObj->join('substation', 'substation.id=room.substation_id');
+    	$dbObj->join('device', 'alert_realtime.data_id=device.data_id');
+    	
+    	if (!empty($cityCode)) {
+    		$dbObj->where('substation.city_code', $cityCode);
+    	}
+    	if (!empty($countyCode)) {
+    		$dbObj->where('substation.county_code', $countyCode);
+    	}
+    	if ($level){
+    		$dbObj->where('level', $level);
+    	}
+    	if(count($statusArr))
+    	{
+    		if(in_array('unresolved', $statusArr)){
+    			$dbObj->where('alert_realtime.status', 'unresolved');
+    		}
+    		if(in_array('solved', $statusArr)){
+    			$dbObj->where('alert_realtime.status', 'solved');
+    			$dbObj->where('confirm_datetime','0000-00-00 00:00:00');
+    		}
+    		if(in_array('confirmed', $statusArr))
+    		{
+    			$dbObj->where('alert_realtime.status', 'solved');
+    			$dbObj->where('confirm_datetime <>','0000-00-00 00:00:00');
+    		}
+    	}
+    	if ($startDatetime) {
+    		$dbObj->where('added_datetime >', $startDatetime . ' 00:00:00');
+    	}
+    	if ($endDatetime){
+    		$dbObj->where('added_datetime <', $endDatetime . ' 23:59:59');
+    	}
 
+    	$dbObj->where('restore_datetime <>','0000-00-00 00:00:00');
+    	
+    	if($ecType == '0'){   //停电
+    		$dbObj->where_in("device.model", $devModelArray);
+    	}else if($ecType == '1'){
+    		
+    	}
+    	if($category == '0'){  //按次数统计
+    		$dbObj->select('substation.name as subname, substation.city_code, substation.county_code, count(substation.name) as subAlarmCount');
+    		$dbObj->group_by('substation.name');
+    		$dbObj->order_by('count(substation.name)', 'desc');
+    	}else if($category == '1'){  //按时长统计
+     		$dbObj->select(array('substation.name as subname','substation.city_code', 'substation.county_code', "sum(TIME_TO_SEC(TIMEDIFF(restore_datetime,added_datetime))) as sum"));
+     		$dbObj->group_by('substation.name');
+     		$dbObj->order_by('sum(TIME_TO_SEC(TIMEDIFF(restore_datetime, added_datetime)))', 'desc', false);
+    	}
+
+    	$query = $dbObj->get('alert_realtime', $size, $offset)->result();
+    	return $query;
+    }
+    
+    function Get_AlarmTypeList ($cityCode, $countyCode, $substationId, $roomId, $level, $selDevModel, $statusArr, $startDatetime, $endDatetime)
+    {
+    	$dbObj = $this->load->database('default', TRUE);
+    	if($selDevModel == 'under_voltage'){
+    		$dbObj->join('room', 'room.id = alert_realtime.room_id');
+    		$dbObj->join('substation', 'substation.id = room.substation_id');
+    		$dbObj->select('alert_realtime.signal_name, count(alert_realtime.signal_name) as typeAlarmCount');
+    		$dbObj->group_by('alert_realtime.signal_name');
+    		$dbObj->order_by('count(alert_realtime.signal_name)', 'desc');
+    	}else if($selDevModel == 'temperature_alarm'){
+    	    $dbObj->join('room', 'room.id = alert_realtime.room_id');
+    		$dbObj->join('substation', 'substation.id = room.substation_id');  		
+    		$dbObj->select('alert_realtime.subject, count(alert_realtime.subject) as subjectCount');
+    		$dbObj->group_by('alert_realtime.subject');
+    		$dbObj->order_by('count(alert_realtime.subject)', 'desc');
+    	}
+
+    	if (!empty($cityCode)) {
+    		$dbObj->where('substation.city_code', $cityCode);
+    	}
+    	if (!empty($countyCode)) {
+    		$dbObj->where('substation.county_code', $countyCode);
+    	}
+    	if ($level){
+    		$dbObj->where('level', $level);
+    	}
+    	if ($substationId) {
+    		$dbObj->where('substation.id', $substationId);
+    	}
+    	if( $roomId) {
+    		$dbObj->where('alert_realtime.room_id', $roomId);
+    	}
+    	if(count($statusArr))
+    	{
+    		if(in_array('unresolved', $statusArr)){
+    			$dbObj->where('alert_realtime.status', 'unresolved');
+    		}
+    		if(in_array('solved', $statusArr)){
+    			$dbObj->where('alert_realtime.status', 'solved');
+    			$dbObj->where('confirm_datetime','0000-00-00 00:00:00');
+    		}
+    		if(in_array('confirmed', $statusArr))
+    		{
+    			$dbObj->where('alert_realtime.status', 'solved');
+    			$dbObj->where('confirm_datetime <>','0000-00-00 00:00:00');
+    		}
+    	}
+    	if ($startDatetime) {
+    		$dbObj->where('added_datetime >', $startDatetime . ' 00:00:00');
+    	}
+    	if ($endDatetime){
+    		$dbObj->where('added_datetime <', $endDatetime . ' 23:59:59');
+    	}
+    	
+    	if($selDevModel == 'under_voltage'){	//欠压
+    		$selDevModel = array("整组电压低","蓄电池组总电压过低","UPS电池总电压过低告警");
+    		$dbObj->where_in("alert_realtime.signal_name", $selDevModel);
+    	}else if($selDevModel == 'temperature_alarm'){   //温度
+    		$selDevModel = array("温度");
+    		$dbObj->where_in("alert_realtime.signal_name", $selDevModel);
+    	}
+    	
+    	$result = $dbObj->get('alert_realtime')->result();
+//    	var_dump($dbObj->last_query());
+//    	var_dump($result);
+    	return $result;
+    }
+    
+    
+    function Get_AlarmTypeDetailCount ($cityCode, $countyCode, $substationId, $roomId, $level, $selDevModel, $statusArr, $startDatetime, $endDatetime)
+    {
+    	$dbObj = $this->load->database('default', TRUE);
+    	$dbObj->join('room', 'room.id = alert_realtime.room_id');
+    	$dbObj->join('substation', 'substation.id = room.substation_id'); 
+    
+    	if (!empty($cityCode)) {
+    		$dbObj->where('substation.city_code', $cityCode);
+    	}
+    	if (!empty($countyCode)) {
+    		$dbObj->where('substation.county_code', $countyCode);
+    	}
+    	if ($level){
+    		$dbObj->where('level', $level);
+    	}
+    	if ($substationId) {
+    		$dbObj->where('substation.id', $substationId);
+    	}
+    	if( $roomId) {
+    		$dbObj->where('alert_realtime.room_id', $roomId);
+    	}
+    	if(count($statusArr))
+    	{
+    		if(in_array('unresolved', $statusArr)){
+    			$dbObj->where('alert_realtime.status', 'unresolved');
+    		}
+    		if(in_array('solved', $statusArr)){
+    			$dbObj->where('alert_realtime.status', 'solved');
+    			$dbObj->where('confirm_datetime','0000-00-00 00:00:00');
+    		}
+    		if(in_array('confirmed', $statusArr))
+    		{
+    			$dbObj->where('alert_realtime.status', 'solved');
+    			$dbObj->where('confirm_datetime <>','0000-00-00 00:00:00');
+    		}
+    	}
+    	if ($startDatetime) {
+    		$dbObj->where('added_datetime >', $startDatetime . ' 00:00:00');
+    	}
+    	if ($endDatetime){
+    		$dbObj->where('added_datetime <', $endDatetime . ' 23:59:59');
+    	}
+    	if($selDevModel == 'under_voltage'){	//欠压
+    		$selDevModel = array("整组电压低","蓄电池组总电压过低","UPS电池总电压过低告警");
+    		$dbObj->where_in("alert_realtime.signal_name", $selDevModel);
+    	}else if($selDevModel == 'temperature_alarm'){   //温度
+    		$selDevModel = array("温度");
+    		$dbObj->where_in("alert_realtime.signal_name", $selDevModel);
+    	}
+    	return $dbObj->count_all_results("alert_realtime");
+    }
+    
+
+    function Get_AlarmTypeDetailList ($cityCode, $countyCode, $substationId, $roomId, $level, $selDevModel, $statusArr, $startDatetime, $endDatetime, $offset = 0, $size = 0)
+    {
+    	$dbObj = $this->load->database('default', TRUE);
+    	$dbObj->join('room', 'room.id = alert_realtime.room_id');
+    	$dbObj->join('substation', 'substation.id = room.substation_id');
+    
+    	if (!empty($cityCode)) {
+    		$dbObj->where('substation.city_code', $cityCode);
+    	}
+    	if (!empty($countyCode)) {
+    		$dbObj->where('substation.county_code', $countyCode);
+    	}
+    	if ($level){
+    		$dbObj->where('level', $level);
+    	}
+    	if ($substationId) {
+    		$dbObj->where('substation.id', $substationId);
+    	}
+    	if( $roomId) {
+    		$dbObj->where('alert_realtime.room_id', $roomId);
+    	}
+    	if(count($statusArr))
+    	{
+    		if(in_array('unresolved', $statusArr)){
+    			$dbObj->where('alert_realtime.status', 'unresolved');
+    		}
+    		if(in_array('solved', $statusArr)){
+    			$dbObj->where('alert_realtime.status', 'solved');
+    			$dbObj->where('confirm_datetime','0000-00-00 00:00:00');
+    		}
+    		if(in_array('confirmed', $statusArr))
+    		{
+    			$dbObj->where('alert_realtime.status', 'solved');
+    			$dbObj->where('confirm_datetime <>','0000-00-00 00:00:00');
+    		}
+    	}
+    	if ($startDatetime) {
+    		$dbObj->where('added_datetime >', $startDatetime . ' 00:00:00');
+    	}
+    	if ($endDatetime){
+    		$dbObj->where('added_datetime <', $endDatetime . ' 23:59:59');
+    	}
+    	if($selDevModel == 'under_voltage'){	//欠压
+    		$selDevModel = array("整组电压低","蓄电池组总电压过低","UPS电池总电压过低告警");
+    		$dbObj->where_in("alert_realtime.signal_name", $selDevModel);
+    	}else if($selDevModel == 'temperature_alarm'){   //温度
+    		$selDevModel = array("温度");
+    		$dbObj->where_in("alert_realtime.signal_name", $selDevModel);
+    	}
+    	$dbObj->select(
+    			'alert_realtime.*,room.name as room_name,room.location as room_location,room.code as room_code,substation.city_code,substation.county_code,substation.name as substation_name, substation.city, substation.county');
+    	return $dbObj->get('alert_realtime', $size, $offset)->result();
+    }
 
 }
-
