@@ -9,7 +9,6 @@ require_once "CommonController.php";
 
 class Team extends CommonController
 {
-
     function __construct()
     {
         parent::__construct();

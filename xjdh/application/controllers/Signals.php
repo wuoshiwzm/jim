@@ -12,9 +12,12 @@ if (!defined('BASEPATH'))
  */
 class Signals extends CommonController
 {
-    function __construct()
+
+    public function __construct()
     {
+        //继承父类构造函数
         parent::__construct();
+
     }
 
     /**
