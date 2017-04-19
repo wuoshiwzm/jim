@@ -1,6 +1,8 @@
-<p>最后更新时间:<span id="<?php echo $dataObj->data_id; ?>-update_datetime"></span>
+<?php //t::f($dataObj)  ?><p>最后更新时间:<span id="<?php echo $dataObj->data_id; ?>-update_datetime"></span>
 <table
-        class="table table-bordered responsive table-striped table-sortable"
+        class="table table-bordered responsive table-striped table-sortable rt-data"
+        data_id='<?php echo $dataObj->data_id; ?>'
+        data_type="<?php echo $dataObj->model; ?>"
         id='table-<?php echo $dataObj->data_id; ?>'>
     <thead>
     <tr>
@@ -11,9 +13,7 @@
     </thead>
     <tbody>
     <?php
-    $signalArray = array("out_v显示", "channel_count通道数", "update_time更新时间",    );
-
-
+    $signalArray = array("out_v显示", "channel_count通道数", "update_time更新时间");
     foreach ($signalArray as $key => $val) {
         ?>
         <tr>
@@ -37,7 +37,7 @@
         <th>开机/关机状态 00H：开机，01H：关机</th>
         <th>限流/不限流状态 00H：限流，01H：不限流</th>
         <th>浮充/均充/测试状态 00H：浮充，01H：均充，02H：测试</th>
-        <th>alert告警量	</th>
+        <th>alert告警量</th>
     </tr>
     </thead>
     <tbody>

@@ -4822,8 +4822,7 @@ function device_history ()
             $jsonRet['freshAirList'] = Realtime::Get_FreshAirRtData($dataIdStr5);
         } elseif ($model == 'sps') {
             $dataIdArr = $this->input->get('dataIdArr');
-            $jsonRet['spsList'] = Realtime::GetSpsPower($dataIdArr);
-        } elseif ($model == 'zxdu') {
+            $jsonRet['spsList'] = Realtime::GetSpsPower($dataIdArr);} elseif ($model == 'zxdu') {
             $dataIdStr6 = $this->input->get('dataIdArr6');
             $dataIdStr7 = $this->input->get('dataIdArr7');
             $dataIdStr8 = $this->input->get('dataIdArr8');
@@ -6932,9 +6931,13 @@ function device_history ()
 
 //         $data['count'] = $count = $this->mp_xjdh->Get_RoomCount($cityCode, $countyCode, $substationId, $roomId, $roomType);
 //         $data['roomList'] = $this->mp_xjdh->Get_Rooms(false, false, $offset, DEFAULT_PAGE_SIZE);
-        $data['count'] = $count = $this->mp_xjdh->Get_RoomCount($cityCode, $countyCode, $substationId, $city_code, $keyWord);
-        $data['roomList'] = $roomList = $this->mp_xjdh->Get_Room_List($cityCode, $countyCode, $substationId, $offset, DEFAULT_PAGE_SIZE, $city_code, $keyWord);
-        $data['pagination'] = $this->mp_paging->Show(Util::Build_Page_Base("portal/manageRoom"), $count, DEFAULT_PAGE_SIZE, 3, TRUE);
+        $data['count'] = $count = $this->mp_xjdh->Get_RoomCount($cityCode, $countyCode,
+            $substationId, $city_code, $keyWord);
+//        $data['roomList'] = $roomList = $this->mp_xjdh->Get_Room_List($cityCode, $countyCode, $substationId, $offset, DEFAULT_PAGE_SIZE, $city_code, $keyWord);
+        $data['roomList'] = $roomList = $this->mp_xjdh->Get_Room_List($cityCode, $countyCode,
+            $substationId, $offset, DEFAULT_PAGE_SIZE, $city_code, $keyWord);
+        $data['pagination'] = $this->mp_paging->Show(Util::Build_Page_Base("portal/manageRoom"),
+            $count, DEFAULT_PAGE_SIZE, 3, TRUE);
 
         $content = $this->load->view('portal/manage_room', $data, TRUE);
         $scriptExtra = '<script src="/public/portal/js/room_manage.js"></script>';

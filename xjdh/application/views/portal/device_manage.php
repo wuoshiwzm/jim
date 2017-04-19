@@ -13,7 +13,7 @@ $(document).ready(function(){
 						<li><a class="icon-home" href="/"></a> <span class="divider"><i
 								class="icon-angle-right"></i></span></li>
 						<?php foreach ($bcList as $bcObj){?>
-						<?php if($bcObj->isLast){?>	
+						<?php if($bcObj->isLast){?>
 						<li class="active"><?php echo htmlentities($bcObj->title,ENT_COMPAT,"UTF-8");?></li>
 						<?php }else {?>
 						<li><a href='<?php echo htmlentities($bcObj->url,ENT_COMPAT,"UTF-8");?>'><?php echo htmlentities($bcObj->title,ENT_COMPAT,"UTF-8");?></a>
@@ -34,7 +34,7 @@ $(document).ready(function(){
 						<a class="widget-settings" href="#search-area" id='serarch-toggle'><i
 							class="icon-hand-up"></i></a>
 					</div>
-					<div class="widget-container" 
+					<div class="widget-container"
 						id='search-area'>
 						<form class="form-horizontal">
 							<div class="control-group">
@@ -72,7 +72,7 @@ $(document).ready(function(){
 									            <option value='<?php echo $key;?>'
 											    <?php if($countyCode == $key){?> selected="selected" <?php }?>>
 											    <?php echo $val;?></option>
-								            <?php }?>   
+								            <?php }?>
 								        <?php }?>
 									</select>
 								</div>
@@ -85,11 +85,11 @@ $(document).ready(function(){
 										<option value=''>所有局站</option>
 										<?php if(isset($substationId)) {?>
 									       <?php foreach ($substationList as $substationObj){?>
-									       <option <?php if($substationObj->id == $substationId){?> selected="selected" <?php }?> 
+									       <option <?php if($substationObj->id == $substationId){?> selected="selected" <?php }?>
 									       value="<?php echo htmlentities($substationObj->id,ENT_COMPAT,"UTF-8");?>">
-									              <?php if($substationObj->county_code == $countyCode) echo htmlentities($substationObj->name,ENT_COMPAT,"UTF-8");?></option>	
-									        <?php }?>	
-									    <?php }?>	
+									              <?php if($substationObj->county_code == $countyCode) echo htmlentities($substationObj->name,ENT_COMPAT,"UTF-8");?></option>
+									        <?php }?>
+									    <?php }?>
 									</select>
 								</div>
 								<label class="control-label" style="float: left;">所属机房</label>
@@ -99,10 +99,10 @@ $(document).ready(function(){
 										<option value=''>所有机房</option>
 										<?php if(isset($substationId)) {?>
 									    <?php foreach ($roomList as $roomListObj){?>
-									    <option <?php if($roomListObj->id == $roomId){?> selected="selected" <?php }?> 
+									    <option <?php if($roomListObj->id == $roomId){?> selected="selected" <?php }?>
 									      value="<?php echo htmlentities($roomListObj->id,ENT_COMPAT,"UTF-8");?>">
-									           <?php if($roomListObj->substation_id == $substationId) echo htmlentities($roomListObj->name,ENT_COMPAT,"UTF-8");?></option>	
-									    <?php }?>	
+									           <?php if($roomListObj->substation_id == $substationId) echo htmlentities($roomListObj->name,ENT_COMPAT,"UTF-8");?></option>
+									    <?php }?>
 									    <?php }?>
 									</select>
 								</div>
@@ -111,12 +111,12 @@ $(document).ready(function(){
 								<label class="control-label" style="float: left;">所属采集板</label>
 								<div class="controls" style="margin-left: 20px; float: left;">
 									<select class="chzn-select" data-placeholder="选择采集板"
-										name='selSmdDev' id='selSmdDev'>	
-										<option value=''>所有采集板</option>								   
+										name='selSmdDev' id='selSmdDev'>
+										<option value=''>所有采集板</option>
 									   	<?php if(isset($roomId)) {?>
 									    <?php foreach ($smdDevList as $smdDevObj){?>
-									   <option <?php if($smdDevObj->device_no == $deviceNo){?> selected="selected" <?php }?>value="<?php echo htmlentities($smdDevObj->device_no,ENT_COMPAT,"UTF-8");?>"><?php if($smdDevObj->room_id == $roomId) echo htmlentities($smdDevObj->name,ENT_COMPAT,"UTF-8");?></option>	
-									    <?php }?>	
+									   <option <?php if($smdDevObj->device_no == $deviceNo){?> selected="selected" <?php }?>value="<?php echo htmlentities($smdDevObj->device_no,ENT_COMPAT,"UTF-8");?>"><?php if($smdDevObj->room_id == $roomId) echo htmlentities($smdDevObj->name,ENT_COMPAT,"UTF-8");?></option>
+									    <?php }?>
 									    <?php }?>
 									</select>
 								</div>
@@ -125,7 +125,7 @@ $(document).ready(function(){
 								<div class="controls" style="margin-left: 20px; float: left;">
 									<input type='text' name='txtName' id='txtName'
 										value='<?php  echo $devName;?>' />
-								</div>	
+								</div>
 							</div>
 							<div class="control-group">
 								<label class="control-label" style="float: left;">激活状态</label>
@@ -167,13 +167,13 @@ $(document).ready(function(){
 										     value="" <?php }?>/>
 									</br><span class="help-block error" id='text1'   style="display: none;">注：请输入电源分组名，以区分交、直、整流屏电源。
 									</span>
-									</div>	
+									</div>
 							</div>
-							<div  class="control-group">									
+							<div  class="control-group">
 							<label class="control-label" style="float: left;">关键词</label>
 									<div class="controls" style="margin-left: 20px; float: left;">
 										<input type='text' name='keyWord' id='keyWord'
-											value='<?php if(isset($keyWord)) echo $keyWord ?>' /> 
+											value='<?php if(isset($keyWord)) echo $keyWord ?>' />
 									</br><span style="color: red;">注：可为区域、局站、机房、采集板、局站名称首字母
 									</span>
 									</div>
@@ -195,7 +195,7 @@ $(document).ready(function(){
 							<i class="icon-list"></i> 设备管理
 						</h3>
 					</div>
-					<div class="widget-container">					
+					<div class="widget-container">
 						<div class="row-fluid">
 							<div class="span6">
 								<a href="/portal/edit_device" class="btn btn-info" type="button"><i
@@ -204,7 +204,7 @@ $(document).ready(function(){
 						</div>
 						<div class="row-fluid">
 							<div class="span6">
-							
+
 							</div>
 							<div class="span6">
 						      <?php echo $pagination;?>
@@ -236,15 +236,20 @@ $(document).ready(function(){
 							<tr device_id='<?php echo htmlentities($devObj->id,ENT_COMPAT,"UTF-8"); ?>' dataId='<?php echo htmlentities($devObj->data_id,ENT_COMPAT,"UTF-8");?>'>
 									<td><?php echo $i++;?></td>
 									<td><?php echo htmlentities(Defines::$gCity[$devObj->city_code],ENT_COMPAT,"UTF-8");?></td>
-									<td><?php echo htmlentities(Defines::$gCounty[$devObj->city_code][$devObj->county_code],ENT_COMPAT,"UTF-8");?></td>	
+									<td><?php echo htmlentities(Defines::$gCounty[$devObj->city_code][$devObj->county_code],ENT_COMPAT,"UTF-8");?></td>
 									<td><?php echo htmlentities($devObj->suname,ENT_COMPAT,"UTF-8");?></td>
 									<td><?php echo htmlentities($devObj->room_name,ENT_COMPAT,"UTF-8");?></td>
 									<td><a data-rel="popover"
 										data-content="<?php echo "IP：". htmlentities($devObj->ip,ENT_COMPAT,"UTF-8");?>"
 										data-placement="top" href="realtimedata/<?php echo htmlentities($devObj->roomId,ENT_COMPAT,"UTF-8");?>/smd_device" data-original-title="采集设备信息"><?php echo '（' . htmlentities($devObj->smd_device_no,ENT_COMPAT,"UTF-8"). '）' . htmlentities($devObj->smd_device_name,ENT_COMPAT,"UTF-8");?></a></td>
-									<td><a href="/portal/realtimedata/<?php echo htmlentities($devObj->roomId,ENT_COMPAT,"UTF-8");?>/<?php echo $devModelGroup[$devObj->model]; ?>/<?php echo htmlentities($devObj->data_id,ENT_COMPAT,"UTF-8"); ?>"><?php echo htmlentities($devObj->name,ENT_COMPAT,"UTF-8");?></a></td>
+									<td><a href=
+                                           "/portal/realtimedata/<?php echo htmlentities($devObj->roomId,ENT_COMPAT,"UTF-8"
+                                           );?>/<?php if(!empty($devModelGroup[$devObj->model])){echo $devModelGroup[$devObj->model];} ?>
+                                           /<?php echo htmlentities($devObj->data_id,ENT_COMPAT,"UTF-8"); ?>">
+                                            <?php echo htmlentities($devObj->name,ENT_COMPAT,"UTF-8");?></a>
+                                    </td>
 									<td><?php echo htmlentities($devObj->data_id,ENT_COMPAT,"UTF-8");?></td>
-									<td><?php echo Defines::$gDevModel[$devObj->model]; ?></td>
+									<td><?php if(!empty(Defines::$gDevModel[$devObj->model])){echo Defines::$gDevModel[$devObj->model];} ?></td>
 									<td>
 							         <?php
                                         if (in_array($devObj->model, array('water','smoke')))
@@ -266,7 +271,7 @@ $(document).ready(function(){
 												<a class="btn btn-info" style="height:18px;" href="/portal/edit_device/<?php echo htmlentities($devObj->data_id,ENT_COMPAT,"UTF-8");?>" >
 													<i class="icon-edit"></i>编辑
 												</a>
-											<?php }?>	
+											<?php }?>
 												<button class="btn btn-white" data-original-title="添加白名单"
 													dataId='<?php echo htmlentities($devObj->data_id,ENT_COMPAT,"UTF-8");?>'>
 													<?php if(!isset($alertWhitelistObj)){?>
@@ -284,7 +289,7 @@ $(document).ready(function(){
 													data-original-title="删除">
 													<i class="icon-remove"></i>
 												</button>
-											<?php }?>	
+											<?php }?>
 											</div>
 										</div>
 									</td>

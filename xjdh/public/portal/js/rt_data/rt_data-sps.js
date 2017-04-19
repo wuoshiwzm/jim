@@ -26,14 +26,16 @@ $(document).ready(function () {
     }
 
     function refreshData() {
-        // alert(dataIdArr);
+        //alert(dataIdArr[0]);
         $.get('/portal/refreshData', {
             'dataIdArr[]': dataIdArr,
             model: model,
             access_token: typeof(accessToken) == "undefined" ? "" : accessToken
         }, function (ret) {
+
             for (var spIndex = 0; spIndex < ret.spsList.length; spIndex++) {
                 var obj = ret.spsList[spIndex];
+
                 $('#' + obj.data_id + '-update_datetime').html(obj.update_datetime);
                 if (!obj.status) {
                     $("#" + obj.data_id + "-status").show();
@@ -43,6 +45,7 @@ $(document).ready(function () {
                 }
                 if (!obj.isEmpty) {
                     var model = dataIdModel[obj.data_id];
+                    // alert(model);
                     if (!obj.isMatch) {
                         $("#" + obj.data_id + "-alert").show();
                     }
@@ -180,7 +183,8 @@ $(document).ready(function () {
                         // }
                     }
 
-                    else if (model == "cuc21vb") {
+                    else if (model == "cuc21vb")
+                    {
                         $("#cuc21vb-" + obj.data_id + "-field0").text(obj.out_v);
                         $("#cuc21vb-" + obj.data_id + "-field1").text(obj.channel_count);
                         $("#cuc21vb-" + obj.data_id + "-field2").text(obj.update_time);
@@ -190,6 +194,7 @@ $(document).ready(function () {
                             $.each(obj.channel, function (index, value) {
                                 //生成一行 代表一个通道
                                 var trObj = $('<tr></tr>');
+                                trObj.append('<td>'+index+'</td>');
                                 $.each(value,function (index1,value1) {
                                     //通道数据
                                     trObj.append('<td>'+value1+'</td>');
@@ -197,8 +202,6 @@ $(document).ready(function () {
                                 //将对应通道插入表格
                                 $table.append(trObj);
                             });
-
-
                         }
                         // if($('#' + obj.data_id + '-sps-rc-2 tbody').children().length == 0){
                         //     var columnsCount = $('#' + obj.data_id + '-sps-rc-2 thead>tr>th').length;
@@ -391,7 +394,9 @@ $(document).ready(function () {
                                 set_label_class(pTr.find("td:eq(" + (z + 1) + ")>span"), obj.channel[j][z]);
                             }
                         }
-                    } else if (model.search(/-ac$/) != -1) {
+                    }
+
+                    else if (model.search(/-ac$/) != -1) {
                         $('#' + obj.data_id + '-ia').html(obj.ia);
                         $('#' + obj.data_id + '-ib').html(obj.ib);
                         $('#' + obj.data_id + '-ic').html(obj.ic);
@@ -479,7 +484,8 @@ $(document).ready(function () {
                             $(this).find("td:eq(0)").text(j + 1);
                             j++;
                         });
-                    } else if (model.search(/-rc$/) != -1) {
+                    }
+                    else if (model.search(/-rc$/) != -1) {
                         $('#' + obj.data_id + '-out_v').html(obj.out_v);
                         $('#' + obj.data_id + '-channel_count').html(obj.channel_count);
                         //$('#'+ obj.data_id + '-sps-rc-2>tbody').empty();
@@ -536,7 +542,8 @@ $(document).ready(function () {
                             }
                             alertTrObj = alertTrObj.next();
                         }
-                    } else if (model.search(/-dc$/) != -1) {
+                    }
+                    else if (model.search(/-dc$/) != -1) {
                         $('#' + obj.data_id + '-v').html(obj.v);
                         $('#' + obj.data_id + '-i').html(obj.i);
                         $('#' + obj.data_id + '-m').html(obj.m);

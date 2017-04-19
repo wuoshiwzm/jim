@@ -1,0 +1,16 @@
+package testjava;
+
+import java.util.LinkedList;
+
+public class exercise_3_28 <AnyType> extends MyLinkedList{
+	LinkedList<AnyType> L;
+	
+	public void Deque(){
+		L = new LinkedList<AnyType>();
+	}
+	
+	void push(AnyType x){
+		L.addFirst(x);
+	}
+
+}

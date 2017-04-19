@@ -218,5 +218,41 @@ class Mp_Extra extends CI_Model
         return empty($res)?null:$res->name;
     }
 
+    //获取吉姆报警信号对应的分类名
+    public function getJimAlert($signalID)
+    {
+        $res = new stdClass();
+        $dbObj = $this->load->database('default', TRUE);
+        $signal = $dbObj->where('id',$signalID)
+            ->get('signals_alert_jim')
+            ->row();
+        switch ($signal->type){
+            case 1:
+                $res->type = '机房环境';
+                break;
+
+            case 2:
+                $res->type = '蓄电池组';
+                break;
+
+            case 3:
+                $res->type = '开关电源';
+                break;
+        }
+        $res->id = $signal->id;
+        $res->signal = $signal->signal;
+        $res->alert_signal = $signal->alert_signal;
+        return $res;
+    }
+
+
+    //获取吉姆报警信号对应的分类名
+    public function getTelSignalStandard($id){
+        $dbObj = $this->load->database('default', TRUE);
+        $res = $dbObj->where('id',$id)->get('signals_alert_standard')->row();
+
+        return $res;
+    }
+
 
 }

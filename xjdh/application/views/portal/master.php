@@ -173,10 +173,10 @@
                         </li>
                     <?php } ?>
 
-                    <!--信号测试-->
+                    <!--信号配置-->
                     <li <?php if (isset($actTab) && $actTab == '') { ?>
                                 class="active" <?php } ?>><a class="icon-signal " href="#signals"
-                                                             data-original-title="信号设备"></a>
+                                                             data-original-title="信号配置"></a>
                     </li>
 
                 </ul>
@@ -585,13 +585,12 @@
 
                         <li>
                             <a class="bondi-blue"
-                               href="<?php echo site_url("signals/alertSignals"); ?>">
+                               href="<?php echo site_url("signals/alertConvergence"); ?>">
                                 <i class="icon-filter"></i><span>告警收敛设置</span>
                             </a>
                         </li>
                     </ul>
                 </div>
-
             </div>
         </div>
     </div>

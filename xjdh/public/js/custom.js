@@ -137,7 +137,6 @@ RESPONSIVE NAV $ THEME SELECTOR
 		$('.theme-slector').toggleClass('theme-slector-close theme-slector-open',500, 'easeOutExpo');
 	});
 
-
 	$('.theme-color').click(function()
 	{
 		var stylesheet = $(this).attr('title').toLowerCase();
@@ -146,7 +145,6 @@ RESPONSIVE NAV $ THEME SELECTOR
 	$('.theme-default').click(function(){
 		$('#themes').removeAttr("href");
 	});
-			
 
 /*================================
 	SEARCH
@@ -175,7 +173,8 @@ RESPONSIVE NAV $ THEME SELECTOR
 	$('#btn-search').click(function(){
 		if($('#stationKeyword').val().length > 0)
 		{
-			window.location.href = '/portal/search?q=' + encodeURIComponent($('#stationKeyword').val());
+			window.location.href = '/portal/search?q=' +
+				encodeURIComponent($('#stationKeyword').val());
 		}
 	});
 
@@ -204,7 +203,8 @@ RESPONSIVE NAV $ THEME SELECTOR
 				for(i = 0 ; i < ret.countyList.length ; i++)
 				{
 					var countyObj = ret.countyList[i];
-					$('#selCounty').append('<option value="'+countyObj.key +'">'+countyObj.val +'</option>' );
+					$('#selCounty').append('<option value="'+countyObj.key +'">'+
+						countyObj.val +'</option>' );
 				}
 			}
 			$('#selCounty').trigger("liszt:updated");
@@ -220,7 +220,8 @@ RESPONSIVE NAV $ THEME SELECTOR
 			for(i = 0 ; i < ret.substationList.length ; i++)
 			{
 				var substationObj = ret.substationList[i];
-				$('#selSubstation').append('<option value="'+ substationObj.id +'">'+ substationObj.name +'</option>' );
+				$('#selSubstation').append('<option value="'+ substationObj.id +'">'+
+					substationObj.name +'</option>' );
 			}
 			$('#selSubstation').trigger("liszt:updated");
 			$('#selSubstation').trigger("change");
@@ -237,7 +238,8 @@ RESPONSIVE NAV $ THEME SELECTOR
 			for(i = 0 ; i < ret.roomList.length ; i++)
 			{
 				var roomObj = ret.roomList[i];
-				$('#selRoom').append('<option value="'+ roomObj.id +'">'+ roomObj.name +'</option>' );
+				$('#selRoom').append('<option value="'+ roomObj.id +'">'+
+					roomObj.name +'</option>' );
 			}
 
 			$('#selRoom').trigger("liszt:updated");
@@ -251,7 +253,8 @@ RESPONSIVE NAV $ THEME SELECTOR
 			{
 				
 				var smdDevObj = ret.smdDevList[i];
-				$('#selSmdDev').append('<option value="'+ smdDevObj.device_no +'">'+ smdDevObj.name +'</option>' );
+				$('#selSmdDev').append('<option value="'+ smdDevObj.device_no +'">'+
+					smdDevObj.name +'</option>' );
 			}
 			$('#selSmdDev').trigger("liszt:updated");
 		});
@@ -267,7 +270,8 @@ RESPONSIVE NAV $ THEME SELECTOR
 				for(i = 0 ; i < ret.versionList.length ; i++)
 				{
 					var versionObj = ret.versionList[i];
-					$('#version').append('<option value="'+versionObj.val +'">'+versionObj.val +'</option>' );
+					$('#version').append('<option value="'+versionObj.val +'">'+
+						versionObj.val +'</option>' );
 				}
 			}
 			$('#version').trigger("liszt:updated");
@@ -286,7 +290,8 @@ RESPONSIVE NAV $ THEME SELECTOR
 //			{
 //				
 //				var smdDevObj = ret.smdDevList[i];
-//				$('#selSmdDev').append('<option value="'+ smdDevObj.device_no +'">'+ smdDevObj.name +'</option>' );
+//				$('#selSmdDev').append('<option value="'+ smdDevObj.device_no +'">'+
+// smdDevObj.name +'</option>' );
 //			}
 //			$('#selSmdDev').trigger("liszt:updated");
 //		});

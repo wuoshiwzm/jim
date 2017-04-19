@@ -1,0 +1,16 @@
+package testjava;
+
+import java.awt.List;
+import java.util.ListIterator;
+
+public  class exercise_3_4 {
+	
+	public static void intersection(List<AnyType> L1, List<AnyType> L2,
+	List<AnyType> Intersect){
+		
+		ListIterator<AnyType> iterL1 = L1.listIterator();
+		ListIterator<AnyType> iterL2 = L2.listIterator();
+		
+	}
+
+}

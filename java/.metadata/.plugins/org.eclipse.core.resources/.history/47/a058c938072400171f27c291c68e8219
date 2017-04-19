@@ -1,0 +1,10 @@
+package testjava;
+
+public class exercise_3_6 {
+
+	public static void pass(int m,int n){
+		int i,j,mPrime,numLeft;
+		
+		ArrayList<Integer> = new ArrayList<Integer>();
+	}
+}

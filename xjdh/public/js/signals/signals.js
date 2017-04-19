@@ -76,5 +76,24 @@ $(".add_signal").bind("click", function () {
 
 
 /**
- * 告警信号
+ * 告警收敛
  */
+/**
+ * 删除收敛映射
+ */
+$(".delete_signal_convergence").bind("click", function () {
+    if (window.confirm("确认删除吗?")) {
+        var id = $(this).parent().parent().find(".signal_id").html();
+
+            $.post("deleteConvergence",{"id":id},function(data){
+                if(data == 'true'){
+                    location.reload();
+                }
+            });
+
+        return true;
+    }
+
+    return false;
+
+});

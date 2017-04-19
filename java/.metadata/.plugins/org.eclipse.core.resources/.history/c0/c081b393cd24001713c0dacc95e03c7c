@@ -1,0 +1,13 @@
+package testjava;
+
+import java.util.*;
+
+public class exercise_4_19<AnyType> {
+
+	static double evalPostFix(){
+		Stack<Double> s = new Stack<Double>();
+		String token;
+		Double a,b,result = 0.0;
+	}
+	
+}

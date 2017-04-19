@@ -1,0 +1,24 @@
+package testjava;
+
+import java.util.*;
+
+public class <AnyType>exercise_3_24 extends ArrayList {
+	ArrayList array;
+
+	public void popFromLow(int a) {
+
+	}
+
+	public void popFromHigh(int a) {
+
+	}
+
+	public void pushFromLow(int a) {
+
+	}
+
+	public void pushFromHigh(int a) {
+
+	}
+
+}

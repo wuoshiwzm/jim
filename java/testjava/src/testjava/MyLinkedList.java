@@ -1,7 +1,6 @@
 package testjava;
-/**
- * LinkedList class implements a doubly-linked list.
- */
+import java.util.*;
+
 public class MyLinkedList<AnyType> implements Iterable<AnyType>
 {
     /**
@@ -240,14 +239,6 @@ public class MyLinkedList<AnyType> implements Iterable<AnyType>
             expectedModCount++;
             okToRemove = false;       
         }
-    }
-    
-    public boolean contains(AnyType x){
-    	Node<AnyType> p = beginMarker.next;
-    	while((p != endMarker) && (p.data.equals(x))){
-    		return true;
-    	}
-		return false;
     }
     
     /**

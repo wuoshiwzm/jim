@@ -45,6 +45,15 @@
 											<?php  if($cityCode == $cityKey){?> selected="selected"
 											<?php }?>><?php echo $cityVal;?>本地网</option>
     							        <?php }?>
+
+
+
+
+
+
+
+
+
     							        <?php }else if($userObj->user_role == "city_admin"){ ?>
     							        <option value="<?php echo $userObj->city_code; ?>">
     							            <?php echo Defines::$gCity[$userObj->city_code]; ?></option>

@@ -1,0 +1,35 @@
+package testjava.exercise;
+
+import java.util.ArrayList;
+import java.util.ListIterator;
+
+public  class exercise_3_4 {
+	
+	public static <AnyType extends Comparable<? super AnyType>> void intersection(ArrayList<AnyType> L1, ArrayList<AnyType> L2,
+			ArrayList<AnyType> Intersect){
+		
+		ListIterator<AnyType> iterL1 = L1.listIterator();
+		ListIterator<AnyType> iterL2 = L2.listIterator();
+		
+		AnyType itemL1=null, itemL2=null;
+		
+		//算 L1 L2 交集 / 并集
+		ArrayList<AnyType> bingji = null; 
+		ArrayList<AnyType> jiaoji = null; 
+		while(iterL1.hasNext() && iterL2.hasNext()){
+			itemL1 = iterL1.next();
+			itemL2 = iterL2.next();
+			
+			if((itemL1.compareTo(itemL2)==0)){
+				bingji.add(itemL1);
+			}else{
+				bingji.add(itemL1);
+				bingji.add(itemL2);
+			}
+		}
+
+
+		
+	}
+
+}

@@ -1,6 +1,8 @@
 <p>最后更新时间:<span id="<?php echo $dataObj->data_id; ?>-update_datetime"></span>
 <table
-        class="table table-bordered responsive table-striped table-sortable"
+        class="table table-bordered responsive table-striped table-sortable rt-data"
+        data_id='<?php echo $dataObj->data_id;?>'
+        data_type="<?php echo $dataObj->model; ?>"
         id='table-<?php echo $dataObj->data_id; ?>'>
     <thead>
     <tr>
@@ -26,7 +28,7 @@
 
     foreach ($signalArray as $key => $val) {
         ?>
-        <tr>
+        <tr id='device-<?php echo $dataObj->data_id;?>' >
             <td><?php echo $key + 1; ?></td>
             <td><?php echo $val; ?></td>
             <td id='dk09-<?php echo $dataObj->data_id . '-field' . $key; ?>'></td>

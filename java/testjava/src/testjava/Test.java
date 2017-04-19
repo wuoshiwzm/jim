@@ -1,5 +1,9 @@
 package testjava;
 
+import java.util.List;
+
+
+
 public class Test {
 	
 	private static int[] stack = new int[10];
@@ -34,4 +38,10 @@ public class Test {
 
 	}
 
+	
+	public static <AnyType extends Comparable<? super AnyType>>
+	void intersection(List<AnyType> L1, List<AnyType> L2,
+	List<AnyType> Intersect){
+		
+	}
 }

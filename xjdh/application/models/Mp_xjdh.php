@@ -295,13 +295,16 @@ class MP_Xjdh extends CI_Model
             }
         }
         if ($keyWord) {
-            foreach ($gCounty as $key => $val) {
-                foreach ($val as $k => $v) {
-                    if ($v == $keyWord) {
-                        $keyWord = $k;
+            if(!empty($gCounty)){
+                foreach ($gCounty as $key => $val) {
+                    foreach ($val as $k => $v) {
+                        if ($v == $keyWord) {
+                            $keyWord = $k;
+                        }
                     }
                 }
             }
+
             $dbObj->group_start();
             $dbObj->like('substation.name', $keyWord);
             $dbObj->or_like('room.name', $keyWord);
@@ -355,13 +358,16 @@ class MP_Xjdh extends CI_Model
             }
         }
         if ($keyWord) {
-            foreach ($gCounty as $key => $val) {
-                foreach ($val as $k => $v) {
-                    if ($v == $keyWord) {
-                        $keyWord = $k;
+            if(!empty($gCounty)){
+                foreach ($gCounty as $key => $val) {
+                    foreach ($val as $k => $v) {
+                        if ($v == $keyWord) {
+                            $keyWord = $k;
+                        }
                     }
                 }
             }
+
             $dbObj->group_start();
             $dbObj->like('substation.name', $keyWord);
             $dbObj->or_like('room.name', $keyWord);
