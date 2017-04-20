@@ -19,13 +19,16 @@ class Realtime
                 if (Util::endsWith($dataObj->model, "ac")) {
                     $tData = array_merge($data, Constants::$pmBusConfig[$dataObj->model]);
                     $dataObj->html = $CI->load->view('portal/DevicePage/pmbus-ac', $tData, TRUE);
-                } else if (Util::endsWith($dataObj->model, "dc")) {
+                }
+                else if (Util::endsWith($dataObj->model, "dc")) {
                     $tData = array_merge($data, Constants::$pmBusConfig[$dataObj->model]);
                     $dataObj->html = $CI->load->view('portal/DevicePage/pmbus-dc', $tData, TRUE);
-                } else if (Util::endsWith($dataObj->model, "rc")) {
+                }
+                else if (Util::endsWith($dataObj->model, "rc")) {
                     $tData = array_merge($data, Constants::$pmBusConfig[$dataObj->model]);
                     $dataObj->html = $CI->load->view('portal/DevicePage/pmbus-rc', $tData, TRUE);
-                } else {
+                }
+                else {
                     $dataObj->html = $CI->load->view("portal/DevicePage/" . $dataObj->model, $data, TRUE);
                 }
                 $dataObj->html1 = $CI->load->view("portal/standard_data", $data, TRUE);
@@ -42,15 +45,24 @@ class Realtime
                 if ($dataObj->model == "liebert-pex") {
                     $dataObj->html = $CI->load->view('portal/DevicePage/liebert-pex', array('liebertPexObj' => $dataObj, 'userObj' => $CI->userObj), TRUE);
                     $scriptExtra .= '<script type="text/javascript" src="/public/portal/js/rt_data/rt_data-' . $dataObj->model . '.js"></script>';
-                } else if ($dataObj->model == "ug40") {
+                }
+                else if ($dataObj->model == "ug40") {
                     $dataObj->html = $CI->load->view('portal/DevicePage/ug40', array('ug40Obj' => $dataObj, 'userObj' => $CI->userObj), TRUE);
                     $scriptExtra .= '<script type="text/javascript" src="/public/portal/js/rt_data/rt_data-' . $dataObj->model . '.js"></script>';
-                } else if ($dataObj->model == "canatal") {
+                }
+                else if ($dataObj->model == "canatal") {
                     $dataObj->html = $CI->load->view('portal/DevicePage/canatal', array('canatal' => $dataObj, 'userObj' => $CI->userObj), TRUE);
                     $scriptExtra .= '<script type="text/javascript" src="/public/portal/js/rt_data/rt_data-' . $dataObj->model . '.js"></script>';
-                } else if ($dataObj->model == "datamate3000") {
+                }
+                else if ($dataObj->model == "datamate3000") {
                     $dataObj->html = $CI->load->view('portal/DevicePage/datamate3000', array('dataObj' => $dataObj, 'userObj' => $CI->userObj), TRUE);
                     $scriptExtra .= '<script type="text/javascript" src="/public/portal/js/rt_data/rt_data-' . $dataObj->model . '.js"></script>';
+                }
+                else if ($dataObj->model == "k200") {
+                    $dataObj->html = $CI->load->view('portal/DevicePage/k200',
+                        array('dataObj' => $dataObj, 'userObj' => $CI->userObj), TRUE);
+                    $scriptExtra .= '<script type="text/javascript" src="/public/portal/js/rt_data/rt_data-' .
+                        $dataObj->model . '.js"></script>';
                 }
                 $dataObj->html1 = $CI->load->view("portal/standard_data", $data, TRUE);
                 break;
@@ -908,43 +920,44 @@ class Realtime
         // memData minimal length
         if (strlen($memData) >= 75) {
             $dk09Obj->isEmpty = false;
-
             //REG_40_42
-            $v = unpack('S*', substr($memData, 4+4, 12 * 2));
+            $v = unpack('S*', substr($memData, 8, 12 * 2));
 
             $dk09Obj->ACChannelNum = $v[1];//交流输入路数
-            $dk09Obj->MainSupplyAC_a = $v[2];//主供交流电源相电压 a
-            $dk09Obj->MainSupplyAC_b = $v[3];//主供交流电源相电压 b
-            $dk09Obj->MainSupplyAC_c = $v[4];//主供交流电源相电压 c
-            $dk09Obj->MainSupplyACFreq = $v[5];//主供交流输入频率
+            $dk09Obj->MainSupplyAC_a = $v[2]/10;//主供交流电源相电压 a
+            $dk09Obj->MainSupplyAC_b = $v[3]/10;//主供交流电源相电压 b
+            $dk09Obj->MainSupplyAC_c = $v[4]/10;//主供交流电源相电压 c
+            $dk09Obj->MainSupplyACFreq = $v[5]/10;//主供交流输入频率
 
-            $dk09Obj->ThreeACInput_a = $v[6];//三相交流输入电流 a
-            $dk09Obj->ThreeACInput_b = $v[7];//三相交流输入电流 b
-            $dk09Obj->ThreeACInput_c = $v[8];//三相交流输入电流 c
-            $dk09Obj->BackUpBatteryVoltage_a = $v[9];//备用交流电源相电压a
-            $dk09Obj->BackUpBatteryVoltage_b = $v[10];//备用交流电源相电压b
-            $dk09Obj->BackUpBatteryVoltage_c = $v[11];//备用交流电源相电压c
-            $dk09Obj->BackUpBatteryVoltage_Free = $v[12];//备用交流输入频率
+            $dk09Obj->ThreeACInput_a = $v[6]/10;//三相交流输入电流 a
+            $dk09Obj->ThreeACInput_b = $v[7]/10;//三相交流输入电流 b
+            $dk09Obj->ThreeACInput_c = $v[8]/10;//三相交流输入电流 c
+            $dk09Obj->BackUpBatteryVoltage_a = $v[9]/10;//备用交流电源相电压a
+            $dk09Obj->BackUpBatteryVoltage_b = $v[10]/10;//备用交流电源相电压b
+            $dk09Obj->BackUpBatteryVoltage_c = $v[11]/10;//备用交流电源相电压c
+            $dk09Obj->BackUpBatteryVoltage_Free = $v[12]/10;//备用交流输入频率
+
 
             //REG_41_42 获取系统模拟量数据(定点数)
-            $v = unpack("S*", substr($memData, 28+4, 1 * 2));
+            $v = unpack("S*", substr($memData, 32, 1 * 2));
             $dk09Obj->RectificationNum = $v[1];//获取系统模拟量数据(定点数)
 
             $dk09Obj->moduleInfo = [];
-            $v = unpack("S*", substr($memData, 28 +4+ 1 * 2, 12 * 4 * 2));
+            $v = unpack("S*", substr($memData, 34, 12 * 4 * 2));
             for ($i = 0; $i < 12; $i++) {
                 $info = new stdClass();
                 $v = unpack("S*", substr($memData, 28 + 1 * 2 + $i * 4 * 2, 4 * 2));
                 $info->ModuleState = $v[1];//模块状态,参考前面定义的宏
-                $info->ModuleOutputVoltage = $v[2];//模块输出电流*100
-                $info->ModuleOutputCurrent = $v[3];//模块输出电流*100
+                $info->ModuleOutputVoltage = $v[2]/100;//模块输出电流*100
+                $info->ModuleOutputCurrent = $v[3]/100;//模块输出电流*100
                 $info->ModuleTempature = $v[4];//内部温度
                 $dk09Obj->moduleInfo[] = $info;
             }
 
 
+
             //REG_42_42  获取系统模拟量数据（定点）
-            $v = unpack("S*", substr($memData, 126+4, 12 * 2));
+            $v = unpack("S*", substr($memData, 130, 12 * 2));
             $dk09Obj->BatteryNum = $v[1];//电池组数
             $dk09Obj->Battery_1_Voltage = $v[2];//电池1电压
             $dk09Obj->Battery_1_Current = $v[3];//电池1电流
@@ -959,17 +972,17 @@ class Realtime
             $dk09Obj->battery_2_temperature = $v[12];//电池2温度
 
             //reg_42_44_data  获取状态与报警
-            $v = unpack("S*", substr($memData+4, 150, 3 * 2));
+            $v = unpack("S*", substr($memData, 154, 3 * 2));
             $dk09Obj->_status = $v[1];//状态
             $dk09Obj->SeriousAlarm = $v[2];//严重报警
             $dk09Obj->Generalalarm = $v[3];//一般报警
 
-
             //update_time
-            $v = unpack("C*", substr($memData+4, 156, 1 * 7));
-
-            $dk09Obj->update_time = $v[3] . "-" . $v[2] . "-" . $v[1] . " " . $v[5] . ":" . $v[6] . ":" . $v[7];
-
+            $v = unpack('S*', substr($memData, 160, 2));
+            $year = $v[1] ;
+            $v = unpack('C*', substr($memData, 162, 5));
+            $dk09Obj->update_time .= $year . "-" . $v[1] . "-" .
+                $v[2] . " " . $v[3] . ":" . $v[4] . ":" . $v[5];//时间
 
         } else {
             $dk09Obj->isEmpty = true;
@@ -997,7 +1010,6 @@ class Realtime
             $v = unpack('C*', substr($memData, 8, 1));
             $Cuc21vbObj->channel_count = $v[1];//通道数
 
-
             $Cuc21vbObj->channel_count =
                 is_null($Cuc21vbObj->channel_count) ? 0 : $Cuc21vbObj->channel_count;
 
@@ -1005,7 +1017,8 @@ class Realtime
             $v = unpack('S*', substr($memData, 9, 2));
             $year = $v[1] ;
             $v = unpack('C*', substr($memData, 11, 5));
-            $Cuc21vbObj->update_time .= $year . "-" . $v[1] . "-" . $v[2] . " " . $v[3] . ":" . $v[4] . ":" . $v[5];//时间
+            $Cuc21vbObj->update_time .= $year . "-" . $v[1] . "-" .
+                $v[2] . " " . $v[3] . ":" . $v[4] . ":" . $v[5];//时间
 
             $Cuc21vbObj->channel = [];
             for ($i = 0; $i < $Cuc21vbObj->channel_count; $i++) {
@@ -1066,7 +1079,7 @@ class Realtime
                     $v[1]= '模块屏蔽';
                 }
 
-                $channelObj['fault'] = $v[1];//var_dump(dechex($v[1]));
+                $channelObj['fault'] = $v[1];
                 $Cuc21vbObj->channel[] = $channelObj;
             };
         } else {
@@ -1210,9 +1223,7 @@ class Realtime
 
     }
 
-    /*
-     * 统一处理所有开关电源的数据解析
-     */
+    //统一处理所有开关电源的数据解析
     static function GetSpsPower($dataIdArray)
     {
         $CI = &get_instance();

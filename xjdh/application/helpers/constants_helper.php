@@ -20,7 +20,7 @@ class Constants{
             array(array('camera'), "视频监控", "camera"),
             array(array('DoorXJL',"EmersonDoor"), "门禁系统", "door"),
             array(array('liebert-ups'),"UPS设备", "liebert-ups"),
-            array(array('liebert-pex','datamate3000','canatal','ug40','modbusk200'),"专用空调", "ac"),
+            array(array('liebert-pex','datamate3000','canatal','ug40','k200'),"专用空调", "ac"),
             array(array('motor_battery'),'油机启动电池',"motor_battery"),
             array(array('mec10','meaccess4000x','amf25'),'柴油发电机组',"engine"),
         //,'motivator','venv'

@@ -1,0 +1,15 @@
+
+public class exercise_3_3 {
+	
+	static void f(F f){
+		f.f = (float) 5.20;
+		
+	}
+	
+	
+	
+	
+	private class F{
+		float f;
+	}
+}

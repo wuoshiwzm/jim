@@ -118,73 +118,44 @@ $(document).ready(function () {
                         $("#dk09-" + obj.data_id + "-field10").text(obj.BackUpBatteryVoltage_c);
                         $("#dk09-" + obj.data_id + "-field11").text(obj.BackUpBatteryVoltage_Free);
                         $("#dk09-" + obj.data_id + "-field12").text(obj.RectificationNum);
-                        $("#dk09-" + obj.data_id + "-field13").text(obj.ModuleState);
-                        $("#dk09-" + obj.data_id + "-field14").text(obj.ModuleOutputVoltage);
-                        $("#dk09-" + obj.data_id + "-field15").text(obj.ModuleOutputCurrent);
-                        $("#dk09-" + obj.data_id + "-field16").text(obj.ModuleTempature);
-                        $("#dk09-" + obj.data_id + "-field17").text(obj.BatteryNum);
-                        $("#dk09-" + obj.data_id + "-field18").text(obj.Battery_1_Voltage);
-                        $("#dk09-" + obj.data_id + "-field19").text(obj.Battery_1_Current);
-                        $("#dk09-" + obj.data_id + "-field20").text(obj.Battery_1_Capacity);
-                        $("#dk09-" + obj.data_id + "-field21").text(obj.Battery_1_temperature);
-                        $("#dk09-" + obj.data_id + "-field22").text(obj.System_voltage);
-                        $("#dk09-" + obj.data_id + "-field23").text(obj.Environment_tamperature);
-                        $("#dk09-" + obj.data_id + "-field24").text(obj.PayLoad);
-                        $("#dk09-" + obj.data_id + "-field25").text(obj.Battery_2_Voltage);
-                        $("#dk09-" + obj.data_id + "-field26").text(obj.Battery_2_Current);
-                        $("#dk09-" + obj.data_id + "-field27").text(obj.Battery_2_Capacity);
-                        $("#dk09-" + obj.data_id + "-field28").text(obj.battery_2_temperature);
-                        $("#dk09-" + obj.data_id + "-field29").text(obj._status);
-                        $("#dk09-" + obj.data_id + "-field30").text(obj.SeriousAlarm);
-                        $("#dk09-" + obj.data_id + "-field31").text(obj.Generalalarm);
-                        $("#dk09-" + obj.data_id + "-field32").text(obj.update_time);
-                        // if($('#' + obj.data_id + '-sps-rc-2 tbody').children().length == 0){
-                        //     var columnsCount = $('#' + obj.data_id + '-sps-rc-2 thead>tr>th').length;
-                        //     var trObj = $('<tr></tr>');
-                        //     for(var j = 0; j < columnsCount; j++)
-                        //     {
-                        //         trObj.append('<td><span class="label label-success"></span></td>');
-                        //     }
-                        //     var columnsCount3 = $('#' + obj.data_id + '-sps-rc-3 thead>tr>th').length;
-                        //     var trObj3 = $('<tr></tr>');
-                        //     for(var j = 0; j < columnsCount3; j++)
-                        //     {
-                        //         trObj3.append('<td><span class="label label-success"></span></td>');
-                        //     }
-                        //     for(var j = 0 ; j < obj.number; j++)
-                        //     {
-                        //         var tTrObj = trObj.clone();
-                        //         tTrObj.find("td:eq(0)").text('整流模块'+ (j+1));
-                        //         $('#' + obj.data_id + '-sps-rc-2 tbody').append(tTrObj);
-                        //         var tTrObj3 = trObj3.clone();
-                        //         tTrObj3.find("td:eq(0)").text('整流模块'+ (j+1));
-                        //         $('#' + obj.data_id + '-sps-rc-3 tbody').append(tTrObj3);
-                        //     }
-                        // }
-                        // for(var j = 0 ; j < obj.number; j++)
-                        // {
-                        //     var pTr = $('#' + obj.data_id + '-sps-rc-2 tbody>tr').eq(j);
-                        //     pTr.find("td:eq(1)").text(obj.Iout[j]);
-                        //     pTr.find("td:eq(2)").text(obj.channelParam[j].FloatV);
-                        //     pTr.find("td:eq(3)").text(obj.channelParam[j].EQV);
-                        //     pTr.find("td:eq(4)").text(obj.channelParam[j].Vhi);
-                        //     pTr.find("td:eq(5)").text(obj.channelParam[j].V1o);
-                        //     pTr.find("td:eq(6)").text(obj.channelParam[j].HVSD);
-                        //     pTr.find("td:eq(7)").text(obj.channelParam[j].I1im);
-                        //     pTr.find("td:eq(8)").text(obj.channelParam[j].AdjV);
-                        //     pTr.find("td:eq(9)").text(obj.channelParam[j].SecEnable);
-                        //
-                        //     pTr = $('#' + obj.data_id + '-sps-rc-3 tbody>tr').eq(j);
-                        //     for(var z = 0; z < obj.channel[j].length; z++)
-                        //     {
-                        //         pTr.find("td:eq(" + (z+1) + ")>span").text(obj.channel[j][z]);
-                        //         set_label_class(pTr.find("td:eq(" + (z+1) + ")>span"), obj.channel[j][z]);
-                        //     }
-                        // }
+                        //$("#dk09-" + obj.data_id + "-field13").text(obj.ModuleState);
+                        // $("#dk09-" + obj.data_id + "-field14").text(obj.ModuleOutputVoltage);
+                        // $("#dk09-" + obj.data_id + "-field15").text(obj.ModuleOutputCurrent);
+                        // $("#dk09-" + obj.data_id + "-field16").text(obj.ModuleTempature);
+                        $("#dk09-" + obj.data_id + "-field13").text(obj.BatteryNum);
+                        $("#dk09-" + obj.data_id + "-field14").text(obj.Battery_1_Voltage);
+                        $("#dk09-" + obj.data_id + "-field15").text(obj.Battery_1_Current);
+                        $("#dk09-" + obj.data_id + "-field16").text(obj.Battery_1_Capacity);
+                        $("#dk09-" + obj.data_id + "-field17").text(obj.Battery_1_temperature);
+                        $("#dk09-" + obj.data_id + "-field18").text(obj.System_voltage);
+                        $("#dk09-" + obj.data_id + "-field19").text(obj.Environment_tamperature);
+                        $("#dk09-" + obj.data_id + "-field20").text(obj.PayLoad);
+                        $("#dk09-" + obj.data_id + "-field21").text(obj.Battery_2_Voltage);
+                        $("#dk09-" + obj.data_id + "-field22").text(obj.Battery_2_Current);
+                        $("#dk09-" + obj.data_id + "-field23").text(obj.Battery_2_Capacity);
+                        $("#dk09-" + obj.data_id + "-field24").text(obj.battery_2_temperature);
+                        $("#dk09-" + obj.data_id + "-field25").text(obj._status);
+                        $("#dk09-" + obj.data_id + "-field26").text(obj.SeriousAlarm);
+                        $("#dk09-" + obj.data_id + "-field27").text(obj.Generalalarm);
+                        $("#dk09-" + obj.data_id + "-field28").text(obj.update_time);
+
+                        $table = $('#' + obj.data_id + '-sps-rc-2');
+                        $.each(obj.moduleInfo, function (index, value) {
+                            //生成一行 代表一个通道
+                            var trObj = $('<tr></tr>');
+                            trObj.append('<td>' + (index + 1) + '</td>');
+                            $.each(value, function (index1, value1) {
+                                //通道数据
+                                trObj.append('<td>' + value1 + '</td>');
+                            });
+                            //将对应通道插入表格
+                            $table.append(trObj);
+                        });
+
+
                     }
 
-                    else if (model == "cuc21vb")
-                    {
+                    else if (model == "cuc21vb") {
                         $("#cuc21vb-" + obj.data_id + "-field0").text(obj.out_v);
                         $("#cuc21vb-" + obj.data_id + "-field1").text(obj.channel_count);
                         $("#cuc21vb-" + obj.data_id + "-field2").text(obj.update_time);
@@ -194,58 +165,16 @@ $(document).ready(function () {
                             $.each(obj.channel, function (index, value) {
                                 //生成一行 代表一个通道
                                 var trObj = $('<tr></tr>');
-                                trObj.append('<td>'+index+'</td>');
-                                $.each(value,function (index1,value1) {
+                                trObj.append('<td>' + index + '</td>');
+                                $.each(value, function (index1, value1) {
                                     //通道数据
-                                    trObj.append('<td>'+value1+'</td>');
+                                    trObj.append('<td>' + value1 + '</td>');
                                 });
                                 //将对应通道插入表格
                                 $table.append(trObj);
                             });
                         }
-                        // if($('#' + obj.data_id + '-sps-rc-2 tbody').children().length == 0){
-                        //     var columnsCount = $('#' + obj.data_id + '-sps-rc-2 thead>tr>th').length;
-                        //     var trObj = $('<tr></tr>');
-                        //     for(var j = 0; j < columnsCount; j++)
-                        //     {
-                        //         trObj.append('<td><span class="label label-success"></span></td>');
-                        //     }
-                        //     var columnsCount3 = $('#' + obj.data_id + '-sps-rc-3 thead>tr>th').length;
-                        //     var trObj3 = $('<tr></tr>');
-                        //     for(var j = 0; j < columnsCount3; j++)
-                        //     {
-                        //         trObj3.append('<td><span class="label label-success"></span></td>');
-                        //     }
-                        //     for(var j = 0 ; j < obj.number; j++)
-                        //     {
-                        //         var tTrObj = trObj.clone();
-                        //         tTrObj.find("td:eq(0)").text('整流模块'+ (j+1));
-                        //         $('#' + obj.data_id + '-sps-rc-2 tbody').append(tTrObj);
-                        //         var tTrObj3 = trObj3.clone();
-                        //         tTrObj3.find("td:eq(0)").text('整流模块'+ (j+1));
-                        //         $('#' + obj.data_id + '-sps-rc-3 tbody').append(tTrObj3);
-                        //     }
-                        // }
-                        // for(var j = 0 ; j < obj.number; j++)
-                        // {
-                        //     var pTr = $('#' + obj.data_id + '-sps-rc-2 tbody>tr').eq(j);
-                        //     pTr.find("td:eq(1)").text(obj.Iout[j]);
-                        //     pTr.find("td:eq(2)").text(obj.channelParam[j].FloatV);
-                        //     pTr.find("td:eq(3)").text(obj.channelParam[j].EQV);
-                        //     pTr.find("td:eq(4)").text(obj.channelParam[j].Vhi);
-                        //     pTr.find("td:eq(5)").text(obj.channelParam[j].V1o);
-                        //     pTr.find("td:eq(6)").text(obj.channelParam[j].HVSD);
-                        //     pTr.find("td:eq(7)").text(obj.channelParam[j].I1im);
-                        //     pTr.find("td:eq(8)").text(obj.channelParam[j].AdjV);
-                        //     pTr.find("td:eq(9)").text(obj.channelParam[j].SecEnable);
-                        //
-                        //     pTr = $('#' + obj.data_id + '-sps-rc-3 tbody>tr').eq(j);
-                        //     for(var z = 0; z < obj.channel[j].length; z++)
-                        //     {
-                        //         pTr.find("td:eq(" + (z+1) + ")>span").text(obj.channel[j][z]);
-                        //         set_label_class(pTr.find("td:eq(" + (z+1) + ")>span"), obj.channel[j][z]);
-                        //     }
-                        // }
+
                     }
 
                     else if (model == "des") {
@@ -289,50 +218,6 @@ $(document).ready(function () {
                         $("#des-" + obj.data_id + "-field33").text(obj.TripAverageFuelEfficiency);
                         $("#des-" + obj.data_id + "-field34").text(obj.InstantaneousFuelEfficiency);
                         //显示所有通道
-
-                        // if($('#' + obj.data_id + '-sps-rc-2 tbody').children().length == 0){
-                        //     var columnsCount = $('#' + obj.data_id + '-sps-rc-2 thead>tr>th').length;
-                        //     var trObj = $('<tr></tr>');
-                        //     for(var j = 0; j < columnsCount; j++)
-                        //     {
-                        //         trObj.append('<td><span class="label label-success"></span></td>');
-                        //     }
-                        //     var columnsCount3 = $('#' + obj.data_id + '-sps-rc-3 thead>tr>th').length;
-                        //     var trObj3 = $('<tr></tr>');
-                        //     for(var j = 0; j < columnsCount3; j++)
-                        //     {
-                        //         trObj3.append('<td><span class="label label-success"></span></td>');
-                        //     }
-                        //     for(var j = 0 ; j < obj.number; j++)
-                        //     {
-                        //         var tTrObj = trObj.clone();
-                        //         tTrObj.find("td:eq(0)").text('整流模块'+ (j+1));
-                        //         $('#' + obj.data_id + '-sps-rc-2 tbody').append(tTrObj);
-                        //         var tTrObj3 = trObj3.clone();
-                        //         tTrObj3.find("td:eq(0)").text('整流模块'+ (j+1));
-                        //         $('#' + obj.data_id + '-sps-rc-3 tbody').append(tTrObj3);
-                        //     }
-                        // }
-                        // for(var j = 0 ; j < obj.number; j++)
-                        // {
-                        //     var pTr = $('#' + obj.data_id + '-sps-rc-2 tbody>tr').eq(j);
-                        //     pTr.find("td:eq(1)").text(obj.Iout[j]);
-                        //     pTr.find("td:eq(2)").text(obj.channelParam[j].FloatV);
-                        //     pTr.find("td:eq(3)").text(obj.channelParam[j].EQV);
-                        //     pTr.find("td:eq(4)").text(obj.channelParam[j].Vhi);
-                        //     pTr.find("td:eq(5)").text(obj.channelParam[j].V1o);
-                        //     pTr.find("td:eq(6)").text(obj.channelParam[j].HVSD);
-                        //     pTr.find("td:eq(7)").text(obj.channelParam[j].I1im);
-                        //     pTr.find("td:eq(8)").text(obj.channelParam[j].AdjV);
-                        //     pTr.find("td:eq(9)").text(obj.channelParam[j].SecEnable);
-                        //
-                        //     pTr = $('#' + obj.data_id + '-sps-rc-3 tbody>tr').eq(j);
-                        //     for(var z = 0; z < obj.channel[j].length; z++)
-                        //     {
-                        //         pTr.find("td:eq(" + (z+1) + ")>span").text(obj.channel[j][z]);
-                        //         set_label_class(pTr.find("td:eq(" + (z+1) + ")>span"), obj.channel[j][z]);
-                        //     }
-                        // }
                     }
 
                     else if (model == "dk04c") {
@@ -358,7 +243,6 @@ $(document).ready(function () {
                         $("#dk04-" + obj.data_id + "-field15").text(obj.aci_phase2);
                         $("#dk04-" + obj.data_id + "-field16").text(obj.aci_phase3);
                         $("#dk04-" + obj.data_id + "-field17").text(obj.ac_freq_3ph);
-
 
                         if ($('#' + obj.data_id + '-sps-rc-3 tbody').children().length == 0) {
                             var columnsCount = $('#' + obj.data_id + '-sps-rc-3 thead>tr>th').length;

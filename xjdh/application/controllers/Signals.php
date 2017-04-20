@@ -1,7 +1,7 @@
 <?php
 require_once('CommonController.php');
-require('/php-excel-reader/excel_reader2.php');
-require('/php-excel-reader/SpreadsheetReader.php');
+//require('/php-excel-reader/excel_reader2.php');
+//require('/php-excel-reader/SpreadsheetReader.php');
 if (!defined('BASEPATH'))
     exit('No direct script access allowed');
 
@@ -19,24 +19,23 @@ class Signals extends CommonController
     {
         //继承父类构造函数
         parent::__construct();
-
     }
 
-    public function temp($arr,$index)
+    public function temp($arr, $index)
     {
-        foreach($arr as $k=>$a){
-            if(empty($arr[$k][$index])){
-                $arr[$k][$index] = $arr[$k-1][$index];
+        foreach ($arr as $k => $a) {
+            if (empty($arr[$k][$index])) {
+                $arr[$k][$index] = $arr[$k - 1][$index];
             }
         }
-
         return $arr;
     }
 
 
     public function index()
     {
-        //数据格式化
+
+//      数据格式化
 //        $dbObj = $this->load->database('default', TRUE);
 //        $res = $dbObj->select('device_type,id')->get('signals_alert_standard')->result_array();
 //
@@ -262,22 +261,22 @@ class Signals extends CommonController
         array_push($data['bcList'], $bcObj);
 
         $dbObj = $this->load->database('default', TRUE);
-
         $dbObj->get('signals_map');
 
         //获取对应类型的设备
-        if (!empty($this->input->get('model'))) {
-            $dbObj->where('model', $this->input->get('model'));
-        }
+        $model = !empty($this->input->get('model')) ? $this->input->get('model') : 'camera';
+
+        $dbObj->where('model', $model);
+
         //type = 1 设备信号
         $signals = $dbObj->where('type', 1)->get('signals_map')->result();
         $data['signals'] = $signals;
+
         //对应设备信号名配置
         $data['standard_signals'] = $dbObj->where('type', 1)
             ->get('signals_standard')->result();
 
-
-        //t::f($signals);
+        $data['model'] =$model ;
         $scriptExtra = '';
         $scriptExtra .= '<script src="/public/js/signals/signals.js"></script>';
 
@@ -362,13 +361,14 @@ class Signals extends CommonController
         $dbObj->get('signals_map');
 
         //获取对应类型的设备
-        if (!empty($this->input->get('model'))) {
-            $dbObj->where('model', $this->input->get('model'));
-        }
+
+        $model = !empty($this->input->get('model')) ? $this->input->get('model') : 'camera';
+
         //type = 2 设备信号
-        $signals = $dbObj->where('type', 2)->get('signals_map')->result();
+        $signals = $dbObj->where('type', 2)->where('model',$model)->get('signals_map')->result();
 
         $data['signals'] = $signals;
+        $data['model'] = $model;
         //对应设备信号名配置
         $data['standard_signals'] = $dbObj->where('type', 2)
             ->get('signals_standard')->result();
@@ -420,12 +420,12 @@ class Signals extends CommonController
 
         //配置映射关系
         $post = $this->input->post();
-        if(!empty($post) ){
-            if(!empty($post['jimSignal']) && !empty($post['telSignal'])){
+        if (!empty($post)) {
+            if (!empty($post['jimSignal']) && !empty($post['telSignal'])) {
                 $jimSignal = $post['jimSignal'];
                 $telSignal = $post['telSignal'];
-                $dbObj->where('id',$jimSignal)
-                    ->set('signal_tel_id',$telSignal)
+                $dbObj->where('id', $jimSignal)
+                    ->set('signal_tel_id', $telSignal)
                     ->update('signals_alert_jim');
             }
             redirect('signals/alertConvergence');
@@ -453,11 +453,11 @@ class Signals extends CommonController
         $data['signalsTel'] = $signals_tel;
 
         //获取JIM告警信号表
-        $signals_jim = $dbObj->where('signal_tel_id is NULL',NULL,true)->get('signals_alert_jim')->result();
+        $signals_jim = $dbObj->where('signal_tel_id is NULL', NULL, true)->get('signals_alert_jim')->result();
         $data['signalsJim'] = $signals_jim;
 
         //获得已经配置过的信号
-        $signals_jim_configed = $dbObj->where('signal_tel_id is NOT NULL',NULL,false)
+        $signals_jim_configed = $dbObj->where('signal_tel_id is NOT NULL', NULL, false)
             ->get('signals_alert_jim')->result();
         $data['signalsConf'] = $signals_jim_configed;
 
@@ -478,8 +478,8 @@ class Signals extends CommonController
         $id = $post['id'];
 
         $dbObj = $this->load->database('default', TRUE);
-        $dbObj->where('id',$id)
-            ->set('signal_tel_id',null)
+        $dbObj->where('id', $id)
+            ->set('signal_tel_id', null)
             ->update('signals_alert_jim');
 
         echo 'true';

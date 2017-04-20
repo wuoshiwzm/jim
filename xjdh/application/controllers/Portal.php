@@ -29,8 +29,6 @@ class Portal extends CI_Controller
             User::Set_UserWebOnline($this->userObj->id);
         }
     }
-    
-    
 
 
     function isOauthPass()
@@ -48,8 +46,7 @@ class Portal extends CI_Controller
             $this->server->isValid();
             $this->user = User::GetUserById($this->server->getOwnerId());
             return true;
-        }
-        //处理异常
+        } //处理异常
         catch (League\OAuth2\Server\Exception\InvalidAccessTokenException $e) {
             return false;
         }
@@ -114,7 +111,7 @@ class Portal extends CI_Controller
         echo "current " . time() . " previous " . $memData . " offset :" . (time() - intval($memData));
 
     }
-    
+
     public function fix_alert_history()
     {
         $dbObj = $this->load->database('default', true);
@@ -157,27 +154,27 @@ class Portal extends CI_Controller
             echo "1000 done\n";
         } while (true);
     }
-    
-    public function tc ($dataId=0)
+
+    public function tc($dataId = 0)
     {
         $smd_device_no = 708;
         $city = 999;
-        $ret =  $this->mp_xjdh->Get_Max_data_id($smd_device_no);
-        if(!$ret->data_id){
+        $ret = $this->mp_xjdh->Get_Max_data_id($smd_device_no);
+        if (!$ret->data_id) {
             $head = $city << 22;
             //var_dump("aa").die;
             $var = sprintf('%u', $head);
             $mid = $smd_device_no << 10;
             $i = 1;
-            $ret = $head + $mid+$i;
-        }else{
+            $ret = $head + $mid + $i;
+        } else {
             $ret = $ret->data_id + 1;
         }
         var_dump($ret);
         die();
-    	//var_dump($this->mp_xjdh->Get_SMDDevice_By_LscStation(992,9920));
-    	//die;
-    	//加载驱动器
+        //var_dump($this->mp_xjdh->Get_SMDDevice_By_LscStation(992,9920));
+        //die;
+        //加载驱动器
         $this->load->driver('cache');
         //创建新对象
         $m810gDcObj = new stdClass();
@@ -209,7 +206,7 @@ class Portal extends CI_Controller
             $cityList = array_keys(json_decode($_SESSION['CITYLIST'], TRUE));
             $data['parentcode'] = $cityList[0];
         }
-        
+
         $scriptExtra = '<script src="/public/highmaps/js/highcharts.js"></script>';
         $scriptExtra .= '<script src="/public/highmaps/js/modules/map.js"></script>';
         $scriptExtra .= '<script src="/public/highmaps/js/modules/data.js"></script>';
@@ -217,7 +214,7 @@ class Portal extends CI_Controller
         $content = $this->load->view("portal/index", $data, TRUE);
         $this->mp_master->Show_Portal($content, $scriptExtra, '首页', $data);
     }
-    
+
     function door_manage()
     {
         if (!in_array($this->userObj->user_role, array("admin", "city_admin", "operator")))
@@ -234,7 +231,7 @@ class Portal extends CI_Controller
         $bcObj->title = '门禁权限管理';
         $bcObj->isLast = true;
         array_push($data['bcList'], $bcObj);
-        
+
         $data['cityCode'] = $cityCode = $this->input->get('selCity');
         $data['countyCode'] = $countyCode = $this->input->get('selCounty');
         $data['substationId'] = $substationId = $this->input->get('selSubstation');
@@ -251,7 +248,7 @@ class Portal extends CI_Controller
         if ($this->userObj->user_role != "admin") {
             $city_code = $this->userObj->city_code;
         }
-        
+
         $export = $this->input->get('export');
         if ($export == "exporttoexcel") {
             require 'resources/php-excel.class.php';
@@ -293,15 +290,15 @@ class Portal extends CI_Controller
         $scriptExtra = '<script type="text/javascript" src="/public/portal/js/door_manage.js"></script>';
         $this->mp_master->Show_Portal($content, $scriptExtra, '门禁权限管理', $data);
     }
-    
-    
+
+
     function _get_city_node($cityKey, $cityVal)
     {
         $cityNode = array();
         $cityUserNumber = 0;
         if (key_exists($cityKey, Defines::$gCounty)) {
             $cityNode['children'] = array();
-    
+
             foreach (Defines::$gCounty[$cityKey] as $countyKey => $countyVal) {
                 $countyNode = array();
                 $countyUserNumber = 0;
@@ -331,7 +328,7 @@ class Portal extends CI_Controller
         $cityNode['text'] = $cityVal . "(" . $cityUserNumber . ")";
         return $cityNode;
     }
-       
+
     function get_user_tree()
     {
         header('Content-type: application/json');
@@ -344,7 +341,7 @@ class Portal extends CI_Controller
         if ($this->userObj->user_role == "admin") {
             //未设置区域人员
             $cityNode = array();
-            
+
             $cityNode['children'] = array();
             $userList = $this->mp_xjdh->get_user_by_substation_id(0);
 
@@ -364,7 +361,7 @@ class Portal extends CI_Controller
         }
         echo json_encode(array('text' => '全网', 'children' => $areaTreeData));
     }
-    
+
     function revoke_user_door()
     {
         $user = User::GetCurrentUser();
@@ -374,7 +371,7 @@ class Portal extends CI_Controller
         header('Content-type: application/json');
         echo json_encode(array("ret" => 0));
     }
-    
+
     function door_set_check_time()
     {
         $data_id = $this->input->post('data_id');
@@ -395,7 +392,7 @@ class Portal extends CI_Controller
         header('Content-type: application/json');
         echo json_encode(array("ret" => 0));
     }
-    
+
     function user_add_door()
     {
         $user = User::GetCurrentUser();
@@ -597,11 +594,11 @@ class Portal extends CI_Controller
         $scriptExtra .= '<script type="text/javascript" src="/public/js/highcharts/highcharts.js"></script>';
         $scriptExtra .= '<script type="text/javascript" src="/public/js/highcharts/modules/exporting.js"></script>';
         $scriptExtra .= '<script type="text/javascript" src="/public/portal/js/powermeter_ec_compare.js"></script>';
-    
+
         $content = $this->load->view("portal/powermeter_ec_compare", $data, TRUE);
         $this->mp_master->Show_Portal($content, $scriptExtra, '能耗对比分析查询', $data);
     }
-    
+
     function powermeter_ec_link_relative_ratio()
     {
         //能耗同、环比查询
@@ -618,7 +615,7 @@ class Portal extends CI_Controller
         $bcObj->url = '/portal/powermeter_ec_link_relative_ratio';
         $bcObj->isLast = true;
         array_push($data['bcList'], $bcObj);
-    
+
         $data['cityCode'] = $cityCode = $this->input->get('selCity');
         $data['countyCode'] = $countyCode = $this->input->get('selCounty');
         $data['substationId'] = $substationId = $this->input->get('selSubstation');
@@ -689,11 +686,11 @@ class Portal extends CI_Controller
         $scriptExtra .= '<script type="text/javascript" src="/public/js/highcharts/highcharts.js"></script>';
         $scriptExtra .= '<script type="text/javascript" src="/public/js/highcharts/modules/exporting.js"></script>';
         $scriptExtra .= '<script type="text/javascript" src="/public/portal/js/powermeter_ec_link_relative_ratio.js"></script>';
-    
+
         $content = $this->load->view("portal/powermeter_ec_link_relative_ratio", $data, TRUE);
         $this->mp_master->Show_Portal($content, $scriptExtra, '能耗同、环比查询', $data);
     }
-    
+
     //同比，year basis 按年度比较
     function powermeter_ec_year_basis()
     {
@@ -745,7 +742,7 @@ class Portal extends CI_Controller
                     }
                 }
                 $data['ecBasicArray'] = $ecBasicArray;
-                
+
                 $ecArray = array();
                 for ($month = 1; $month <= 12; $month++) {
                     $endYearMonth = $ecBasicArray[$endYear][$month];
@@ -772,30 +769,30 @@ class Portal extends CI_Controller
             if ($export == "exporttoexcel") {
                 require 'resources/php-excel.class.php';
                 $record_offset = 0;
-                $PAGE_SIZE=2000;
+                $PAGE_SIZE = 2000;
                 $xls = new Excel_XML('UTF-8', false, '能耗同比报表');
-                $xls->addRow(array("年度","","能耗",""));
-                foreach($yearArray as $key=>$val){
-                	$xls->addRow(array($key,"",$val,""));
+                $xls->addRow(array("年度", "", "能耗", ""));
+                foreach ($yearArray as $key => $val) {
+                    $xls->addRow(array($key, "", $val, ""));
                 }
-                $xls->addRow(array("年度","月份","能耗"));
-                for($i = 1; $i<=12; $i++){
-                	$xls->addRow(array($startYear, $i, $ecBasicArray[$startYear][$i]));
+                $xls->addRow(array("年度", "月份", "能耗"));
+                for ($i = 1; $i <= 12; $i++) {
+                    $xls->addRow(array($startYear, $i, $ecBasicArray[$startYear][$i]));
                 }
-                $xls->addRow(array("年度","月份","能耗"));
-                for($i = 1; $i<=12; $i++){
-                	$xls->addRow(array($endYear, $i, $ecBasicArray[$endYear][$i]));
+                $xls->addRow(array("年度", "月份", "能耗"));
+                for ($i = 1; $i <= 12; $i++) {
+                    $xls->addRow(array($endYear, $i, $ecBasicArray[$endYear][$i]));
                 }
-                $xls->addRow(array("年度","月份","同比增长率（%）"));
-                for($i = 1; $i<=12; $i++){
-                	$endYearMonth = $ecBasicArray[$endYear][$month];
-	                $startYearMonth = $ecBasicArray[$startYear][$month];
-	                if($endYearMonth && $startYearMonth){
-	                	$ecBasic = ($endYearMonth-$startYearMonth)/$startYearMonth*100;
-	                }else{
-	                	$ecBasic = "无同比增长率";
-	                }
-	                $xls->addRow(array($startYear."-".$endYear, $i, $ecBasic));
+                $xls->addRow(array("年度", "月份", "同比增长率（%）"));
+                for ($i = 1; $i <= 12; $i++) {
+                    $endYearMonth = $ecBasicArray[$endYear][$month];
+                    $startYearMonth = $ecBasicArray[$startYear][$month];
+                    if ($endYearMonth && $startYearMonth) {
+                        $ecBasic = ($endYearMonth - $startYearMonth) / $startYearMonth * 100;
+                    } else {
+                        $ecBasic = "无同比增长率";
+                    }
+                    $xls->addRow(array($startYear . "-" . $endYear, $i, $ecBasic));
                 }
                 header('Content-Type: application/vnd.ms-excel');
                 header('Content-Disposition: attachment;filename="能耗同比报表.xls"');
@@ -804,8 +801,8 @@ class Portal extends CI_Controller
                 return;
             }
         }
-        
-        
+
+
         $substationList = $this->mp_xjdh->Get_Substations(false, false);
         $deviceLists = $this->mp_xjdh->Get_deviceDataId();
         $roomList = $this->mp_xjdh->get_roompr();
@@ -827,7 +824,7 @@ class Portal extends CI_Controller
         $scriptExtra .= '<script type="text/javascript" src="/public/js/highcharts/highcharts.js"></script>';
         $scriptExtra .= '<script type="text/javascript" src="/public/js/highcharts/modules/exporting.js"></script>';
         $scriptExtra .= '<script type="text/javascript" src="/public/portal/js/powermeter_ec_year_basis.js"></script>';
-        
+
         $content = $this->load->view("portal/powermeter_ec_year_basis", $data, TRUE);
         $this->mp_master->Show_Portal($content, $scriptExtra, '能耗同比（趋势）查询', $data);
     }
@@ -848,7 +845,7 @@ class Portal extends CI_Controller
         $bcObj->url = '/portal/powermeter_ec_struct';
         $bcObj->isLast = true;
         array_push($data['bcList'], $bcObj);
-        
+
         $data['cityCode'] = $cityCode = $this->input->get('selCity');
         $data['countyCode'] = $countyCode = $this->input->get('selCounty');
         $data['substationId'] = $substationId = $this->input->get('selSubstation');
@@ -897,28 +894,27 @@ class Portal extends CI_Controller
             $data['air'] = $air;
             $data['other'] = $other;
         }
-        
+
         $export = $this->input->get('export');
-        if($export == "exporttoexcel")
-        {
-        	require 'resources/php-excel.class.php';
-        		
-        	$record_offset = 0;
-        	$PAGE_SIZE=2000;
-        	$xls = new Excel_XML('UTF-8', false, '能耗报表');
-        	$xls->addRow(array("时间段","分公司","区域","市电进入（Kw.h）", "主设备（Kw.h）", "空调（Kw.h）", "其他（Kw.h）"));
-        	$xls->addRow(array(
-        		$dateRangeArr[0]." ".$dateRangeArr[0], Defines::$gCity[$cityCode], Defines::$gCounty[$cityCode][$countyCode], $total, $main, $air, $other
-        	));
-        		
-        	header('Content-Type: application/vnd.ms-excel');
-        	header('Content-Disposition: attachment;filename="能耗报表.xls"');
-        	header('Cache-Control:must-revalidate,post-check=0,pre-check=0');
-        	header('Expires:0');
-        	header('Pragma:public');
-        	header('Cache-Control: max-age=1');
-        	$xls->generateXML('能耗报表');
-        	return;
+        if ($export == "exporttoexcel") {
+            require 'resources/php-excel.class.php';
+
+            $record_offset = 0;
+            $PAGE_SIZE = 2000;
+            $xls = new Excel_XML('UTF-8', false, '能耗报表');
+            $xls->addRow(array("时间段", "分公司", "区域", "市电进入（Kw.h）", "主设备（Kw.h）", "空调（Kw.h）", "其他（Kw.h）"));
+            $xls->addRow(array(
+                $dateRangeArr[0] . " " . $dateRangeArr[0], Defines::$gCity[$cityCode], Defines::$gCounty[$cityCode][$countyCode], $total, $main, $air, $other
+            ));
+
+            header('Content-Type: application/vnd.ms-excel');
+            header('Content-Disposition: attachment;filename="能耗报表.xls"');
+            header('Cache-Control:must-revalidate,post-check=0,pre-check=0');
+            header('Expires:0');
+            header('Pragma:public');
+            header('Cache-Control: max-age=1');
+            $xls->generateXML('能耗报表');
+            return;
         }
 
         $substationList = $this->mp_xjdh->Get_Substations(false, false);
@@ -942,11 +938,11 @@ class Portal extends CI_Controller
         $scriptExtra .= '<script type="text/javascript" src="/public/js/highcharts/highcharts.js"></script>';
         $scriptExtra .= '<script type="text/javascript" src="/public/js/highcharts/modules/exporting.js"></script>';
         $scriptExtra .= '<script type="text/javascript" src="/public/portal/js/powermeter_ec_structure.js"></script>';
-        
+
         $content = $this->load->view("portal/powermeter_ec_struct", $data, TRUE);
         $this->mp_master->Show_Portal($content, $scriptExtra, '能耗结构图查询', $data);
     }
-    
+
     //EC Energy Consumption 能耗
     function powermeter_ec_history()
     {
@@ -964,7 +960,7 @@ class Portal extends CI_Controller
         $bcObj->url = '/portal/powermeter_ec_history';
         $bcObj->isLast = true;
         array_push($data['bcList'], $bcObj);
-        
+
         $data['cityCode'] = $cityCode = $this->input->get('selCity');
         $data['countyCode'] = $countyCode = $this->input->get('selCounty');
         $data['substationId'] = $substationId = $this->input->get('selSubstation');
@@ -992,11 +988,10 @@ class Portal extends CI_Controller
                 $record_offset = 0;
                 $PAGE_SIZE = 2000;
                 $xls = new Excel_XML('UTF-8', false, '能耗分析模型');
-                $xls->addRow(array("日期","A相电能","B相电能","C相电能","合相电能"));
-                foreach($data['powerDataList'] as $powerDataObj)
-                {
+                $xls->addRow(array("日期", "A相电能", "B相电能", "C相电能", "合相电能"));
+                foreach ($data['powerDataList'] as $powerDataObj) {
                     $xls->addRow(array(
-                            $powerDataObj->_id['Date'], $powerDataObj->epa_sum,$powerDataObj->epb_sum,$powerDataObj->epc_sum,$powerDataObj->ept_sum
+                        $powerDataObj->_id['Date'], $powerDataObj->epa_sum, $powerDataObj->epb_sum, $powerDataObj->epc_sum, $powerDataObj->ept_sum
                     ));
                 }
                 header('Content-Type: application/vnd.ms-excel');
@@ -1006,8 +1001,8 @@ class Portal extends CI_Controller
                 return;
             }
         }
-        
-        
+
+
         $substationList = $this->mp_xjdh->Get_Substations(false, false);
         $deviceLists = $this->mp_xjdh->Get_deviceDataId();
         $roomList = $this->mp_xjdh->get_roompr();
@@ -1016,7 +1011,7 @@ class Portal extends CI_Controller
         $data['roomList'] = $roomList;
         $data['pagination'] = $this->mp_paging->Show(Util::Build_Page_Base("portal/powermeter_ec_history"), $count, DEFAULT_PAGE_SIZE, 3, TRUE);
         $scriptExtra = '<link rel="stylesheet" href="/public/js/jstree/themes/default/style.min.css"/>';
-        
+
         $scriptExtra .= '<script type="text/javascript" src="/public/js/tiny_mce/tinymce.min.js"></script>';
         $scriptExtra .= '<script type="text/javascript" src="/public/js/jquery.validate.js"></script>';
         $scriptExtra .= '<script type="text/javascript" src="/public/js/validate-extend.js"></script>';
@@ -1028,10 +1023,10 @@ class Portal extends CI_Controller
         $scriptExtra .= '<link rel="stylesheet" href="/public/css/daterangepicker-bs2.css"/>';
         $scriptExtra .= '<script type="text/javascript" src="/public/js/daterangepicker.js"></script>';
         $scriptExtra .= '<script type="text/javascript" src="/public/portal/js/powermeter_history.js"></script>';
-        
+
         $content = $this->load->view("portal/powermeter_ec_history", $data, TRUE);
         $this->mp_master->Show_Portal($content, $scriptExtra, '能耗历史数据查询', $data);
-        
+
     }
 
     //powermeter
@@ -1092,8 +1087,8 @@ class Portal extends CI_Controller
         }
         echo json_encode($nodeArray);
     }
-    
-    
+
+
     function get_device_history_tree()
     {
         header('Content-Type: application/json');
@@ -1151,9 +1146,9 @@ class Portal extends CI_Controller
         }
         echo json_encode($nodeArray);
     }
-    
+
     function powermeter_history()
-    {    	
+    {
         $data = array();
         $data['actTab'] = 'performance';
         $data['bcList'] = array();
@@ -1166,11 +1161,11 @@ class Portal extends CI_Controller
         $bcObj->url = '/portal/powermeter_history';
         $bcObj->isLast = true;
         array_push($data['bcList'], $bcObj);
-        
+
         $data['offset'] = $offset = intval($this->input->get('per_page'));
-        
+
         $data['data_id'] = $data_id = $this->input->get("data_id");
-       
+
         $data['dataObj'] = $this->mp_xjdh->Get_Device($data_id);
         $data['dateRange'] = $dateRange = $this->input->get('dateRange');
         //explode('分割付','字符串')把字符串分割为数组
@@ -1212,7 +1207,7 @@ class Portal extends CI_Controller
                 return;
             }
         }
-    	$data['pagination'] = $this->mp_paging->Show(Util::Build_Page_Base("portal/powermeter_history"), $count, DEFAULT_PAGE_SIZE, 3, TRUE);
+        $data['pagination'] = $this->mp_paging->Show(Util::Build_Page_Base("portal/powermeter_history"), $count, DEFAULT_PAGE_SIZE, 3, TRUE);
         $scriptExtra = '<link rel="stylesheet" href="/public/js/jstree/themes/default/style.min.css"/>';
         $scriptExtra .= '<script type="text/javascript" src="/public/js/tiny_mce/tinymce.min.js"></script>';
         $scriptExtra .= '<script type="text/javascript" src="/public/js/jquery.validate.js"></script>';
@@ -1230,240 +1225,244 @@ class Portal extends CI_Controller
         $this->mp_master->Show_Portal($content, $scriptExtra, '电表历史数据查询', $data);
     }
 
-function device_history ()
+    function device_history()
     {
-    	$data = array();
-    	$data['actTab'] = 'charts';
-    	$data['bcList'] = array();
+        $data = array();
+        $data['actTab'] = 'charts';
+        $data['bcList'] = array();
 
-    	$bcObj = new Breadcrumb();
-    	$bcObj->title = '统计报表';
-    	$bcObj->url = '#';
-    	array_push($data['bcList'], $bcObj);
-    	$bcObj = new Breadcrumb();
-    	$bcObj->title = '设备历史数据查询';
-    	$bcObj->url = '/portal/powermeter_history';
-    	$bcObj->isLast = true;
-    	array_push($data['bcList'], $bcObj);
+        $bcObj = new Breadcrumb();
+        $bcObj->title = '统计报表';
+        $bcObj->url = '#';
+        array_push($data['bcList'], $bcObj);
+        $bcObj = new Breadcrumb();
+        $bcObj->title = '设备历史数据查询';
+        $bcObj->url = '/portal/powermeter_history';
+        $bcObj->isLast = true;
+        array_push($data['bcList'], $bcObj);
 
-    	$data['offset'] = $offset = intval($this->input->get('per_page'));
-    	$data['data_id'] = $data_id = $this->input->get("data_id");
-    	$data['dataObj'] = $dataObj = $this->mp_xjdh->Get_Device($data_id);
-    	$data['model'] = $model = $dataObj->model;
-    	$data['dateRange'] = $dateRange = $this->input->get('dateRange');
-    	$dateRangeArr = explode('至', $dateRange);
-    	
-    	$devModelArray = $this->_get_device_model_name();
-    	$data['devModelName'] = $devModelName = $devModelArray[$model];
-    	$reportName = Defines::$gDevModel[$model]."历史数据";
-    	
-    	$data['startTime'] = $startTime = $dateRangeArr[0];
-    	$data['endTime'] = $endTime = $dateRangeArr[1];
-    	
-    	if(!empty($data_id) && count($dateRangeArr) == 2)
-    	{
-      		$this->load->library("mongo_db");
-      		$data['count'] = $count = $this->mp_xjdh->Get_Device_History_Count($model,$data_id,$dateRangeArr[0],$dateRangeArr[1]);
-      		$data['powerDataList'] = $powerDataList = $this->mp_xjdh->Get_Device_History_List($model, $data_id,$dateRangeArr[0],$dateRangeArr[1],$offset,DEFAULT_PAGE_SIZE);
-    		$export = $this->input->get('export');	
-    		if($export == "exporttoexcel")
-    		{
-    			require 'resources/php-excel.class.php';
-    			$record_offset = 0;
-    			$PAGE_SIZE = 2000;
-    			$xls = new Excel_XML('UTF-8', false);
-    		
-    			if(in_array($model,array('power_302a'))){
-    				$xls->addRow(array("采集时间","A相功率","B相功率","C相功率","合相功率","A相无功功率","B相无功功率","C相无功功率","合相无功功率","A相视在功率","B相视在功率","C相视在功率","合相视在功率","A相有功功率","B相有功功率","C相有功功率","合相有功功率","A相无功功率","B相无功功率","C相无功功率","合相无功功率",
-    						"A相电压","B相电压","C相电压","A相电流","B相电流","C相电流","合相电流","A相有功电压","B相有功电压","C相有功电压","A相有功电流","B相有功电流","C相有功电流","A相功率因数","B相功率因数","C相功率因数","合相功率因数","频率","A相电能","B相电能","C相电能","合相电能","A相无功电能","B相无功电能",
-    						"C相无功电能","合相无功电能","A相视在电能","B相视在电能","C相视在电能","合相视在电能","A相有功电能","B相有功电能","C相有功电能","合相有功电能"));
-    			}else if(in_array($model,array('battery_24','battery_32'))){
-    				$xls->addRow(array("采集时间","数据ID","蓄电池总电压","电流","温度","单体电压"));
-    			}else if(in_array($model,array('humid','temperature','water','battery24_voltage'))){
-    				$xls->addRow(array("采集时间","数据ID","数值"));
-    			}else if(in_array($model,array('fresh_air'))){    
-    				$xls->addRow(array('采集时间','数据ID','室内温度1','室内温度2','室内温度3','室内温度4','室内温度5','室内湿度1','室内湿度2','室内湿度3','室内湿度4','室内湿度5','出风温度','出风湿度',
-     						'室外温度','室外湿度','加湿器电流','平均温度','平均湿度','最高室内温度','湿帘加湿水泵','外部空调','温度设定点','湿度设定点','高温告警点','低温告警点','高湿报警点','低湿报警点'));
-    			}else if(strpos($model,"-ac")!== false){
-    				$xls->addRow(array("采集时间","数据ID","A相电流","B相电流","C相电流","交流输入路数","开关数量","开关状态","p40_43_count","p40_43","A相输入电流告警","B相输入电流告警","C相输入电流告警"));
-    			}else if(strpos($model,"-dc")!== false){
-    				$xls->addRow(array("采集时间","数据ID","直流输出电压","负载总电流","电池分路电流数量","dc_i","n","channelArray","用户自定义测量数","p","直流告警电压","alert_m_count","alert_m","直流告警功率数量","直流告警功率"));
-    			}else if(strpos($model,"-rc")!== false){
-    				$xls->addRow(array("采集时间","数据ID","vu","vl","iu","fu","fl","整流输出电压最大值","整流输出电压最小值","param_num","param","整流输出电压","channel_count"));
-    			}else if(in_array($model,array('psm-6'))){   
-    				$xls->addRow(array ('采集时间','数据ID',"交流输入类型","输入交流过压保护值(V)","输入交流低压保护值(V)","配电输出总数","电源系统整流模块总数","电池总数(组)","电池容量(Ah)","浮充电压(V)","均充电压(V)","均充时间间隔(天)","均充定时时间(小时)","充电系数","馈线电阻(mΩ)",
-    						"电流充电限流值(A)","均浮充转换电流(A)","电池欠压报警值","电池欠压保护值","电池欠压是否自动保护","配电监控单元地址(00-99)","配电输出1路","配电输出2路","配电输出3路","配电输出4路","配电输出5路","配电输出6路","配电输出7路","配电输出8路","配电输出9路","配电输出10路","配电输出11路"
-    						,"配电输出12路","配电输出13路","配电输出14路","配电输出15路","配电输出16路","配电输出17路","配电输出18路","配电输出19路","配电输出20路","电源系统整流模块1","电源系统整流模块2","电源系统整流模块3","电源系统整流模块4","电源系统整流模块5","电源系统整流模块6","电源系统整流模块7","电源系统整流模块8","电源系统整流模块9","电源系统整流模块10"));
-    			}else if(in_array($model,array('aeg-ms10se'))){ 
-    				$xls->addRow(array('采集时间','数据ID','频率F','相电压V1','相电压V2','相电压V3','相电压均值Vvavg','线电压V12','线电压V23','线电压V31','线电压均值Vlavg','相（线）电流I1','相（线）电流I2','相（线）电流I3','三相电流均值Iavg','中线电流In','分相有功功率P1','分相有功功率P2','分相有功功率P3','系统有功功率Psum','分相无功功率Q1',
-    						'分相无功功率Q2','分相无功功率Q3','系统无功功率Qsum','分相视在功率S1','分相视在功率S2','分相视在功率S3','系统视在功率Ssum','分相功率因数PF1','分相功率因数PF2','分相功率因数PF3','系统有功功率Psum2','系统无功功率Qsum2','系统视在功率Ssum2','有功电度 Ep_imp','感性无功电度 Eq_imp','有功电度 Ep_exp','容性无功电度 Eq_exp',
-    						'总有功电度 Ep_total','净有功电度 Ep_net','总电度 Eq_total','净无功电度 Eq_net','DI1','DI2','DI3','DI4','DI5','DI6','DO1','DO2','DO3','DO4','DO5','DO6'));
-    			}else if(in_array($model,array('datamate3000'))){  
-    				$xls->addRow(array('采集时间',"数据ID",'室内温度','室内湿度','室外温度','空调开关机状态','开机温度','关机湿度','温度设定点','温度偏差','湿度设定点','湿度偏差', '开/关机状态','风机状态','制冷状态','加热状态','加湿状态','除湿状态','高压锁定状态','低压锁定状态','排气锁定状态','高压报警','低压报警','高压温度告警','低压温度告警','高湿度告警','低湿度告警','电源故障报警',
-    						'短周期报警','用户自定义1报警','用户自定义2报警','主风机维护报警','加湿器维护报警','过滤网维护报警','通讯故障报警','盘管冻结报警','加湿器故障报警','传感器板丢失报警','排气温度故障报警','电源丢失故障报警','电源过欠压报警','电源缺相报警','电源频率偏移报警','地板溢水报警'));
-    			}else if(in_array($model,array('liebert-ups'))){  
-    				$xls->addRow(array("采集时间","数据ID",));
-    			}else if(in_array($model,array('ug40'))){    
-    				$xls->addRowarray("采集时间","数据ID","系统运行","压缩机1","压缩机2","压缩机3","压缩机4","加热器1","加热器2","热风","除湿","应急工作","错误密码报警","高温报警","低温报警","高湿度报警","低湿度报警","温湿度传感器","过滤器","漏水报警","气流报警","加热器过热","高压电路1","高压电路2","低压电路1","低压电路2",'电路1电流值','电路2电流值',"气流丢失","水流丢失","连续波温度过高对除湿","连续波阀故障或水流过低",
-    						"水流报警","室内空气传感器/断开连接失败","热水温度传感器/断开连接失败","冷冻水温度传感器/断开连接失败","室外温度传感器/断开连接失败","交付空气温度传感器/断开连接失败","房间的湿度传感器/断开连接失败","冷冻水出口Temp.Sensor失败/断开连接","压缩机1:小时计数器阈值报警","压缩机2:小时计数器阈值报警","压缩机3:小时计数器阈值报警","压缩机4:小时计数器阈值报警","空气过滤器:小时计数器阈值报警","加热器1:小时计数器阈值报警",
-    						"加热器2:小时计数器阈值报警","加湿器:小时计数器阈值报警","空调机组:小时计数器阈值报警","警报通过数字输入2","警报通过数字输入4","警报通过数字输入6","加湿器通用报警","单位在报警","单位在旋转报警","单位在报警A型","单位在报警B型","单位在报警C型","DX /连续波开关TC单位","夏季/冬季开关","单位开/关开关","蜂鸣器报警单元复位","过滤器运行小时重置","压缩机运行1小时重置","压缩机运行2小时重置","压缩机运行3小时重置",
-    						"压缩机运行4小时重置","压缩机1开始重置","压缩机2开始重置","压缩机3开始重置","压缩机4开始重置","加热器运行1小时重置","加热器运行2小时重置","加热器1开始重置","加热器2开始重置","增湿器运行小时重置","增湿器开始重置","单位运行时间重置","挫折模式(睡眠模式)","睡眠模式测试 ","平均值","备用单元","第2单元旋转报警","第3单元旋转报警","第4单元旋转报警","第5单元旋转报警","第6单元旋转报警","第7单元旋转报警","第8单元旋转报警",
-    					    "第9单元旋转报警","第10单元旋转报警","房间温度","室外温度","交付空气温度","冷水温度","热水温度","房间相对湿度","出口冷冻水温度","电路1蒸发压力","电路2蒸发压力","电路1吸入温度","电路2吸入温度","电路1蒸发温度","电路2蒸发温度","电路1过热","电路2过热","冷水阀坡道","热水出水阀坡道","蒸发风扇转速","冷却定位点","冷却的敏感性","第二个冷却定位点","加热定位点","第二次加热定位点","听力敏感性","房间温度高报警阈值",
-    						"室温低报警阈值","挫折模式:冷却定位点","挫折模式:加热定位点","连续波选点开始除湿","连续波高温报警阈值","连续波选点开始连续波操作模式(只有TC单位)","Radcooler定位点在节能模式","Radcooler定位点在DX模式","排气温度下限设定值","自动均值/局部转换的三角洲温度","串行传输抵消","局域网单元二室温","局域网单元三室温","局域网单元四室温","局域网单元五室温","局域网单元六室温","局域网单元七室温","局域网单元八室温",
-    						"局域网单元九室温","局域网单元十室温","二单元保温室","三单元保温室","四单元保温室","五单元保温室","六单元保温室","七单元保温室","八单元保温室","九单元保温室","十单元保温室","空气过滤器","运行单位","空压机1运行","空压机2运行","空压机3运行","空压机4运行","加热器1运行","加热器2运行","加湿器运行","除湿器支撑带","加湿器支撑带",
-    						"高湿度报警阈值","低湿度报警阈值","除湿定位点","除湿定位点逆流模式","加湿定位点","加湿定位点逆流模式","重新启动延迟","低压延迟","温度/湿度限制告警延迟","防震荡常数","备用循环基准时间","局域网的数量单位","电路1电子阀的位置","电路2电子阀的位置");
-    			}
-    			while(true)
-    			{
-    				$data['powerDataList'] = $powerDataList = $this->mp_xjdh->Get_Device_History_List($model,$data_id, $dateRangeArr[0], $dateRangeArr[1],$record_offset, $PAGE_SIZE);
-    				foreach($data['powerDataList'] as $key => $powerDataObj)
-    				{
-    					if(in_array($model,array('power_302a'))){
-    						$xls->addRow(array(
-    								$powerDataObj->Date." ".$powerDataObj->Time,$powerDataObj->pa,$powerDataObj->pb,$powerDataObj->pc,$powerDataObj->pt,
-    								$powerDataObj->qa,$powerDataObj->qb,$powerDataObj->qc,$powerDataObj->qt,$powerDataObj->sa,$powerDataObj->sb,$powerDataObj->sc,$powerDataObj->st, 
-    								$powerDataObj->linePa,$powerDataObj->linePb,$powerDataObj->linePc,$powerDataObj->linePt,$powerDataObj->lineQa,$powerDataObj->lineQb,
-    								$powerDataObj->lineQc,$powerDataObj->lineQt,$powerDataObj->uaRms,$powerDataObj->ubRms,$powerDataObj->ucRms,$powerDataObj->utRms,$powerDataObj->iaRms,
-    								$powerDataObj->ibRms,$powerDataObj->icRms,$powerDataObj->itRms,$powerDataObj->luaRms,$powerDataObj->lubRms,$powerDataObj->lucRms,$powerDataObj->liaRms,
-    								$powerDataObj->libRms,$powerDataObj->licRms,$powerDataObj->pfa,$powerDataObj->pfb,$powerDataObj->pfc,$powerDataObj->pft,$powerDataObj->freq,$powerDataObj->epa,
-    								$powerDataObj->epb,$powerDataObj->epc,$powerDataObj->ept,$powerDataObj->eqa,$powerDataObj->eqb,$powerDataObj->eqc,$powerDataObj->eqt,$powerDataObj->esa,
-    								$powerDataObj->esb,$powerDataObj->esc,$powerDataObj->est,$powerDataObj->lineEpa,$powerDataObj->lineEpb,$powerDataObj->lineEpc,$powerDataObj->lineEpt
-    						));
-    					}else if(in_array($model,array('battery_24','battery_32'))){   	
-                                    $n = count($powerDataObj->battery_voltage); $single = array(); $device_history = array(); $result = array();                       
-	                            	for($i = 0; $i<$n; $i++){
-	                            		array_push($single,$powerDataList[$key]->battery_voltage[$i]);
-	                            	}
-	                            	array_push($device_history,$powerDataObj->Date." ".$powerDataObj->Time, $powerDataObj->data_id, $powerDataObj->voltage, $powerDataObj->current,$powerDataObj->temperature);
-	                            	$result = array_merge($device_history,$single);
-	                            	$xls->addRow($result);
-    					}else if(in_array($model,array('humid','temperature','water','battery24_voltage'))){
-    						$xls->addRow(array(
-    								$powerDataObj->Date." ".$powerDataObj->Time, $powerDataObj->data_id, $powerDataObj->value
-    						));
-    					}else if(in_array($model,array('fresh_air'))){
-    						$xls->addRow(array(
-    								$powerDataObj->Date." ".$powerDataObj->Time, $powerDataObj->data_id, $powerDataObj->temperature1, $powerDataObj->temperature2, $powerDataObj->temperature3,
-    								$powerDataObj->temperature4,$powerDataObj->temperature5, $powerDataObj->humidity1, $powerDataObj->humidity2,$powerDataObj->humidity3,$powerDataObj->humidity4, 
-    								$powerDataObj->humidity5, $powerDataObj->wind_temperature,$powerDataObj->wind_humidity,$powerDataObj->outside_temperature, $powerDataObj->outside_humidity, 
-    								$powerDataObj->humidifier_current,$powerDataObj->average_temperature,$powerDataObj->average_humidity,$powerDataObj->highest_temperature,$powerDataObj->runstate_pump, 
-    								$powerDataObj->runstate_ac, $powerDataObj->setting_temperature,$powerDataObj->setting_humidity, $powerDataObj->high_temperature_alert, 
-    								$powerDataObj->low_temperature_alert, $powerDataObj->high_humidity_alert,$powerDataObj->low_humidity_alert	
-    						));
-    					}else if(strpos($model,"-ac")!== false){
-    						$xls->addRow(array(
-    								$powerDataObj->Date." ".$powerDataObj->Time, $powerDataObj->data_id,
-    								$powerDataObj->ia, $powerDataObj->ib, $powerDataObj->ic,
-    								$powerDataObj->channel_count, $powerDataObj->airlock_count, 
-    								'('.$powerDataObj->airlock_status['$binary'].','.$powerDataObj->airlock_status['$type'].')',
-    								$powerDataObj->p40_43_count, '('.$powerDataObj->p40_43['$binary'].','.$powerDataObj->p40_43['$type'].')', 
-    								'('.$powerDataObj->ia_alert['$binary'].','.$powerDataObj->ia_alert['$type'].')',
-    								'('.$powerDataObj->ib_alert['$binary'].','.$powerDataObj->ib_alert['$type'].')', 
-    								'('.$powerDataObj->ic_alert['$binary'].','.$powerDataObj->ic_alert['$type'].')'
-    						));
-    					}else if(strpos($model,"-dc")!== false){
-    						$xls->addRow(array(
-    								$powerDataObj->Date." ".$powerDataObj->Time,$powerDataObj->data_id,
-    								$powerDataObj->v, $powerDataObj->i, $powerDataObj->m,$powerDataObj->dc_i, 
-    								$powerDataObj->n, $powerDataObj->channelArray,$powerDataObj->p_count,
-    								'('.$devObj->alert_v['$binary'].','.$devObj->alert_v['$type'].')', 
-    								'('.$devObj->alert_m_count['$binary'].','.$devObj->alert_m_count['$type'].')',
-    							    '('.$devObj->alert_m['$binary'].','.$devObj->alert_m['$type'].')', 
-    								'('.$devObj->alert_p_count['$binary'].','.$devObj->alert_p_count['$type'].')', 
-    								'('.$devObj->alert_p['$binary'].','.$devObj->alert_p['$type'].')'
-    						));
-    					}else if(strpos($model,"-rc")!== false){
-    						$xls->addRow(array(
-    								$powerDataObj->Date." ".$powerDataObj->Time,$powerDataObj->data_id,$powerDataObj->vu, 
-    								$powerDataObj->vl, $powerDataObj->iu,$powerDataObj->fu, $powerDataObj->fl, $powerDataObj->out_v_high,
-    								$powerDataObj->out_v_low, $powerDataObj->param_num,'('.$devObj->param['$binary'].','.$devObj->param['$type'].')',
-    								$powerDataObj->out_v, $powerDataObj->channel_count
-    						));
-    					}else if(in_array($model,array('psm-6'))){
-    						$output_num = array(); $rc_model_addrs = array(); $device_history = array(); $result = array(); 
-    						for($i=0;$i<20;$i++){
-    							array_push($output_num, $powerDataObj->output_num[$i]);
-    						}
-    						for($i=0;$i<10;$i++){
-    							array_push($rc_model_addrs, $powerDataObj->rc_model_addrs[$i]);
-    						}
-    						array_push($device_history,$powerDataObj->Date." ".$powerDataObj->Time,$powerDataObj->data_id,$powerDataObj->ac_type, $powerDataObj->p_in_v_max_limiting,
-    								$powerDataObj->p_in_v_min_limiting,$powerDataObj->output_count,$powerDataObj->rc_model_count,
-    								$powerDataObj->battery_count, $powerDataObj->battery_capacity,$powerDataObj->charge_float_v,$powerDataObj->charge_average_v, 
-    								$powerDataObj->charge_average_timer, $powerDataObj->charge_average_time,$powerDataObj->charge_modulus,$powerDataObj->feeder_resistance,
-    							    $powerDataObj->charge_limit_i, $powerDataObj->charge_average_trans_i,$powerDataObj->low_battery_alert_v,$powerDataObj->low_battery_protect_v, 
-    								$powerDataObj->low_battery_autoprotect, $powerDataObj->dev_addr);
-    						$result = array_merge($device_history,$output_num,$rc_model_addrs);    						
-    						$xls->addRow($result);
-    					}else if(in_array($model,array('aeg-ms10se'))){
-    						$di = array(); $do= array(); $device_history = array(); $result = array();
-    						for($i=0;$i<6;$i++){
-    							array_push($di, $powerDataObj->di[$i]);
-    							array_push($do, $powerDataObj->d_o[$i]);
-    						}
-    						array_push($device_history,$powerDataObj->Date." ".$powerDataObj->Time,$powerDataObj->data_id,$powerDataObj->f,$powerDataObj->v1, $powerDataObj->v2, $powerDataObj->v3,$powerDataObj->vvavg,$powerDataObj->v12, $powerDataObj->v23, $powerDataObj->v31,$powerDataObj->vlavg,$powerDataObj->i1,
-    						        $powerDataObj->i2, $powerDataObj->i3,$powerDataObj->iavg,$powerDataObj->in, $powerDataObj->p1, $powerDataObj->p2,$powerDataObj->p3,$powerDataObj->psum, $powerDataObj->q1, $powerDataObj->q2,$powerDataObj->q3,$powerDataObj->qsum, $powerDataObj->s1, $powerDataObj->s2,
-    						        $powerDataObj->s3,$powerDataObj->ssum, $powerDataObj->pf1, $powerDataObj->pf2,$powerDataObj->pf3,$powerDataObj->psum2, $powerDataObj->qsum2, $powerDataObj->ssum2,$powerDataObj->ep_imp,$powerDataObj->eq_imp, $powerDataObj->ep_exp,$powerDataObj->eq_exp,$powerDataObj->ep_total,
-    						        $powerDataObj->ep_net,$powerDataObj->eq_total, $powerDataObj->eq_net);
-    						$result = array_merge($device_history,$di,$do);
-    						$xls->addRow($result);
-    					}else if(in_array($model,array('datamate3000'))){
-    						$xls->addRow(array(
-    								$powerDataObj->Date." ".$powerDataObj->Time,$powerDataObj->data_id,$powerDataObj->room_temp, $powerDataObj->room_humid, $powerDataObj->outdoor_temp,$powerDataObj->air_state = "1" ? "开机" : "关机", $powerDataObj->temperature, $powerDataObj->humidity,$powerDataObj->set_temp,
-    								$powerDataObj->temp_pric, $powerDataObj->set_humid,$powerDataObj->humid_pric, $powerDataObj->switch_status = "1" ? "开机":"关机", $powerDataObj->fan_status = "1" ? "开机":"关机",$powerDataObj->cool_status = "1" ? "开机":"关机", $powerDataObj->heat_status = "1" ? "开机":"关机", 
-    								$powerDataObj->humid_status = "1" ? "开机":"关机",$powerDataObj->dehumid_status = "1" ? "开机":"关机",$powerDataObj->high_press_alarm = "1"?"已锁定":"未锁定",$powerDataObj->low_press_alarm = "1"?"已锁定":"未锁定", $powerDataObj->exhaust_lock = "1"?"已锁定":"未锁定", 
-    								$powerDataObj->high_press_alarm = "1" ? "告警" : "正常", $powerDataObj->low_press_alarm = "1" ? "告警" : "正常",$powerDataObj->high_temp_alarm = "1" ? "告警" : "正常", $powerDataObj->low_temp_alarm = "1" ? "告警" : "正常",$powerDataObj->high_humid_alarm, $powerDataObj->low_humid_alarm,
-    								$powerDataObj->power_failer_alarm = "1" ? "告警" : "正常",$powerDataObj->short_cycle_alarm = "1" ? "告警" : "正常",$powerDataObj->custom_alarm1 = "1" ? "告警" : "正常", $powerDataObj->custom_alarm2 = "1" ? "告警" : "正常",$powerDataObj->main_fan_mainten_alarm = "1" ? "告警" : "正常",
-    								$powerDataObj->humid_mainten_alarm = "1" ? "告警" : "正常",$powerDataObj->filter_mainten_alarm = "1" ? "告警" : "正常",$powerDataObj->com_failer_alarm = "1" ? "告警" : "正常", $powerDataObj->coil_freeze_alarm = "1" ? "告警" : "正常", $powerDataObj->humid_fault_alarm = "1" ? "告警" : "正常",
-    								$powerDataObj->sensor_miss_alarm = "1" ? "告警" : "正常", $powerDataObj->gas_temp_fault_alarm = "1" ? "告警" : "正常", $powerDataObj->power_miss_fault_alarm = "1" ? "告警" : "正常",$powerDataObj->power_undervol_alarm = "1" ? "告警" : "正常",
-    								$powerDataObj->power_phase_alarm = "1" ? "告警" : "正常", $powerDataObj->power_freq_alarm = "1" ? "告警" : "正常",$powerDataObj->floor_overflow_alarm = "1" ? "告警" : "正常"
-    						));
-    					}else if(in_array($model,array('liebert-ups'))){
-    						$xls->addRow(array(
-    								$powerDataObj->Date." ".$powerDataObj->Time,$powerDataObj->data_id,$powerDataObj->a, $powerDataObj->d1
-    						));
-    					}else if(in_array($model,array('ug40'))){
-    						$xls->addRow(array(
-    								$powerDataObj->Date." ".$powerDataObj->Time,$powerDataObj->data_id,    							
-    						));
-    					}
-    				}
-    				$record_offset += $PAGE_SIZE;
-    				if(count($powerDataList) < $PAGE_SIZE)
-    				{
-    					break;
-    				}
-    			}
-    			header('Content-Type: application/vnd.ms-excel');
-    			header('Content-Disposition: attachment;filename="历史数据报表.xls"');
-    			header('Cache-Control:must-revalidate,post-check=0,pre-check=0');
-    			header('Expires:0');
-    			header('Pragma:public');
-    			header('Cache-Control: max-age=1');
-    			$xls->generateXML('历史数据报表');
-    			return;
-    		}
-    	}
+        $data['offset'] = $offset = intval($this->input->get('per_page'));
+        $data['data_id'] = $data_id = $this->input->get("data_id");
+        $data['dataObj'] = $dataObj = $this->mp_xjdh->Get_Device($data_id);
+        $data['model'] = $model = $dataObj->model;
+        $data['dateRange'] = $dateRange = $this->input->get('dateRange');
+        $dateRangeArr = explode('至', $dateRange);
 
-    	$data['pagination'] = $this->mp_paging->Show(Util::Build_Page_Base("portal/device_history"), $count, DEFAULT_PAGE_SIZE, 3, TRUE);
-    	$scriptExtra = '<link rel="stylesheet" href="/public/js/jstree/themes/default/style.min.css"/>';
-    
-    	$scriptExtra .= '<script type="text/javascript" src="/public/js/tiny_mce/tinymce.min.js"></script>';
-    	$scriptExtra .= '<script type="text/javascript" src="/public/js/jquery.validate.js"></script>';
-    	$scriptExtra .= '<script type="text/javascript" src="/public/js/validate-extend.js"></script>';
-    	$scriptExtra .= '<script type="text/javascript" src="/public/portal/js/edit-device.js"></script>';
-    	$scriptExtra .= '<script type="text/javascript" src="/public/js/highcharts/highcharts.js"></script>';
-    	$scriptExtra .= '<script type="text/javascript" src="/public/js/highcharts/modules/exporting.js"></script>';
-    	$scriptExtra .= '<script type="text/javascript" src="/public/js/jstree/jstree.min.js"></script>';
-    	$scriptExtra .= '<script type="text/javascript" src="/public/js/bootbox.js"></script>';
-    	$scriptExtra .= '<script type="text/javascript" src="/public/js/moment.min.js"></script>';
-    	$scriptExtra .= '<link rel="stylesheet" href="/public/css/daterangepicker-bs2.css"/>';
-    	$scriptExtra .= '<script type="text/javascript" src="/public/js/daterangepicker.js"></script>';
-    	$scriptExtra .= '<script type="text/javascript" src="/public/portal/js/device_history.js"></script>';
-    
-    	$content = $this->load->view("portal/device_history", $data, TRUE);
-    	$this->mp_master->Show_Portal($content, $scriptExtra, '设备历史数据查询', $data);
-    
+        $devModelArray = $this->_get_device_model_name();
+        $data['devModelName'] = $devModelName = $devModelArray[$model];
+        $reportName = Defines::$gDevModel[$model] . "历史数据";
+
+        $data['startTime'] = $startTime = $dateRangeArr[0];
+        $data['endTime'] = $endTime = $dateRangeArr[1];
+
+        if (!empty($data_id) && count($dateRangeArr) == 2) {
+            $this->load->library("mongo_db");
+            $data['count'] = $count = $this->mp_xjdh->Get_Device_History_Count($model, $data_id, $dateRangeArr[0], $dateRangeArr[1]);
+            $data['powerDataList'] = $powerDataList = $this->mp_xjdh->Get_Device_History_List($model, $data_id, $dateRangeArr[0], $dateRangeArr[1], $offset, DEFAULT_PAGE_SIZE);
+            $export = $this->input->get('export');
+            if ($export == "exporttoexcel") {
+                require 'resources/php-excel.class.php';
+                $record_offset = 0;
+                $PAGE_SIZE = 2000;
+                $xls = new Excel_XML('UTF-8', false);
+
+                if (in_array($model, array('power_302a'))) {
+                    $xls->addRow(array("采集时间", "A相功率", "B相功率", "C相功率", "合相功率", "A相无功功率", "B相无功功率", "C相无功功率", "合相无功功率", "A相视在功率", "B相视在功率", "C相视在功率", "合相视在功率", "A相有功功率", "B相有功功率", "C相有功功率", "合相有功功率", "A相无功功率", "B相无功功率", "C相无功功率", "合相无功功率",
+                        "A相电压", "B相电压", "C相电压", "A相电流", "B相电流", "C相电流", "合相电流", "A相有功电压", "B相有功电压", "C相有功电压", "A相有功电流", "B相有功电流", "C相有功电流", "A相功率因数", "B相功率因数", "C相功率因数", "合相功率因数", "频率", "A相电能", "B相电能", "C相电能", "合相电能", "A相无功电能", "B相无功电能",
+                        "C相无功电能", "合相无功电能", "A相视在电能", "B相视在电能", "C相视在电能", "合相视在电能", "A相有功电能", "B相有功电能", "C相有功电能", "合相有功电能"));
+                } else if (in_array($model, array('battery_24', 'battery_32'))) {
+                    $xls->addRow(array("采集时间", "数据ID", "蓄电池总电压", "电流", "温度", "单体电压"));
+                } else if (in_array($model, array('humid', 'temperature', 'water', 'battery24_voltage'))) {
+                    $xls->addRow(array("采集时间", "数据ID", "数值"));
+                } else if (in_array($model, array('fresh_air'))) {
+                    $xls->addRow(array('采集时间', '数据ID', '室内温度1', '室内温度2', '室内温度3', '室内温度4', '室内温度5', '室内湿度1', '室内湿度2', '室内湿度3', '室内湿度4', '室内湿度5', '出风温度', '出风湿度',
+                        '室外温度', '室外湿度', '加湿器电流', '平均温度', '平均湿度', '最高室内温度', '湿帘加湿水泵', '外部空调', '温度设定点', '湿度设定点', '高温告警点', '低温告警点', '高湿报警点', '低湿报警点'));
+                } else if (strpos($model, "-ac") !== false) {
+                    $xls->addRow(array("采集时间", "数据ID", "A相电流", "B相电流", "C相电流", "交流输入路数", "开关数量", "开关状态", "p40_43_count", "p40_43", "A相输入电流告警", "B相输入电流告警", "C相输入电流告警"));
+                } else if (strpos($model, "-dc") !== false) {
+                    $xls->addRow(array("采集时间", "数据ID", "直流输出电压", "负载总电流", "电池分路电流数量", "dc_i", "n", "channelArray", "用户自定义测量数", "p", "直流告警电压", "alert_m_count", "alert_m", "直流告警功率数量", "直流告警功率"));
+                } else if (strpos($model, "-rc") !== false) {
+                    $xls->addRow(array("采集时间", "数据ID", "vu", "vl", "iu", "fu", "fl", "整流输出电压最大值", "整流输出电压最小值", "param_num", "param", "整流输出电压", "channel_count"));
+                } else if (in_array($model, array('psm-6'))) {
+                    $xls->addRow(array('采集时间', '数据ID', "交流输入类型", "输入交流过压保护值(V)", "输入交流低压保护值(V)", "配电输出总数", "电源系统整流模块总数", "电池总数(组)", "电池容量(Ah)", "浮充电压(V)", "均充电压(V)", "均充时间间隔(天)", "均充定时时间(小时)", "充电系数", "馈线电阻(mΩ)",
+                        "电流充电限流值(A)", "均浮充转换电流(A)", "电池欠压报警值", "电池欠压保护值", "电池欠压是否自动保护", "配电监控单元地址(00-99)", "配电输出1路", "配电输出2路", "配电输出3路", "配电输出4路", "配电输出5路", "配电输出6路", "配电输出7路", "配电输出8路", "配电输出9路", "配电输出10路", "配电输出11路"
+                    , "配电输出12路", "配电输出13路", "配电输出14路", "配电输出15路", "配电输出16路", "配电输出17路", "配电输出18路", "配电输出19路", "配电输出20路", "电源系统整流模块1", "电源系统整流模块2", "电源系统整流模块3", "电源系统整流模块4", "电源系统整流模块5", "电源系统整流模块6", "电源系统整流模块7", "电源系统整流模块8", "电源系统整流模块9", "电源系统整流模块10"));
+                } else if (in_array($model, array('aeg-ms10se'))) {
+                    $xls->addRow(array('采集时间', '数据ID', '频率F', '相电压V1', '相电压V2', '相电压V3', '相电压均值Vvavg', '线电压V12', '线电压V23', '线电压V31', '线电压均值Vlavg', '相（线）电流I1', '相（线）电流I2', '相（线）电流I3', '三相电流均值Iavg', '中线电流In', '分相有功功率P1', '分相有功功率P2', '分相有功功率P3', '系统有功功率Psum', '分相无功功率Q1',
+                        '分相无功功率Q2', '分相无功功率Q3', '系统无功功率Qsum', '分相视在功率S1', '分相视在功率S2', '分相视在功率S3', '系统视在功率Ssum', '分相功率因数PF1', '分相功率因数PF2', '分相功率因数PF3', '系统有功功率Psum2', '系统无功功率Qsum2', '系统视在功率Ssum2', '有功电度 Ep_imp', '感性无功电度 Eq_imp', '有功电度 Ep_exp', '容性无功电度 Eq_exp',
+                        '总有功电度 Ep_total', '净有功电度 Ep_net', '总电度 Eq_total', '净无功电度 Eq_net', 'DI1', 'DI2', 'DI3', 'DI4', 'DI5', 'DI6', 'DO1', 'DO2', 'DO3', 'DO4', 'DO5', 'DO6'));
+                } else if (in_array($model, array('datamate3000'))) {
+                    $xls->addRow(array('采集时间', "数据ID", '室内温度', '室内湿度', '室外温度', '空调开关机状态', '开机温度', '关机湿度', '温度设定点', '温度偏差', '湿度设定点', '湿度偏差', '开/关机状态', '风机状态', '制冷状态', '加热状态', '加湿状态', '除湿状态', '高压锁定状态', '低压锁定状态', '排气锁定状态', '高压报警', '低压报警', '高压温度告警', '低压温度告警', '高湿度告警', '低湿度告警', '电源故障报警',
+                        '短周期报警', '用户自定义1报警', '用户自定义2报警', '主风机维护报警', '加湿器维护报警', '过滤网维护报警', '通讯故障报警', '盘管冻结报警', '加湿器故障报警', '传感器板丢失报警', '排气温度故障报警', '电源丢失故障报警', '电源过欠压报警', '电源缺相报警', '电源频率偏移报警', '地板溢水报警'));
+                } else if (in_array($model, array('liebert-ups'))) {
+                    $xls->addRow(array("采集时间", "数据ID",));
+                } else if (in_array($model, array('ug40'))) {
+                    $xls->addRowarray("采集时间", "数据ID", "系统运行", "压缩机1", "压缩机2", "压缩机3", "压缩机4", "加热器1", "加热器2", "热风", "除湿", "应急工作", "错误密码报警", "高温报警", "低温报警", "高湿度报警", "低湿度报警", "温湿度传感器", "过滤器", "漏水报警", "气流报警", "加热器过热", "高压电路1", "高压电路2", "低压电路1", "低压电路2", '电路1电流值', '电路2电流值', "气流丢失", "水流丢失", "连续波温度过高对除湿", "连续波阀故障或水流过低",
+                        "水流报警", "室内空气传感器/断开连接失败", "热水温度传感器/断开连接失败", "冷冻水温度传感器/断开连接失败", "室外温度传感器/断开连接失败", "交付空气温度传感器/断开连接失败", "房间的湿度传感器/断开连接失败", "冷冻水出口Temp.Sensor失败/断开连接", "压缩机1:小时计数器阈值报警", "压缩机2:小时计数器阈值报警", "压缩机3:小时计数器阈值报警", "压缩机4:小时计数器阈值报警", "空气过滤器:小时计数器阈值报警", "加热器1:小时计数器阈值报警",
+                        "加热器2:小时计数器阈值报警", "加湿器:小时计数器阈值报警", "空调机组:小时计数器阈值报警", "警报通过数字输入2", "警报通过数字输入4", "警报通过数字输入6", "加湿器通用报警", "单位在报警", "单位在旋转报警", "单位在报警A型", "单位在报警B型", "单位在报警C型", "DX /连续波开关TC单位", "夏季/冬季开关", "单位开/关开关", "蜂鸣器报警单元复位", "过滤器运行小时重置", "压缩机运行1小时重置", "压缩机运行2小时重置", "压缩机运行3小时重置",
+                        "压缩机运行4小时重置", "压缩机1开始重置", "压缩机2开始重置", "压缩机3开始重置", "压缩机4开始重置", "加热器运行1小时重置", "加热器运行2小时重置", "加热器1开始重置", "加热器2开始重置", "增湿器运行小时重置", "增湿器开始重置", "单位运行时间重置", "挫折模式(睡眠模式)", "睡眠模式测试 ", "平均值", "备用单元", "第2单元旋转报警", "第3单元旋转报警", "第4单元旋转报警", "第5单元旋转报警", "第6单元旋转报警", "第7单元旋转报警", "第8单元旋转报警",
+                        "第9单元旋转报警", "第10单元旋转报警", "房间温度", "室外温度", "交付空气温度", "冷水温度", "热水温度", "房间相对湿度", "出口冷冻水温度", "电路1蒸发压力", "电路2蒸发压力", "电路1吸入温度", "电路2吸入温度", "电路1蒸发温度", "电路2蒸发温度", "电路1过热", "电路2过热", "冷水阀坡道", "热水出水阀坡道", "蒸发风扇转速", "冷却定位点", "冷却的敏感性", "第二个冷却定位点", "加热定位点", "第二次加热定位点", "听力敏感性", "房间温度高报警阈值",
+                        "室温低报警阈值", "挫折模式:冷却定位点", "挫折模式:加热定位点", "连续波选点开始除湿", "连续波高温报警阈值", "连续波选点开始连续波操作模式(只有TC单位)", "Radcooler定位点在节能模式", "Radcooler定位点在DX模式", "排气温度下限设定值", "自动均值/局部转换的三角洲温度", "串行传输抵消", "局域网单元二室温", "局域网单元三室温", "局域网单元四室温", "局域网单元五室温", "局域网单元六室温", "局域网单元七室温", "局域网单元八室温",
+                        "局域网单元九室温", "局域网单元十室温", "二单元保温室", "三单元保温室", "四单元保温室", "五单元保温室", "六单元保温室", "七单元保温室", "八单元保温室", "九单元保温室", "十单元保温室", "空气过滤器", "运行单位", "空压机1运行", "空压机2运行", "空压机3运行", "空压机4运行", "加热器1运行", "加热器2运行", "加湿器运行", "除湿器支撑带", "加湿器支撑带",
+                        "高湿度报警阈值", "低湿度报警阈值", "除湿定位点", "除湿定位点逆流模式", "加湿定位点", "加湿定位点逆流模式", "重新启动延迟", "低压延迟", "温度/湿度限制告警延迟", "防震荡常数", "备用循环基准时间", "局域网的数量单位", "电路1电子阀的位置", "电路2电子阀的位置");
+                }
+                while (true) {
+                    $data['powerDataList'] = $powerDataList = $this->mp_xjdh->Get_Device_History_List($model, $data_id, $dateRangeArr[0], $dateRangeArr[1], $record_offset, $PAGE_SIZE);
+                    foreach ($data['powerDataList'] as $key => $powerDataObj) {
+                        if (in_array($model, array('power_302a'))) {
+                            $xls->addRow(array(
+                                $powerDataObj->Date . " " . $powerDataObj->Time, $powerDataObj->pa, $powerDataObj->pb, $powerDataObj->pc, $powerDataObj->pt,
+                                $powerDataObj->qa, $powerDataObj->qb, $powerDataObj->qc, $powerDataObj->qt, $powerDataObj->sa, $powerDataObj->sb, $powerDataObj->sc, $powerDataObj->st,
+                                $powerDataObj->linePa, $powerDataObj->linePb, $powerDataObj->linePc, $powerDataObj->linePt, $powerDataObj->lineQa, $powerDataObj->lineQb,
+                                $powerDataObj->lineQc, $powerDataObj->lineQt, $powerDataObj->uaRms, $powerDataObj->ubRms, $powerDataObj->ucRms, $powerDataObj->utRms, $powerDataObj->iaRms,
+                                $powerDataObj->ibRms, $powerDataObj->icRms, $powerDataObj->itRms, $powerDataObj->luaRms, $powerDataObj->lubRms, $powerDataObj->lucRms, $powerDataObj->liaRms,
+                                $powerDataObj->libRms, $powerDataObj->licRms, $powerDataObj->pfa, $powerDataObj->pfb, $powerDataObj->pfc, $powerDataObj->pft, $powerDataObj->freq, $powerDataObj->epa,
+                                $powerDataObj->epb, $powerDataObj->epc, $powerDataObj->ept, $powerDataObj->eqa, $powerDataObj->eqb, $powerDataObj->eqc, $powerDataObj->eqt, $powerDataObj->esa,
+                                $powerDataObj->esb, $powerDataObj->esc, $powerDataObj->est, $powerDataObj->lineEpa, $powerDataObj->lineEpb, $powerDataObj->lineEpc, $powerDataObj->lineEpt
+                            ));
+                        } else if (in_array($model, array('battery_24', 'battery_32'))) {
+                            $n = count($powerDataObj->battery_voltage);
+                            $single = array();
+                            $device_history = array();
+                            $result = array();
+                            for ($i = 0; $i < $n; $i++) {
+                                array_push($single, $powerDataList[$key]->battery_voltage[$i]);
+                            }
+                            array_push($device_history, $powerDataObj->Date . " " . $powerDataObj->Time, $powerDataObj->data_id, $powerDataObj->voltage, $powerDataObj->current, $powerDataObj->temperature);
+                            $result = array_merge($device_history, $single);
+                            $xls->addRow($result);
+                        } else if (in_array($model, array('humid', 'temperature', 'water', 'battery24_voltage'))) {
+                            $xls->addRow(array(
+                                $powerDataObj->Date . " " . $powerDataObj->Time, $powerDataObj->data_id, $powerDataObj->value
+                            ));
+                        } else if (in_array($model, array('fresh_air'))) {
+                            $xls->addRow(array(
+                                $powerDataObj->Date . " " . $powerDataObj->Time, $powerDataObj->data_id, $powerDataObj->temperature1, $powerDataObj->temperature2, $powerDataObj->temperature3,
+                                $powerDataObj->temperature4, $powerDataObj->temperature5, $powerDataObj->humidity1, $powerDataObj->humidity2, $powerDataObj->humidity3, $powerDataObj->humidity4,
+                                $powerDataObj->humidity5, $powerDataObj->wind_temperature, $powerDataObj->wind_humidity, $powerDataObj->outside_temperature, $powerDataObj->outside_humidity,
+                                $powerDataObj->humidifier_current, $powerDataObj->average_temperature, $powerDataObj->average_humidity, $powerDataObj->highest_temperature, $powerDataObj->runstate_pump,
+                                $powerDataObj->runstate_ac, $powerDataObj->setting_temperature, $powerDataObj->setting_humidity, $powerDataObj->high_temperature_alert,
+                                $powerDataObj->low_temperature_alert, $powerDataObj->high_humidity_alert, $powerDataObj->low_humidity_alert
+                            ));
+                        } else if (strpos($model, "-ac") !== false) {
+                            $xls->addRow(array(
+                                $powerDataObj->Date . " " . $powerDataObj->Time, $powerDataObj->data_id,
+                                $powerDataObj->ia, $powerDataObj->ib, $powerDataObj->ic,
+                                $powerDataObj->channel_count, $powerDataObj->airlock_count,
+                                '(' . $powerDataObj->airlock_status['$binary'] . ',' . $powerDataObj->airlock_status['$type'] . ')',
+                                $powerDataObj->p40_43_count, '(' . $powerDataObj->p40_43['$binary'] . ',' . $powerDataObj->p40_43['$type'] . ')',
+                                '(' . $powerDataObj->ia_alert['$binary'] . ',' . $powerDataObj->ia_alert['$type'] . ')',
+                                '(' . $powerDataObj->ib_alert['$binary'] . ',' . $powerDataObj->ib_alert['$type'] . ')',
+                                '(' . $powerDataObj->ic_alert['$binary'] . ',' . $powerDataObj->ic_alert['$type'] . ')'
+                            ));
+                        } else if (strpos($model, "-dc") !== false) {
+                            $xls->addRow(array(
+                                $powerDataObj->Date . " " . $powerDataObj->Time, $powerDataObj->data_id,
+                                $powerDataObj->v, $powerDataObj->i, $powerDataObj->m, $powerDataObj->dc_i,
+                                $powerDataObj->n, $powerDataObj->channelArray, $powerDataObj->p_count,
+                                '(' . $devObj->alert_v['$binary'] . ',' . $devObj->alert_v['$type'] . ')',
+                                '(' . $devObj->alert_m_count['$binary'] . ',' . $devObj->alert_m_count['$type'] . ')',
+                                '(' . $devObj->alert_m['$binary'] . ',' . $devObj->alert_m['$type'] . ')',
+                                '(' . $devObj->alert_p_count['$binary'] . ',' . $devObj->alert_p_count['$type'] . ')',
+                                '(' . $devObj->alert_p['$binary'] . ',' . $devObj->alert_p['$type'] . ')'
+                            ));
+                        } else if (strpos($model, "-rc") !== false) {
+                            $xls->addRow(array(
+                                $powerDataObj->Date . " " . $powerDataObj->Time, $powerDataObj->data_id, $powerDataObj->vu,
+                                $powerDataObj->vl, $powerDataObj->iu, $powerDataObj->fu, $powerDataObj->fl, $powerDataObj->out_v_high,
+                                $powerDataObj->out_v_low, $powerDataObj->param_num, '(' . $devObj->param['$binary'] . ',' . $devObj->param['$type'] . ')',
+                                $powerDataObj->out_v, $powerDataObj->channel_count
+                            ));
+                        } else if (in_array($model, array('psm-6'))) {
+                            $output_num = array();
+                            $rc_model_addrs = array();
+                            $device_history = array();
+                            $result = array();
+                            for ($i = 0; $i < 20; $i++) {
+                                array_push($output_num, $powerDataObj->output_num[$i]);
+                            }
+                            for ($i = 0; $i < 10; $i++) {
+                                array_push($rc_model_addrs, $powerDataObj->rc_model_addrs[$i]);
+                            }
+                            array_push($device_history, $powerDataObj->Date . " " . $powerDataObj->Time, $powerDataObj->data_id, $powerDataObj->ac_type, $powerDataObj->p_in_v_max_limiting,
+                                $powerDataObj->p_in_v_min_limiting, $powerDataObj->output_count, $powerDataObj->rc_model_count,
+                                $powerDataObj->battery_count, $powerDataObj->battery_capacity, $powerDataObj->charge_float_v, $powerDataObj->charge_average_v,
+                                $powerDataObj->charge_average_timer, $powerDataObj->charge_average_time, $powerDataObj->charge_modulus, $powerDataObj->feeder_resistance,
+                                $powerDataObj->charge_limit_i, $powerDataObj->charge_average_trans_i, $powerDataObj->low_battery_alert_v, $powerDataObj->low_battery_protect_v,
+                                $powerDataObj->low_battery_autoprotect, $powerDataObj->dev_addr);
+                            $result = array_merge($device_history, $output_num, $rc_model_addrs);
+                            $xls->addRow($result);
+                        } else if (in_array($model, array('aeg-ms10se'))) {
+                            $di = array();
+                            $do = array();
+                            $device_history = array();
+                            $result = array();
+                            for ($i = 0; $i < 6; $i++) {
+                                array_push($di, $powerDataObj->di[$i]);
+                                array_push($do, $powerDataObj->d_o[$i]);
+                            }
+                            array_push($device_history, $powerDataObj->Date . " " . $powerDataObj->Time, $powerDataObj->data_id, $powerDataObj->f, $powerDataObj->v1, $powerDataObj->v2, $powerDataObj->v3, $powerDataObj->vvavg, $powerDataObj->v12, $powerDataObj->v23, $powerDataObj->v31, $powerDataObj->vlavg, $powerDataObj->i1,
+                                $powerDataObj->i2, $powerDataObj->i3, $powerDataObj->iavg, $powerDataObj->in, $powerDataObj->p1, $powerDataObj->p2, $powerDataObj->p3, $powerDataObj->psum, $powerDataObj->q1, $powerDataObj->q2, $powerDataObj->q3, $powerDataObj->qsum, $powerDataObj->s1, $powerDataObj->s2,
+                                $powerDataObj->s3, $powerDataObj->ssum, $powerDataObj->pf1, $powerDataObj->pf2, $powerDataObj->pf3, $powerDataObj->psum2, $powerDataObj->qsum2, $powerDataObj->ssum2, $powerDataObj->ep_imp, $powerDataObj->eq_imp, $powerDataObj->ep_exp, $powerDataObj->eq_exp, $powerDataObj->ep_total,
+                                $powerDataObj->ep_net, $powerDataObj->eq_total, $powerDataObj->eq_net);
+                            $result = array_merge($device_history, $di, $do);
+                            $xls->addRow($result);
+                        } else if (in_array($model, array('datamate3000'))) {
+                            $xls->addRow(array(
+                                $powerDataObj->Date . " " . $powerDataObj->Time, $powerDataObj->data_id, $powerDataObj->room_temp, $powerDataObj->room_humid, $powerDataObj->outdoor_temp, $powerDataObj->air_state = "1" ? "开机" : "关机", $powerDataObj->temperature, $powerDataObj->humidity, $powerDataObj->set_temp,
+                                $powerDataObj->temp_pric, $powerDataObj->set_humid, $powerDataObj->humid_pric, $powerDataObj->switch_status = "1" ? "开机" : "关机", $powerDataObj->fan_status = "1" ? "开机" : "关机", $powerDataObj->cool_status = "1" ? "开机" : "关机", $powerDataObj->heat_status = "1" ? "开机" : "关机",
+                                $powerDataObj->humid_status = "1" ? "开机" : "关机", $powerDataObj->dehumid_status = "1" ? "开机" : "关机", $powerDataObj->high_press_alarm = "1" ? "已锁定" : "未锁定", $powerDataObj->low_press_alarm = "1" ? "已锁定" : "未锁定", $powerDataObj->exhaust_lock = "1" ? "已锁定" : "未锁定",
+                                $powerDataObj->high_press_alarm = "1" ? "告警" : "正常", $powerDataObj->low_press_alarm = "1" ? "告警" : "正常", $powerDataObj->high_temp_alarm = "1" ? "告警" : "正常", $powerDataObj->low_temp_alarm = "1" ? "告警" : "正常", $powerDataObj->high_humid_alarm, $powerDataObj->low_humid_alarm,
+                                $powerDataObj->power_failer_alarm = "1" ? "告警" : "正常", $powerDataObj->short_cycle_alarm = "1" ? "告警" : "正常", $powerDataObj->custom_alarm1 = "1" ? "告警" : "正常", $powerDataObj->custom_alarm2 = "1" ? "告警" : "正常", $powerDataObj->main_fan_mainten_alarm = "1" ? "告警" : "正常",
+                                $powerDataObj->humid_mainten_alarm = "1" ? "告警" : "正常", $powerDataObj->filter_mainten_alarm = "1" ? "告警" : "正常", $powerDataObj->com_failer_alarm = "1" ? "告警" : "正常", $powerDataObj->coil_freeze_alarm = "1" ? "告警" : "正常", $powerDataObj->humid_fault_alarm = "1" ? "告警" : "正常",
+                                $powerDataObj->sensor_miss_alarm = "1" ? "告警" : "正常", $powerDataObj->gas_temp_fault_alarm = "1" ? "告警" : "正常", $powerDataObj->power_miss_fault_alarm = "1" ? "告警" : "正常", $powerDataObj->power_undervol_alarm = "1" ? "告警" : "正常",
+                                $powerDataObj->power_phase_alarm = "1" ? "告警" : "正常", $powerDataObj->power_freq_alarm = "1" ? "告警" : "正常", $powerDataObj->floor_overflow_alarm = "1" ? "告警" : "正常"
+                            ));
+                        } else if (in_array($model, array('liebert-ups'))) {
+                            $xls->addRow(array(
+                                $powerDataObj->Date . " " . $powerDataObj->Time, $powerDataObj->data_id, $powerDataObj->a, $powerDataObj->d1
+                            ));
+                        } else if (in_array($model, array('ug40'))) {
+                            $xls->addRow(array(
+                                $powerDataObj->Date . " " . $powerDataObj->Time, $powerDataObj->data_id,
+                            ));
+                        }
+                    }
+                    $record_offset += $PAGE_SIZE;
+                    if (count($powerDataList) < $PAGE_SIZE) {
+                        break;
+                    }
+                }
+                header('Content-Type: application/vnd.ms-excel');
+                header('Content-Disposition: attachment;filename="历史数据报表.xls"');
+                header('Cache-Control:must-revalidate,post-check=0,pre-check=0');
+                header('Expires:0');
+                header('Pragma:public');
+                header('Cache-Control: max-age=1');
+                $xls->generateXML('历史数据报表');
+                return;
+            }
+        }
+
+        $data['pagination'] = $this->mp_paging->Show(Util::Build_Page_Base("portal/device_history"), $count, DEFAULT_PAGE_SIZE, 3, TRUE);
+        $scriptExtra = '<link rel="stylesheet" href="/public/js/jstree/themes/default/style.min.css"/>';
+
+        $scriptExtra .= '<script type="text/javascript" src="/public/js/tiny_mce/tinymce.min.js"></script>';
+        $scriptExtra .= '<script type="text/javascript" src="/public/js/jquery.validate.js"></script>';
+        $scriptExtra .= '<script type="text/javascript" src="/public/js/validate-extend.js"></script>';
+        $scriptExtra .= '<script type="text/javascript" src="/public/portal/js/edit-device.js"></script>';
+        $scriptExtra .= '<script type="text/javascript" src="/public/js/highcharts/highcharts.js"></script>';
+        $scriptExtra .= '<script type="text/javascript" src="/public/js/highcharts/modules/exporting.js"></script>';
+        $scriptExtra .= '<script type="text/javascript" src="/public/js/jstree/jstree.min.js"></script>';
+        $scriptExtra .= '<script type="text/javascript" src="/public/js/bootbox.js"></script>';
+        $scriptExtra .= '<script type="text/javascript" src="/public/js/moment.min.js"></script>';
+        $scriptExtra .= '<link rel="stylesheet" href="/public/css/daterangepicker-bs2.css"/>';
+        $scriptExtra .= '<script type="text/javascript" src="/public/js/daterangepicker.js"></script>';
+        $scriptExtra .= '<script type="text/javascript" src="/public/portal/js/device_history.js"></script>';
+
+        $content = $this->load->view("portal/device_history", $data, TRUE);
+        $this->mp_master->Show_Portal($content, $scriptExtra, '设备历史数据查询', $data);
+
     }
 
     function door_user($data_id, $offset = 0)
@@ -1654,11 +1653,12 @@ function device_history ()
         $scriptExtra .= '<link rel="stylesheet" href="/public/css/daterangepicker-bs2.css"/>';
         $scriptExtra .= '<script type="text/javascript" src="/public/js/daterangepicker.js"></script>';
         $scriptExtra .= '<script type="text/javascript" src="/public/portal/js/door_record.js"></script>';
-        
+
         $content = $this->load->view("portal/door_operate", $data, TRUE);
         $this->mp_master->Show_Portal($content, $scriptExtra, '门禁权限管理', $data);
-    
+
     }
+
     function door_record($data_id, $offset = 0)
     {
         $devObj = $this->mp_xjdh->Get_Device($data_id);
@@ -1684,10 +1684,10 @@ function device_history ()
         $bcObj->url = '/portal/door_record/' . $data_id;
         $bcObj->isLast = true;
         array_push($data['bcList'], $bcObj);
-        
+
         $data['devObj'] = $devObj;
         $data['offset'] = $offset = intval($this->input->get('per_page'));
-        
+
         $username = $data['fullName'] = $this->input->get('fullName');
         $mobile = $data['mobile'] = $this->input->get('mobile');
         $card = $data['card'] = $this->input->get('card');
@@ -1733,7 +1733,7 @@ function device_history ()
         $scriptExtra .= '<link rel="stylesheet" href="/public/css/daterangepicker-bs2.css"/>';
         $scriptExtra .= '<script type="text/javascript" src="/public/js/daterangepicker.js"></script>';
         $scriptExtra .= '<script type="text/javascript" src="/public/portal/js/door_record.js"></script>';
-        
+
         $content = $this->load->view("portal/door_record", $data, TRUE);
         $this->mp_master->Show_Portal($content, $scriptExtra, '开门记录', $data);
     }
@@ -1757,7 +1757,7 @@ function device_history ()
         $bcObj->url = '/portal/door_user_operate/' . $user_id;
         $bcObj->isLast = true;
         array_push($data['bcList'], $bcObj);
-        
+
         $data['gCounty'] = $gCounty = Defines::$gCounty;
         $data['cityCode'] = $cityCode = $this->input->get('selCity');
         $data['countyCode'] = $countyCode = $this->input->get('selCounty');
@@ -1766,8 +1766,8 @@ function device_history ()
         $data['roomId'] = $roomId = $this->input->get('selRoom');
         $data['roomList'] = $this->mp_xjdh->Get_Rooms();
         $data['subName'] = $subName = $this->input->get('txtName');
-        
-       
+
+
         $data['time_range'] = $time_range = $this->input->get('time_range');
         //explode('分割付','字符串')把字符串分割为数组
         //在至处分割数组
@@ -1777,7 +1777,7 @@ function device_history ()
         if ($this->userObj->user_role != "admin") {
             $city_code = $this->userObj->city_code;
         }
-        
+
         $data['offset'] = $offset = intval($this->input->get('per_page'));
         //Door User
         $data['count'] = $count = $this->mp_xjdh->Get_Operate_Door_Count($user_id, $substationId, $roomId, $subName, $cityCode, $countyCode, $time_rangeArr, $city_code);
@@ -1819,7 +1819,7 @@ function device_history ()
         $scriptExtra .= '<script type="text/javascript" src="/public/portal/js/door_record.js"></script>';
         $content = $this->load->view("portal/door_user_operate", $data, TRUE);
         $this->mp_master->Show_Portal($content, $scriptExtra, '门禁权限管理', $data);
-    
+
     }
 
     function door_user_record($user_id, $offset = 0)
@@ -1841,7 +1841,7 @@ function device_history ()
         $bcObj->url = '/portal/door_user_record/' . $user_id;
         $bcObj->isLast = true;
         array_push($data['bcList'], $bcObj);
-        
+
         $data['devObj'] = $devObj;
         $data['offset'] = $offset = intval($this->input->get('per_page'));
         //Door User
@@ -1851,13 +1851,13 @@ function device_history ()
         $data['substationId'] = $substationId = $this->input->get('selSubstation');
         $data['substationList'] = $this->mp_xjdh->Get_Substations();
         $data['roomId'] = $roomId = $this->input->get('selRoom');
-        $data['roomList'] = $this->mp_xjdh->Get_Rooms();   
+        $data['roomList'] = $this->mp_xjdh->Get_Rooms();
 
         $city_code = "";
         if ($this->userObj->user_role != "admin") {
             $city_code = $this->userObj->city_code;
         }
-        
+
         $username = $data['fullName'] = $this->input->get('fullName');
         $mobile = $data['mobile'] = $this->input->get('mobile');
         $card = $data['card'] = $this->input->get('card');
@@ -1927,7 +1927,7 @@ function device_history ()
         $data['fullName'] = $fullName = trim($this->input->get('fullName'));
         $data['mobile'] = $mobile = trim($this->input->get('mobile'));
         $data['accessId'] = $accessId = trim($this->input->get('accessId'));
-    
+
         $substationId = false;
         if ($_SESSION['XJTELEDH_USERROLE'] == 'city_admin') {
             $substationId = $this->userObj->substation_id;
@@ -1936,7 +1936,7 @@ function device_history ()
         if ($this->userObj->user_role != "admin") {
             $city_code = $this->userObj->city_code;
         }
-        
+
         $export = $this->input->get('export');
         if ($export == "exporttoexcel") {
             require 'resources/php-excel.class.php';
@@ -1995,7 +1995,7 @@ function device_history ()
         $scriptExtra .= '<script type="text/javascript" src="/public/portal/js/door-user-manage.js"></script>';
         $this->mp_master->Show_Portal($content, $scriptExtra, '用户门禁管理', $data);
     }
-    
+
     public function door_user_list($user_id = 0)
     {
         $data = array();
@@ -2027,12 +2027,12 @@ function device_history ()
         $data['keyWord'] = $keyWord = trim($this->input->get('keyWord'));
         $data['active'] = $active = $this->input->get('selActive');
         $data['offset'] = $offset = intval($this->input->get('per_page'));
-        
+
         $city_code = "";
         if ($this->userObj->user_role != "admin") {
             $city_code = $this->userObj->city_code;
         }
-        
+
         $export = $this->input->get('export');
         if ($export == "exporttoexcel") {
             require 'resources/php-excel.class.php';
@@ -2134,9 +2134,9 @@ function device_history ()
         $data['userObj'] = $this->userObj;
         $data['actTab'] = 'settings';
         $data['bcList'] = array();
-        
+
         $data['model'] = $model = $this->input->get('model');
-               
+
         $data['cityCode'] = $cityCode = $this->input->get('selCity');
         $data['countyCode'] = $countyCode = $this->input->get('selCounty');
         $data['substationId'] = $substationId = $this->input->get('selSubstation');
@@ -2563,20 +2563,20 @@ function device_history ()
                 if (!empty($dtObj->county_code)) {
 
                     //有些配置 把 city_code 和 county_code 错配成一样，此处排错
-                 if($dtObj->city_code != $dtObj->county_code){
-                     $dtObj->apply_area .= "-" . Defines::$gCounty[$dtObj->city_code][$dtObj->county_code];
-                     if ($dtObj->substation_id) {
-                         if (!array_key_exists($dtObj->substation_id, $substationArray)) {
-                             $substationObj = $this->mp_xjdh->Get_Substation($dtObj->substation_id);
-                             if (count($substationObj)) {
-                                 $substationArray[$dtObj->substation_id] = $substationObj->name;
-                             } else {
-                                 $substationArray[$dtObj->substation_id] = "局站不存在(" . $dtObj->substation_id . ")";
-                             }
-                         }
-                         $dtObj->apply_area .= "-" . $substationArray[$dtObj->substation_id];
-                     }
-                 }
+                    if ($dtObj->city_code != $dtObj->county_code) {
+                        $dtObj->apply_area .= "-" . Defines::$gCounty[$dtObj->city_code][$dtObj->county_code];
+                        if ($dtObj->substation_id) {
+                            if (!array_key_exists($dtObj->substation_id, $substationArray)) {
+                                $substationObj = $this->mp_xjdh->Get_Substation($dtObj->substation_id);
+                                if (count($substationObj)) {
+                                    $substationArray[$dtObj->substation_id] = $substationObj->name;
+                                } else {
+                                    $substationArray[$dtObj->substation_id] = "局站不存在(" . $dtObj->substation_id . ")";
+                                }
+                            }
+                            $dtObj->apply_area .= "-" . $substationArray[$dtObj->substation_id];
+                        }
+                    }
 
                 }
             }
@@ -3042,8 +3042,8 @@ function device_history ()
         $content = $this->load->view("portal/room_list", $data, TRUE);
         $this->mp_master->Show_Portal($content, $scriptExtra, '', $data);
     }
-    
-    
+
+
     public function reloadcamera($data_id = 0)
     {
         $jsonRet = array();
@@ -3052,7 +3052,7 @@ function device_history ()
         $ret = $apiObj->reloadCamera($data_id);
         var_dump($ret);
     }
-    
+
     public function reload_camera_para()
     {
         $jsonRet = array();
@@ -3078,7 +3078,7 @@ function device_history ()
         }
         echo json_encode($jsonRet);
     }
-    
+
     public function get_video_url()
     {
         $jsonRet = array();
@@ -3109,7 +3109,7 @@ function device_history ()
         }
         echo json_encode($jsonRet);
     }
-    
+
     public function surveillance()
     {
         $data = array();
@@ -3142,7 +3142,7 @@ function device_history ()
         $data['number'] = $number;
         $data['second'] = $second;
         $data['devList'] = $this->mp_xjdh->Get_All_Camera_By_CityCode("991");
-        
+
         $this->load->view('portal/surveillance', $data);
     }
 
@@ -3233,95 +3233,92 @@ function device_history ()
 
         //处理header和body的显示
         $data['userObj'] = $this->userObj;
-        if(!in_array($this->userObj->user_role,array("operator"))){
-            $deviceContentHeader = ""; 
-        $arr = array();
-        foreach(Constants::$devConfigList as $devConfig)
-        {   
-        	$dataList = $this->mp_xjdh->Get_Room_Devices($roomId, $devConfig[0]);
-        	if($devConfig[2] == "battery_32"){
-        		$obj = new stdClass();
-        		foreach($dataList as $key=>$dataObj){
-        		    $extraPara = json_decode($dataObj->extra_para);
-        			if($extraPara && isset($extraPara->battery_index)){
-        				$obj->room_id = $dataObj->room_id;
-        				$obj->data_id[$extraPara->battery_index] = $dataObj->data_id;
-        				$obj->smd_device_no = $dataObj->smd_device_no;
-        				$obj->dev_type = $dataObj->dev_type;
-        				$obj->model = $dataObj->model;
-        				$obj->dev_group = $dataObj->dev_group;
-        				$obj->extra_para = $obj->extra_para + json_decode($dataObj->extra_para)->amount;
-        				unset($dataList[$key]);
-        			}
-        		}
-        		if(isset($obj->data_id))
-        		      array_push($dataList, $obj);
-        	}
+        if (!in_array($this->userObj->user_role, array("operator"))) {
+            $deviceContentHeader = "";
+            $arr = array();
+            foreach (Constants::$devConfigList as $devConfig) {
+                $dataList = $this->mp_xjdh->Get_Room_Devices($roomId, $devConfig[0]);
 
-        	if(count($dataList))
-        	{    
-        		//we need to append an item to header
-        		if(empty($model))
-        		{
-        			$data['model'] = $model = $devConfig[2];
-        		}
-        		if($this->userObj->user_role != 'admin' && $this->userObj->user_role != 'noc'){
-        			$devModelGroup = $this->_get_device_modelGroup();
-        			$devModelName = $this->_get_device_model_name();
-        			$userPrivilegeObj = User::Get_UserPrivilege($this->userObj->id);
-        			$userDevPrivilege = $userPrivilegeObj->dev_privilege;
-        			$userDevPrivilegeArr = json_decode($userDevPrivilege);
-        			for($i=0;$i<count($userDevPrivilegeArr);$i++){
-        				if(in_array($userDevPrivilegeArr[$i],$devConfig[0])){
-        					foreach($devModelGroup as $key => $val){
-        						if($userDevPrivilegeArr[$i] == $key){
-        							$modelGroup = $val;
-        						}
-        					}
-        					foreach($devModelName as $key => $val){
-        						if($userDevPrivilegeArr[$i] == $key)
-        							$modelName = $val;
-        					}
-        					if(!in_array($modelGroup,$arr))
-        						$deviceContentHeader .= $this->_get_realtimedata_header($devConfig[2] == $model, site_url("portal/realtimedata/$roomId/$modelGroup"), $modelName);
-        					array_push($arr,$modelGroup);
-        				}
-        			}
-        		}else{
-        			$deviceContentHeader .= $this->_get_realtimedata_header($devConfig[2] == $model,  site_url("portal/realtimedata/$roomId/$devConfig[2]"), $devConfig[1]);
-        		}
-        		if($devConfig[2] == $model)
-        		{
-        			$data["devName"] = $devConfig[1];
-        			//这里要分成两种，一种是集中显示的（如机房环境），一种是分列显示的,电池等
-        			if($model == "enviroment")
-        			{
-        			    $scriptExtra .= '<script type="text/javascript" src="/public/portal/js/rt_data/rt_data-addi.js"></script>';
-        			    $scriptExtra .= '<script type="text/javascript" src="/public/portal/js/standard_data.js"></script>';
-        			    $html1 = $this->load->view ("portal/standard_data", $data, TRUE);
-        				$data['deviceContentBody'] = $this->load->view('portal/DevicePage/enviroment', array("dataList"=>$dataList, "room_name"=>$roomObj->name, 'userObj'=>$this->userObj, 'html1'=>$html1), TRUE);
-        			}else{
-				        if($model == "sps")
-        			    {
-        			        $data['groupList'] = $groupList = $this->mp_xjdh->Get_DevGroup($roomId, $devConfig[0]);
-        			    }else if($model == 'camera')
-        			    {
-        			    	$data['groupList'] = $groupList = $this->mp_xjdh->Get_vcamera($roomId);
-                        }     			    
-        			    foreach($dataList as $dataObj)
-            			{            				
-            			    $data['dataObj'] = $dataObj;
-            				//$devDcList = $this->mp_xjdh->Get_DeviceDynamicConfig($dataObj->data_id);
-            			    Realtime::GetDevicePage($model, $scriptExtra, $data, $dataObj, $this->userObj);
-            			}
-            			$data["dataList"] = $dataList;
-            			$data["devModel"] = $devConfig[2]; 
-            			$data['deviceContentBody'] = $this->load->view("portal/device_data_ctrl", $data, TRUE);
-        			}
-        		}
-        	}  	
+
+                if ($devConfig[2] == "battery_32") {
+                    $obj = new stdClass();
+                    foreach ($dataList as $key => $dataObj) {
+                        $extraPara = json_decode($dataObj->extra_para);
+                        if ($extraPara && isset($extraPara->battery_index)) {
+                            $obj->room_id = $dataObj->room_id;
+                            $obj->data_id[$extraPara->battery_index] = $dataObj->data_id;
+                            $obj->smd_device_no = $dataObj->smd_device_no;
+                            $obj->dev_type = $dataObj->dev_type;
+                            $obj->model = $dataObj->model;
+                            $obj->dev_group = $dataObj->dev_group;
+                            $obj->extra_para = $obj->extra_para + json_decode($dataObj->extra_para)->amount;
+                            unset($dataList[$key]);
+                        }
+                    }
+                    if (isset($obj->data_id))
+                        array_push($dataList, $obj);
+                }
+
+                if (count($dataList)) {
+                    //we need to append an item to header
+                    if (empty($model)) {
+                        $data['model'] = $model = $devConfig[2];
+                    }
+                    if ($this->userObj->user_role != 'admin' && $this->userObj->user_role != 'noc') {
+                        $devModelGroup = $this->_get_device_modelGroup();
+                        $devModelName = $this->_get_device_model_name();
+                        $userPrivilegeObj = User::Get_UserPrivilege($this->userObj->id);
+                        $userDevPrivilege = $userPrivilegeObj->dev_privilege;
+                        $userDevPrivilegeArr = json_decode($userDevPrivilege);
+                        for ($i = 0; $i < count($userDevPrivilegeArr); $i++) {
+                            if (in_array($userDevPrivilegeArr[$i], $devConfig[0])) {
+                                foreach ($devModelGroup as $key => $val) {
+                                    if ($userDevPrivilegeArr[$i] == $key) {
+                                        $modelGroup = $val;
+                                    }
+                                }
+                                foreach ($devModelName as $key => $val) {
+                                    if ($userDevPrivilegeArr[$i] == $key)
+                                        $modelName = $val;
+                                }
+                                if (!in_array($modelGroup, $arr))
+                                    $deviceContentHeader .= $this->_get_realtimedata_header($devConfig[2] == $model, site_url("portal/realtimedata/$roomId/$modelGroup"), $modelName);
+                                array_push($arr, $modelGroup);
+                            }
+                        }
+                    } else {
+                        $deviceContentHeader .= $this->_get_realtimedata_header($devConfig[2] ==
+                            $model, site_url("portal/realtimedata/$roomId/$devConfig[2]"), $devConfig[1]);
+                    }
+                    if ($devConfig[2] == $model) {
+                        $data["devName"] = $devConfig[1];
+                        //这里要分成两种，一种是集中显示的（如机房环境），一种是分列显示的,电池等
+                        if ($model == "enviroment") {
+                            $scriptExtra .= '<script type="text/javascript" src="/public/portal/js/rt_data/rt_data-addi.js"></script>';
+                            $scriptExtra .= '<script type="text/javascript" src="/public/portal/js/standard_data.js"></script>';
+                            $html1 = $this->load->view("portal/standard_data", $data, TRUE);
+                            $data['deviceContentBody'] = $this->load->view('portal/DevicePage/enviroment', array("dataList" => $dataList, "room_name" => $roomObj->name, 'userObj' => $this->userObj, 'html1' => $html1), TRUE);
+                        } else {
+                            if ($model == "sps") {
+                                $data['groupList'] = $groupList = $this->mp_xjdh->Get_DevGroup($roomId, $devConfig[0]);
+                            } else if ($model == 'camera') {
+                                $data['groupList'] = $groupList = $this->mp_xjdh->Get_vcamera($roomId);
+                            }
+
+                            foreach ($dataList as $dataObj) {
+                                $data['dataObj'] = $dataObj;
+                                //$devDcList = $this->mp_xjdh->Get_DeviceDynamicConfig($dataObj->data_id);
+                                Realtime::GetDevicePage($model, $scriptExtra, $data, $dataObj, $this->userObj);
+
+                            }
+                            $data["dataList"] = $dataList;
+                            $data["devModel"] = $devConfig[2];
+                            $data['deviceContentBody'] = $this->load->view("portal/device_data_ctrl", $data, TRUE);
+                        }
+                    }
+                }
+            }
         }
-       }
         $data['deviceContentHeader'] = $deviceContentHeader;
         $data['model'] = $model;
 
@@ -3333,7 +3330,7 @@ function device_history ()
         $content = $this->load->view("portal/realtimedata", $data, TRUE);
         $this->mp_master->Show_Portal($content, $scriptExtra, '', $data);
     }
-    
+
     public function force_open_door()
     {
 //         $jsonRet = array();
@@ -3579,20 +3576,20 @@ function device_history ()
         echo json_encode($data);
         return;
     }
+
     public function rtsps()
     {
-    	$dev_group = $this->input->post('dev_group');
-    	$data['switchingPowerSupplyList'] = $this->mp_xjdh->Get_spsList($dev_group);
-    	if (count($data['switchingPowerSupplyList']))
-    		array_push($modelArr, 'sps');
-    	
-    	
-    	
-    	echo json_encode($data);
-    	return;
+        $dev_group = $this->input->post('dev_group');
+        $data['switchingPowerSupplyList'] = $this->mp_xjdh->Get_spsList($dev_group);
+        if (count($data['switchingPowerSupplyList']))
+            array_push($modelArr, 'sps');
+
+
+        echo json_encode($data);
+        return;
     }
 
-    public function getcounty ()
+    public function getcounty()
     {
         $jsonRet = array();
         $cityCode = $this->input->get('citycode');
@@ -3611,29 +3608,29 @@ function device_history ()
         echo json_encode($jsonRet);
         return;
     }
-        
-    public function getversion ()
-    {
-    	$jsonRet = array();
-    	$manufacturers = $this->input->get('manufacturers');
-    	if (1) {
-    		$jsonRet['ret'] = 0;
-    		$jsonRet['versionList'] = array();
-    		foreach (Defines::$gBrand[$manufacturers] as $key => $val) {
-    			$obj = new stdClass();
-    			$obj->key = $key;
-    			$obj->val = $val;
-    			array_push($jsonRet['versionList'], $obj);
-    		}
-    	} else {
-    		$jsonRet['ret'] = 1;
-    	}
-    	echo json_encode($jsonRet);
-    	return;
-    }
-    
 
-    public function remotecontrol ()
+    public function getversion()
+    {
+        $jsonRet = array();
+        $manufacturers = $this->input->get('manufacturers');
+        if (1) {
+            $jsonRet['ret'] = 0;
+            $jsonRet['versionList'] = array();
+            foreach (Defines::$gBrand[$manufacturers] as $key => $val) {
+                $obj = new stdClass();
+                $obj->key = $key;
+                $obj->val = $val;
+                array_push($jsonRet['versionList'], $obj);
+            }
+        } else {
+            $jsonRet['ret'] = 1;
+        }
+        echo json_encode($jsonRet);
+        return;
+    }
+
+
+    public function remotecontrol()
     {
         $data = array();
         $data['actTab'] = 'remote_control';
@@ -3645,17 +3642,16 @@ function device_history ()
     public function _get_device_modelGroup()
     {
         $devModelGroup = array();
-        foreach(Constants::$devConfigList as $devConfig)
-        {
-            foreach($devConfig[0] as $model)
-            {
+        foreach (Constants::$devConfigList as $devConfig) {
+            foreach ($devConfig[0] as $model) {
                 $devModelGroup[$model] = $devConfig[2];
             }
         }
         $devModelGroup['venv'] = "enviroment";
         return $devModelGroup;
     }
-    public function device_manage ()
+
+    public function device_manage()
     {
         $data = array();
         $data['userObj'] = $this->userObj;
@@ -3684,7 +3680,7 @@ function device_history ()
         $data['dataId'] = $dataId = trim($this->input->get('txtDataId'));
         $data['selActive'] = $active = $this->input->get('selActive');
         $data['keyWord'] = $keyWord = trim($this->input->get('keyWord'));
-        
+
         $export = $this->input->get('export');
         if ($export == "exporttoexcel") {
             require 'resources/php-excel.class.php';
@@ -3910,7 +3906,7 @@ function device_history ()
         $this->mp_master->Show_Portal($content, $scriptExtra, '查看采集单元状态', $data);
     }
 
-    
+
     public function _get_device_category_name()
     {
         $devModelName = array();
@@ -3919,7 +3915,7 @@ function device_history ()
         }
         return $devModelName;
     }
-    
+
     public function _get_device_model_name()
     {
         $devModelGroup = array();
@@ -3947,7 +3943,7 @@ function device_history ()
         $bcObj->url = '/portal/alarm';
         array_push($data['bcList'], $bcObj);
         $bcObj = new Breadcrumb();
-       
+
         $bcObj->isLast = true;
         array_push($data['bcList'], $bcObj);
         $data['actTab'] = 'alarm';
@@ -3972,7 +3968,7 @@ function device_history ()
         $data['selSignalName'] = $selSignalName = $this->input->get('selSignalName');
         //关键字
         $data['word'] = $word = trim($this->input->get('word'));
-        
+
         switch ($level) {
             case 1:
                 $bcObj->title = '一级告警';
@@ -3990,7 +3986,7 @@ function device_history ()
                 $bcObj->title = '所有告警';
                 break;
         }
-        
+
         $signalNameList = array();
         foreach (Defines::$signalName as $key => $codeName) {
             foreach ($codeName as $code => $name) {
@@ -3999,7 +3995,7 @@ function device_history ()
             }
         }
         $data['signalNameList'] = $signalNameList;
-        
+
         $devModelArray = array();
         if (!empty($selDevModel)) {
             foreach (Constants::$devConfigList as $devConfig) {
@@ -4045,7 +4041,7 @@ function device_history ()
             //到目前一个月
             $data['reportDate'] = $lastMonth . '至' . date('Y-m-d');
         }
-        
+
         $export = $this->input->get('export');
         if ($export == "exporttoexcel") {
             require 'resources/php-excel.class.php';
@@ -4083,7 +4079,6 @@ function device_history ()
         }
 
 
-       
         if ($countyCode)
             $data['substationList'] = $this->mp_xjdh->Get_Substations(false, $countyCode);
         if ($substationId)
@@ -4187,48 +4182,50 @@ function device_history ()
                 $reportDateArr[0], $reportDateArr[1], $getsignalName, $offset, DEFAULT_PAGE_SIZE);
         }
         $data['alarmList'] = $preAlertList;
-     	$export = $this->input->get('export');
-     	if($export == "exporttoexcel")
-     	{
-     		require 'resources/php-excel.class.php';
-     		 
-     		$record_offset = 0;
-     		$PAGE_SIZE=2000;
-     		$xls = new Excel_XML('UTF-8', false, '告警列表');
-     		$xls->addRow(array("分公司","区域","设备类型","设备名称","信号名称","信号ID","级别","描述","上报时间","当前状态","确认时间"));
-     		foreach($data['alarmList'] as $alarmObj)
-     		{
-     			if (array_key_exists($alarmObj->dev_model, Defines::$gDevModel)) {
-     				$alarmObj->dev_model = Defines::$gDevModel[$alarmObj->dev_model];} else {$alarmObj->dev_model = '其他类型设备';}
-     				if ($alarmObj->status == 'unresolved')  $alarmObj->status = '未处理';
-     				else if ($alarmObj->status == 'sloving')$alarmObj->status = '处理中';
-     				else if ($alarmObj->status == 'sloved') $alarmObj->status = '已处理';
-     				$xls->addRow(array(
-     						Defines::$gCity[$alarmObj->city_code], Defines::$gCounty[$alarmObj->city_code][$alarmObj->county_code],$alarmObj->dev_model,$alarmObj->dev_name,$alarmObj->signal_name,$alarmObj->signal_id,
-     						$alarmObj->level,$alarmObj->subject,$alarmObj->added_datetime,$alarmObj->status,$alarmObj->confirm_datetime
-     				));
-     		}
-     		 
-     		header('Content-Type: application/vnd.ms-excel');
-     		header('Content-Disposition: attachment;filename="告警列表.xls"');
-     		header('Cache-Control:must-revalidate,post-check=0,pre-check=0');
-     		header('Expires:0');
-     		header('Pragma:public');
-     		header('Cache-Control: max-age=1');
-     		$xls->generateXML('告警列表');
-     		return;
-     	}
+        $export = $this->input->get('export');
+        if ($export == "exporttoexcel") {
+            require 'resources/php-excel.class.php';
 
-    	$data['pagination'] = $this->mp_paging->Show(Util::Build_Page_Base("portal/takealarm"), $count, DEFAULT_PAGE_SIZE, 3, TRUE);
-    	$scriptExtra = '<script type="text/javascript" src="/public/js/bootbox.js"></script>';
-    	$scriptExtra .= '<script type="text/javascript" src="/public/js/moment.min.js"></script>';
-    	$scriptExtra .= '<link rel="stylesheet" href="/public/css/daterangepicker-bs2.css"/>';
-    	$scriptExtra .= '<script type="text/javascript" src="/public/js/daterangepicker.js"></script>';
-    	$scriptExtra .= '<script type="text/javascript" src="/public/portal/js/takealarm.js"></script>';	
-    	$content = $this->load->view("portal/takealarm", $data, TRUE);
-    	$this->mp_master->Show_Portal($content, $scriptExtra, '', $data);
+            $record_offset = 0;
+            $PAGE_SIZE = 2000;
+            $xls = new Excel_XML('UTF-8', false, '告警列表');
+            $xls->addRow(array("分公司", "区域", "设备类型", "设备名称", "信号名称", "信号ID", "级别", "描述", "上报时间", "当前状态", "确认时间"));
+            foreach ($data['alarmList'] as $alarmObj) {
+                if (array_key_exists($alarmObj->dev_model, Defines::$gDevModel)) {
+                    $alarmObj->dev_model = Defines::$gDevModel[$alarmObj->dev_model];
+                } else {
+                    $alarmObj->dev_model = '其他类型设备';
+                }
+                if ($alarmObj->status == 'unresolved') $alarmObj->status = '未处理';
+                else if ($alarmObj->status == 'sloving') $alarmObj->status = '处理中';
+                else if ($alarmObj->status == 'sloved') $alarmObj->status = '已处理';
+                $xls->addRow(array(
+                    Defines::$gCity[$alarmObj->city_code], Defines::$gCounty[$alarmObj->city_code][$alarmObj->county_code], $alarmObj->dev_model, $alarmObj->dev_name, $alarmObj->signal_name, $alarmObj->signal_id,
+                    $alarmObj->level, $alarmObj->subject, $alarmObj->added_datetime, $alarmObj->status, $alarmObj->confirm_datetime
+                ));
+            }
+
+            header('Content-Type: application/vnd.ms-excel');
+            header('Content-Disposition: attachment;filename="告警列表.xls"');
+            header('Cache-Control:must-revalidate,post-check=0,pre-check=0');
+            header('Expires:0');
+            header('Pragma:public');
+            header('Cache-Control: max-age=1');
+            $xls->generateXML('告警列表');
+            return;
+        }
+
+        $data['pagination'] = $this->mp_paging->Show(Util::Build_Page_Base("portal/takealarm"), $count, DEFAULT_PAGE_SIZE, 3, TRUE);
+        $scriptExtra = '<script type="text/javascript" src="/public/js/bootbox.js"></script>';
+        $scriptExtra .= '<script type="text/javascript" src="/public/js/moment.min.js"></script>';
+        $scriptExtra .= '<link rel="stylesheet" href="/public/css/daterangepicker-bs2.css"/>';
+        $scriptExtra .= '<script type="text/javascript" src="/public/js/daterangepicker.js"></script>';
+        $scriptExtra .= '<script type="text/javascript" src="/public/portal/js/takealarm.js"></script>';
+        $content = $this->load->view("portal/takealarm", $data, TRUE);
+        $this->mp_master->Show_Portal($content, $scriptExtra, '', $data);
     }
-    public function alarmsetting ()
+
+    public function alarmsetting()
     {
         $data = array();
         $data['actTab'] = 'alarm';
@@ -4237,7 +4234,7 @@ function device_history ()
         $this->mp_master->Show_Portal($content, $scriptExtra, '', $data);
     }
 
-    function export ()
+    function export()
     {
         $data = array();
         $data['userObj'] = $this->userObj;
@@ -4256,21 +4253,21 @@ function device_history ()
         $data['cityCode'] = $cityCode = $this->input->get('selCity', 0);
         $data['countyCode'] = $countyCode = $this->input->get('selCounty', 0);
         $data['substationId'] = $substationId = $this->input->get('selSubstation', 0);
-        
+
         $data['type'] = $type = $this->input->get('type', false);
         $data['timeType'] = $timeType = $this->input->get('time');
         $isExport = $this->input->get('isExport');
-        
+
         $content = "";
         if ($type && $timeType) {
             $excel_template = 'excel_templates/alarm_' . $type . '-template.xls';
             require_once 'phpexcel/PHPExcel.php';
             include 'PHPExcel/Writer/Excel2007.php';
-            
+
             $objPHPExcel = PHPExcel_IOFactory::createReader("Excel5")->load($excel_template);
             $objWriter = new PHPExcel_Writer_Excel5($objPHPExcel);
             $objActSheet = $objPHPExcel->getActiveSheet();
-            
+
             $startDatetime = '';
             $endDatetime = '';
             $title = '';
@@ -4320,8 +4317,8 @@ function device_history ()
                         $a2Name = '告警类型\日期';
                         break;
                 }
-                
-                for ($i = 1; $i <= $daysOfMonth; $i ++) {
+
+                for ($i = 1; $i <= $daysOfMonth; $i++) {
                     $objActSheet->setCellValue($this->_get_col_letter($i + 1) . '2', $i);
                 }
                 $objActSheet->setCellValue($this->_get_col_letter($i + 1) . '2', '合计');
@@ -4530,8 +4527,8 @@ function device_history ()
         //if ($cityCode == FALSE) {
         //   $bcObj->isLast = true;
         //} else {
-         //   $bcObj->url = '/portal/charts';
-       // }
+        //   $bcObj->url = '/portal/charts';
+        // }
         if ($countyCode)
             $data['substationList'] = $this->mp_xjdh->Get_Substations(false, $countyCode);
         if ($selSubstation)
@@ -4822,7 +4819,8 @@ function device_history ()
             $jsonRet['freshAirList'] = Realtime::Get_FreshAirRtData($dataIdStr5);
         } elseif ($model == 'sps') {
             $dataIdArr = $this->input->get('dataIdArr');
-            $jsonRet['spsList'] = Realtime::GetSpsPower($dataIdArr);} elseif ($model == 'zxdu') {
+            $jsonRet['spsList'] = Realtime::GetSpsPower($dataIdArr);
+        } elseif ($model == 'zxdu') {
             $dataIdStr6 = $this->input->get('dataIdArr6');
             $dataIdStr7 = $this->input->get('dataIdArr7');
             $dataIdStr8 = $this->input->get('dataIdArr8');
@@ -4861,6 +4859,10 @@ function device_history ()
         } else if ($model == "datamate3000") {
             $dataIdStr = $this->input->get('dataIdArr');
             $jsonRet['dataList'] = Realtime::Get_Datamate3000RtData($dataIdStr);
+        } else if ($model == "k200") {
+            $dataIdStr = $this->input->get('dataIdArr');
+            t::f($dataIdStr);
+            $jsonRet['dataList'] = Realtime::Get_K200RtData($dataIdStr);
         }
         header('Content-type: application/json');
         echo json_encode($jsonRet);
@@ -5001,11 +5003,11 @@ function device_history ()
         if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $keyArr = $this->input->post('txtKey');
             $valArr = $this->input->post('txtValue');
-           // ------------------------------------------------------------------------------------------------------？？？？？？？？？？？？
+            // ------------------------------------------------------------------------------------------------------？？？？？？？？？？？？
             if (TRUE) {
                 $ret = '';
                 $content = "<?php\r\n" . "if (! defined('BASEPATH'))\r\n" . "exit('No direct script access allowed');\r\n" . "class Defines\r\n" . "{\r\n";
-                
+
                 $ref = new ReflectionClass(new Defines());
                 foreach ($ref->getProperties() as $prop) {
                     $prop->setAccessible(true);
@@ -5087,7 +5089,7 @@ function device_history ()
         $bcObj->title = $data['pageTitle'];
         $bcObj->isLast = true;
         array_push($data['bcList'], $bcObj);
-   
+
         $content = $this->load->view('portal/basicdata', $data, TRUE);
         $scriptExtra = '<script type="text/javascript" src="/public/js/jquery.tagsinput.js"></script>';
         $scriptExtra .= '<script type="text/javascript" src="/public/js/jquery.validate.js"></script>';
@@ -5284,14 +5286,14 @@ function device_history ()
         $bcObj->title = '监控权限管理';
         $bcObj->isLast = true;
         array_push($data['bcList'], $bcObj);
-              
+
         $data['offset'] = $offset = intval($this->input->get('per_page'));
         $data['cityCode'] = $cityCode = $this->input->get('selCity');
         if (!$cityCode) {
             $privilegeObj = User::Get_UserPrivilege($_SESSION['XJTELEDH_USERID']);
             $cityCode = $privilegeObj->city_code;
         }
-        
+
         $data['cityCode'] = $cityCode = $this->input->get('selCity');
         $data['countyCode'] = $countyCode = $this->input->get('selCounty');
         $data['fullName'] = $fullName = trim($this->input->get('fullName'));
@@ -5396,7 +5398,7 @@ function device_history ()
 
     function loginlogUser()
     {
-    	$data = array();
+        $data = array();
         $data['userObj'] = $this->userObj;
         $data['actTab'] = 'users';
         $data['bcList'] = array();
@@ -5408,7 +5410,7 @@ function device_history ()
         $bcObj->title = '登录日志';
         $bcObj->isLast = true;
         array_push($data['bcList'], $bcObj);
-        
+
         $data['offset'] = $offset = intval($this->input->get('per_page'));
         $data['txtName'] = $txtName = trim($userRole = $this->input->get('txtName'));
         $data['userRole'] = $userRole = $this->input->get('userRole');
@@ -5419,12 +5421,12 @@ function device_history ()
         $data['substationList'] = $this->mp_xjdh->Get_Substations();
         $data['datestart'] = $datestart = $this->input->get('datestart');
         $data['dateend'] = $dateend = $this->input->get('dateend');
-        
+
         $city_code = "";
         if ($this->userObj->user_role != "admin") {
             $city_code = $this->userObj->city_code;
         }
-        
+
         $export = $this->input->get('export');
         if ($export == "exporttoexcel") {
             require 'resources/php-excel.class.php';
@@ -5462,9 +5464,9 @@ function device_history ()
         $scriptExtra .= '<script type="text/javascript" src="/public/portal/js/userloginlog.js"></script>';
         $this->mp_master->Show_Portal($content, $scriptExtra, '登录日志', $data);
     }
-    
-   
-    function activeuser ()
+
+
+    function activeuser()
     {
         $userId = $this->input->post('user_id');
         $userObj = User::GetUserById($userId);
@@ -5478,8 +5480,9 @@ function device_history ()
         echo false;
         return;
     }
-   //添加编辑用户
-    function edituser ($userId=0)
+
+    //添加编辑用户
+    function edituser($userId = 0)
     {
         $data = array();
         $data['userObj'] = $this->userObj;
@@ -5551,7 +5554,7 @@ function device_history ()
                             User::Save_UserPrivilege($userId, json_encode(array($this->input->post('citycode'))), '');
                         } else {
                             User::Save_UserPrivilege($userId, '', '');
-                        }                     
+                        }
                         $data['successMsg'] = '创建用户成功&nbsp&nbsp&nbsp&nbsp<a href="/portal/usermanage">返回列表</a>&nbsp&nbsp&nbsp&nbsp<a href="/portal/edituser">继续创建用户</a>';
                     } else {
                         $data['successMsg'] = '创建用户失败';
@@ -5578,7 +5581,7 @@ function device_history ()
 
         $this->mp_master->Show_Portal($content, $scriptExtra, '编辑/新建用户', $data);
     }
-    
+
     function deluser()
     {
         //User:: DeleteUser($this->input->get('user_id'));
@@ -5601,7 +5604,7 @@ function device_history ()
 
         echo json_encode($delObj ? "cg" : "sb");
     }
-    
+
 
     public function search_station()
     {
@@ -5632,8 +5635,9 @@ function device_history ()
             echo $callback . "(" . json_encode($substationArray) . ")";
         }
     }
+
     //实时数据管理 	查找
-    function search ()
+    function search()
     {
         $data = array();
         $data['actTab'] = 'rt_data';
@@ -5669,7 +5673,7 @@ function device_history ()
         $this->mp_master->Show_Portal($content, $scriptExtra, '', $data);
     }
 
-    function checkaccount ()
+    function checkaccount()
     {
         $userName = $this->input->post('txtUsername');
         if (User::GetUserByName($userName) == null) {
@@ -5679,7 +5683,7 @@ function device_history ()
         }
     }
 
-    function checkname ()
+    function checkname()
     {
         $userName = $this->input->post('txtUsername');
         if (preg_match("/^[a-zA-Z0-9]+/", $userName)) {
@@ -5688,9 +5692,9 @@ function device_history ()
             echo 'false';
         }
     }
-    
-    
-    function checkphone ()
+
+
+    function checkphone()
     {
         $phone = $this->input->post('txtMobile');
         $username = $this->input->post('username');
@@ -5704,7 +5708,7 @@ function device_history ()
             echo "true";
     }
 
-    function checkemail ()
+    function checkemail()
     {
         $email = $this->input->post('txtEmail');
         $username = $this->input->post('username');
@@ -5717,8 +5721,8 @@ function device_history ()
         } else
             echo "true";
     }
-    
-    function checkaccessid ()
+
+    function checkaccessid()
     {
         $accessid = $this->input->post('accessid');
         $username = $this->input->post('username');
@@ -5731,8 +5735,8 @@ function device_history ()
         } else
             echo "true";
     }
-    
-    function getMapStatistics ()
+
+    function getMapStatistics()
     {
         $jsonRet = array();
         $startDatetime = date('Y-m-1');
@@ -5773,7 +5777,7 @@ function device_history ()
                 array_push($mapData, $mapObj);
             }*/
         } else {
-        	//$this->load->library("mongo_db");
+            //$this->load->library("mongo_db");
             foreach ($mapList as $obj) {
                 if (strlen($obj->path) == 0)
                     continue;
@@ -5783,7 +5787,7 @@ function device_history ()
                 $mapObj['path'] = $obj->path;
                 $mapObj['color'] = $obj->color;
                 $energy = 0;
-                $imemList = array();  
+                $imemList = array();
                 if ($parentCode == 0) {
                     $alarmCount = $this->mp_xjdh->Get_HomeAlarmCount($obj->code, false, $startDatetime, $endDatetime);
                     $mapObj['alarm'] = $alarmCount;
@@ -6286,7 +6290,7 @@ function device_history ()
         array_push($data['bcList'], $bcObj);
         $user_id = $this->input->get('user_id');
         $userObj = User::GetUserById($user_id);
-      
+
         $privilegeObj = User::Get_UserPrivileges($user_id);
         $area_privilege = array();
         $dev_privilege = array();
@@ -6461,7 +6465,6 @@ function device_history ()
         echo User::Update_UserPrivilege($userId, json_encode(explode(',', $areaPrivilegeStr)), json_encode(array_values($devPrivilegeArr)));
         return;
     }
-    
 
 
     function logout()
@@ -8397,52 +8400,6 @@ function device_history ()
         $content = $this->load->view("portal/substation_network_assessment", $data, TRUE);
         $this->mp_master->Show_Portal($content, $scriptExtra, '局站电源安全评估', $data);
     }
-   	
-   	function perforSetting ($substation_id)
-   	{
-   		$data = array();
-   		$data['actTab'] = 'settings';
-   		$data['bcList'] = array();
-   		$bcObj = new Breadcrumb();
-   		$bcObj->title = '系统配置';
-   		$bcObj->url = '#';
-   		array_push($data['bcList'], $bcObj);
-   		$bcObj = new Breadcrumb();
-   		$bcObj->title = '局站性能管理';
-   		$bcObj->url = '/portal/substation_performance_manage';
-   		array_push($data['bcList'], $bcObj);
-   		$bcObj = new Breadcrumb();
-   		$bcObj->title = '添加局站性能管理评估规则';
-   		$bcObj->isLast = true;
-   		array_push($data['bcList'], $bcObj);
-
-    function substationSetting($substation_id)
-    {
-        $data = array();
-        $data['actTab'] = 'settings';
-        $data['bcList'] = array();
-        $bcObj = new Breadcrumb();
-        $bcObj->title = '系统配置';
-        $bcObj->url = '#';
-        array_push($data['bcList'], $bcObj);
-        $bcObj = new Breadcrumb();
-        $bcObj->title = '局站电源安全评估';
-        $bcObj->url = '/portal/substation_network_assessment';
-        array_push($data['bcList'], $bcObj);
-        $bcObj = new Breadcrumb();
-        $bcObj->title = '添加局站安全评估规则';
-        $bcObj->isLast = true;
-        array_push($data['bcList'], $bcObj);
-
-        $data['substation_id'] = $substation_id;
-        $data['netSubList'] = $this->mp_xjdh->Get_NetworkSubstationConfig($substation_id);
-        $data['devList'] = $devList = $this->mp_xjdh->Get_NetworkSubstationSetting($substation_id);
-
-        $content = $this->load->view('portal/substation_setting', $data, TRUE);
-        $scriptExtra = '<script type="text/javascript" src="/public/js/insertsome.js"></script>';
-        $scriptExtra .= '<script type="text/javascript" src="/public/portal/js/substation_setting.js"></script>';
-        $this->mp_master->Show_Portal($content, $scriptExtra, '机房性能动态配置', $data);
-    }
 
     function perforSetting($substation_id)
     {
@@ -8462,408 +8419,454 @@ function device_history ()
         $bcObj->isLast = true;
         array_push($data['bcList'], $bcObj);
 
-        $data['substation_id'] = $substation_id;
-        $data['perforSubList'] = $this->mp_xjdh->Get_PerforSubstationConfig($substation_id);
-        $data['devList'] = $this->mp_xjdh->Get_PerforSubstationSetting($substation_id);
+        function substationSetting($substation_id)
+        {
+            $data = array();
+            $data['actTab'] = 'settings';
+            $data['bcList'] = array();
+            $bcObj = new Breadcrumb();
+            $bcObj->title = '系统配置';
+            $bcObj->url = '#';
+            array_push($data['bcList'], $bcObj);
+            $bcObj = new Breadcrumb();
+            $bcObj->title = '局站电源安全评估';
+            $bcObj->url = '/portal/substation_network_assessment';
+            array_push($data['bcList'], $bcObj);
+            $bcObj = new Breadcrumb();
+            $bcObj->title = '添加局站安全评估规则';
+            $bcObj->isLast = true;
+            array_push($data['bcList'], $bcObj);
 
-        $content = $this->load->view('portal/perfor_setting', $data, TRUE);
-        $scriptExtra = '<script type="text/javascript" src="/public/js/insertsome.js"></script>';
-        $scriptExtra .= '<script type="text/javascript" src="/public/portal/js/perfor_setting.js"></script>';
-        $this->mp_master->Show_Portal($content, $scriptExtra, '机房性能动态配置', $data);
-    }
+            $data['substation_id'] = $substation_id;
+            $data['netSubList'] = $this->mp_xjdh->Get_NetworkSubstationConfig($substation_id);
+            $data['devList'] = $devList = $this->mp_xjdh->Get_NetworkSubstationSetting($substation_id);
 
-    function saveNetWorkPi()
-    {
-        $id = $this->input->post("id");
-        $substation_id = $this->input->post("substation_id");
-        $networkObj = $this->mp_xjdh->Get_Network_By_Id($id);
-        $configs = $config = json_decode($networkObj->config, true);
-        $substationnetwork = $this->mp_xjdh->Get_substation_network($id, $substation_id);
-        $pi_setting = $setting = json_decode($substationnetwork->pi_setting, true);
-        $count = count($config);
-        $n = 0;
-        $num = 0;
-        $key = array_keys($config);
-        for ($i = 0; $i <= $count; $i++) {
-            if (in_array("label" . "" . $i, $key)) {
-                $n++;
-            }
-            if (in_array("require" . "" . $i, $key)) {
-                $num++;
-            }
+            $content = $this->load->view('portal/substation_setting', $data, TRUE);
+            $scriptExtra = '<script type="text/javascript" src="/public/js/insertsome.js"></script>';
+            $scriptExtra .= '<script type="text/javascript" src="/public/portal/js/substation_setting.js"></script>';
+            $this->mp_master->Show_Portal($content, $scriptExtra, '机房性能动态配置', $data);
         }
-        $setting = array();
-        for ($i = 1; $i <= $n; $i++) {
-            $key = $i - 1;
-            $name = "varArray[" . $key . "]";
-            $setting[$config["var" . $i]] = $this->input->post("$name");
-        }
-        $ret = $this->mp_xjdh->Save_Substation_NetWork($id, $substation_id, json_encode($setting), $pi_setting);
 
-        $network = $this->mp_xjdh->Get_Network_By_Id($id);
-        $configs = json_decode($network->config, true);
-        $substationnetwork = $this->mp_xjdh->Get_substation_network($id, $substation_id);
-        $pi_setting = $setting = json_decode($substationnetwork->pi_setting, true);
-        foreach ($pi_setting as $key => $val) {
-            if (explode($key, $configs[value])) {
-                $configs[value] = str_replace($key, $val, $configs[value]);
-            }
+        function perforSetting($substation_id)
+        {
+            $data = array();
+            $data['actTab'] = 'settings';
+            $data['bcList'] = array();
+            $bcObj = new Breadcrumb();
+            $bcObj->title = '系统配置';
+            $bcObj->url = '#';
+            array_push($data['bcList'], $bcObj);
+            $bcObj = new Breadcrumb();
+            $bcObj->title = '局站性能管理';
+            $bcObj->url = '/portal/substation_performance_manage';
+            array_push($data['bcList'], $bcObj);
+            $bcObj = new Breadcrumb();
+            $bcObj->title = '添加局站性能管理评估规则';
+            $bcObj->isLast = true;
+            array_push($data['bcList'], $bcObj);
+
+            $data['substation_id'] = $substation_id;
+            $data['perforSubList'] = $this->mp_xjdh->Get_PerforSubstationConfig($substation_id);
+            $data['devList'] = $this->mp_xjdh->Get_PerforSubstationSetting($substation_id);
+
+            $content = $this->load->view('portal/perfor_setting', $data, TRUE);
+            $scriptExtra = '<script type="text/javascript" src="/public/js/insertsome.js"></script>';
+            $scriptExtra .= '<script type="text/javascript" src="/public/portal/js/perfor_setting.js"></script>';
+            $this->mp_master->Show_Portal($content, $scriptExtra, '机房性能动态配置', $data);
         }
-        eval("\$value = $configs[value];");
-        $val = $value;
-        for ($i = 1; $i <= $num; $i++) {
-            $val = $val . $config["require" . $i];
-            eval("\$vals = $val;");
-            if ($vals == "true") {
-                $state = $config["state" . $i];
+
+        function saveNetWorkPi()
+        {
+            $id = $this->input->post("id");
+            $substation_id = $this->input->post("substation_id");
+            $networkObj = $this->mp_xjdh->Get_Network_By_Id($id);
+            $configs = $config = json_decode($networkObj->config, true);
+            $substationnetwork = $this->mp_xjdh->Get_substation_network($id, $substation_id);
+            $pi_setting = $setting = json_decode($substationnetwork->pi_setting, true);
+            $count = count($config);
+            $n = 0;
+            $num = 0;
+            $key = array_keys($config);
+            for ($i = 0; $i <= $count; $i++) {
+                if (in_array("label" . "" . $i, $key)) {
+                    $n++;
+                }
+                if (in_array("require" . "" . $i, $key)) {
+                    $num++;
+                }
             }
+            $setting = array();
+            for ($i = 1; $i <= $n; $i++) {
+                $key = $i - 1;
+                $name = "varArray[" . $key . "]";
+                $setting[$config["var" . $i]] = $this->input->post("$name");
+            }
+            $ret = $this->mp_xjdh->Save_Substation_NetWork($id, $substation_id, json_encode($setting), $pi_setting);
+
+            $network = $this->mp_xjdh->Get_Network_By_Id($id);
+            $configs = json_decode($network->config, true);
+            $substationnetwork = $this->mp_xjdh->Get_substation_network($id, $substation_id);
+            $pi_setting = $setting = json_decode($substationnetwork->pi_setting, true);
+            foreach ($pi_setting as $key => $val) {
+                if (explode($key, $configs[value])) {
+                    $configs[value] = str_replace($key, $val, $configs[value]);
+                }
+            }
+            eval("\$value = $configs[value];");
             $val = $value;
+            for ($i = 1; $i <= $num; $i++) {
+                $val = $val . $config["require" . $i];
+                eval("\$vals = $val;");
+                if ($vals == "true") {
+                    $state = $config["state" . $i];
+                }
+                $val = $value;
+            }
+            $this->mp_xjdh->Save_NetWorkValue($id, $substation_id, $value, $state);
+
+            header('Content-type: application/json');
+            echo json_encode($ret ? 'true' : 'false');
         }
-        $this->mp_xjdh->Save_NetWorkValue($id, $substation_id, $value, $state);
 
-        header('Content-type: application/json');
-        echo json_encode($ret ? 'true' : 'false');
-    }
+        function performance_manage()
+        {
+            $data = array();
+            $data['actTab'] = 'settings';
+            $data['bcList'] = array();
+            $bcObj = new Breadcrumb();
+            $bcObj->title = '系统配置';
+            array_push($data['bcList'], $bcObj);
+            $bcObj = new Breadcrumb();
+            $bcObj->title = '性能管理';
+            $bcObj->url = '/portal/performance_manage';
+            $bcObj->isLast = true;
+            array_push($data['bcList'], $bcObj);
 
-    function performance_manage()
-    {
-        $data = array();
-        $data['actTab'] = 'settings';
-        $data['bcList'] = array();
-        $bcObj = new Breadcrumb();
-        $bcObj->title = '系统配置';
-        array_push($data['bcList'], $bcObj);
-        $bcObj = new Breadcrumb();
-        $bcObj->title = '性能管理';
-        $bcObj->url = '/portal/performance_manage';
-        $bcObj->isLast = true;
-        array_push($data['bcList'], $bcObj);
+            $data['device_type'] = $device_type = trim($this->input->get('device_type'));
+            $data['quota'] = $quota = trim($this->input->get('quota'));
+            $data['output_device'] = $output_device = trim($this->input->get('output_device'));
+            $data['acquisition_methods'] = $acquisition_methods = trim($this->input->get('acquisition_methods'));
+            $data['offset'] = $offset = intval($this->input->get('per_page'));
 
-        $data['device_type'] = $device_type = trim($this->input->get('device_type'));
-        $data['quota'] = $quota = trim($this->input->get('quota'));
-        $data['output_device'] = $output_device = trim($this->input->get('output_device'));
-        $data['acquisition_methods'] = $acquisition_methods = trim($this->input->get('acquisition_methods'));
-        $data['offset'] = $offset = intval($this->input->get('per_page'));
+            $data['perforList'] = $perforList = $this->mp_xjdh->Get_Performance($device_type, $quota, $output_device, $acquisition_methods, $offset, DEFAULT_PAGE_SIZE);
+            $data['count'] = $count = $this->mp_xjdh->Get_PerformanceCount($device_type, $quota, $output_device, $acquisition_methods);
+            $data['pagination'] = $this->mp_paging->Show(Util::Build_Page_Base("portal/performance_manage"), $count, DEFAULT_PAGE_SIZE, 3, TRUE);
 
-        $data['perforList'] = $perforList = $this->mp_xjdh->Get_Performance($device_type, $quota, $output_device, $acquisition_methods, $offset, DEFAULT_PAGE_SIZE);
-        $data['count'] = $count = $this->mp_xjdh->Get_PerformanceCount($device_type, $quota, $output_device, $acquisition_methods);
-        $data['pagination'] = $this->mp_paging->Show(Util::Build_Page_Base("portal/performance_manage"), $count, DEFAULT_PAGE_SIZE, 3, TRUE);
+            $scriptExtra = '<link rel="stylesheet" href="/public/js/jstree/themes/default/style.min.css"/>';
+            $scriptExtra .= '<script type="text/javascript" src="/public/js/tiny_mce/tinymce.min.js"></script>';
+            $scriptExtra .= '<script type="text/javascript" src="/public/js/jquery.validate.js"></script>';
+            $scriptExtra .= '<script type="text/javascript" src="/public/js/validate-extend.js"></script>';
+            $scriptExtra .= '<script type="text/javascript" src="/public/portal/js/edit-device.js"></script>';
+            $scriptExtra .= '<script type="text/javascript" src="/public/js/highcharts/highcharts.js"></script>';
+            $scriptExtra .= '<script type="text/javascript" src="/public/js/highcharts/modules/exporting.js"></script>';
+            $scriptExtra .= '<script type="text/javascript" src="/public/js/jstree/jstree.min.js"></script>';
+            $scriptExtra .= '<script type="text/javascript" src="/public/js/bootbox.js"></script>';
+            $scriptExtra .= '<script type="text/javascript" src="/public/js/moment.min.js"></script>';
+            $scriptExtra .= '<link rel="stylesheet" href="/public/css/daterangepicker-bs2.css"/>';
+            $scriptExtra .= '<script type="text/javascript" src="/public/js/daterangepicker.js"></script>';
+            $scriptExtra .= '<script type="text/javascript" src="/public/portal/js/performance_manage.js"></script>';
 
-        $scriptExtra = '<link rel="stylesheet" href="/public/js/jstree/themes/default/style.min.css"/>';
-        $scriptExtra .= '<script type="text/javascript" src="/public/js/tiny_mce/tinymce.min.js"></script>';
-        $scriptExtra .= '<script type="text/javascript" src="/public/js/jquery.validate.js"></script>';
-        $scriptExtra .= '<script type="text/javascript" src="/public/js/validate-extend.js"></script>';
-        $scriptExtra .= '<script type="text/javascript" src="/public/portal/js/edit-device.js"></script>';
-        $scriptExtra .= '<script type="text/javascript" src="/public/js/highcharts/highcharts.js"></script>';
-        $scriptExtra .= '<script type="text/javascript" src="/public/js/highcharts/modules/exporting.js"></script>';
-        $scriptExtra .= '<script type="text/javascript" src="/public/js/jstree/jstree.min.js"></script>';
-        $scriptExtra .= '<script type="text/javascript" src="/public/js/bootbox.js"></script>';
-        $scriptExtra .= '<script type="text/javascript" src="/public/js/moment.min.js"></script>';
-        $scriptExtra .= '<link rel="stylesheet" href="/public/css/daterangepicker-bs2.css"/>';
-        $scriptExtra .= '<script type="text/javascript" src="/public/js/daterangepicker.js"></script>';
-        $scriptExtra .= '<script type="text/javascript" src="/public/portal/js/performance_manage.js"></script>';
+            $content = $this->load->view("portal/performance_manage", $data, TRUE);
+            $this->mp_master->Show_Portal($content, $scriptExtra, '性能管理', $data);
+        }
 
-        $content = $this->load->view("portal/performance_manage", $data, TRUE);
-        $this->mp_master->Show_Portal($content, $scriptExtra, '性能管理', $data);
-    }
+        function edit_perfor($id = 0)
+        {
+            $data = array();
+            $data['pageTitle'] = '插入/修改数据信息';
+            $data['actTab'] = 'settings';
+            $data['bcList'] = array();
+            $bcObj = new Breadcrumb();
+            $bcObj->title = '系统配置';
+            $bcObj->url = '#';
+            array_push($data['bcList'], $bcObj);
+            $bcObj = new Breadcrumb();
+            $bcObj->title = '性能管理';
+            $bcObj->url = '/portal/performance_manage';
+            array_push($data['bcList'], $bcObj);
+            $bcObj = new Breadcrumb();
+            $bcObj->title = $data['pageTitle'];
+            $bcObj->url = '#';
+            $bcObj->isLast = true;
+            array_push($data['bcList'], $bcObj);
 
-    function edit_perfor($id = 0)
-    {
-        $data = array();
-        $data['pageTitle'] = '插入/修改数据信息';
-        $data['actTab'] = 'settings';
-        $data['bcList'] = array();
-        $bcObj = new Breadcrumb();
-        $bcObj->title = '系统配置';
-        $bcObj->url = '#';
-        array_push($data['bcList'], $bcObj);
-        $bcObj = new Breadcrumb();
-        $bcObj->title = '性能管理';
-        $bcObj->url = '/portal/performance_manage';
-        array_push($data['bcList'], $bcObj);
-        $bcObj = new Breadcrumb();
-        $bcObj->title = $data['pageTitle'];
-        $bcObj->url = '#';
-        $bcObj->isLast = true;
-        array_push($data['bcList'], $bcObj);
+            if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+                $this->load->library('form_validation');
+                $this->form_validation->set_rules('device_type', 'device_type', 'trim|required');
+                $this->form_validation->set_rules('quota', 'quota', 'trim|required');
+                $this->form_validation->set_rules('output_device', 'output_device', 'trim|required');
+                $this->form_validation->set_rules('acquisition_methods', 'acquisition_methods', 'trim|required');
+                if ($this->form_validation->run() == TRUE) {
+                    $major = $this->input->post('major');
+                    $device_type = $this->input->post('device_type');
+                    $quota = $this->input->post('quota');
+                    $cycle = $this->input->post('cycle');
+                    $night = $this->input->post('night');
+                    $day = $this->input->post('day');
+                    $output_device = $this->input->post('output_device');
+                    $acquisition_methods = $this->input->post('acquisition_methods');
+                    $type = $this->input->post('type');
+                    $responsible = $this->input->post('responsible');
+                    $set_basis = $this->input->post('set_basis');
+                    $output_mode = $this->input->post('output_mode');
+                    $remarks = $this->input->post('remarks');
+                    $config = $this->input->post('config');
 
-        if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-            $this->load->library('form_validation');
-            $this->form_validation->set_rules('device_type', 'device_type', 'trim|required');
-            $this->form_validation->set_rules('quota', 'quota', 'trim|required');
-            $this->form_validation->set_rules('output_device', 'output_device', 'trim|required');
-            $this->form_validation->set_rules('acquisition_methods', 'acquisition_methods', 'trim|required');
-            if ($this->form_validation->run() == TRUE) {
-                $major = $this->input->post('major');
-                $device_type = $this->input->post('device_type');
-                $quota = $this->input->post('quota');
-                $cycle = $this->input->post('cycle');
-                $night = $this->input->post('night');
-                $day = $this->input->post('day');
-                $output_device = $this->input->post('output_device');
-                $acquisition_methods = $this->input->post('acquisition_methods');
-                $type = $this->input->post('type');
-                $responsible = $this->input->post('responsible');
-                $set_basis = $this->input->post('set_basis');
-                $output_mode = $this->input->post('output_mode');
-                $remarks = $this->input->post('remarks');
-                $config = $this->input->post('config');
-
-                if ($id) {
-                    $result = $this->mp_xjdh->Update_perfor($id, $major, $device_type, $quota, $cycle, $night, $day, $output_device, $acquisition_methods, $type, $responsible, $set_basis, $output_mode, $remarks, $config);
-                    if ($result) {
-                        $data['successMsg'] = '修改成功<a href="/portal/performance_manage">返回列表</a>';
-                    }
-                } else {
-                    $result = $this->mp_xjdh->Save_perfor($major, $device_type, $quota, $cycle, $night, $day, $output_device, $acquisition_methods, $type, $responsible, $set_basis, $output_mode, $remarks, $config);
-                    if ($result) {
-                        $data['successMsg'] = '新增成功<a href="/portal/performance_manage">返回列表</a>&nbsp&nbsp&nbsp&nbsp<a href="/portal/edit_perfor">继续添加</a>';
+                    if ($id) {
+                        $result = $this->mp_xjdh->Update_perfor($id, $major, $device_type, $quota, $cycle, $night, $day, $output_device, $acquisition_methods, $type, $responsible, $set_basis, $output_mode, $remarks, $config);
+                        if ($result) {
+                            $data['successMsg'] = '修改成功<a href="/portal/performance_manage">返回列表</a>';
+                        }
+                    } else {
+                        $result = $this->mp_xjdh->Save_perfor($major, $device_type, $quota, $cycle, $night, $day, $output_device, $acquisition_methods, $type, $responsible, $set_basis, $output_mode, $remarks, $config);
+                        if ($result) {
+                            $data['successMsg'] = '新增成功<a href="/portal/performance_manage">返回列表</a>&nbsp&nbsp&nbsp&nbsp<a href="/portal/edit_perfor">继续添加</a>';
+                        }
                     }
                 }
             }
-        }
-        if ($id) {
-            $dbObj = $this->load->database('default', TRUE);
-            $data['perfor'] = $perfor = $this->mp_xjdh->Get_perfor_protocol($id);
-        }
-        $content = $this->load->view('portal/edit_perfor', $data, TRUE);
-        $this->mp_master->Show_Portal($content, $scriptExtra, '性能管理', $data);
-    }
-
-    function delete_perfor()
-    {
-        $id = $this->input->post('id');
-        echo $this->mp_xjdh->DeletePerfor($id);
-        return;
-    }
-
-    function substation_performance_manage($substation_id = 0)
-    {
-        $data = array();
-        $data['actTab'] = 'settings';
-        $data['bcList'] = array();
-        $bcObj = new Breadcrumb();
-        $bcObj->title = '系统配置';
-        array_push($data['bcList'], $bcObj);
-        $bcObj = new Breadcrumb();
-        $bcObj->title = '局站性能管理';
-        $bcObj->isLast = true;
-        array_push($data['bcList'], $bcObj);
-        $data['substation_id'] = $substation_id;
-        $data['substationObj'] = $substationObj = $this->mp_xjdh->Get_Substation($substation_id);
-        $array = array();
-        $perforObj = $this->mp_xjdh->Perfor_Id($substation_id);
-        foreach ($perforObj as $key => $perfor) {
-            foreach ($perfor as $k => $v) {
-                if ($k == "perfor_id")
-                    array_push($array, $v);
+            if ($id) {
+                $dbObj = $this->load->database('default', TRUE);
+                $data['perfor'] = $perfor = $this->mp_xjdh->Get_perfor_protocol($id);
             }
+            $content = $this->load->view('portal/edit_perfor', $data, TRUE);
+            $this->mp_master->Show_Portal($content, $scriptExtra, '性能管理', $data);
         }
-        $arr = array();
-        $n = count($array) - 1;
-        for ($i = 0; $i <= $n; $i++) {
-            $perforList = $this->mp_xjdh->Get_PerFor($substation_id, $array[$i]);
-            array_push($arr, $perforList);
-        }
-        $perfor = $this->mp_xjdh->Get_Perfor_Not_Where($substation_id, $array);
-        $data['perforList'] = array_merge($arr, $perfor);
-        $data['count'] = $count = $this->mp_xjdh->Get_PerformanceCount($device_type, $quota, $output_device, $acquisition_methods);
-        $data['pagination'] = $this->mp_paging->Show(Util::Build_Page_Base("portal/substation_performance_manage"), $count, DEFAULT_PAGE_SIZE, 3, TRUE);
 
-        $scriptExtra = '<link rel="stylesheet" href="/public/js/jstree/themes/default/style.min.css"/>';
-        $scriptExtra .= '<script type="text/javascript" src="/public/js/tiny_mce/tinymce.min.js"></script>';
-        $scriptExtra .= '<script type="text/javascript" src="/public/js/jquery.validate.js"></script>';
-        $scriptExtra .= '<script type="text/javascript" src="/public/js/validate-extend.js"></script>';
-        $scriptExtra .= '<script type="text/javascript" src="/public/portal/js/edit-device.js"></script>';
-        $scriptExtra .= '<script type="text/javascript" src="/public/js/highcharts/highcharts.js"></script>';
-        $scriptExtra .= '<script type="text/javascript" src="/public/js/highcharts/modules/exporting.js"></script>';
-        $scriptExtra .= '<script type="text/javascript" src="/public/js/jstree/jstree.min.js"></script>';
-        $scriptExtra .= '<script type="text/javascript" src="/public/js/bootbox.js"></script>';
-        $scriptExtra .= '<script type="text/javascript" src="/public/js/moment.min.js"></script>';
-        $scriptExtra .= '<link rel="stylesheet" href="/public/css/daterangepicker-bs2.css"/>';
-        $scriptExtra .= '<script type="text/javascript" src="/public/js/daterangepicker.js"></script>';
-        $scriptExtra .= '<script type="text/javascript" src="/public/portal/js/substation_performance_manage.js"></script>';
-
-        $content = $this->load->view("portal/substation_performance_manage", $data, TRUE);
-        $this->mp_master->Show_Portal($content, $scriptExtra, '局站性能管理', $data);
-    }
-
-    function savePerforPi()
-    {
-        $id = $this->input->post("id");
-        $substation_id = $this->input->post("substation_id");
-        $perforObj = $this->mp_xjdh->Get_Perfor_By_Id($id);
-        $configs = $config = json_decode($perforObj->config, true);
-        $substationperfor = $this->mp_xjdh->Get_substation_perfor($id, $substation_id);
-        $pi_setting = $setting = json_decode($substationperfor->pi_setting, true);
-        $count = count($config);
-        $n = 0;
-        $num = 0;
-        $key = array_keys($config);
-        for ($i = 0; $i <= $count; $i++) {
-            if (in_array("label" . "" . $i, $key)) {
-                $n++;
-            }
-            if (in_array("require" . "" . $i, $key)) {
-                $num++;
-            }
+        function delete_perfor()
+        {
+            $id = $this->input->post('id');
+            echo $this->mp_xjdh->DeletePerfor($id);
+            return;
         }
-        $setting = array();
-        for ($i = 1; $i <= $n; $i++) {
-            $key = $i - 1;
-            $name = "varArray[" . $key . "]";
-            $setting[$config["var" . $i]] = $this->input->post("$name");
-        }
-        $ret = $this->mp_xjdh->Save_Substation_PerFor($id, $substation_id, json_encode($setting), $pi_setting);
 
-        $perfor = $this->mp_xjdh->Get_Perfor_By_Id($id);
-        $configs = json_decode($perfor->config, true);
-        $substationperfor = $this->mp_xjdh->Get_substation_perfor($id, $substation_id);
-        $pi_setting = $setting = json_decode($substationperfor->pi_setting, true);
-        foreach ($pi_setting as $key => $val) {
-            if (explode($key, $configs[value])) {
-                $configs[value] = str_replace($key, $val, $configs[value]);
+        function substation_performance_manage($substation_id = 0)
+        {
+            $data = array();
+            $data['actTab'] = 'settings';
+            $data['bcList'] = array();
+            $bcObj = new Breadcrumb();
+            $bcObj->title = '系统配置';
+            array_push($data['bcList'], $bcObj);
+            $bcObj = new Breadcrumb();
+            $bcObj->title = '局站性能管理';
+            $bcObj->isLast = true;
+            array_push($data['bcList'], $bcObj);
+            $data['substation_id'] = $substation_id;
+            $data['substationObj'] = $substationObj = $this->mp_xjdh->Get_Substation($substation_id);
+            $array = array();
+            $perforObj = $this->mp_xjdh->Perfor_Id($substation_id);
+            foreach ($perforObj as $key => $perfor) {
+                foreach ($perfor as $k => $v) {
+                    if ($k == "perfor_id")
+                        array_push($array, $v);
+                }
             }
+            $arr = array();
+            $n = count($array) - 1;
+            for ($i = 0; $i <= $n; $i++) {
+                $perforList = $this->mp_xjdh->Get_PerFor($substation_id, $array[$i]);
+                array_push($arr, $perforList);
+            }
+            $perfor = $this->mp_xjdh->Get_Perfor_Not_Where($substation_id, $array);
+            $data['perforList'] = array_merge($arr, $perfor);
+            $data['count'] = $count = $this->mp_xjdh->Get_PerformanceCount($device_type, $quota, $output_device, $acquisition_methods);
+            $data['pagination'] = $this->mp_paging->Show(Util::Build_Page_Base("portal/substation_performance_manage"), $count, DEFAULT_PAGE_SIZE, 3, TRUE);
+
+            $scriptExtra = '<link rel="stylesheet" href="/public/js/jstree/themes/default/style.min.css"/>';
+            $scriptExtra .= '<script type="text/javascript" src="/public/js/tiny_mce/tinymce.min.js"></script>';
+            $scriptExtra .= '<script type="text/javascript" src="/public/js/jquery.validate.js"></script>';
+            $scriptExtra .= '<script type="text/javascript" src="/public/js/validate-extend.js"></script>';
+            $scriptExtra .= '<script type="text/javascript" src="/public/portal/js/edit-device.js"></script>';
+            $scriptExtra .= '<script type="text/javascript" src="/public/js/highcharts/highcharts.js"></script>';
+            $scriptExtra .= '<script type="text/javascript" src="/public/js/highcharts/modules/exporting.js"></script>';
+            $scriptExtra .= '<script type="text/javascript" src="/public/js/jstree/jstree.min.js"></script>';
+            $scriptExtra .= '<script type="text/javascript" src="/public/js/bootbox.js"></script>';
+            $scriptExtra .= '<script type="text/javascript" src="/public/js/moment.min.js"></script>';
+            $scriptExtra .= '<link rel="stylesheet" href="/public/css/daterangepicker-bs2.css"/>';
+            $scriptExtra .= '<script type="text/javascript" src="/public/js/daterangepicker.js"></script>';
+            $scriptExtra .= '<script type="text/javascript" src="/public/portal/js/substation_performance_manage.js"></script>';
+
+            $content = $this->load->view("portal/substation_performance_manage", $data, TRUE);
+            $this->mp_master->Show_Portal($content, $scriptExtra, '局站性能管理', $data);
         }
-        eval("\$value = $configs[value];");
-        $val = $value;
-        for ($i = 1; $i <= $num; $i++) {
-            $val = $val . $config["require" . $i];
-            eval("\$vals = $val;");
-            if ($vals == "true") {
-                $state = $config["state" . $i];
+
+        function savePerforPi()
+        {
+            $id = $this->input->post("id");
+            $substation_id = $this->input->post("substation_id");
+            $perforObj = $this->mp_xjdh->Get_Perfor_By_Id($id);
+            $configs = $config = json_decode($perforObj->config, true);
+            $substationperfor = $this->mp_xjdh->Get_substation_perfor($id, $substation_id);
+            $pi_setting = $setting = json_decode($substationperfor->pi_setting, true);
+            $count = count($config);
+            $n = 0;
+            $num = 0;
+            $key = array_keys($config);
+            for ($i = 0; $i <= $count; $i++) {
+                if (in_array("label" . "" . $i, $key)) {
+                    $n++;
+                }
+                if (in_array("require" . "" . $i, $key)) {
+                    $num++;
+                }
             }
+            $setting = array();
+            for ($i = 1; $i <= $n; $i++) {
+                $key = $i - 1;
+                $name = "varArray[" . $key . "]";
+                $setting[$config["var" . $i]] = $this->input->post("$name");
+            }
+            $ret = $this->mp_xjdh->Save_Substation_PerFor($id, $substation_id, json_encode($setting), $pi_setting);
+
+            $perfor = $this->mp_xjdh->Get_Perfor_By_Id($id);
+            $configs = json_decode($perfor->config, true);
+            $substationperfor = $this->mp_xjdh->Get_substation_perfor($id, $substation_id);
+            $pi_setting = $setting = json_decode($substationperfor->pi_setting, true);
+            foreach ($pi_setting as $key => $val) {
+                if (explode($key, $configs[value])) {
+                    $configs[value] = str_replace($key, $val, $configs[value]);
+                }
+            }
+            eval("\$value = $configs[value];");
             $val = $value;
+            for ($i = 1; $i <= $num; $i++) {
+                $val = $val . $config["require" . $i];
+                eval("\$vals = $val;");
+                if ($vals == "true") {
+                    $state = $config["state" . $i];
+                }
+                $val = $value;
+            }
+            $this->mp_xjdh->Save_PerForValue($id, $substation_id, $value, $state);
+            header('Content-type: application/json');
+            echo json_encode($ret ? 'true' : 'false');
         }
-        $this->mp_xjdh->Save_PerForValue($id, $substation_id, $value, $state);
-        header('Content-type: application/json');
-        echo json_encode($ret ? 'true' : 'false');
-    }
 
-    function get_network_settings()
-    {
-        $id = $this->input->post("id");
-        $substation_id = $this->input->post("substation_id");
-        $networkObj = $this->mp_xjdh->Get_NetworkList($id);
-        $substationnetwork = $this->mp_xjdh->Get_substation_network($id, $substation_id);
-        $haveconfig = $networkObj->config;
-        $formulaconfig = $text = $configs = json_decode($networkObj->config, true);
-        $formulasetting = $pi_setting = json_decode($substationnetwork->pi_setting, true);
-        $value = json_decode($substationnetwork->value, true);
-        $array = array();
-        $txt = array();
-        foreach ($configs as $key => $val) {
-            foreach ($pi_setting as $k => $v) {
-                if ($val == $k) {
-                    $configs[$key] = $pi_setting[$k];
-                    array_push($array, $v);
+        function get_network_settings()
+        {
+            $id = $this->input->post("id");
+            $substation_id = $this->input->post("substation_id");
+            $networkObj = $this->mp_xjdh->Get_NetworkList($id);
+            $substationnetwork = $this->mp_xjdh->Get_substation_network($id, $substation_id);
+            $haveconfig = $networkObj->config;
+            $formulaconfig = $text = $configs = json_decode($networkObj->config, true);
+            $formulasetting = $pi_setting = json_decode($substationnetwork->pi_setting, true);
+            $value = json_decode($substationnetwork->value, true);
+            $array = array();
+            $txt = array();
+            foreach ($configs as $key => $val) {
+                foreach ($pi_setting as $k => $v) {
+                    if ($val == $k) {
+                        $configs[$key] = $pi_setting[$k];
+                        array_push($array, $v);
+                    }
                 }
             }
-        }
-        foreach ($text as $key => $val) {
-            if (substr($key, 0, 5) == "label") {
-                array_push($txt, $val);
-            }
-        }
-        foreach ($formulaconfig as $key => $val) {
-            if (explode($val, $formulaconfig[value])) {
-                $a = $formulaconfig[label . substr($key, -1)];
-                $formulaconfig[value] = str_replace($val, $a, $formulaconfig[value]);
-            }
-        }
-        echo json_encode(array("pi_setting" => json_decode($substationnetwork->pi_setting), "config" => json_decode($networkObj->config), 'txt' => $txt, 'array' => $array,
-            'formulaconfig' => $formulaconfig[value], 'value' => $value, "haveconfig" => $haveconfig));
-    }
-
-    function get_perfor_settings()
-    {
-        $id = $this->input->post("id");
-        $substation_id = $this->input->post("substation_id");
-        $perforObj = $this->mp_xjdh->Get_PerforList($id);
-        $haveconfig = $perforObj->config;
-        $substationperfor = $this->mp_xjdh->Get_substation_perfor($id, $substation_id);
-        $formulaconfig = $text = $configs = json_decode($perforObj->config, true);
-        $formulasetting = $pi_setting = json_decode($substationperfor->pi_setting, true);
-        $value = json_decode($substationperfor->value, true);
-        $array = array();
-        $txt = array();
-        foreach ($configs as $key => $val) {
-            foreach ($pi_setting as $k => $v) {
-                if ($val == $k) {
-                    $configs[$key] = $pi_setting[$k];
-                    array_push($array, $v);
+            foreach ($text as $key => $val) {
+                if (substr($key, 0, 5) == "label") {
+                    array_push($txt, $val);
                 }
             }
-        }
-        foreach ($text as $key => $val) {
-            if (substr($key, 0, 5) == "label") {
-                array_push($txt, $val);
+            foreach ($formulaconfig as $key => $val) {
+                if (explode($val, $formulaconfig[value])) {
+                    $a = $formulaconfig[label . substr($key, -1)];
+                    $formulaconfig[value] = str_replace($val, $a, $formulaconfig[value]);
+                }
             }
+            echo json_encode(array("pi_setting" => json_decode($substationnetwork->pi_setting), "config" => json_decode($networkObj->config), 'txt' => $txt, 'array' => $array,
+                'formulaconfig' => $formulaconfig[value], 'value' => $value, "haveconfig" => $haveconfig));
         }
-        foreach ($formulaconfig as $key => $val) {
-            if (explode($val, $formulaconfig[value])) {
-                $a = $formulaconfig[label . substr($key, -1)];
-                $formulaconfig[value] = str_replace($val, $a, $formulaconfig[value]);
-            }
-        }
-        echo json_encode(array("pi_setting" => json_decode($substationperfor->pi_setting), "config" => json_decode($perforObj->config), 'txt' => $txt, 'array' => $array,
-            'formulaconfig' => $formulaconfig[value], 'value' => $value, "haveconfig" => $haveconfig));
-    }
 
-    function checkip()
-    {
-        $ip = $this->input->post('txtIP');
-        $device_no = $this->input->post('txtDevNo');
-        $userObj = User::GetSmdDeviceByIp($ip);
-        if (count($userObj)) {
-            if ($device_no != false && $userObj->device_no == $device_no)
+        function get_perfor_settings()
+        {
+            $id = $this->input->post("id");
+            $substation_id = $this->input->post("substation_id");
+            $perforObj = $this->mp_xjdh->Get_PerforList($id);
+            $haveconfig = $perforObj->config;
+            $substationperfor = $this->mp_xjdh->Get_substation_perfor($id, $substation_id);
+            $formulaconfig = $text = $configs = json_decode($perforObj->config, true);
+            $formulasetting = $pi_setting = json_decode($substationperfor->pi_setting, true);
+            $value = json_decode($substationperfor->value, true);
+            $array = array();
+            $txt = array();
+            foreach ($configs as $key => $val) {
+                foreach ($pi_setting as $k => $v) {
+                    if ($val == $k) {
+                        $configs[$key] = $pi_setting[$k];
+                        array_push($array, $v);
+                    }
+                }
+            }
+            foreach ($text as $key => $val) {
+                if (substr($key, 0, 5) == "label") {
+                    array_push($txt, $val);
+                }
+            }
+            foreach ($formulaconfig as $key => $val) {
+                if (explode($val, $formulaconfig[value])) {
+                    $a = $formulaconfig[label . substr($key, -1)];
+                    $formulaconfig[value] = str_replace($val, $a, $formulaconfig[value]);
+                }
+            }
+            echo json_encode(array("pi_setting" => json_decode($substationperfor->pi_setting), "config" => json_decode($perforObj->config), 'txt' => $txt, 'array' => $array,
+                'formulaconfig' => $formulaconfig[value], 'value' => $value, "haveconfig" => $haveconfig));
+        }
+
+        function checkip()
+        {
+            $ip = $this->input->post('txtIP');
+            $device_no = $this->input->post('txtDevNo');
+            $userObj = User::GetSmdDeviceByIp($ip);
+            if (count($userObj)) {
+                if ($device_no != false && $userObj->device_no == $device_no)
+                    echo "true";
+                else
+                    echo 'false';
+            } else
                 echo "true";
-            else
-                echo 'false';
-        } else
-            echo "true";
-    }
-
-    function saveNetworkConfig()
-    {
-        $substation_id = $this->input->post('substation_id');
-        $nk_name = $nk_script = $this->input->post('nk_script');
-        $is_subid = $this->mp_xjdh->Get_NetworkSubstationConf($substation_id);
-        $is_subid = $is_subid->substation_id;
-        $data['devList'] = $devList = $this->mp_xjdh->Get_NetworkSubstationSetting($substation_id);
-        foreach ($devList as $key => $val) {
-            if (strpos($nk_script, $val->name) !== false) {
-                $nk_name = str_replace($val->name, $val->value, $nk_name);
-            }
         }
-        eval("\$value = $nk_name;");
-        $ret = $this->mp_xjdh->Save_NetworKSubstationConfig($substation_id, $nk_script, $value, $is_subid);
-        header('Content-type: application/json');
-        echo json_encode($ret ? 'true' : 'false');
-    }
 
-    function savePerforConfig()
-    {
-        $substation_id = $this->input->post('substation_id');
-        $nk_name = $nk_script = $this->input->post('nk_script');
-        $is_subid = $this->mp_xjdh->Get_PerforSubstationConf($substation_id);
-        $is_subid = $is_subid->substation_id;
-        $data['devList'] = $devList = $this->mp_xjdh->Get_PerforSubstationSetting($substation_id);
-        foreach ($devList as $key => $val) {
-            if (strpos($nk_script, $val->device_type) !== false) {
-                $nk_name = str_replace($val->device_type, $val->value, $nk_name);
+        function saveNetworkConfig()
+        {
+            $substation_id = $this->input->post('substation_id');
+            $nk_name = $nk_script = $this->input->post('nk_script');
+            $is_subid = $this->mp_xjdh->Get_NetworkSubstationConf($substation_id);
+            $is_subid = $is_subid->substation_id;
+            $data['devList'] = $devList = $this->mp_xjdh->Get_NetworkSubstationSetting($substation_id);
+            foreach ($devList as $key => $val) {
+                if (strpos($nk_script, $val->name) !== false) {
+                    $nk_name = str_replace($val->name, $val->value, $nk_name);
+                }
             }
+            eval("\$value = $nk_name;");
+            $ret = $this->mp_xjdh->Save_NetworKSubstationConfig($substation_id, $nk_script, $value, $is_subid);
+            header('Content-type: application/json');
+            echo json_encode($ret ? 'true' : 'false');
         }
-        eval("\$value = $nk_name;");
-        $ret = $this->mp_xjdh->Save_PerforSubstationConfig($substation_id, $nk_script, $value, $is_subid);
-        header('Content-type: application/json');
-        echo json_encode($ret ? 'true' : 'false');
-    }
 
-    function deleteNetworkConfig()
-    {
-        $substation_id = $this->input->post('substation_id');
-        $this->mp_xjdh->Delete_NetworkConfig($substation_id);
+        function savePerforConfig()
+        {
+            $substation_id = $this->input->post('substation_id');
+            $nk_name = $nk_script = $this->input->post('nk_script');
+            $is_subid = $this->mp_xjdh->Get_PerforSubstationConf($substation_id);
+            $is_subid = $is_subid->substation_id;
+            $data['devList'] = $devList = $this->mp_xjdh->Get_PerforSubstationSetting($substation_id);
+            foreach ($devList as $key => $val) {
+                if (strpos($nk_script, $val->device_type) !== false) {
+                    $nk_name = str_replace($val->device_type, $val->value, $nk_name);
+                }
+            }
+            eval("\$value = $nk_name;");
+            $ret = $this->mp_xjdh->Save_PerforSubstationConfig($substation_id, $nk_script, $value, $is_subid);
+            header('Content-type: application/json');
+            echo json_encode($ret ? 'true' : 'false');
+        }
+
+        function deleteNetworkConfig()
+        {
+            $substation_id = $this->input->post('substation_id');
+            $this->mp_xjdh->Delete_NetworkConfig($substation_id);
 //    		$this->load->helper("smdthrift");
 //    		$apiObj = new SMDThrift();
 //    		$devObj = $this->mp_xjdh->Get_Device($data_id);
@@ -8873,96 +8876,96 @@ function device_history ()
 //    			$ret = 0;
 //    		}
 //   		header('Content-type: application/json');
-        echo json_encode('true');
-    }
-
-    function deletePerforConfig()
-    {
-        $substation_id = $this->input->post('substation_id');
-        $this->mp_xjdh->Delete_PerforConfig($substation_id);
-        echo json_encode('true');
-    }
-
-    function door_report()
-    {
-        $data = array();
-        $data['userObj'] = $this->userObj;
-        $data['actTab'] = 'charts';
-        $data['bcList'] = array();
-        $bcObj = new Breadcrumb();
-        $bcObj->title = '统计报表';
-        $bcObj->url = '#';
-        array_push($data['bcList'], $bcObj);
-        $bcObj = new Breadcrumb();
-        $bcObj->title = '门禁报表';
-        $bcObj->isLast = true;
-        array_push($data['bcList'], $bcObj);
-
-        $data['offset'] = $offset = intval($this->input->get('per_page'));
-        $data['startDatetime'] = $startDatetime = $this->input->get('datestart');
-        $data['endDatetime'] = $endDatetime = $this->input->get('dateend');
-        $data['cityCode'] = $cityCode = $this->input->get('selCity');
-        $data['countyCode'] = $countyCode = $this->input->get('selCounty');
-        $data['substationId'] = $substationId = $this->input->get('selSubstation');
-        $data['substationList'] = $this->mp_xjdh->Get_Substations();
-        $data['roomId'] = $roomId = $this->input->get('selRoom');
-        $data['roomList'] = $this->mp_xjdh->Get_Rooms();
-        $data['keyWord'] = $keyWord = $this->input->get('keyWord');
-
-        if ($startDatetime == NULL || $endDatetime == NULL) {
-            $startDatetime = array();
-            $endDatetime = array();
-            //上个月
-            $lastMonth = date('Y-m-d', mktime(0, 0, 0, date("m") - 1, date("d") - 1, date("Y")));
-            $data['startDatetime'] = $lastMonth;
-            //本月
-            $data['endDatetime'] = date('Y-m-d');
+            echo json_encode('true');
         }
 
-        $export = $this->input->get('export');
-        if ($export == "exporttoexcel") {
-            require 'resources/php-excel.class.php';
-            $record_offset = 0;
-            $PAGE_SIZE = 2000;
-            $xls = new Excel_XML('UTF-8', false, '门禁报表');
-            $xls->addRow(array("分公司", "区域", "局站", "门禁", "用户名", "手机号", "卡号", "操作", "描述", "操作时间"));
-            while (true) {
-                $recordList = $this->mp_xjdh->Get_Door_Report_List($cityCode, $countyCode, $substationId, $roomId, $keyWord, $startDatetime, $endDatetime, $PAGE_SIZE, $record_offset);
-                foreach ($recordList as $recordObj) {
-                    $xls->addRow(array(
-                        Defines::$gCity[$recordObj->city_code], Defines::$gCounty[$recordObj->city_code][$recordObj->county_code],
-                        $recordObj->substation_name, $recordObj->name, $recordObj->full_name,
-                        $recordObj->mobile, $recordObj->card_no, $recordObj->action, $recordObj->desc, $recordObj->added_datetime
-                    ));
-                }
-                $record_offset += $PAGE_SIZE;
-                if (count($recordList) < $PAGE_SIZE) {
-                    break;
-                }
+        function deletePerforConfig()
+        {
+            $substation_id = $this->input->post('substation_id');
+            $this->mp_xjdh->Delete_PerforConfig($substation_id);
+            echo json_encode('true');
+        }
+
+        function door_report()
+        {
+            $data = array();
+            $data['userObj'] = $this->userObj;
+            $data['actTab'] = 'charts';
+            $data['bcList'] = array();
+            $bcObj = new Breadcrumb();
+            $bcObj->title = '统计报表';
+            $bcObj->url = '#';
+            array_push($data['bcList'], $bcObj);
+            $bcObj = new Breadcrumb();
+            $bcObj->title = '门禁报表';
+            $bcObj->isLast = true;
+            array_push($data['bcList'], $bcObj);
+
+            $data['offset'] = $offset = intval($this->input->get('per_page'));
+            $data['startDatetime'] = $startDatetime = $this->input->get('datestart');
+            $data['endDatetime'] = $endDatetime = $this->input->get('dateend');
+            $data['cityCode'] = $cityCode = $this->input->get('selCity');
+            $data['countyCode'] = $countyCode = $this->input->get('selCounty');
+            $data['substationId'] = $substationId = $this->input->get('selSubstation');
+            $data['substationList'] = $this->mp_xjdh->Get_Substations();
+            $data['roomId'] = $roomId = $this->input->get('selRoom');
+            $data['roomList'] = $this->mp_xjdh->Get_Rooms();
+            $data['keyWord'] = $keyWord = $this->input->get('keyWord');
+
+            if ($startDatetime == NULL || $endDatetime == NULL) {
+                $startDatetime = array();
+                $endDatetime = array();
+                //上个月
+                $lastMonth = date('Y-m-d', mktime(0, 0, 0, date("m") - 1, date("d") - 1, date("Y")));
+                $data['startDatetime'] = $lastMonth;
+                //本月
+                $data['endDatetime'] = date('Y-m-d');
             }
-            header('Content-Type: application/vnd.ms-excel');
-            header('Content-Disposition: attachment;filename="门禁报表.xls"');
-            header('Cache-Control:must-revalidate,post-check=0,pre-check=0');
-            header('Expires:0');
-            header('Pragma:public');
-            header('Cache-Control: max-age=1');
-            $xls->generateXML('门禁报表');
-            return;
+
+            $export = $this->input->get('export');
+            if ($export == "exporttoexcel") {
+                require 'resources/php-excel.class.php';
+                $record_offset = 0;
+                $PAGE_SIZE = 2000;
+                $xls = new Excel_XML('UTF-8', false, '门禁报表');
+                $xls->addRow(array("分公司", "区域", "局站", "门禁", "用户名", "手机号", "卡号", "操作", "描述", "操作时间"));
+                while (true) {
+                    $recordList = $this->mp_xjdh->Get_Door_Report_List($cityCode, $countyCode, $substationId, $roomId, $keyWord, $startDatetime, $endDatetime, $PAGE_SIZE, $record_offset);
+                    foreach ($recordList as $recordObj) {
+                        $xls->addRow(array(
+                            Defines::$gCity[$recordObj->city_code], Defines::$gCounty[$recordObj->city_code][$recordObj->county_code],
+                            $recordObj->substation_name, $recordObj->name, $recordObj->full_name,
+                            $recordObj->mobile, $recordObj->card_no, $recordObj->action, $recordObj->desc, $recordObj->added_datetime
+                        ));
+                    }
+                    $record_offset += $PAGE_SIZE;
+                    if (count($recordList) < $PAGE_SIZE) {
+                        break;
+                    }
+                }
+                header('Content-Type: application/vnd.ms-excel');
+                header('Content-Disposition: attachment;filename="门禁报表.xls"');
+                header('Cache-Control:must-revalidate,post-check=0,pre-check=0');
+                header('Expires:0');
+                header('Pragma:public');
+                header('Cache-Control: max-age=1');
+                $xls->generateXML('门禁报表');
+                return;
+            }
+
+            $data['count'] = $count = $this->mp_xjdh->Get_Door_Record_Count(false, $user_id, $cityCode, $countyCode, $substationId, $roomId, $username, $mobile, $card, $time_rangeArr, $city_code, $county_code);
+            $data['recordList'] = $this->mp_xjdh->Get_Door_Record_List(false, $user_id, $cityCode, $countyCode, $substationId, $roomId, $username, $mobile, $card, $time_rangeArr, DEFAULT_PAGE_SIZE, $offset, $city_code, $county_code);
+
+            $data['pagination'] = $this->mp_paging->Show(Util::Build_Page_Base("portal/opendoor_report"), $count, DEFAULT_PAGE_SIZE, 3, TRUE);
+            $content = $this->load->view('portal/opendoor_report', $data, TRUE);
+
+            $scriptExtra = '<script type="text/javascript" src="/public/js/bootbox.js"></script>';
+            $scriptExtra .= '<script type="text/javascript" src="/public/js/moment.min.js"></script>';
+            $scriptExtra .= '<link rel="stylesheet" href="/public/css/daterangepicker-bs2.css"/>';
+            $scriptExtra .= '<script type="text/javascript" src="/public/js/daterangepicker.js"></script>';
+            $scriptExtra .= '<script type="text/javascript" src="/public/portal/js/opendoor_report.js"></script>';
+            $this->mp_master->Show_Portal($content, $scriptExtra, '开门记录报表', $data);
         }
-   		
-   		$data['count'] = $count = $this->mp_xjdh->Get_Door_Record_Count(false,$user_id, $cityCode, $countyCode, $substationId, $roomId, $username, $mobile, $card, $time_rangeArr,$city_code,$county_code);            
-        $data['recordList'] = $this->mp_xjdh->Get_Door_Record_List(false,$user_id, $cityCode, $countyCode, $substationId, $roomId, $username, $mobile, $card, $time_rangeArr,DEFAULT_PAGE_SIZE, $offset,$city_code,$county_code);
-       
-   		$data['pagination'] = $this->mp_paging->Show(Util::Build_Page_Base("portal/opendoor_report"), $count, DEFAULT_PAGE_SIZE, 3, TRUE);
-   		$content = $this->load->view('portal/opendoor_report', $data, TRUE);
-   		
-   		$scriptExtra = '<script type="text/javascript" src="/public/js/bootbox.js"></script>';
-   		$scriptExtra .= '<script type="text/javascript" src="/public/js/moment.min.js"></script>';
-   		$scriptExtra .= '<link rel="stylesheet" href="/public/css/daterangepicker-bs2.css"/>';
-   		$scriptExtra .= '<script type="text/javascript" src="/public/js/daterangepicker.js"></script>';
-   		$scriptExtra .= '<script type="text/javascript" src="/public/portal/js/opendoor_report.js"></script>';
-   		$this->mp_master->Show_Portal($content, $scriptExtra, '开门记录报表', $data);
-   	}
 
         $data['count'] = $count = $this->mp_xjdh->Get_Door_Report_Count($cityCode, $countyCode, $substationId, $roomId, $keyWord, $startDatetime, $endDatetime);
         $data['recordList'] = $recordList = $this->mp_xjdh->Get_Door_Report_List($cityCode, $countyCode, $substationId, $roomId, $keyWord, $startDatetime, $endDatetime, DEFAULT_PAGE_SIZE, $offset);
@@ -9002,605 +9005,577 @@ function device_history ()
         //explode('分割付','字符串')把字符串分割为数组
         //在至处分割数组
         $dateRangeArr = explode('至', $dateRange);
-        
-        if(!empty($data_id) && count($dateRangeArr) == 2 )
-        {
+
+        if (!empty($data_id) && count($dateRangeArr) == 2) {
             $this->load->library("mongo_db");
-            $data['count'] = $count = $this->mp_xjdh->Get_Power302a_Count($data_id,$dateRangeArr[0],$dateRangeArr[1]);
-            $data['powerDataList'] = $powerDataList = $this->mp_xjdh->Get_Power302a_List($data_id,$dateRangeArr[0],$dateRangeArr[1],$offset,DEFAULT_PAGE_SIZE);
-            $date = (strtotime($dateRangeArr[1])-strtotime($dateRangeArr[0]))/86400 + 1;
-            $data['should_acquisition'] = $should_acquisition = $date*144;
-            $data['success_rate'] = $success_rate = $count/$should_acquisition*100;
-            $data['fail_rate'] = $fail_rate = (1-$count/$should_acquisition)*100;
+            $data['count'] = $count = $this->mp_xjdh->Get_Power302a_Count($data_id, $dateRangeArr[0], $dateRangeArr[1]);
+            $data['powerDataList'] = $powerDataList = $this->mp_xjdh->Get_Power302a_List($data_id, $dateRangeArr[0], $dateRangeArr[1], $offset, DEFAULT_PAGE_SIZE);
+            $date = (strtotime($dateRangeArr[1]) - strtotime($dateRangeArr[0])) / 86400 + 1;
+            $data['should_acquisition'] = $should_acquisition = $date * 144;
+            $data['success_rate'] = $success_rate = $count / $should_acquisition * 100;
+            $data['fail_rate'] = $fail_rate = (1 - $count / $should_acquisition) * 100;
             $export = $this->input->get('export');
-            if($export == "exporttoexcel")
-            {
-            	require 'resources/php-excel.class.php';
-            	$record_offset = 0;
-            	$PAGE_SIZE=2000;
-            	$xls = new Excel_XML('UTF-8', false, '采集异常分析');
-            	
-            	$xls->addRow(array("应采集的数量总数","实际采集的数据总数","数据采集成功率（%）","数据采集异常率（%）"));
-            	$xls->addRow(array($should_acquisition, $count, $success_rate, $fail_rate));
-            	
-            	$xls->addRow(array("日期","A相功率","B相功率","C相功率","合相功率","A相电压","B相电压","C相电压","A相电流","B相电流","C相电流",
-            			    "合相电流","A相电能","B相电能","C相电能","合相电能"));
-            	while(true)
-            	{
-            		$data['powerDataList'] = $powerDataList = $this->mp_xjdh->Get_Power302a_List($data_id,$dateRangeArr[0],$dateRangeArr[1], $record_offset, $PAGE_SIZE);
-	            	foreach($data['powerDataList'] as $powerDataObj)
-	            	{
-	            		$xls->addRow(array(
-	            				$powerDataObj->Date." ".$powerDataObj->Time, $powerDataObj->pa, $powerDataObj->pb, $powerDataObj->pc, $powerDataObj->pt,
-	            				$powerDataObj->uaRms,$powerDataObj->ubRms,$powerDataObj->ucRms,
-	            				$powerDataObj->iaRms, $powerDataObj->ibRms, $powerDataObj->icRms, $powerDataObj->itRms,
-	            				$powerDataObj->epa, $powerDataObj->epb, $powerDataObj->epc, $powerDataObj->ept
-	            				));
-	            	}
-	            	$record_offset += $PAGE_SIZE;
-	        		if(count($powerDataList) < $PAGE_SIZE)
-	        		{
-	        			break;
-	        		}
-            	}
-            	header('Content-Type: application/vnd.ms-excel');
-            	header('Content-Disposition: attachment;filename="采集异常分析.xls"');
-            	header('Cache-Control:must-revalidate,post-check=0,pre-check=0');
-            	header('Expirse:0');
-            	header('Pragma:public');
-            	header('Cache-Control: max-age=1');
-            	$xls->generateXML('采集异常分析');
-            	return;
-            }   
-        }  
-    	$data['pagination'] = $this->mp_paging->Show(Util::Build_Page_Base("portal/acquisition_anomaly"), $count, DEFAULT_PAGE_SIZE, 3, TRUE);
-   		$scriptExtra = '<link rel="stylesheet" href="/public/js/jstree/themes/default/style.min.css"/>';
-   		$scriptExtra .= '<script type="text/javascript" src="/public/js/tiny_mce/tinymce.min.js"></script>';
-   		$scriptExtra .= '<script type="text/javascript" src="/public/js/jquery.validate.js"></script>';
-   		$scriptExtra .= '<script type="text/javascript" src="/public/js/validate-extend.js"></script>';
-   		$scriptExtra .= '<script type="text/javascript" src="/public/portal/js/edit-device.js"></script>';
-   		$scriptExtra .= '<script type="text/javascript" src="/public/js/highcharts/highcharts.js"></script>';
-   		$scriptExtra .= '<script type="text/javascript" src="/public/js/highcharts/modules/exporting.js"></script>';
-   		$scriptExtra .= '<script type="text/javascript" src="/public/js/jstree/jstree.min.js"></script>';
-   		$scriptExtra .= '<script type="text/javascript" src="/public/js/bootbox.js"></script>';
-   		$scriptExtra .= '<script type="text/javascript" src="/public/js/moment.min.js"></script>';
-   		$scriptExtra .= '<link rel="stylesheet" href="/public/css/daterangepicker-bs2.css"/>';
-   		$scriptExtra .= '<script type="text/javascript" src="/public/js/daterangepicker.js"></script>';
-   		$scriptExtra .= '<script type="text/javascript" src="/public/portal/js/acquisition_anomaly.js"></script>';
-   		$content = $this->load->view("portal/acquisition_anomaly", $data, TRUE);
-   		$this->mp_master->Show_Portal($content, $scriptExtra, '采集异常分析', $data);
+            if ($export == "exporttoexcel") {
+                require 'resources/php-excel.class.php';
+                $record_offset = 0;
+                $PAGE_SIZE = 2000;
+                $xls = new Excel_XML('UTF-8', false, '采集异常分析');
+
+                $xls->addRow(array("应采集的数量总数", "实际采集的数据总数", "数据采集成功率（%）", "数据采集异常率（%）"));
+                $xls->addRow(array($should_acquisition, $count, $success_rate, $fail_rate));
+
+                $xls->addRow(array("日期", "A相功率", "B相功率", "C相功率", "合相功率", "A相电压", "B相电压", "C相电压", "A相电流", "B相电流", "C相电流",
+                    "合相电流", "A相电能", "B相电能", "C相电能", "合相电能"));
+                while (true) {
+                    $data['powerDataList'] = $powerDataList = $this->mp_xjdh->Get_Power302a_List($data_id, $dateRangeArr[0], $dateRangeArr[1], $record_offset, $PAGE_SIZE);
+                    foreach ($data['powerDataList'] as $powerDataObj) {
+                        $xls->addRow(array(
+                            $powerDataObj->Date . " " . $powerDataObj->Time, $powerDataObj->pa, $powerDataObj->pb, $powerDataObj->pc, $powerDataObj->pt,
+                            $powerDataObj->uaRms, $powerDataObj->ubRms, $powerDataObj->ucRms,
+                            $powerDataObj->iaRms, $powerDataObj->ibRms, $powerDataObj->icRms, $powerDataObj->itRms,
+                            $powerDataObj->epa, $powerDataObj->epb, $powerDataObj->epc, $powerDataObj->ept
+                        ));
+                    }
+                    $record_offset += $PAGE_SIZE;
+                    if (count($powerDataList) < $PAGE_SIZE) {
+                        break;
+                    }
+                }
+                header('Content-Type: application/vnd.ms-excel');
+                header('Content-Disposition: attachment;filename="采集异常分析.xls"');
+                header('Cache-Control:must-revalidate,post-check=0,pre-check=0');
+                header('Expirse:0');
+                header('Pragma:public');
+                header('Cache-Control: max-age=1');
+                $xls->generateXML('采集异常分析');
+                return;
+            }
+        }
+        $data['pagination'] = $this->mp_paging->Show(Util::Build_Page_Base("portal/acquisition_anomaly"), $count, DEFAULT_PAGE_SIZE, 3, TRUE);
+        $scriptExtra = '<link rel="stylesheet" href="/public/js/jstree/themes/default/style.min.css"/>';
+        $scriptExtra .= '<script type="text/javascript" src="/public/js/tiny_mce/tinymce.min.js"></script>';
+        $scriptExtra .= '<script type="text/javascript" src="/public/js/jquery.validate.js"></script>';
+        $scriptExtra .= '<script type="text/javascript" src="/public/js/validate-extend.js"></script>';
+        $scriptExtra .= '<script type="text/javascript" src="/public/portal/js/edit-device.js"></script>';
+        $scriptExtra .= '<script type="text/javascript" src="/public/js/highcharts/highcharts.js"></script>';
+        $scriptExtra .= '<script type="text/javascript" src="/public/js/highcharts/modules/exporting.js"></script>';
+        $scriptExtra .= '<script type="text/javascript" src="/public/js/jstree/jstree.min.js"></script>';
+        $scriptExtra .= '<script type="text/javascript" src="/public/js/bootbox.js"></script>';
+        $scriptExtra .= '<script type="text/javascript" src="/public/js/moment.min.js"></script>';
+        $scriptExtra .= '<link rel="stylesheet" href="/public/css/daterangepicker-bs2.css"/>';
+        $scriptExtra .= '<script type="text/javascript" src="/public/js/daterangepicker.js"></script>';
+        $scriptExtra .= '<script type="text/javascript" src="/public/portal/js/acquisition_anomaly.js"></script>';
+        $content = $this->load->view("portal/acquisition_anomaly", $data, TRUE);
+        $this->mp_master->Show_Portal($content, $scriptExtra, '采集异常分析', $data);
     }
-   		
-    public function alarm_report ()
+
+    public function alarm_report()
     {
-    	$data = array();
-    	$data['userObj'] = $this->userObj;
-    	$data['devModelGroup'] = $this->_get_device_modelGroup();
-    	$data['devModelName'] = $this->_get_device_model_name();
-    	$data['devCategoryName'] = $this->_get_device_category_name();
-   		$data['actTab'] = 'charts';
-   		$data['bcList'] = array();
-   		$bcObj = new Breadcrumb();
-   		$bcObj->title = '统计报表';
-   		$bcObj->url = '#';
-   		array_push($data['bcList'], $bcObj);
-   		$bcObj = new Breadcrumb();
-   		$bcObj->title = '告警统计报表';
-   		$bcObj->isLast = true;
-   		array_push($data['bcList'], $bcObj);
+        $data = array();
+        $data['userObj'] = $this->userObj;
+        $data['devModelGroup'] = $this->_get_device_modelGroup();
+        $data['devModelName'] = $this->_get_device_model_name();
+        $data['devCategoryName'] = $this->_get_device_category_name();
+        $data['actTab'] = 'charts';
+        $data['bcList'] = array();
+        $bcObj = new Breadcrumb();
+        $bcObj->title = '统计报表';
+        $bcObj->url = '#';
+        array_push($data['bcList'], $bcObj);
+        $bcObj = new Breadcrumb();
+        $bcObj->title = '告警统计报表';
+        $bcObj->isLast = true;
+        array_push($data['bcList'], $bcObj);
 
-    	$data['cityCode'] = $cityCode = $this->input->get('selCity');
-    	$data['countyCode'] = $countyCode = $this->input->get('selCounty');
-    	$data['substationId'] = $substationId = $this->input->get('selSubstation');
-    	$data['roomId'] = $roomId = $this->input->get('selRoom');
-    	$data['ecType'] = $ecType = $this->input->get('ecType[]');
-    	$data['ecGroup'] = $ecGroup = $this->input->get('ecGroup'); //ecGroup
-    	$data['level'] = $level = $this->input->get('level');
-    	$data['selDevModel'] = $selDevModel = trim($this->input->get('selDevModel'));
-    	$data['statusArr'] = $statusArr = $this->input->get('selStatus[]');
-    	if($statusArr == false)
-    	{
-    		$data['statusArr'] = $statusArr = array('confirmed');
-    	}
-    	//信号名称
-    	$data['selSignalName'] = $selSignalName = $this->input->get('selSignalName');
-    	//关键字
-    	$data['word'] = $word = trim($this->input->get('word'));
-    	$signalNameList = array();
-    	foreach(Defines::$signalName as $key=>$codeName)
-    	{
-    		foreach($codeName as $code=>$name)
-    		{
-    			if(!in_array($name, $signalNameList))
-    				$signalNameList[] = $name;
-    		}
-    	}
-    	$data['signalNameList'] = $signalNameList;
-    
-    	$devModelArray = array();
-    	if(!empty($selDevModel))
-    	{
-    		foreach(Constants::$devConfigList as $devConfig)
-    		{
-    			if($devConfig[2] == $selDevModel)
-    			{
-    				if($selDevModel == 'enviroment'){
-    					$devModelArray = array('temperature','humid','smoke','water','venv');
-    				}else{
-    					$devModelArray = $devConfig[0];
-    				}
-    			}
-    		}
-    	}
-    	$userLevel = 3;
-    	$substationIdArray = array();
-    	if($this->userObj->user_role == "admin")
-    	{
-    		$userLevel = 1;
-    	}else if($this->userObj->user_role == "city_admin")
-    	{
-    		$userLevel = 2;
-    		$cityCode = $this->userObj->city_code;
-    	}else{
-    		$cityCode = $this->userObj->city_code;
-    		$userPrivilegeObj = User::Get_UserPrivilege($this->userObj->id);
-    		if(count($userPrivilegeObj))
-    		{
-    			$substationIdArray = json_decode($userPrivilegeObj->area_privilege);
-    		}
-    	}
-    	$data['offset'] = $offset = intval($this->input->get('per_page'));
-    	$data['reportDate'] = $reportDate = $this->input->get('reportDate');
-    	$reportDateArr = explode('至', $reportDate);
-    	//两个日期  前后
-    	//--------------------------------------------------------------------------------------------------------------------------------------------------
-    	if (! (count($reportDateArr) == 2 && Util::Is_date($reportDateArr[0]) && Util::Is_date($reportDateArr[1]))) {
-    		$reportDateArr = array();
-    		//上个月
-    		$lastMonth = date('Y-m-d', mktime(0, 0, 0, date("m") - 1, date("d") - 1, date("Y")));
-    		array_push($reportDateArr, $lastMonth);
-    		//本月
-    		array_push($reportDateArr, date('Y-m-d'));
-    		//到目前一个月
-    		$data['reportDate'] = $lastMonth . '至' . date('Y-m-d');
-    	}
-    
-    	$export = $this->input->get('export');
-    	if($export == "exporttoexcel")
-    	{
-    		require 'resources/php-excel.class.php';
-    
-    		$record_offset = 0;
-    		$PAGE_SIZE = 2000;
-    		$xls = new Excel_XML('UTF-8', false, '告警列表');
-    		
-    		$alarmCountList = $this->mp_xjdh->Get_AlarmCountList($cityCode, $countyCode, $substationId, $roomId, $devModelArray, $level,$statusArr, $reportDateArr[0], $reportDateArr[1], $word, $selSignalName,
-    				$userLevel, $substationIdArray, $ecGroup);
-	    	$alarmCountList = json_decode(json_encode($alarmCountList),true);
-	    	if($ecGroup == '0'){  //日
-	    		$time = array('0'=>'时间段（日）');  $alarmCount = array('0'=>'告警数量');
-	    		for($i = 0;$i<count($alarmCountList);$i++){
-	    			array_push($time,$alarmCountList[$i]['days']);
-	    			array_push($alarmCount,$alarmCountList[$i]['alarmcount']);
-	    		}
-	    	}else if($ecGroup == '1'){ //时
-	    		$xls->addRow(array("时间段（时）","告警数量"));
-	    		for($i=0; $i<count($alarmCountList); $i++){
-	    			$xls->addRow(array($alarmCountList[$i]['hours'],$alarmCountList[$i]['alarmcount']));
-	    		}
-	    	}else if($ecGroup == '2'){ 
-	    		$time = array('0'=>'时间段（月）');  $alarmCount = array('0'=>'告警数量');
-	    		for($i = 0;$i<count($alarmCountList);$i++){
-	    			array_push($time,$alarmCountList[$i]['months']);
-	    			array_push($alarmCount,$alarmCountList[$i]['alarmcount']);
-	    		}
-	    	}else if($ecGroup == '3'){ //年
-	    		$time = array('0'=>'时间段（年）');  $alarmCount = array('0'=>'告警数量');
-	    		for($i = 0;$i<count($alarmCountList);$i++){
-	    			array_push($time,$alarmCountList[$i]['years']);
-	    			array_push($alarmCount,$alarmCountList[$i]['alarmcount']);
-	    		}
-	    	}
-	    	if($ecGroup != "1"){
-	    		$xls->addRow($time);
-	    		$xls->addRow($alarmCount);
-	    	}
+        $data['cityCode'] = $cityCode = $this->input->get('selCity');
+        $data['countyCode'] = $countyCode = $this->input->get('selCounty');
+        $data['substationId'] = $substationId = $this->input->get('selSubstation');
+        $data['roomId'] = $roomId = $this->input->get('selRoom');
+        $data['ecType'] = $ecType = $this->input->get('ecType[]');
+        $data['ecGroup'] = $ecGroup = $this->input->get('ecGroup'); //ecGroup
+        $data['level'] = $level = $this->input->get('level');
+        $data['selDevModel'] = $selDevModel = trim($this->input->get('selDevModel'));
+        $data['statusArr'] = $statusArr = $this->input->get('selStatus[]');
+        if ($statusArr == false) {
+            $data['statusArr'] = $statusArr = array('confirmed');
+        }
+        //信号名称
+        $data['selSignalName'] = $selSignalName = $this->input->get('selSignalName');
+        //关键字
+        $data['word'] = $word = trim($this->input->get('word'));
+        $signalNameList = array();
+        foreach (Defines::$signalName as $key => $codeName) {
+            foreach ($codeName as $code => $name) {
+                if (!in_array($name, $signalNameList))
+                    $signalNameList[] = $name;
+            }
+        }
+        $data['signalNameList'] = $signalNameList;
 
-    		$xls->addRow(array("分公司","区域","局站","机房","设备类型","设备名称","信号名称","信号ID","级别","描述","上报时间","恢复时间","确认时间","当前状态"));
-    		while(true)
-    		{
-    			$alarmList = $this->mp_xjdh->Get_AlarmReportList($cityCode, $countyCode, $substationId, $roomId, $devModelArray, $level, $statusArr, $reportDateArr[0], $reportDateArr[1], $word, $selSignalName,
-    					$userLevel, $substationIdArray, $record_offset, $PAGE_SIZE);
-    			foreach($alarmList as $alarmObj)
-    			{
-    				if ($alarmObj->status == 'unresolved') $alarmObj->status = '正在告警';
-    				else if ($alarmObj->confirm_datetime != '0000-00-00 00:00:00') $alarmObj->status = '已确认';
-    				else if ($alarmObj->status == 'solved') $alarmObj->status = '已恢复';
-    
-    				$xls->addRow(array(
-    						Defines::$gCity[$alarmObj->city_code], Defines::$gCounty[$alarmObj->city_code][$alarmObj->county_code],$alarmObj->substation_name,$alarmObj->room_name,
-    						$data['devModelName'][$alarmObj->dev_model],$alarmObj->dev_name,$alarmObj->signal_name,$alarmObj->signal_id,
-    						$alarmObj->level,$alarmObj->subject,$alarmObj->added_datetime,$alarmObj->restore_datetime,
-    						$alarmObj->confirm_datetime,$alarmObj->status));
-    			}
-    			if(count($alarmList) < 2000)
-    				break;
-    			$record_offset += 2000;
-    		}
-    		header('Content-Type: application/vnd.ms-excel');
-    		header('Content-Disposition: attachment;filename="告警列表.xls"');
-    		header('Cache-Control:must-revalidate,post-check=0,pre-check=0');
-    		header('Expires:0');
-    		header('Pragma:public');
-    		header('Cache-Control: max-age=1');
-    		$xls->generateXML('告警列表');
-    		return;
-    	}
+        $devModelArray = array();
+        if (!empty($selDevModel)) {
+            foreach (Constants::$devConfigList as $devConfig) {
+                if ($devConfig[2] == $selDevModel) {
+                    if ($selDevModel == 'enviroment') {
+                        $devModelArray = array('temperature', 'humid', 'smoke', 'water', 'venv');
+                    } else {
+                        $devModelArray = $devConfig[0];
+                    }
+                }
+            }
+        }
+        $userLevel = 3;
+        $substationIdArray = array();
+        if ($this->userObj->user_role == "admin") {
+            $userLevel = 1;
+        } else if ($this->userObj->user_role == "city_admin") {
+            $userLevel = 2;
+            $cityCode = $this->userObj->city_code;
+        } else {
+            $cityCode = $this->userObj->city_code;
+            $userPrivilegeObj = User::Get_UserPrivilege($this->userObj->id);
+            if (count($userPrivilegeObj)) {
+                $substationIdArray = json_decode($userPrivilegeObj->area_privilege);
+            }
+        }
+        $data['offset'] = $offset = intval($this->input->get('per_page'));
+        $data['reportDate'] = $reportDate = $this->input->get('reportDate');
+        $reportDateArr = explode('至', $reportDate);
+        //两个日期  前后
+        //--------------------------------------------------------------------------------------------------------------------------------------------------
+        if (!(count($reportDateArr) == 2 && Util::Is_date($reportDateArr[0]) && Util::Is_date($reportDateArr[1]))) {
+            $reportDateArr = array();
+            //上个月
+            $lastMonth = date('Y-m-d', mktime(0, 0, 0, date("m") - 1, date("d") - 1, date("Y")));
+            array_push($reportDateArr, $lastMonth);
+            //本月
+            array_push($reportDateArr, date('Y-m-d'));
+            //到目前一个月
+            $data['reportDate'] = $lastMonth . '至' . date('Y-m-d');
+        }
 
-    	if ($countyCode)
-    		$data['substationList'] = $this->mp_xjdh->Get_Substations(false, $countyCode);
-    	if ($substationId)
-    		$data['roomList'] = $this->mp_xjdh->Get_Rooms(false, $substationId);
-    
-    	$data['alarmCount'] = $this->mp_xjdh->Get_AlarmReportCount($cityCode, $countyCode, $substationId, $roomId, $devModelArray, $level,$statusArr, $reportDateArr[0], $reportDateArr[1], $word, $selSignalName,
-    			$userLevel, $substationIdArray);
-    	$data['alarmList'] = $this->mp_xjdh->Get_AlarmReportList($cityCode, $countyCode, $substationId, $roomId, $devModelArray, $level,$statusArr, $reportDateArr[0], $reportDateArr[1], $word, $selSignalName,
-    			$userLevel, $substationIdArray, $offset, DEFAULT_PAGE_SIZE);
-    	$data['alarmCountList'] = $alarmCountList = $this->mp_xjdh->Get_AlarmCountList($cityCode, $countyCode, $substationId, $roomId, $devModelArray, $level,$statusArr, $reportDateArr[0], $reportDateArr[1], $word, $selSignalName,
-    			$userLevel, $substationIdArray,$ecGroup);
+        $export = $this->input->get('export');
+        if ($export == "exporttoexcel") {
+            require 'resources/php-excel.class.php';
 
-    	$data['pagination'] = $this->mp_paging->Show(Util::Build_Page_Base("portal/alarm_report"), $data['alarmCount'], DEFAULT_PAGE_SIZE, 3, TRUE);
-    	$scriptExtra = '<script type="text/javascript" src="/public/js/bootbox.js"></script>';
-    	$scriptExtra .= '<script type="text/javascript" src="/public/js/moment.min.js"></script>';
-    	$scriptExtra .= '<link rel="stylesheet" href="/public/css/daterangepicker-bs2.css"/>';
-    	$scriptExtra .= '<script type="text/javascript" src="/public/js/daterangepicker.js"></script>';
-    	$scriptExtra .= '<script type="text/javascript" src="/public/portal/js/alarm_report.js"></script>';
-    	$content = $this->load->view("portal/alarm_report", $data, TRUE);
-    	$this->mp_master->Show_Portal($content, $scriptExtra, '', $data);
+            $record_offset = 0;
+            $PAGE_SIZE = 2000;
+            $xls = new Excel_XML('UTF-8', false, '告警列表');
+
+            $alarmCountList = $this->mp_xjdh->Get_AlarmCountList($cityCode, $countyCode, $substationId, $roomId, $devModelArray, $level, $statusArr, $reportDateArr[0], $reportDateArr[1], $word, $selSignalName,
+                $userLevel, $substationIdArray, $ecGroup);
+            $alarmCountList = json_decode(json_encode($alarmCountList), true);
+            if ($ecGroup == '0') {  //日
+                $time = array('0' => '时间段（日）');
+                $alarmCount = array('0' => '告警数量');
+                for ($i = 0; $i < count($alarmCountList); $i++) {
+                    array_push($time, $alarmCountList[$i]['days']);
+                    array_push($alarmCount, $alarmCountList[$i]['alarmcount']);
+                }
+            } else if ($ecGroup == '1') { //时
+                $xls->addRow(array("时间段（时）", "告警数量"));
+                for ($i = 0; $i < count($alarmCountList); $i++) {
+                    $xls->addRow(array($alarmCountList[$i]['hours'], $alarmCountList[$i]['alarmcount']));
+                }
+            } else if ($ecGroup == '2') {
+                $time = array('0' => '时间段（月）');
+                $alarmCount = array('0' => '告警数量');
+                for ($i = 0; $i < count($alarmCountList); $i++) {
+                    array_push($time, $alarmCountList[$i]['months']);
+                    array_push($alarmCount, $alarmCountList[$i]['alarmcount']);
+                }
+            } else if ($ecGroup == '3') { //年
+                $time = array('0' => '时间段（年）');
+                $alarmCount = array('0' => '告警数量');
+                for ($i = 0; $i < count($alarmCountList); $i++) {
+                    array_push($time, $alarmCountList[$i]['years']);
+                    array_push($alarmCount, $alarmCountList[$i]['alarmcount']);
+                }
+            }
+            if ($ecGroup != "1") {
+                $xls->addRow($time);
+                $xls->addRow($alarmCount);
+            }
+
+            $xls->addRow(array("分公司", "区域", "局站", "机房", "设备类型", "设备名称", "信号名称", "信号ID", "级别", "描述", "上报时间", "恢复时间", "确认时间", "当前状态"));
+            while (true) {
+                $alarmList = $this->mp_xjdh->Get_AlarmReportList($cityCode, $countyCode, $substationId, $roomId, $devModelArray, $level, $statusArr, $reportDateArr[0], $reportDateArr[1], $word, $selSignalName,
+                    $userLevel, $substationIdArray, $record_offset, $PAGE_SIZE);
+                foreach ($alarmList as $alarmObj) {
+                    if ($alarmObj->status == 'unresolved') $alarmObj->status = '正在告警';
+                    else if ($alarmObj->confirm_datetime != '0000-00-00 00:00:00') $alarmObj->status = '已确认';
+                    else if ($alarmObj->status == 'solved') $alarmObj->status = '已恢复';
+
+                    $xls->addRow(array(
+                        Defines::$gCity[$alarmObj->city_code], Defines::$gCounty[$alarmObj->city_code][$alarmObj->county_code], $alarmObj->substation_name, $alarmObj->room_name,
+                        $data['devModelName'][$alarmObj->dev_model], $alarmObj->dev_name, $alarmObj->signal_name, $alarmObj->signal_id,
+                        $alarmObj->level, $alarmObj->subject, $alarmObj->added_datetime, $alarmObj->restore_datetime,
+                        $alarmObj->confirm_datetime, $alarmObj->status));
+                }
+                if (count($alarmList) < 2000)
+                    break;
+                $record_offset += 2000;
+            }
+            header('Content-Type: application/vnd.ms-excel');
+            header('Content-Disposition: attachment;filename="告警列表.xls"');
+            header('Cache-Control:must-revalidate,post-check=0,pre-check=0');
+            header('Expires:0');
+            header('Pragma:public');
+            header('Cache-Control: max-age=1');
+            $xls->generateXML('告警列表');
+            return;
+        }
+
+        if ($countyCode)
+            $data['substationList'] = $this->mp_xjdh->Get_Substations(false, $countyCode);
+        if ($substationId)
+            $data['roomList'] = $this->mp_xjdh->Get_Rooms(false, $substationId);
+
+        $data['alarmCount'] = $this->mp_xjdh->Get_AlarmReportCount($cityCode, $countyCode, $substationId, $roomId, $devModelArray, $level, $statusArr, $reportDateArr[0], $reportDateArr[1], $word, $selSignalName,
+            $userLevel, $substationIdArray);
+        $data['alarmList'] = $this->mp_xjdh->Get_AlarmReportList($cityCode, $countyCode, $substationId, $roomId, $devModelArray, $level, $statusArr, $reportDateArr[0], $reportDateArr[1], $word, $selSignalName,
+            $userLevel, $substationIdArray, $offset, DEFAULT_PAGE_SIZE);
+        $data['alarmCountList'] = $alarmCountList = $this->mp_xjdh->Get_AlarmCountList($cityCode, $countyCode, $substationId, $roomId, $devModelArray, $level, $statusArr, $reportDateArr[0], $reportDateArr[1], $word, $selSignalName,
+            $userLevel, $substationIdArray, $ecGroup);
+
+        $data['pagination'] = $this->mp_paging->Show(Util::Build_Page_Base("portal/alarm_report"), $data['alarmCount'], DEFAULT_PAGE_SIZE, 3, TRUE);
+        $scriptExtra = '<script type="text/javascript" src="/public/js/bootbox.js"></script>';
+        $scriptExtra .= '<script type="text/javascript" src="/public/js/moment.min.js"></script>';
+        $scriptExtra .= '<link rel="stylesheet" href="/public/css/daterangepicker-bs2.css"/>';
+        $scriptExtra .= '<script type="text/javascript" src="/public/js/daterangepicker.js"></script>';
+        $scriptExtra .= '<script type="text/javascript" src="/public/portal/js/alarm_report.js"></script>';
+        $content = $this->load->view("portal/alarm_report", $data, TRUE);
+        $this->mp_master->Show_Portal($content, $scriptExtra, '', $data);
     }
-    
-    public function alarm_rank ()
+
+    public function alarm_rank()
     {
-    	$data = array();
-    	$data['userObj'] = $this->userObj;
-    	$data['devModelGroup'] = $this->_get_device_modelGroup();
-    	$data['devModelName'] = $this->_get_device_model_name();
-    	$data['devCategoryName'] = $this->_get_device_category_name();
-    	$data['actTab'] = 'charts';
-    	$data['bcList'] = array();
-    	$bcObj = new Breadcrumb();
-    	$bcObj->title = '统计报表';
-    	$bcObj->url = '#';
-    	array_push($data['bcList'], $bcObj);
-    	$bcObj = new Breadcrumb();
-    	$bcObj->title = '告警排名报表';
-    	$bcObj->isLast = true;
-    	array_push($data['bcList'], $bcObj);
-    
-    	$data['cityCode'] = $cityCode = $this->input->get('selCity');
-    	$data['countyCode'] = $countyCode = $this->input->get('selCounty');
-    	$data['ecType'] = $ecType = $this->input->get('ecType'); //ecGroup
-    	$data['statusArr'] = $statusArr = $this->input->get('selStatus[]');
-    	$data['level'] = $level = $this->input->get('level');
-    	if($statusArr == false)
-    	{
-    		$data['statusArr'] = $statusArr = array('confirmed');
-    	}
-    	$substationIdArray = array();
-    	if($this->userObj->user_role == "admin")
-    	{
-    		$userLevel = 1;
-    	}else if($this->userObj->user_role == "city_admin")
-    	{
-    		$userLevel = 2;
-    		$cityCode = $this->userObj->city_code;
-    	}else{
-    		$cityCode = $this->userObj->city_code;
-    		$userPrivilegeObj = User::Get_UserPrivilege($this->userObj->id);
-    		if(count($userPrivilegeObj))
-    		{
-    			$substationIdArray = json_decode($userPrivilegeObj->area_privilege);
-    		}
-    	}
-    	$data['offset'] = $offset = intval($this->input->get('per_page'));
-    	$data['reportDate'] = $reportDate = $this->input->get('reportDate');
-    	$reportDateArr = explode('至', $reportDate);
-    	//两个日期  前后
-    	//--------------------------------------------------------------------------------------------------------------------------------------------------
-    	if (! (count($reportDateArr) == 2 && Util::Is_date($reportDateArr[0]) && Util::Is_date($reportDateArr[1]))) {
-    		$reportDateArr = array();
-    		//上个月
-    		$lastMonth = date('Y-m-d', mktime(0, 0, 0, date("m") - 1, date("d") - 1, date("Y")));
-    		array_push($reportDateArr, $lastMonth);
-    		//本月
-    		array_push($reportDateArr, date('Y-m-d'));
-    		//到目前一个月
-    		$data['reportDate'] = $lastMonth . '至' . date('Y-m-d');
-    	}
-    
-    	$export = $this->input->get('export');
-    	if($export == "exporttoexcel")
-    	{
-    		require 'resources/php-excel.class.php';
-    
-    		$record_offset = 0;
-    		$PAGE_SIZE = 2000;
-    		$xls = new Excel_XML('UTF-8', false, '告警排名报表');
-    		$data['alarmRankList'] = $alarmRankList = $this->mp_xjdh->Get_AlarmRankList($cityCode, $countyCode, $statusArr, $reportDateArr[0], $reportDateArr[1], $ecType, $level);
-    		if($ecType == '0'){
-    			$xls->addRow(array("排名","局站","告警数量"));
-    			foreach($alarmRankList as $key => $alarmRankObj)
-    			{
-    				$xls->addRow(array($key+1, $alarmRankObj->subname, $alarmRankObj->subAlarmCount));
-    			}
-    		}
-    		if($ecType == '1'){
-    			$xls->addRow(array("排名","设备","告警数量"));
-    			foreach($alarmRankList as $key => $alarmRankObj)
-    			{
-    				$xls->addRow(array($key+1, $alarmRankObj->subname.'->'.$alarmRankObj->roomname.'->'.$alarmRankObj->devname, $alarmRankObj->devAlarmCount));
-    			}
-    		}
+        $data = array();
+        $data['userObj'] = $this->userObj;
+        $data['devModelGroup'] = $this->_get_device_modelGroup();
+        $data['devModelName'] = $this->_get_device_model_name();
+        $data['devCategoryName'] = $this->_get_device_category_name();
+        $data['actTab'] = 'charts';
+        $data['bcList'] = array();
+        $bcObj = new Breadcrumb();
+        $bcObj->title = '统计报表';
+        $bcObj->url = '#';
+        array_push($data['bcList'], $bcObj);
+        $bcObj = new Breadcrumb();
+        $bcObj->title = '告警排名报表';
+        $bcObj->isLast = true;
+        array_push($data['bcList'], $bcObj);
 
-    		header('Content-Type: application/vnd.ms-excel');
-    		header('Content-Disposition: attachment;filename="告警排名报表.xls"');
-    		header('Cache-Control:must-revalidate,post-check=0,pre-check=0');
-    		header('Expires:0');
-    		header('Pragma:public');
-    		header('Cache-Control: max-age=1');
-    		$xls->generateXML('告警排名报表');
-    		return;
-    	}
-    
-    	if ($countyCode)
-    		$data['substationList'] = $this->mp_xjdh->Get_Substations(false, $countyCode);
-    	
-    	$data['alarmRankList'] = $alarmRankList = $this->mp_xjdh->Get_AlarmRankList($cityCode, $countyCode, $statusArr, $reportDateArr[0], $reportDateArr[1], $ecType, $level);
+        $data['cityCode'] = $cityCode = $this->input->get('selCity');
+        $data['countyCode'] = $countyCode = $this->input->get('selCounty');
+        $data['ecType'] = $ecType = $this->input->get('ecType'); //ecGroup
+        $data['statusArr'] = $statusArr = $this->input->get('selStatus[]');
+        $data['level'] = $level = $this->input->get('level');
+        if ($statusArr == false) {
+            $data['statusArr'] = $statusArr = array('confirmed');
+        }
+        $substationIdArray = array();
+        if ($this->userObj->user_role == "admin") {
+            $userLevel = 1;
+        } else if ($this->userObj->user_role == "city_admin") {
+            $userLevel = 2;
+            $cityCode = $this->userObj->city_code;
+        } else {
+            $cityCode = $this->userObj->city_code;
+            $userPrivilegeObj = User::Get_UserPrivilege($this->userObj->id);
+            if (count($userPrivilegeObj)) {
+                $substationIdArray = json_decode($userPrivilegeObj->area_privilege);
+            }
+        }
+        $data['offset'] = $offset = intval($this->input->get('per_page'));
+        $data['reportDate'] = $reportDate = $this->input->get('reportDate');
+        $reportDateArr = explode('至', $reportDate);
+        //两个日期  前后
+        //--------------------------------------------------------------------------------------------------------------------------------------------------
+        if (!(count($reportDateArr) == 2 && Util::Is_date($reportDateArr[0]) && Util::Is_date($reportDateArr[1]))) {
+            $reportDateArr = array();
+            //上个月
+            $lastMonth = date('Y-m-d', mktime(0, 0, 0, date("m") - 1, date("d") - 1, date("Y")));
+            array_push($reportDateArr, $lastMonth);
+            //本月
+            array_push($reportDateArr, date('Y-m-d'));
+            //到目前一个月
+            $data['reportDate'] = $lastMonth . '至' . date('Y-m-d');
+        }
 
-    	$data['pagination'] = $this->mp_paging->Show(Util::Build_Page_Base("portal/alarm_rank"), $data['alarmCount'], DEFAULT_PAGE_SIZE, 3, TRUE);
-    	$scriptExtra = '<script type="text/javascript" src="/public/js/bootbox.js"></script>';
-    	$scriptExtra .= '<script type="text/javascript" src="/public/js/moment.min.js"></script>';
-    	$scriptExtra .= '<link rel="stylesheet" href="/public/css/daterangepicker-bs2.css"/>';
-    	$scriptExtra .= '<script type="text/javascript" src="/public/js/daterangepicker.js"></script>';
-    	$scriptExtra .= '<script type="text/javascript" src="/public/portal/js/alarm_rank.js"></script>';
-    	$content = $this->load->view("portal/alarm_rank", $data, TRUE);
-    	$this->mp_master->Show_Portal($content, $scriptExtra, '', $data);
+        $export = $this->input->get('export');
+        if ($export == "exporttoexcel") {
+            require 'resources/php-excel.class.php';
+
+            $record_offset = 0;
+            $PAGE_SIZE = 2000;
+            $xls = new Excel_XML('UTF-8', false, '告警排名报表');
+            $data['alarmRankList'] = $alarmRankList = $this->mp_xjdh->Get_AlarmRankList($cityCode, $countyCode, $statusArr, $reportDateArr[0], $reportDateArr[1], $ecType, $level);
+            if ($ecType == '0') {
+                $xls->addRow(array("排名", "局站", "告警数量"));
+                foreach ($alarmRankList as $key => $alarmRankObj) {
+                    $xls->addRow(array($key + 1, $alarmRankObj->subname, $alarmRankObj->subAlarmCount));
+                }
+            }
+            if ($ecType == '1') {
+                $xls->addRow(array("排名", "设备", "告警数量"));
+                foreach ($alarmRankList as $key => $alarmRankObj) {
+                    $xls->addRow(array($key + 1, $alarmRankObj->subname . '->' . $alarmRankObj->roomname . '->' . $alarmRankObj->devname, $alarmRankObj->devAlarmCount));
+                }
+            }
+
+            header('Content-Type: application/vnd.ms-excel');
+            header('Content-Disposition: attachment;filename="告警排名报表.xls"');
+            header('Cache-Control:must-revalidate,post-check=0,pre-check=0');
+            header('Expires:0');
+            header('Pragma:public');
+            header('Cache-Control: max-age=1');
+            $xls->generateXML('告警排名报表');
+            return;
+        }
+
+        if ($countyCode)
+            $data['substationList'] = $this->mp_xjdh->Get_Substations(false, $countyCode);
+
+        $data['alarmRankList'] = $alarmRankList = $this->mp_xjdh->Get_AlarmRankList($cityCode, $countyCode, $statusArr, $reportDateArr[0], $reportDateArr[1], $ecType, $level);
+
+        $data['pagination'] = $this->mp_paging->Show(Util::Build_Page_Base("portal/alarm_rank"), $data['alarmCount'], DEFAULT_PAGE_SIZE, 3, TRUE);
+        $scriptExtra = '<script type="text/javascript" src="/public/js/bootbox.js"></script>';
+        $scriptExtra .= '<script type="text/javascript" src="/public/js/moment.min.js"></script>';
+        $scriptExtra .= '<link rel="stylesheet" href="/public/css/daterangepicker-bs2.css"/>';
+        $scriptExtra .= '<script type="text/javascript" src="/public/js/daterangepicker.js"></script>';
+        $scriptExtra .= '<script type="text/javascript" src="/public/portal/js/alarm_rank.js"></script>';
+        $content = $this->load->view("portal/alarm_rank", $data, TRUE);
+        $this->mp_master->Show_Portal($content, $scriptExtra, '', $data);
     }
-    
-    public function fault_report ()
+
+    public function fault_report()
     {
-    	$data = array();
-    	$data['userObj'] = $this->userObj;
-    	$data['devModelGroup'] = $this->_get_device_modelGroup();
-    	$data['devModelName'] = $this->_get_device_model_name();
-    	$data['devCategoryName'] = $this->_get_device_category_name();
-    	$data['actTab'] = 'charts';
-    	$data['bcList'] = array();
-    	$bcObj = new Breadcrumb();
-    	$bcObj->title = '统计报表';
-    	$bcObj->url = '#';
-    	array_push($data['bcList'], $bcObj);
-    	$bcObj = new Breadcrumb();
-    	$bcObj->title = '停电故障报表';
-    	$bcObj->isLast = true;
-    	array_push($data['bcList'], $bcObj);
-    
-    	$data['cityCode'] = $cityCode = $this->input->get('selCity');
-    	$data['countyCode'] = $countyCode = $this->input->get('selCounty');
-    	$data['ecType'] = $ecType = $this->input->get('ecType'); 
-    	$data['statusArr'] = $statusArr = $this->input->get('selStatus[]');
-    	$data['category'] = $category = $this->input->get('category');
-    	$data['level'] = $level = $this->input->get('level');
-    	if($statusArr == false)
-    	{
-    		$data['statusArr'] = $statusArr = array('confirmed');
-    	}
+        $data = array();
+        $data['userObj'] = $this->userObj;
+        $data['devModelGroup'] = $this->_get_device_modelGroup();
+        $data['devModelName'] = $this->_get_device_model_name();
+        $data['devCategoryName'] = $this->_get_device_category_name();
+        $data['actTab'] = 'charts';
+        $data['bcList'] = array();
+        $bcObj = new Breadcrumb();
+        $bcObj->title = '统计报表';
+        $bcObj->url = '#';
+        array_push($data['bcList'], $bcObj);
+        $bcObj = new Breadcrumb();
+        $bcObj->title = '停电故障报表';
+        $bcObj->isLast = true;
+        array_push($data['bcList'], $bcObj);
 
-    	if($ecType == '0'){
-    		foreach(Constants::$devConfigList as $devConfig)
-    		{
-    			if($devConfig[2] == "pdu")
-    			{
-    				$devModelArray = $devConfig[0];
-    			}
-    		}
-    	}
-    	$data['offset'] = $offset = intval($this->input->get('per_page'));
-    	$data['reportDate'] = $reportDate = $this->input->get('reportDate');
-    	$reportDateArr = explode('至', $reportDate);
+        $data['cityCode'] = $cityCode = $this->input->get('selCity');
+        $data['countyCode'] = $countyCode = $this->input->get('selCounty');
+        $data['ecType'] = $ecType = $this->input->get('ecType');
+        $data['statusArr'] = $statusArr = $this->input->get('selStatus[]');
+        $data['category'] = $category = $this->input->get('category');
+        $data['level'] = $level = $this->input->get('level');
+        if ($statusArr == false) {
+            $data['statusArr'] = $statusArr = array('confirmed');
+        }
 
-    	if (! (count($reportDateArr) == 2 && Util::Is_date($reportDateArr[0]) && Util::Is_date($reportDateArr[1]))) {
-    		$reportDateArr = array();
-    		$lastMonth = date('Y-m-d', mktime(0, 0, 0, date("m") - 1, date("d") - 1, date("Y")));
-    		array_push($reportDateArr, $lastMonth);
-    		array_push($reportDateArr, date('Y-m-d'));
-    		$data['reportDate'] = $lastMonth . '至' . date('Y-m-d');
-    	}
-    
-    	$export = $this->input->get('export');
-    	if($export == "exporttoexcel")
-    	{
-    		require 'resources/php-excel.class.php';
-    		$record_offset = 0;
-    		$PAGE_SIZE = 2000;
-    		$xls = new Excel_XML('UTF-8',FALSE,'停电故障报表');
-    		
-    		
-    		if($category == '0'){    //按次数统计
-    			$xls->addRow(array("分公司","区域","局站","告警次数"));
-    		}else if($category == '1'){  //按时长统计
-    			$xls->addRow(array("分公司","区域","局站","时长"));
-    		}
-    		
-    		while(true){
-    			$data['FaultList'] = $FaultList = $this->mp_xjdh->Get_FaultList($cityCode, $countyCode, $statusArr, $reportDateArr[0], $reportDateArr[1], $devModelArray, $level, $category, $ecType,$record_offset, $PAGE_SIZE);
-    			foreach ($FaultList as $FaultObj){
-    				if($category == '0'){
-    					$xls->addRow(array(Defines::$gCity[$FaultObj->city_code],Defines::$gCounty[$FaultObj->city_code][$FaultObj->county_code], $FaultObj->subname, $FaultObj->subAlarmCount));
-    				}else if($category == '1'){
-    					$xls->addRow(array(Defines::$gCity[$FaultObj->city_code],Defines::$gCounty[$FaultObj->city_code][$FaultObj->county_code], $FaultObj->subname, floor($FaultObj->sum/3600).'时'.floor($FaultObj->sum%3600/60).'分'.$FaultObj->sum%3600%60));
-    				}
-    				
-    			}
-    			if(count($FaultList)<2000)
-    				break;
-    			$record_offset += 2000;
-    		}
-    		header('Content-Type:application/vnd.ms-excel');
-    		header('Content-Disposition:attachment;filename="停电故障报表.xls"');
-    		header('Cache-Control:must-revalidate,post-check=0,pre-check=0');
-    		header('Expirse:0');
-    		header('Pragma:public');
-    		header('Cache-Control:max-age=1');
-    		$xls->generateXML('停电故障报表');
-    		return;
-    	}
-    	
-    	if ($countyCode)
-    		$data['substationList'] = $this->mp_xjdh->Get_Substations(false, $countyCode);
-    	
-    	$data['FaultCount'] = $FaultCount = $this->mp_xjdh->Get_FaultCount($cityCode, $countyCode, $statusArr, $reportDateArr[0], $reportDateArr[1], $devModelArray, $level, $category, $ecType);
-    	$data['FaultList'] = $FaultList = $this->mp_xjdh->Get_FaultList($cityCode, $countyCode, $statusArr, $reportDateArr[0], $reportDateArr[1], $devModelArray, $level, $category, $ecType, $offset, DEFAULT_PAGE_SIZE);
-    	
-    	$data['pagination'] = $this->mp_paging->Show(Util::Build_Page_Base("portal/fault_report"), $FaultCount, DEFAULT_PAGE_SIZE, 3, TRUE);
-    	$scriptExtra = '<script type="text/javascript" src="/public/js/bootbox.js"></script>';
-    	$scriptExtra .= '<script type="text/javascript" src="/public/js/moment.min.js"></script>';
-    	$scriptExtra .= '<link rel="stylesheet" href="/public/css/daterangepicker-bs2.css"/>';
-    	$scriptExtra .= '<script type="text/javascript" src="/public/js/daterangepicker.js"></script>';
-    	$scriptExtra .= '<script type="text/javascript" src="/public/portal/js/fault_report.js"></script>';
-    	$content = $this->load->view("portal/fault_report", $data, TRUE);
-    	$this->mp_master->Show_Portal($content, $scriptExtra, '', $data);
+        if ($ecType == '0') {
+            foreach (Constants::$devConfigList as $devConfig) {
+                if ($devConfig[2] == "pdu") {
+                    $devModelArray = $devConfig[0];
+                }
+            }
+        }
+        $data['offset'] = $offset = intval($this->input->get('per_page'));
+        $data['reportDate'] = $reportDate = $this->input->get('reportDate');
+        $reportDateArr = explode('至', $reportDate);
+
+        if (!(count($reportDateArr) == 2 && Util::Is_date($reportDateArr[0]) && Util::Is_date($reportDateArr[1]))) {
+            $reportDateArr = array();
+            $lastMonth = date('Y-m-d', mktime(0, 0, 0, date("m") - 1, date("d") - 1, date("Y")));
+            array_push($reportDateArr, $lastMonth);
+            array_push($reportDateArr, date('Y-m-d'));
+            $data['reportDate'] = $lastMonth . '至' . date('Y-m-d');
+        }
+
+        $export = $this->input->get('export');
+        if ($export == "exporttoexcel") {
+            require 'resources/php-excel.class.php';
+            $record_offset = 0;
+            $PAGE_SIZE = 2000;
+            $xls = new Excel_XML('UTF-8', FALSE, '停电故障报表');
+
+
+            if ($category == '0') {    //按次数统计
+                $xls->addRow(array("分公司", "区域", "局站", "告警次数"));
+            } else if ($category == '1') {  //按时长统计
+                $xls->addRow(array("分公司", "区域", "局站", "时长"));
+            }
+
+            while (true) {
+                $data['FaultList'] = $FaultList = $this->mp_xjdh->Get_FaultList($cityCode, $countyCode, $statusArr, $reportDateArr[0], $reportDateArr[1], $devModelArray, $level, $category, $ecType, $record_offset, $PAGE_SIZE);
+                foreach ($FaultList as $FaultObj) {
+                    if ($category == '0') {
+                        $xls->addRow(array(Defines::$gCity[$FaultObj->city_code], Defines::$gCounty[$FaultObj->city_code][$FaultObj->county_code], $FaultObj->subname, $FaultObj->subAlarmCount));
+                    } else if ($category == '1') {
+                        $xls->addRow(array(Defines::$gCity[$FaultObj->city_code], Defines::$gCounty[$FaultObj->city_code][$FaultObj->county_code], $FaultObj->subname, floor($FaultObj->sum / 3600) . '时' . floor($FaultObj->sum % 3600 / 60) . '分' . $FaultObj->sum % 3600 % 60));
+                    }
+
+                }
+                if (count($FaultList) < 2000)
+                    break;
+                $record_offset += 2000;
+            }
+            header('Content-Type:application/vnd.ms-excel');
+            header('Content-Disposition:attachment;filename="停电故障报表.xls"');
+            header('Cache-Control:must-revalidate,post-check=0,pre-check=0');
+            header('Expirse:0');
+            header('Pragma:public');
+            header('Cache-Control:max-age=1');
+            $xls->generateXML('停电故障报表');
+            return;
+        }
+
+        if ($countyCode)
+            $data['substationList'] = $this->mp_xjdh->Get_Substations(false, $countyCode);
+
+        $data['FaultCount'] = $FaultCount = $this->mp_xjdh->Get_FaultCount($cityCode, $countyCode, $statusArr, $reportDateArr[0], $reportDateArr[1], $devModelArray, $level, $category, $ecType);
+        $data['FaultList'] = $FaultList = $this->mp_xjdh->Get_FaultList($cityCode, $countyCode, $statusArr, $reportDateArr[0], $reportDateArr[1], $devModelArray, $level, $category, $ecType, $offset, DEFAULT_PAGE_SIZE);
+
+        $data['pagination'] = $this->mp_paging->Show(Util::Build_Page_Base("portal/fault_report"), $FaultCount, DEFAULT_PAGE_SIZE, 3, TRUE);
+        $scriptExtra = '<script type="text/javascript" src="/public/js/bootbox.js"></script>';
+        $scriptExtra .= '<script type="text/javascript" src="/public/js/moment.min.js"></script>';
+        $scriptExtra .= '<link rel="stylesheet" href="/public/css/daterangepicker-bs2.css"/>';
+        $scriptExtra .= '<script type="text/javascript" src="/public/js/daterangepicker.js"></script>';
+        $scriptExtra .= '<script type="text/javascript" src="/public/portal/js/fault_report.js"></script>';
+        $content = $this->load->view("portal/fault_report", $data, TRUE);
+        $this->mp_master->Show_Portal($content, $scriptExtra, '', $data);
     }
-    
-    public function alarm_type ()
+
+    public function alarm_type()
     {
-    	$data = array();
-    	$data['userObj'] = $this->userObj;
-    	$data['devModelGroup'] = $this->_get_device_modelGroup();
-    	$data['devModelName'] = $this->_get_device_model_name();
-    	$data['devCategoryName'] = $this->_get_device_category_name();
-    	$data['actTab'] = 'charts';
-    	$data['bcList'] = array();
-    	$bcObj = new Breadcrumb();
-    	$bcObj->title = '告警类别报表';
-    	$bcObj->url = '#';
-    	array_push($data['bcList'], $bcObj);
-    	$bcObj = new Breadcrumb();
-    	$bcObj->title = '告警类别报表';
-    	$bcObj->isLast = true;
-    	array_push($data['bcList'], $bcObj);
-    
-    	$data['cityCode'] = $cityCode = $this->input->get('selCity');
-    	$data['countyCode'] = $countyCode = $this->input->get('selCounty');
-    	$data['substationId'] = $substationId = $this->input->get('selSubstation');
-    	$data['roomId'] = $roomId = $this->input->get('selRoom');
-    	$data['ecType'] = $ecType = $this->input->get('ecType[]');
-    	$data['ecGroup'] = $ecGroup = $this->input->get('ecGroup'); //ecGroup
-    	$data['level'] = $level = $this->input->get('level');
-    	$data['selDevModel'] = $selDevModel = trim($this->input->get('selDevModel'));
-    	$data['statusArr'] = $statusArr = $this->input->get('selStatus[]');
-    	if($statusArr == false)
-    	{
-    		$data['statusArr'] = $statusArr = array('confirmed');
-    	}
+        $data = array();
+        $data['userObj'] = $this->userObj;
+        $data['devModelGroup'] = $this->_get_device_modelGroup();
+        $data['devModelName'] = $this->_get_device_model_name();
+        $data['devCategoryName'] = $this->_get_device_category_name();
+        $data['actTab'] = 'charts';
+        $data['bcList'] = array();
+        $bcObj = new Breadcrumb();
+        $bcObj->title = '告警类别报表';
+        $bcObj->url = '#';
+        array_push($data['bcList'], $bcObj);
+        $bcObj = new Breadcrumb();
+        $bcObj->title = '告警类别报表';
+        $bcObj->isLast = true;
+        array_push($data['bcList'], $bcObj);
 
-    	$data['offset'] = $offset = intval($this->input->get('per_page'));
-    	$data['reportDate'] = $reportDate = $this->input->get('reportDate');
-    	$reportDateArr = explode('至', $reportDate);
+        $data['cityCode'] = $cityCode = $this->input->get('selCity');
+        $data['countyCode'] = $countyCode = $this->input->get('selCounty');
+        $data['substationId'] = $substationId = $this->input->get('selSubstation');
+        $data['roomId'] = $roomId = $this->input->get('selRoom');
+        $data['ecType'] = $ecType = $this->input->get('ecType[]');
+        $data['ecGroup'] = $ecGroup = $this->input->get('ecGroup'); //ecGroup
+        $data['level'] = $level = $this->input->get('level');
+        $data['selDevModel'] = $selDevModel = trim($this->input->get('selDevModel'));
+        $data['statusArr'] = $statusArr = $this->input->get('selStatus[]');
+        if ($statusArr == false) {
+            $data['statusArr'] = $statusArr = array('confirmed');
+        }
 
-    	if (! (count($reportDateArr) == 2 && Util::Is_date($reportDateArr[0]) && Util::Is_date($reportDateArr[1]))) {
-    		$reportDateArr = array();
-    		$lastMonth = date('Y-m-d', mktime(0, 0, 0, date("m") - 1, date("d") - 1, date("Y")));
-    		array_push($reportDateArr, $lastMonth);
-    		array_push($reportDateArr, date('Y-m-d'));
-    		$data['reportDate'] = $lastMonth . '至' . date('Y-m-d');
-    	}
+        $data['offset'] = $offset = intval($this->input->get('per_page'));
+        $data['reportDate'] = $reportDate = $this->input->get('reportDate');
+        $reportDateArr = explode('至', $reportDate);
 
-    	$export = $this->input->get('export');
-    	if($export == "exporttoexcel")
-    	{
-    		require 'resources/php-excel.class.php';
-    		$record_offset = 0;
-    		$PAGE_SIZE = 2000;
-    		$xls = new Excel_XML('UTF-8',FALSE,'开门记录');
-    		$alarmList = $this->mp_xjdh->Get_AlarmTypeList($cityCode, $countyCode, $substationId, $roomId, $level, $selDevModel, $statusArr, $reportDateArr[0], $reportDateArr[1]);
-    		
-    		$name = array(); $alarmCount = array();
-    		
-			if($selDevModel == 'under_voltage'){
-				for($i = 0;$i<count($alarmList);$i++){
-					array_push($name, $alarmList[$i]->signal_name);
-					array_push($alarmCount, $alarmList[$i]->typeAlarmCount);
-					$sum = $sum + $alarmList[$i]->typeAlarmCount;
-				}
-				array_push($name,"总告警");
-				array_push($alarmCount,$sum);
-			}else if($selDevModel == 'temperature_alarm'){
-				for($i = 0;$i<count($alarmList);$i++){
-					array_push($name, $alarmList[$i]->subject);
-					array_push($alarmCount, $alarmList[$i]->subjectCount);
-					$sum = $sum + $alarmList[$i]->subjectCount;
-				}
-				array_push($name,"总告警");
-				array_push($alarmCount,$sum);
-			}
+        if (!(count($reportDateArr) == 2 && Util::Is_date($reportDateArr[0]) && Util::Is_date($reportDateArr[1]))) {
+            $reportDateArr = array();
+            $lastMonth = date('Y-m-d', mktime(0, 0, 0, date("m") - 1, date("d") - 1, date("Y")));
+            array_push($reportDateArr, $lastMonth);
+            array_push($reportDateArr, date('Y-m-d'));
+            $data['reportDate'] = $lastMonth . '至' . date('Y-m-d');
+        }
 
-    		$xls->addRow($name);
-    		$xls->addRow($alarmCount);
-    		
-    	    $xls->addRow(array("分公司","区域","局站","机房","设备类型","设备名称","信号名称","信号ID","级别","描述","上报时间","恢复时间","确认时间","当前状态"));
-    		while(true)
-    		{
-    			$alarmDetailList = $this->mp_xjdh->Get_AlarmTypeDetailList($cityCode, $countyCode, $substationId, $roomId, $level, $selDevModel, $statusArr, $reportDateArr[0], $reportDateArr[1], $record_offset, $PAGE_SIZE);
-    			foreach($alarmDetailList as $alarmDetailObj)
-    			{
-    				if ($alarmDetailObj->status == 'unresolved') $alarmDetailObj->status = '正在告警';
-    				else if ($alarmDetailObj->confirm_datetime != '0000-00-00 00:00:00') $alarmDetailObj->status = '已确认';
-    				else if ($alarmDetailObj->status == 'solved') $alarmDetailObj->status = '已恢复';
-    				$xls->addRow(array(
-    						Defines::$gCity[$alarmDetailObj->city_code], Defines::$gCounty[$alarmDetailObj->city_code][$alarmDetailObj->county_code],$alarmDetailObj->substation_name,$alarmDetailObj->room_name,$data['devModelName'][$alarmDetailObj->dev_model],
-    						$alarmDetailObj->dev_name,$alarmDetailObj->signal_name,$alarmDetailObj->signal_id,$alarmDetailObj->level,$alarmDetailObj->subject,$alarmDetailObj->added_datetime,$alarmDetailObj->restore_datetime,$alarmDetailObj->confirm_datetime,$alarmDetailObj->status));
-    			}
-    			if(count($alarmDetailList) < 2000)
-    				break;
-    			$record_offset += 2000;
-    		}
-    		header('Content-Type:application/vnd.ms-excel');
-    		header('Content-Disposition:attachment;filename="告警类别报表.xls"');
-    		header('Cache-Control:must-revalidate,post-check=0,pre-check=0');
-    		header('Expirse:0');
-    		header('Pragma:public');
-    		header('Cache-Control:max-age=1');
-    		$xls->generateXML('告警类别报表');
-    		return;
-    	}
-    	
-    	if ($countyCode)
-    		$data['substationList'] = $this->mp_xjdh->Get_Substations(false, $countyCode);
-    	if ($substationId)
-    		$data['roomList'] = $this->mp_xjdh->Get_Rooms(false, $substationId);
+        $export = $this->input->get('export');
+        if ($export == "exporttoexcel") {
+            require 'resources/php-excel.class.php';
+            $record_offset = 0;
+            $PAGE_SIZE = 2000;
+            $xls = new Excel_XML('UTF-8', FALSE, '开门记录');
+            $alarmList = $this->mp_xjdh->Get_AlarmTypeList($cityCode, $countyCode, $substationId, $roomId, $level, $selDevModel, $statusArr, $reportDateArr[0], $reportDateArr[1]);
 
-    	$data['alarmList'] = $alarmList = $this->mp_xjdh->Get_AlarmTypeList($cityCode, $countyCode, $substationId, $roomId, $level, $selDevModel, $statusArr, $reportDateArr[0], $reportDateArr[1]);
-    	$data['alarmCount'] = $alarmCount = $this->mp_xjdh->Get_AlarmTypeDetailCount($cityCode, $countyCode, $substationId, $roomId, $level, $selDevModel, $statusArr, $reportDateArr[0], $reportDateArr[1]);
-    	$data['alarmDetailList'] = $this->mp_xjdh->Get_AlarmTypeDetailList($cityCode, $countyCode, $substationId, $roomId, $level, $selDevModel, $statusArr, $reportDateArr[0], $reportDateArr[1],$offset,DEFAULT_PAGE_SIZE);
+            $name = array();
+            $alarmCount = array();
 
-    	$data['pagination'] = $this->mp_paging->Show(Util::Build_Page_Base("portal/alarm_type"), $data['alarmCount'], DEFAULT_PAGE_SIZE, 3, TRUE);
-    	$scriptExtra = '<script type="text/javascript" src="/public/js/bootbox.js"></script>';
-    	$scriptExtra .= '<script type="text/javascript" src="/public/js/moment.min.js"></script>';
-    	$scriptExtra .= '<link rel="stylesheet" href="/public/css/daterangepicker-bs2.css"/>';
-    	$scriptExtra .= '<script type="text/javascript" src="/public/js/daterangepicker.js"></script>';
-    	$scriptExtra .= '<script type="text/javascript" src="/public/portal/js/alarm_type.js"></script>';
-    	$content = $this->load->view("portal/alarm_type", $data, TRUE);
-    	$this->mp_master->Show_Portal($content, $scriptExtra, '', $data);
+            if ($selDevModel == 'under_voltage') {
+                for ($i = 0; $i < count($alarmList); $i++) {
+                    array_push($name, $alarmList[$i]->signal_name);
+                    array_push($alarmCount, $alarmList[$i]->typeAlarmCount);
+                    $sum = $sum + $alarmList[$i]->typeAlarmCount;
+                }
+                array_push($name, "总告警");
+                array_push($alarmCount, $sum);
+            } else if ($selDevModel == 'temperature_alarm') {
+                for ($i = 0; $i < count($alarmList); $i++) {
+                    array_push($name, $alarmList[$i]->subject);
+                    array_push($alarmCount, $alarmList[$i]->subjectCount);
+                    $sum = $sum + $alarmList[$i]->subjectCount;
+                }
+                array_push($name, "总告警");
+                array_push($alarmCount, $sum);
+            }
+
+            $xls->addRow($name);
+            $xls->addRow($alarmCount);
+
+            $xls->addRow(array("分公司", "区域", "局站", "机房", "设备类型", "设备名称", "信号名称", "信号ID", "级别", "描述", "上报时间", "恢复时间", "确认时间", "当前状态"));
+            while (true) {
+                $alarmDetailList = $this->mp_xjdh->Get_AlarmTypeDetailList($cityCode, $countyCode, $substationId, $roomId, $level, $selDevModel, $statusArr, $reportDateArr[0], $reportDateArr[1], $record_offset, $PAGE_SIZE);
+                foreach ($alarmDetailList as $alarmDetailObj) {
+                    if ($alarmDetailObj->status == 'unresolved') $alarmDetailObj->status = '正在告警';
+                    else if ($alarmDetailObj->confirm_datetime != '0000-00-00 00:00:00') $alarmDetailObj->status = '已确认';
+                    else if ($alarmDetailObj->status == 'solved') $alarmDetailObj->status = '已恢复';
+                    $xls->addRow(array(
+                        Defines::$gCity[$alarmDetailObj->city_code], Defines::$gCounty[$alarmDetailObj->city_code][$alarmDetailObj->county_code], $alarmDetailObj->substation_name, $alarmDetailObj->room_name, $data['devModelName'][$alarmDetailObj->dev_model],
+                        $alarmDetailObj->dev_name, $alarmDetailObj->signal_name, $alarmDetailObj->signal_id, $alarmDetailObj->level, $alarmDetailObj->subject, $alarmDetailObj->added_datetime, $alarmDetailObj->restore_datetime, $alarmDetailObj->confirm_datetime, $alarmDetailObj->status));
+                }
+                if (count($alarmDetailList) < 2000)
+                    break;
+                $record_offset += 2000;
+            }
+            header('Content-Type:application/vnd.ms-excel');
+            header('Content-Disposition:attachment;filename="告警类别报表.xls"');
+            header('Cache-Control:must-revalidate,post-check=0,pre-check=0');
+            header('Expirse:0');
+            header('Pragma:public');
+            header('Cache-Control:max-age=1');
+            $xls->generateXML('告警类别报表');
+            return;
+        }
+
+        if ($countyCode)
+            $data['substationList'] = $this->mp_xjdh->Get_Substations(false, $countyCode);
+        if ($substationId)
+            $data['roomList'] = $this->mp_xjdh->Get_Rooms(false, $substationId);
+
+        $data['alarmList'] = $alarmList = $this->mp_xjdh->Get_AlarmTypeList($cityCode, $countyCode, $substationId, $roomId, $level, $selDevModel, $statusArr, $reportDateArr[0], $reportDateArr[1]);
+        $data['alarmCount'] = $alarmCount = $this->mp_xjdh->Get_AlarmTypeDetailCount($cityCode, $countyCode, $substationId, $roomId, $level, $selDevModel, $statusArr, $reportDateArr[0], $reportDateArr[1]);
+        $data['alarmDetailList'] = $this->mp_xjdh->Get_AlarmTypeDetailList($cityCode, $countyCode, $substationId, $roomId, $level, $selDevModel, $statusArr, $reportDateArr[0], $reportDateArr[1], $offset, DEFAULT_PAGE_SIZE);
+
+        $data['pagination'] = $this->mp_paging->Show(Util::Build_Page_Base("portal/alarm_type"), $data['alarmCount'], DEFAULT_PAGE_SIZE, 3, TRUE);
+        $scriptExtra = '<script type="text/javascript" src="/public/js/bootbox.js"></script>';
+        $scriptExtra .= '<script type="text/javascript" src="/public/js/moment.min.js"></script>';
+        $scriptExtra .= '<link rel="stylesheet" href="/public/css/daterangepicker-bs2.css"/>';
+        $scriptExtra .= '<script type="text/javascript" src="/public/js/daterangepicker.js"></script>';
+        $scriptExtra .= '<script type="text/javascript" src="/public/portal/js/alarm_type.js"></script>';
+        $content = $this->load->view("portal/alarm_type", $data, TRUE);
+        $this->mp_master->Show_Portal($content, $scriptExtra, '', $data);
     }
-   	
+
     public function camera_thumb($fileName)
     {
         $fileName = urldecode($fileName);
         $this->load->library("ImageResize", array("filename" => "./public/portal/Camera_image/" . $fileName));
         $this->imageresize->resizeToWidth(200)->output();
     }
-    
+
     public function camera_screenshot($data_id)
     {
         $devObj = $this->mp_xjdh->Get_camera($data_id);
@@ -9610,7 +9585,7 @@ function device_history ()
         header("Content-Type: image/jpeg;text/html; charset=utf-8");
         echo $img;
     }
-    
+
     function checksubname()
     {
         $subname = $this->input->post('subname');
@@ -9620,20 +9595,20 @@ function device_history ()
             echo 'true';
         }
     }
-    
+
     function checkdevname()
     {
         $devname = $this->input->post('devname');
         if (strpos($devname, "编号#") || strpos($devname, "电表厂商") || strpos($devname, "电表型号") || strpos($devname, "设备厂商") || strpos($devname, "设备型号")
-                || strpos($devname, "开关电源厂商") || strpos($devname, "、") || strpos($devname, "容量") || strpos($devname, "所属采集板")
-                || strpos($devname, "开关电源型号") || strpos($devname, "302A（301E）")
+            || strpos($devname, "开关电源厂商") || strpos($devname, "、") || strpos($devname, "容量") || strpos($devname, "所属采集板")
+            || strpos($devname, "开关电源型号") || strpos($devname, "302A（301E）")
         ) {
             echo 'false';
         } else {
             echo 'true';
         }
     }
-    
+
     function gethistorydevdetail()
     {
         $jsonRet = array();
@@ -9643,12 +9618,12 @@ function device_history ()
         $id = $this->input->get('id');
         $startTime = $this->input->get('startTime');
         $endTime = $this->input->get('endTime');
-    
+
         $this->load->library("mongo_db");
         $devList = $this->mp_xjdh->Get_Device_History_List($model, $data_id, $startTime, $endTime);
         $data['dataObj'] = $dataObj = $devList[$id - 1];
         $data = array_merge($data, Constants::$pmBusConfig[$model]);
-    
+
         if (count($dataObj)) {
             $jsonRet['ret'] = 0;
             $jsonRet['html'] = $this->load->view("portal/device_history_details", $data, TRUE);
@@ -9659,7 +9634,7 @@ function device_history ()
         echo json_encode($jsonRet);
         return;
     }
-    
+
     function opendoor_report()
     {
         $data = array();
@@ -9672,7 +9647,7 @@ function device_history ()
         $bcObj->title = '开门记录报表';
         $bcObj->isLast = true;
         array_push($data['bcList'], $bcObj);
-    
+
         $data['devObj'] = $devObj;
         $data['offset'] = $offset = intval($this->input->get('per_page'));
         $data['gCounty'] = $gCounty = Defines::$gCounty;
@@ -9682,19 +9657,19 @@ function device_history ()
         $data['substationList'] = $this->mp_xjdh->Get_Substations();
         $data['roomId'] = $roomId = $this->input->get('selRoom');
         $data['roomList'] = $this->mp_xjdh->Get_Rooms();
-    
+
         $city_code = "";
         if ($this->userObj->user_role != "admin") {
             $city_code = $this->userObj->city_code;
             $county_code = $this->userObj->county_code;
         }
-    
+
         $username = $data['fullName'] = $this->input->get('fullName');
         $mobile = $data['mobile'] = $this->input->get('mobile');
         $card = $data['card'] = $this->input->get('card');
         $data['time_range'] = $time_range = $this->input->get('time_range');
         $time_rangeArr = explode('至', $time_range);
-    
+
         $export = $this->input->get('export');
         if ($export == "exporttoexcel") {
             require 'resources/php-excel.class.php';
@@ -9706,8 +9681,8 @@ function device_history ()
                 $data['recordList'] = $recordList = $this->mp_xjdh->Get_Door_Record_List(false, $user_id, $cityCode, $countyCode, $substationId, $roomId, $username, $mobile, $card, $time_rangeArr, $PAGE_SIZE, $record_offset, $city_code, $county_code);
                 foreach ($recordList as $recordObj) {
                     $xls->addRow(array(
-                            Defines::$gCity[$recordObj->city_code], Defines::$gCounty[$recordObj->city_code][$recordObj->county_code], $recordObj->substation_name, $recordObj->room_name, $recordObj->name, $recordObj->full_name, $recordObj->mobile,
-                            $recordObj->card_no, $recordObj->desc, $recordObj->added_datetime));
+                        Defines::$gCity[$recordObj->city_code], Defines::$gCounty[$recordObj->city_code][$recordObj->county_code], $recordObj->substation_name, $recordObj->room_name, $recordObj->name, $recordObj->full_name, $recordObj->mobile,
+                        $recordObj->card_no, $recordObj->desc, $recordObj->added_datetime));
                 }
                 if (count($recordList) < 2000)
                     break;
@@ -9722,13 +9697,13 @@ function device_history ()
             $xls->generateXML('开门记录');
             return;
         }
-    
+
         $data['count'] = $count = $this->mp_xjdh->Get_Door_Record_Count(false, $user_id, $cityCode, $countyCode, $substationId, $roomId, $username, $mobile, $card, $time_rangeArr, $city_code, $county_code);
         $data['recordList'] = $this->mp_xjdh->Get_Door_Record_List(false, $user_id, $cityCode, $countyCode, $substationId, $roomId, $username, $mobile, $card, $time_rangeArr, DEFAULT_PAGE_SIZE, $offset, $city_code, $county_code);
-    
+
         $data['pagination'] = $this->mp_paging->Show(Util::Build_Page_Base("portal/opendoor_report"), $count, DEFAULT_PAGE_SIZE, 3, TRUE);
         $content = $this->load->view('portal/opendoor_report', $data, TRUE);
-    
+
         $scriptExtra = '<script type="text/javascript" src="/public/js/bootbox.js"></script>';
         $scriptExtra .= '<script type="text/javascript" src="/public/js/moment.min.js"></script>';
         $scriptExtra .= '<link rel="stylesheet" href="/public/css/daterangepicker-bs2.css"/>';
@@ -9736,7 +9711,7 @@ function device_history ()
         $scriptExtra .= '<script type="text/javascript" src="/public/portal/js/opendoor_report.js"></script>';
         $this->mp_master->Show_Portal($content, $scriptExtra, '开门记录报表', $data);
     }
-    
+
     function Get_Power302aCycle_List($lastList = array(), $powerDataMaxList = array(), $ecGroup = '')
     {
         $Obj = new stdClass();
@@ -9787,7 +9762,7 @@ function device_history ()
         }
         return $array;
     }
-    
+
     function acquisition_anomaly()
     {
         $data = array();
@@ -9802,7 +9777,7 @@ function device_history ()
         $bcObj->url = '/portal/acquisition_anomaly';
         $bcObj->isLast = true;
         array_push($data['bcList'], $bcObj);
-    
+
         $data['offset'] = $offset = intval($this->input->get('per_page'));
         $data['data_id'] = $data_id = $this->input->get("data_id");
         $data['dataObj'] = $this->mp_xjdh->Get_Device($data_id);
@@ -9810,7 +9785,7 @@ function device_history ()
         //explode('分割付','字符串')把字符串分割为数组
         //在至处分割数组
         $dateRangeArr = explode('至', $dateRange);
-    
+
         if (!empty($data_id) && count($dateRangeArr) == 2) {
             $this->load->library("mongo_db");
             $data['count'] = $count = $this->mp_xjdh->Get_Power302a_Count($data_id, $dateRangeArr[0], $dateRangeArr[1]);
@@ -9825,20 +9800,20 @@ function device_history ()
                 $record_offset = 0;
                 $PAGE_SIZE = 2000;
                 $xls = new Excel_XML('UTF-8', false, '采集异常分析');
-    
+
                 $xls->addRow(array("应采集的数量总数", "实际采集的数据总数", "数据采集成功率（%）", "数据采集异常率（%）"));
                 $xls->addRow(array($should_acquisition, $count, $success_rate, $fail_rate));
-    
+
                 $xls->addRow(array("日期", "A相功率", "B相功率", "C相功率", "合相功率", "A相电压", "B相电压", "C相电压", "A相电流", "B相电流", "C相电流",
-                        "合相电流", "A相电能", "B相电能", "C相电能", "合相电能"));
+                    "合相电流", "A相电能", "B相电能", "C相电能", "合相电能"));
                 while (true) {
                     $data['powerDataList'] = $powerDataList = $this->mp_xjdh->Get_Power302a_List($data_id, $dateRangeArr[0], $dateRangeArr[1], $record_offset, $PAGE_SIZE);
                     foreach ($data['powerDataList'] as $powerDataObj) {
                         $xls->addRow(array(
-                                $powerDataObj->Date . " " . $powerDataObj->Time, $powerDataObj->pa, $powerDataObj->pb, $powerDataObj->pc, $powerDataObj->pt,
-                                $powerDataObj->uaRms, $powerDataObj->ubRms, $powerDataObj->ucRms,
-                                $powerDataObj->iaRms, $powerDataObj->ibRms, $powerDataObj->icRms, $powerDataObj->itRms,
-                                $powerDataObj->epa, $powerDataObj->epb, $powerDataObj->epc, $powerDataObj->ept
+                            $powerDataObj->Date . " " . $powerDataObj->Time, $powerDataObj->pa, $powerDataObj->pb, $powerDataObj->pc, $powerDataObj->pt,
+                            $powerDataObj->uaRms, $powerDataObj->ubRms, $powerDataObj->ucRms,
+                            $powerDataObj->iaRms, $powerDataObj->ibRms, $powerDataObj->icRms, $powerDataObj->itRms,
+                            $powerDataObj->epa, $powerDataObj->epb, $powerDataObj->epc, $powerDataObj->ept
                         ));
                     }
                     $record_offset += $PAGE_SIZE;
@@ -9873,6 +9848,6 @@ function device_history ()
         $content = $this->load->view("portal/acquisition_anomaly", $data, TRUE);
         $this->mp_master->Show_Portal($content, $scriptExtra, '采集异常分析', $data);
     }
- }
+}
 
 ?>

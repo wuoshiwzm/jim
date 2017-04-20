@@ -26,6 +26,7 @@
 
         <!--选择对应的设备类型-->
 
+
         <div class="row-fluid">
             <div class="span12">
                 <div class="content-widgets light-gray">

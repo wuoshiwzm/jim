@@ -17,8 +17,7 @@
         "MainSupplyAC_c主供交流电源相电压 c", "MainSupplyACFreq主供交流输入频率", "ThreeACInput_a三相交流输入电流 a",
         "ThreeACInput_b三相交流输入电流 b", "ThreeACInput_c三相交流输入电流 c", "BackUpBatteryVoltage_a备用交流电源相电压a",
         "BackUpBatteryVoltage_b备用交流电源相电压", "BackUpBatteryVoltage_c备用交流电源相电压c", "BackUpBatteryVoltage_Free备用交流输入频率",
-        "RectificationNum", "ModuleState(模块状态,参考前面定义的宏)", "ModuleOutputVoltage模块输出电压*100", "ModuleOutputCurrent模块输出电流*100",
-        "ModuleTempature内部温度", "BatteryNum电池组数", "Battery_1_Voltage电池1电压", "Battery_1_Current电池1电流", "Battery_1_Capacity电池1容量",
+        "RectificationNum",  "BatteryNum电池组数", "Battery_1_Voltage电池1电压", "Battery_1_Current电池1电流", "Battery_1_Capacity电池1容量",
         "Battery_1_temperature电池1温度", "System_voltage系统电压2", "Environment_tamperature环境温度2", "PayLoad负载",
         "Battery_2_Voltage电池2电压", "Battery_2_Current电池2电流", "Battery_2_Capacity电池2容量", "battery_2_temperature电池2温度",
         "status状态","SeriousAlarm严重报警","Generalalarm一般报警","update_time"
@@ -37,6 +36,26 @@
     </tbody>
 
 </table>
+
+
+<h4>通道数据</h4>
+<table
+        class="table table-bordered responsive table-striped table-sortable"
+        id='<?php echo $dataObj->data_id; ?>-sps-rc-2'>
+    <thead>
+    <tr>
+        <th>序号</th>
+        <th>ModuleState模块状态,参考前面定义的宏</th>
+        <th>ModuleOutputVoltage模块输出电压*100</th>
+        <th>ModuleOutputCurrent模块输出电流*100</th>
+        <th>ModuleTempature内部温度</th>
+    </tr>
+    </thead>
+    <tbody>
+    </tbody>
+</table>
+
+
 
 <h4>整流输入各路状态</h4>
 <table

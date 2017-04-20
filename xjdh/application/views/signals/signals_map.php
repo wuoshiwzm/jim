@@ -24,6 +24,11 @@
         <br>
         <hr>
 
+
+        <!--设备类型-->
+        <h1>
+            <?php echo Defines::$gDevModel[$model] ?>
+        </h1>
         <!--先择对应的设备类型-->
         <form class="form-horizontal" onsubmit="return checkForm()">
             <div class="control-group">
@@ -55,7 +60,7 @@
                                 class="table table-bordered responsive table-striped table-sortable">
                             <thead>
                             <tr>
-                                <th width="30%">设备类型</th>
+<!--                                <th width="30%">设备类型</th>-->
                                 <th width="30%">设备信号名称</th>
                                 <th width="30%">对应标准信号称</th>
                                 <th width="10%">操作</th>
@@ -63,17 +68,20 @@
                             </thead>
                             <tbody>
                             <tr>
+<!--                                <td>-->
+<!--                                    <select class="chzn-select" data-placeholder="选择设备类型"-->
+<!--                                            name='model_add' id='model_add'>-->
+<!--                                        <option value=''>选择设备类型</option>-->
+<!--                                        --><?php //foreach (Defines::$gDevModel as $key => $val) { ?>
+<!--                                            <option value='--><?php //echo $key; ?><!--'>--><?php //echo $val; ?>
+<!--                                            </option>-->
+<!--                                        --><?php //} ?>
+<!--                                    </select>-->
+<!--                                </td>-->
                                 <td>
-                                    <select class="chzn-select" data-placeholder="选择设备类型"
-                                            name='model_add' id='model_add'>
-                                        <option value=''>选择设备类型</option>
-                                        <?php foreach (Defines::$gDevModel as $key => $val) { ?>
-                                            <option value='<?php echo $key; ?>'><?php echo $val; ?>
-                                            </option>
-                                        <?php } ?>
-                                    </select>
+                                    <input type="hidden" name='model_add' id='model_add' value="<?php echo $model ?>" ?>
+                                    <input type="text" class="input desc jim_name">
                                 </td>
-                                <td><input type="text" class="input desc jim_name"></td>
                                 <td>
                                     <select class="chzn-select add_tel_name_id" data-placeholder="选择标准信号名"
                                             name='add_tel_name_id' id=''>
