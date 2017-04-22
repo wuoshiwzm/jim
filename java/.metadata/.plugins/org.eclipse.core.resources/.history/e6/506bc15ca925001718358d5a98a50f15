@@ -1,0 +1,36 @@
+package testjava.exercise_3;
+
+public class SingleQueue<AnyType> {
+	private Node<AnyType> head;
+	
+	
+	
+	public void push(AnyType data){
+		Node<AnyType> p = new Node(data,)
+	}
+	
+	public void pop(){
+		
+	}
+	
+	
+	
+	
+	
+	private class Node<AnyType>{
+		Node(){
+			this(null,null);
+		}
+		Node(AnyType x){
+			this(x,null);
+		}
+		Node(AnyType x,Node p){
+			data =x;
+			front = p;
+		}
+				
+		AnyType data;
+		Node front;
+	}
+
+}

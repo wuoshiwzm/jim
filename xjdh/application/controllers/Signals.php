@@ -34,6 +34,12 @@ class Signals extends CommonController
 
     public function index()
     {
+//
+//        $CI = &get_instance();
+//        $CI->load->driver('cache');
+//        $memData = $CI->cache->get(3784397844);
+//
+//        var_dump($memData);
 
 //      数据格式化
 //        $dbObj = $this->load->database('default', TRUE);
@@ -485,6 +491,110 @@ class Signals extends CommonController
         echo 'true';
 
     }
+
+
+
+
+    /**
+     * -------------------分配实时数据信号----------------------
+     */
+    public function realtimeSignalsSet(){
+        $data = array();
+        $data['userObj'] = $this->userObj;
+        $data['bcList'] = array();
+        $bcObj = new Breadcrumb();
+
+        $bcObj->title = '信号管理';
+        $bcObj->url = site_url("signals/deviceSignals");
+        $bcObj->isLast = false;
+        array_push($data['bcList'], $bcObj);
+
+        $bcObj = new Breadcrumb();
+        $bcObj->title = '实时信号配置';
+        $bcObj->url = site_url("signals/deviceSignals");
+        $bcObj->isLast = true;
+        array_push($data['bcList'], $bcObj);
+
+        $dbObj = $this->load->database('default', TRUE);
+        $dbObj->get('signals_map');
+
+        //获取对应类型的设备
+        $model = !empty($this->input->get('model')) ? $this->input->get('model') : 'camera';
+
+        //type = 1 设备信号
+        $signals = $dbObj->where('model', $model)->get('realtime_signals')->result();
+        $data['signals'] = $signals;
+
+        //对应设备信号名配置
+        $data['model'] =$model ;
+        $scriptExtra = '';
+        $scriptExtra .= '<script src="/public/js/signals/signals.js"></script>';
+
+        $content = $this->load->view("signals/realtime_signals_map", $data, TRUE);
+        $this->mp_master->Show_Portal($content, $scriptExtra, '二级审核', $data);
+    }
+
+    /**
+     * 添加某一实时数据信号
+     */
+    public function addRealtimeSignal()
+    {
+        $post = $this->input->post();
+        $model = $post['model'];
+        $parameter = $post['parameter'];
+        $unit = $post['signal_unit'];
+        $type = $post['signal_type'];
+        $desc = $post['signal_desc'];
+
+
+        $dbObj = $this->load->database('default', TRUE);
+
+        $dbObj->set('model', $model)
+            ->set('parameter',$parameter)
+            ->set('unit', $unit)
+            ->set('type', $type)
+            ->set('desc', $desc)
+            ->insert('realtime_signals');
+
+        echo 'true';
+    }
+
+    /**
+     * 更新实时数据信号
+     */
+    public function updateRealtimeSignal()
+    {
+        $post = $this->input->post();
+        $id = $post['id'];
+        $parameter = $post['parameter'];
+        $unit = $post['signal_unit'];
+        $type = $post['signal_type'];
+        $desc = $post['signal_desc'];
+
+        $dbObj = $this->load->database('default', TRUE);
+        $dbObj->where('id', $id)
+            ->set('parameter', $parameter)
+            ->set('unit',$unit)
+            ->set('type',$type)
+            ->set('desc',$desc);
+
+        $dbObj->update('realtime_signals');
+        echo 'true';
+    }
+
+    /**
+     * 删除某一实时数据信号
+     */
+    public function deleteRealtimeSignal()
+    {
+        $post = $this->input->post();
+        $id = $post['id'];
+        $dbObj = $this->load->database('default', TRUE);
+        $dbObj->where('id', $id)->delete('realtime_signals');
+
+        echo 'true';
+    }
+
 
 
 }

@@ -1,0 +1,30 @@
+package testjava.exercise_3;
+
+public class SingleQueueArray <AnyType> {
+	SingleQueueArray(){
+		this(100);
+	}
+	
+	SingleQueueArray (int s){
+		maxSize = s;
+	}
+	
+	
+	//get in queue
+	void enqueue(AnyType x){
+		
+	}
+	
+	
+	
+	
+	int maxSize;
+	int front;
+	int rear;
+	
+	
+	
+	
+	
+	
+}

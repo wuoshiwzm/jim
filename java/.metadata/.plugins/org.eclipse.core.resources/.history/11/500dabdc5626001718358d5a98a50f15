@@ -1,0 +1,58 @@
+package testjava.exercise_3;
+import java.util.*;
+
+public class SingleQueueArray <AnyType> {
+	SingleQueueArray(){
+		this(100);
+	}
+	
+	SingleQueueArray (int s){
+		maxSize = s;
+		front =0;
+		rear = 0;
+		elements = new ArrayList<AnyType>(maxSize);
+	}
+	
+	
+	//get in queue
+	void enqueue(AnyType x){
+		if(!full()){
+			if(elements.size()<maxSize)
+				elements.add(x);
+			else
+				elements.set(rear, x);
+			
+			rear = (rear +1)%maxSize;
+		}
+	}
+
+	
+	//get out of queue
+	void dequeue(AnyType x){
+		if(!empty()){
+			front = (front+1)%maxSize;
+		}
+	}
+	
+	boolean full(){
+		return (rear+1)%maxSize == front;
+	}
+	
+	boolean empty(){
+		return front == rear;
+	}
+	
+	
+	
+	
+	int maxSize;
+	int front;
+	int rear;
+	private ArrayList<AnyType> elements;
+	
+	
+	
+	
+	
+	
+}

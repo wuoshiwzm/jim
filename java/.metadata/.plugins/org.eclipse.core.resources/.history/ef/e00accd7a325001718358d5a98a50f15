@@ -1,0 +1,19 @@
+package testjava;
+
+public class exercise_3_31 {
+
+	private class SingleStack<AnyType>{
+		AnyType data;
+		Node next;
+		SingleStack(){
+			head = null;
+		}
+	}
+	
+	
+	private class Node<AnyType>{
+		Node(){
+			this(null,null);
+		}
+	}
+}

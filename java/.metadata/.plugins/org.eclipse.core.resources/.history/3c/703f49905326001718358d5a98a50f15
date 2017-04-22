@@ -1,0 +1,37 @@
+package testjava.exercise_3;
+import java.util.*;
+
+public class SingleQueueArray <AnyType> {
+	SingleQueueArray(){
+		this(100);
+	}
+	
+	SingleQueueArray (int s){
+		maxSize = s;
+	}
+	
+	
+	//get in queue
+	void enqueue(AnyType x){
+		
+	}
+	
+	//get out of queue
+	void dequeue(AnyType x){
+		
+	}
+	
+	
+	
+	
+	int maxSize;
+	int front;
+	int rear;
+	private ArrayList<AnyType> elements;
+	
+	
+	
+	
+	
+	
+}

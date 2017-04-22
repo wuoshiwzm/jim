@@ -1,0 +1,21 @@
+package testjava.exercise_3;
+
+public class SingleQueueArray {
+	SingleQueueArray(){
+		this(100);
+	}
+	
+	SingleQueueArray (int s){
+		maxSize = s;
+	}
+	
+	int maxSize;
+	int front;
+	int rear;
+	
+	
+	
+	
+	
+	
+}

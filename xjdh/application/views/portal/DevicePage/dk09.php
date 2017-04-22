@@ -4,6 +4,7 @@
         data_id='<?php echo $dataObj->data_id;?>'
         data_type="<?php echo $dataObj->model; ?>"
         id='table-<?php echo $dataObj->data_id; ?>'>
+    <?php echo $model; ?>
     <thead>
     <tr>
         <th>序号</th>

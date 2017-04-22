@@ -1,0 +1,59 @@
+package testjava.exercise_3;
+
+public class SingleQueue<AnyType> {
+	private Node<AnyType> tail;
+	private Node<AnyType> head;
+	
+	SingleQueue(){
+		tail = null;
+		head = null;
+	}
+	
+	public void push(AnyType data){
+		Node<AnyType> p = new Node(data,tail,null);
+		
+		if(tail != null){
+			tail.behind = p;
+			tail = tail.behind;
+		}
+		else{
+			tail = p;
+			head = tail =p;
+					
+		}
+		tail = p;
+		
+		if(head == null){
+			head = p;
+			 
+		}
+	}
+	
+	public void pop(){
+		head = head.behind;
+		head.front = null;
+	}
+	
+	
+	
+	
+	
+	private class Node<AnyType>{
+		Node(){
+			this(null,null,null);
+		}
+		Node(AnyType x){
+			this(x,null,null);
+		}
+		Node(AnyType x,Node f,Node b){
+			data =x;
+			front = f;
+			behind = b;
+		}
+				
+		AnyType data;
+		Node front;
+		Node behind;
+	}
+
+}

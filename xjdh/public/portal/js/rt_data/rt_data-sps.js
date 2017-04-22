@@ -177,46 +177,46 @@ $(document).ready(function () {
 
                     }
 
-                    else if (model == "des") {
+                    else if (model == "des7310") {
                         //struct BasicInstrumentation
-                        $("#des-" + obj.data_id + "-field0").text(obj.BatteryChargerMode);
-                        $("#des-" + obj.data_id + "-field1").text(obj.BatteryChargerActiveCellCount);
-                        $("#des-" + obj.data_id + "-field2").text(obj.BatteryChemistryID);
+                        $("#des7310-" + obj.data_id + "-field0").text(obj.BatteryChargerMode);
+                        $("#des7310-" + obj.data_id + "-field1").text(obj.BatteryChargerActiveCellCount);
+                        $("#des7310-" + obj.data_id + "-field2").text(obj.BatteryChemistryID);
 
                         //struct BasicInstrumentation
-                        $("#des-" + obj.data_id + "-field3").text(obj.ChargingStages);
-                        $("#des-" + obj.data_id + "-field4").text(obj.ActiveCellCount);
-                        $("#des-" + obj.data_id + "-field5").text(obj.Fuellevel);
-                        $("#des-" + obj.data_id + "-field6").text(obj.Chargealternatorvoltage);
-                        $("#des-" + obj.data_id + "-field7").text(obj.Generatorfrequency);
-                        $("#des-" + obj.data_id + "-field8").text(obj.Mainsfrequency);
-                        $("#des-" + obj.data_id + "-field9").text(obj.MainsvoltagephaselagOrlead);
-                        $("#des-" + obj.data_id + "-field10").text(obj.Generatorphaserotation);
-                        $("#des-" + obj.data_id + "-field11").text(obj.Mainsphaserotation);
-                        $("#des-" + obj.data_id + "-field12").text(obj.Mainscurrentlag_lead);
-                        $("#des-" + obj.data_id + "-field13").text(obj.DCVoltage);
-                        $("#des-" + obj.data_id + "-field14").text(obj.DCPlantBatteryCurrent);
-                        $("#des-" + obj.data_id + "-field15").text(obj.DCTotalCurrent);
-                        $("#des-" + obj.data_id + "-field16").text(obj.DCPlantBatteryCycles);
-                        $("#des-" + obj.data_id + "-field17").text(obj.DCChargerWatts);
-                        $("#des-" + obj.data_id + "-field18").text(obj.DCPlantBatteryWatts);
-                        $("#des-" + obj.data_id + "-field19").text(obj.DCTotalWatts);
-                        $("#des-" + obj.data_id + "-field20").text(obj.DCChargeMode);
-                        $("#des-" + obj.data_id + "-field21").text(obj.DCPlantBatterytemperature);
-                        $("#des-" + obj.data_id + "-field22").text(obj.BatteryChargerOutputCurrent);
-                        $("#des-" + obj.data_id + "-field23").text(obj.BatteryChargerOutputVoltage);
-                        $("#des-" + obj.data_id + "-field24").text(obj.BatteryOpenCircuitVoltage);
-                        $("#des-" + obj.data_id + "-field25").text(obj.BatteryChargerAuxiliaryVoltage);
-                        $("#des-" + obj.data_id + "-field26").text(obj.BatteryChargerAuxiliaryCurrent);
+                        $("#des7310-" + obj.data_id + "-field3").text(obj.ChargingStages);
+                        $("#des7310-" + obj.data_id + "-field4").text(obj.ActiveCellCount);
+                        $("#des7310-" + obj.data_id + "-field5").text(obj.Fuellevel);
+                        $("#des7310-" + obj.data_id + "-field6").text(obj.Chargealternatorvoltage);
+                        $("#des7310-" + obj.data_id + "-field7").text(obj.Generatorfrequency);
+                        $("#des7310-" + obj.data_id + "-field8").text(obj.Mainsfrequency);
+                        $("#des7310-" + obj.data_id + "-field9").text(obj.MainsvoltagephaselagOrlead);
+                        $("#des7310-" + obj.data_id + "-field10").text(obj.Generatorphaserotation);
+                        $("#des7310-" + obj.data_id + "-field11").text(obj.Mainsphaserotation);
+                        $("#des7310-" + obj.data_id + "-field12").text(obj.Mainscurrentlag_lead);
+                        $("#des7310-" + obj.data_id + "-field13").text(obj.DCVoltage);
+                        $("#des7310-" + obj.data_id + "-field14").text(obj.DCPlantBatteryCurrent);
+                        $("#des7310-" + obj.data_id + "-field15").text(obj.DCTotalCurrent);
+                        $("#des7310-" + obj.data_id + "-field16").text(obj.DCPlantBatteryCycles);
+                        $("#des7310-" + obj.data_id + "-field17").text(obj.DCChargerWatts);
+                        $("#des7310-" + obj.data_id + "-field18").text(obj.DCPlantBatteryWatts);
+                        $("#des7310-" + obj.data_id + "-field19").text(obj.DCTotalWatts);
+                        $("#des7310-" + obj.data_id + "-field20").text(obj.DCChargeMode);
+                        $("#des7310-" + obj.data_id + "-field21").text(obj.DCPlantBatterytemperature);
+                        $("#des7310-" + obj.data_id + "-field22").text(obj.BatteryChargerOutputCurrent);
+                        $("#des7310-" + obj.data_id + "-field23").text(obj.BatteryChargerOutputVoltage);
+                        $("#des7310-" + obj.data_id + "-field24").text(obj.BatteryOpenCircuitVoltage);
+                        $("#des7310-" + obj.data_id + "-field25").text(obj.BatteryChargerAuxiliaryVoltage);
+                        $("#des7310-" + obj.data_id + "-field26").text(obj.BatteryChargerAuxiliaryCurrent);
                         //struct ExtendedInstrumentation
-                        $("#des-" + obj.data_id + "-field27").text(obj.Fuelconsumption);
-                        $("#des-" + obj.data_id + "-field28").text(obj.Fueltemperature);
-                        $("#des-" + obj.data_id + "-field29").text(obj.Oillevel);
-                        $("#des-" + obj.data_id + "-field30").text(obj.EngineOperatingState);
-                        $("#des-" + obj.data_id + "-field31").text(obj.CurrentOperatingMode);
-                        $("#des-" + obj.data_id + "-field32").text(obj.TripAverageFuel);
-                        $("#des-" + obj.data_id + "-field33").text(obj.TripAverageFuelEfficiency);
-                        $("#des-" + obj.data_id + "-field34").text(obj.InstantaneousFuelEfficiency);
+                        $("#des7310-" + obj.data_id + "-field27").text(obj.Fuelconsumption);
+                        $("#des7310-" + obj.data_id + "-field28").text(obj.Fueltemperature);
+                        $("#des7310-" + obj.data_id + "-field29").text(obj.Oillevel);
+                        $("#des7310-" + obj.data_id + "-field30").text(obj.EngineOperatingState);
+                        $("#des7310-" + obj.data_id + "-field31").text(obj.CurrentOperatingMode);
+                        $("#des7310-" + obj.data_id + "-field32").text(obj.TripAverageFuel);
+                        $("#des7310-" + obj.data_id + "-field33").text(obj.TripAverageFuelEfficiency);
+                        $("#des7310-" + obj.data_id + "-field34").text(obj.InstantaneousFuelEfficiency);
                         //显示所有通道
                     }
 

@@ -16,13 +16,13 @@ class Constants{
                 'zxdu58-b121v22-dc','zxdu58-b121v22-ac','zxdu58-s301-ac','zxdu58-s301-dc','zxdu58-s301-rc',
                     'smu06c-rc','smu06c-dc','smu06c-ac','m520s-ac','m520s-rc','m520s-dc','m522s-ac',
                 'm522s-rc','m522s-dc','cuc0609h-ac','cuc0609h-dc','cuc0609h-rc','dk04',
-                'dk04c','dk09','psm-6','cuc21vb','des'), "开关电源", "sps"),
+                'dk04c','dk09','psm-6','cuc21vb','des7310'), "开关电源", "sps"),
             array(array('camera'), "视频监控", "camera"),
             array(array('DoorXJL',"EmersonDoor"), "门禁系统", "door"),
             array(array('liebert-ups'),"UPS设备", "liebert-ups"),
             array(array('liebert-pex','datamate3000','canatal','ug40','k200'),"专用空调", "ac"),
             array(array('motor_battery'),'油机启动电池',"motor_battery"),
-            array(array('mec10','meaccess4000x','amf25'),'柴油发电机组',"engine"),
+            array(array('mec10','meaccess4000x','amf25','hat600','access4000x'),'柴油发电机组',"engine"),
         //,'motivator','venv'
     );
     

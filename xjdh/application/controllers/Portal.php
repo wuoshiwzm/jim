@@ -4813,7 +4813,6 @@ class Portal extends CI_Controller
             $bat24List = Realtime::Get_BatRtData($dataIdStr3, 24);
             $bat32List = Realtime::Get_BatRtData($dataIdStr4, 32);
             $jsonRet['batList'] = array_merge($batList, $bat24List, $bat32List);
-
         } elseif ($model == 'freshair') {
             $dataIdStr5 = $this->input->get('dataIdArr5');
             $jsonRet['freshAirList'] = Realtime::Get_FreshAirRtData($dataIdStr5);
@@ -4861,8 +4860,13 @@ class Portal extends CI_Controller
             $jsonRet['dataList'] = Realtime::Get_Datamate3000RtData($dataIdStr);
         } else if ($model == "k200") {
             $dataIdStr = $this->input->get('dataIdArr');
-            t::f($dataIdStr);
-            $jsonRet['dataList'] = Realtime::Get_K200RtData($dataIdStr);
+//            t::f($dataIdStr);
+            $jsonRet['dataList'] = Realtime::GetK200RtData($dataIdStr[0]);
+        }
+        //智能匹配实时数据
+        else if(in_array($model,['hat600','access4000x'])){
+            $dataId = $this->input->get('dataId');
+            $jsonRet['dataList'] = Realtime::GetSmartRTData($dataId,$model);
         }
         header('Content-type: application/json');
         echo json_encode($jsonRet);

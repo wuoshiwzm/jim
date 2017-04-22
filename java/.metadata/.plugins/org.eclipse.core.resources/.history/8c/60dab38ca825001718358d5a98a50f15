@@ -1,0 +1,22 @@
+package testjava.exercise_3;
+
+public class SingleQueue<AnyType> {
+	
+	
+	private class Node<AnyType>{
+		Node(){
+			this(null,null);
+		}
+		Node(AnyType x){
+			this(x,null);
+		}
+		Node(AnyType x,Node p){
+			
+		}
+		
+		
+		AnyType data;
+		Node next;
+	}
+
+}

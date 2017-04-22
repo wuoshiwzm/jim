@@ -12,7 +12,7 @@ public class exercise_3_3 {
 	public static void main(String [] args){
 		F fb = new F();
 		fb.f = (float) 5.2;
-		System.out.print(fb);
+//		System.out.print(f.f);
 	}
 	
 	

@@ -72,7 +72,7 @@ class Mp_Extra extends CI_Model
         $dbObj->where('id', $id);
         $dbObj->select('full_name');
         $res = $dbObj->get('user')->row();
-        return empty($res)?null:$res->full_name;
+        return empty($res) ? null : $res->full_name;
     }
 
     function Get_room_name($room_id)
@@ -210,12 +210,13 @@ class Mp_Extra extends CI_Model
     }
 
     //获取某个设备变量对应的标准变量名
-    function GetStandardSignalName($tel_name_id){
+    function GetStandardSignalName($tel_name_id)
+    {
         $dbObj = $this->load->database('default', TRUE);
         $res = $dbObj->where('id', $tel_name_id)
             ->get('signals_standard')
             ->row();
-        return empty($res)?null:$res->name;
+        return empty($res) ? null : $res->name;
     }
 
     //获取吉姆报警信号对应的分类名
@@ -223,10 +224,10 @@ class Mp_Extra extends CI_Model
     {
         $res = new stdClass();
         $dbObj = $this->load->database('default', TRUE);
-        $signal = $dbObj->where('id',$signalID)
+        $signal = $dbObj->where('id', $signalID)
             ->get('signals_alert_jim')
             ->row();
-        switch ($signal->type){
+        switch ($signal->type) {
             case 1:
                 $res->type = '机房环境';
                 break;
@@ -247,11 +248,91 @@ class Mp_Extra extends CI_Model
 
 
     //获取吉姆报警信号对应的分类名
-    public function getTelSignalStandard($id){
+    public function getTelSignalStandard($id)
+    {
         $dbObj = $this->load->database('default', TRUE);
-        $res = $dbObj->where('id',$id)->get('signals_alert_standard')->row();
+        $res = $dbObj->where('id', $id)->get('signals_alert_standard')->row();
 
         return $res;
+    }
+
+    public function getRealtimeSignalType($type)
+    {
+        switch ($type) {
+
+            case  'a' :
+                return 'NUL-padded string';
+                break;
+            case  'A' :
+                return 'SPACE-padded string';
+                break;
+            case  'h' :
+                return 'Hex string, low nibble first';
+                break;
+            case  'H' :
+                return 'Hex string, high nibble first';
+                break;
+            case  'c' :
+                return 'signed char';
+                break;
+            case  'C' :
+                return 'unsigned char';
+                break;
+            case  's' :
+                return 'signed short (always 16 bit, machine byte order)';
+                break;
+            case  'S' :
+                return 'unsigned short (always 16 bit, machine byte order)
+        ';
+                break;
+            case  'n' :
+                return 'unsigned short (always 16 bit, big endian byte order)
+        ';
+                break;
+            case  'v' :
+                return 'unsigned short (always 16 bit, little endian byte order)
+        ';
+                break;
+            case  'i' :
+                return 'signed integer (machine dependent size and byte order)
+        ';
+                break;
+            case  'I' :
+                return 'unsigned integer (machine dependent size and byte order)
+        ';
+                break;
+            case  'l' :
+                return 'signed long (always 32 bit, machine byte order)';
+                break;
+            case  'L' :
+                return 'unsigned long (always 32 bit, machine byte order)';
+                break;
+            case  'N' :
+                return 'unsigned long (always 32 bit, big endian byte order)
+        ';
+                break;
+            case  'V' :
+                return 'unsigned long (always 32 bit, little endian byte order)
+        ';
+                break;
+            case  'f' :
+                return 'float (machine dependent size and representation)';
+                break;
+            case  'd' :
+                return 'double (machine dependent size and representation)
+        ';
+                break;
+            case  'x' :
+                return 'NUL byte';
+                break;
+            case  'X' :
+                return 'Back up one byte';
+                break;
+            case  '@' :
+                return 'NUL-fill to absolute position';
+                break;
+
+        }
     }
 
 
