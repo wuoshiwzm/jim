@@ -3286,7 +3286,9 @@ class Portal extends CI_Controller
                                 array_push($arr, $modelGroup);
                             }
                         }
-                    } else {
+                    }
+
+                    else {
                         $deviceContentHeader .= $this->_get_realtimedata_header($devConfig[2] ==
                             $model, site_url("portal/realtimedata/$roomId/$devConfig[2]"), $devConfig[1]);
                     }

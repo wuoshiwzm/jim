@@ -19,16 +19,13 @@ class Realtime
                 if (Util::endsWith($dataObj->model, "ac")) {
                     $tData = array_merge($data, Constants::$pmBusConfig[$dataObj->model]);
                     $dataObj->html = $CI->load->view('portal/DevicePage/pmbus-ac', $tData, TRUE);
-                }
-                else if (Util::endsWith($dataObj->model, "dc")) {
+                } else if (Util::endsWith($dataObj->model, "dc")) {
                     $tData = array_merge($data, Constants::$pmBusConfig[$dataObj->model]);
                     $dataObj->html = $CI->load->view('portal/DevicePage/pmbus-dc', $tData, TRUE);
-                }
-                else if (Util::endsWith($dataObj->model, "rc")) {
+                } else if (Util::endsWith($dataObj->model, "rc")) {
                     $tData = array_merge($data, Constants::$pmBusConfig[$dataObj->model]);
                     $dataObj->html = $CI->load->view('portal/DevicePage/pmbus-rc', $tData, TRUE);
-                }
-                else {
+                } else {
                     $dataObj->html = $CI->load->view("portal/DevicePage/" . $dataObj->model, $data, TRUE);
                 }
                 $dataObj->html1 = $CI->load->view("portal/standard_data", $data, TRUE);
@@ -45,20 +42,16 @@ class Realtime
                 if ($dataObj->model == "liebert-pex") {
                     $dataObj->html = $CI->load->view('portal/DevicePage/liebert-pex', array('liebertPexObj' => $dataObj, 'userObj' => $CI->userObj), TRUE);
                     $scriptExtra .= '<script type="text/javascript" src="/public/portal/js/rt_data/rt_data-' . $dataObj->model . '.js"></script>';
-                }
-                else if ($dataObj->model == "ug40") {
+                } else if ($dataObj->model == "ug40") {
                     $dataObj->html = $CI->load->view('portal/DevicePage/ug40', array('ug40Obj' => $dataObj, 'userObj' => $CI->userObj), TRUE);
                     $scriptExtra .= '<script type="text/javascript" src="/public/portal/js/rt_data/rt_data-' . $dataObj->model . '.js"></script>';
-                }
-                else if ($dataObj->model == "canatal") {
+                } else if ($dataObj->model == "canatal") {
                     $dataObj->html = $CI->load->view('portal/DevicePage/canatal', array('canatal' => $dataObj, 'userObj' => $CI->userObj), TRUE);
                     $scriptExtra .= '<script type="text/javascript" src="/public/portal/js/rt_data/rt_data-' . $dataObj->model . '.js"></script>';
-                }
-                else if ($dataObj->model == "datamate3000") {
+                } else if ($dataObj->model == "datamate3000") {
                     $dataObj->html = $CI->load->view('portal/DevicePage/datamate3000', array('dataObj' => $dataObj, 'userObj' => $CI->userObj), TRUE);
                     $scriptExtra .= '<script type="text/javascript" src="/public/portal/js/rt_data/rt_data-' . $dataObj->model . '.js"></script>';
-                }
-                else if ($dataObj->model == "k200") {
+                } else if ($dataObj->model == "k200") {
                     $dataObj->html = $CI->load->view('portal/DevicePage/k200',
                         array('dataObj' => $dataObj, 'userObj' => $CI->userObj), TRUE);
                     $scriptExtra .= '<script type="text/javascript" src="/public/portal/js/rt_data/rt_data-' .
@@ -923,18 +916,18 @@ class Realtime
             $v = unpack('S*', substr($memData, 8, 12 * 2));
 
             $dk09Obj->ACChannelNum = $v[1];//交流输入路数
-            $dk09Obj->MainSupplyAC_a = $v[2]/10;//主供交流电源相电压 a
-            $dk09Obj->MainSupplyAC_b = $v[3]/10;//主供交流电源相电压 b
-            $dk09Obj->MainSupplyAC_c = $v[4]/10;//主供交流电源相电压 c
-            $dk09Obj->MainSupplyACFreq = $v[5]/10;//主供交流输入频率
+            $dk09Obj->MainSupplyAC_a = $v[2] / 10;//主供交流电源相电压 a
+            $dk09Obj->MainSupplyAC_b = $v[3] / 10;//主供交流电源相电压 b
+            $dk09Obj->MainSupplyAC_c = $v[4] / 10;//主供交流电源相电压 c
+            $dk09Obj->MainSupplyACFreq = $v[5] / 10;//主供交流输入频率
 
-            $dk09Obj->ThreeACInput_a = $v[6]/10;//三相交流输入电流 a
-            $dk09Obj->ThreeACInput_b = $v[7]/10;//三相交流输入电流 b
-            $dk09Obj->ThreeACInput_c = $v[8]/10;//三相交流输入电流 c
-            $dk09Obj->BackUpBatteryVoltage_a = $v[9]/10;//备用交流电源相电压a
-            $dk09Obj->BackUpBatteryVoltage_b = $v[10]/10;//备用交流电源相电压b
-            $dk09Obj->BackUpBatteryVoltage_c = $v[11]/10;//备用交流电源相电压c
-            $dk09Obj->BackUpBatteryVoltage_Free = $v[12]/10;//备用交流输入频率
+            $dk09Obj->ThreeACInput_a = $v[6] / 10;//三相交流输入电流 a
+            $dk09Obj->ThreeACInput_b = $v[7] / 10;//三相交流输入电流 b
+            $dk09Obj->ThreeACInput_c = $v[8] / 10;//三相交流输入电流 c
+            $dk09Obj->BackUpBatteryVoltage_a = $v[9] / 10;//备用交流电源相电压a
+            $dk09Obj->BackUpBatteryVoltage_b = $v[10] / 10;//备用交流电源相电压b
+            $dk09Obj->BackUpBatteryVoltage_c = $v[11] / 10;//备用交流电源相电压c
+            $dk09Obj->BackUpBatteryVoltage_Free = $v[12] / 10;//备用交流输入频率
 
 
             //REG_41_42 获取系统模拟量数据(定点数)
@@ -947,12 +940,11 @@ class Realtime
                 $info = new stdClass();
                 $v = unpack("S*", substr($memData, 28 + 1 * 2 + $i * 4 * 2, 4 * 2));
                 $info->ModuleState = $v[1];//模块状态,参考前面定义的宏
-                $info->ModuleOutputVoltage = $v[2]/100;//模块输出电流*100
-                $info->ModuleOutputCurrent = $v[3]/100;//模块输出电流*100
+                $info->ModuleOutputVoltage = $v[2] / 100;//模块输出电流*100
+                $info->ModuleOutputCurrent = $v[3] / 100;//模块输出电流*100
                 $info->ModuleTempature = $v[4];//内部温度
                 $dk09Obj->moduleInfo[] = $info;
             }
-
 
 
             //REG_42_42  获取系统模拟量数据（定点）
@@ -978,7 +970,7 @@ class Realtime
 
             //update_time
             $v = unpack('S*', substr($memData, 160, 2));
-            $year = $v[1] ;
+            $year = $v[1];
             $v = unpack('C*', substr($memData, 162, 5));
             $dk09Obj->update_time .= $year . "-" . $v[1] . "-" .
                 $v[2] . " " . $v[3] . ":" . $v[4] . ":" . $v[5];//时间
@@ -1014,7 +1006,7 @@ class Realtime
 
             //update_time
             $v = unpack('S*', substr($memData, 9, 2));
-            $year = $v[1] ;
+            $year = $v[1];
             $v = unpack('C*', substr($memData, 11, 5));
             $Cuc21vbObj->update_time .= $year . "-" . $v[1] . "-" .
                 $v[2] . " " . $v[3] . ":" . $v[4] . ":" . $v[5];//时间
@@ -1031,51 +1023,51 @@ class Realtime
                  * //alert告警量
                  * char  fault;
                  */
-                $v = unpack('S*', substr($memData, 16+$i*6, 2));
+                $v = unpack('S*', substr($memData, 16 + $i * 6, 2));
                 $channelObj['out_i'] = $v[1];//var_dump(dechex($v[1]));
 
                 //shut down
-                $v = unpack('C*', substr($memData, 16+$i*6 + 2, 1));
-                if($v[1] == 0){
+                $v = unpack('C*', substr($memData, 16 + $i * 6 + 2, 1));
+                if ($v[1] == 0) {
                     $v[1] = '开机';
-                }elseif ($v[1] ==1){
-                    $v[1]= '关机';
-                }elseif ($v[1] ==240){
-                    $v[1]= '用户自定义';
+                } elseif ($v[1] == 1) {
+                    $v[1] = '关机';
+                } elseif ($v[1] == 240) {
+                    $v[1] = '用户自定义';
                 }
                 $channelObj['shutdown'] = $v[1];//var_dump(dechex($v[1]));
 
                 //i_limit
-                $v = unpack('C*', substr($memData, 16+$i*6 + 2 + 1, 1));
-                if($v[1] == 0){
+                $v = unpack('C*', substr($memData, 16 + $i * 6 + 2 + 1, 1));
+                if ($v[1] == 0) {
                     $v[1] = '限流';
-                }elseif ($v[1] ==1){
-                    $v[1]= '不限流';
-                }elseif ($v[1] ==240){
-                    $v[1]= '用户自定义';
+                } elseif ($v[1] == 1) {
+                    $v[1] = '不限流';
+                } elseif ($v[1] == 240) {
+                    $v[1] = '用户自定义';
                 }
                 $channelObj['i_limit'] = $v[1];//var_dump(dechex($v[1]));
 
                 //测试
-                $v = unpack('C*', substr($memData, 16+$i*6 + 2 + 1 + 1, 1));
-                if($v[1]== 0){
+                $v = unpack('C*', substr($memData, 16 + $i * 6 + 2 + 1 + 1, 1));
+                if ($v[1] == 0) {
                     $v[1] = '浮充';
-                }elseif ($v[1] ==1){
-                    $v[1]= '均充';
-                }elseif ($v[1] ==2){
-                    $v[1]= '测试';
-                }elseif ($v[1] ==240){
-                    $v[1]= '用户自定义';
+                } elseif ($v[1] == 1) {
+                    $v[1] = '均充';
+                } elseif ($v[1] == 2) {
+                    $v[1] = '测试';
+                } elseif ($v[1] == 240) {
+                    $v[1] = '用户自定义';
                 }
                 $channelObj['charge'] = $v[1];//var_dump(dechex($v[1]));
 
-                $v = unpack('C*', substr($memData, 16+$i*6 + 2 + 1 + 1 + 1, 1));
-                if($v[1]== 0){
+                $v = unpack('C*', substr($memData, 16 + $i * 6 + 2 + 1 + 1 + 1, 1));
+                if ($v[1] == 0) {
                     $v[1] = '正常';
-                }elseif ($v[1] ==1){
-                    $v[1]= '告警';
-                }elseif ($v[1] ==240){
-                    $v[1]= '模块屏蔽';
+                } elseif ($v[1] == 1) {
+                    $v[1] = '告警';
+                } elseif ($v[1] == 240) {
+                    $v[1] = '模块屏蔽';
                 }
 
                 $channelObj['fault'] = $v[1];
@@ -1155,19 +1147,19 @@ class Realtime
             //float		DCVoltage;							//
             //float 		DCPlantBatteryCurrent;				//
             //float 		DCTotalCurrent;						//
-            $v = unpack('S*', substr($memData, 40, 3*4));
+            $v = unpack('S*', substr($memData, 40, 3 * 4));
             $DesObj->DCVoltage = $v[1];
             $DesObj->DCPlantBatteryCurrent = $v[2];
             $DesObj->DCTotalCurrent = $v[3];
 
             //unsigned int 		DCPlantBatteryCycles;				//
-            $v = unpack('I*', substr($memData, 52,4 ));
+            $v = unpack('I*', substr($memData, 52, 4));
             $DesObj->DCPlantBatteryCycles = $v[1];
 
             //int 	DCChargerWatts;						//
             //int 	DCPlantBatteryWatts;				//
             //int 	DCTotalWatts;						//
-            $v = unpack('I*', substr($memData, 56,4*3 ));
+            $v = unpack('I*', substr($memData, 56, 4 * 3));
             $DesObj->DCChargerWatts = $v[1];
             $DesObj->DCPlantBatteryWatts = $v[2];
             $DesObj->DCTotalWatts = $v[3];
@@ -1175,7 +1167,7 @@ class Realtime
 
             //short		DCChargeMode;						//
             //short	DCPlantBatterytemperature;			//
-            $v = unpack('s*', substr($memData, 68,2 * 2));
+            $v = unpack('s*', substr($memData, 68, 2 * 2));
             $DesObj->DCChargeMode = $v[1]; //
             $DesObj->DCPlantBatterytemperature = $v[2]; //
 
@@ -1185,7 +1177,7 @@ class Realtime
             //int 	BatteryOpenCircuitVoltage;			//
             //int 	BatteryChargerAuxiliaryVoltage;		//
             //int 	BatteryChargerAuxiliaryCurrent;		//
-            $v = unpack('i*', substr($memData, 72,5 * 4));
+            $v = unpack('i*', substr($memData, 72, 5 * 4));
             $DesObj->BatteryChargerOutputCurrent = $v[1]; //
             $DesObj->BatteryChargerOutputVoltage = $v[2]; //
             $DesObj->BatteryOpenCircuitVoltage = $v[3]; //
@@ -1195,7 +1187,7 @@ class Realtime
 
             //ExtendedInstrumentation
             //float	Fuelconsumption;					//
-            $v = unpack('f*', substr($memData,92, 4 * 1));
+            $v = unpack('f*', substr($memData, 92, 4 * 1));
             $DesObj->Fuelconsumption = $v[1];
 
             //short 	Fueltemperature;					//
@@ -1205,7 +1197,7 @@ class Realtime
             //unsigned short 	Oillevel;							//
             //unsigned short 	EngineOperatingState;				//
             //unsigned short 	CurrentOperatingMode;				//
-            $v = unpack('S*', substr($memData, 98, 2*3));
+            $v = unpack('S*', substr($memData, 98, 2 * 3));
             $DesObj->Oillevel = $v[1];//
             $DesObj->EngineOperatingState = $v[2];//
             $DesObj->CurrentOperatingMode = $v[3];//
@@ -1220,7 +1212,7 @@ class Realtime
 
             //tele_c_time	update_time
             $v = unpack('S*', substr($memData, 116, 2));
-            $year = $v[1] ;
+            $year = $v[1];
             $v = unpack('C*', substr($memData, 118, 5));
             $DesObj->update_time .= $year . "-" . $v[1] . "-" .
                 $v[2] . " " . $v[3] . ":" . $v[4] . ":" . $v[5];//时间
@@ -1270,7 +1262,7 @@ class Realtime
                             $dataObj = Realtime::Get_Dk09RtData($dataId);
                         } else if ($devObj->model == "cuc21vb") {
                             $dataObj = Realtime::Get_Cuc21vbRtData($dataId);
-                        }else if ($devObj->model == "des7310") {
+                        } else if ($devObj->model == "des7310") {
 
                             $dataObj = Realtime::Get_Des7310RtData($dataId);
                         }
@@ -1297,7 +1289,8 @@ class Realtime
     }
 
     //处理 modbusk200  空调
-    static function GetK200RtData($data_id){
+    static function GetK200RtData($data_id)
+    {
 
         $k200Obj = new stdClass();
         $k200Obj->data_id = $data_id;
@@ -1319,14 +1312,14 @@ class Realtime
 
             //   ModBusK200System k200sys;		 系统信息,40004
             /**
-             * 	char humidify; 		//加湿,bit5
-            char dehumidfy; 	//除湿,bit4
-            char heating; 	//制热,bit3
-            char cooling; 		//制冷,bit2
-            char fan;					//风机,bit1
+             *    char humidify;        //加湿,bit5
+             * char dehumidfy;    //除湿,bit4
+             * char heating;    //制热,bit3
+             * char cooling;        //制冷,bit2
+             * char fan;                    //风机,bit1
              */
 
-            $v = unpack('c*', substr($memData, 10,5 ));
+            $v = unpack('c*', substr($memData, 10, 5));
             $k200Obj->humidify = $v[1];
             $k200Obj->dehumidfy = $v[2];
             $k200Obj->heating = $v[1];
@@ -1334,81 +1327,81 @@ class Realtime
             $k200Obj->fan = $v[5];
 
             //float retairtemparature;  		//回风温度,40005,0.1
-            $v = unpack('f*', substr($memData, 15,4));
+            $v = unpack('f*', substr($memData, 15, 4));
             $k200Obj->retairtemparature = $v[1];
 
             //char retairthumid;  			//回风湿度,40006
-            $v = unpack('c*', substr($memData, 19,1));
+            $v = unpack('c*', substr($memData, 19, 1));
             $k200Obj->retairthumid = $v[1];
 
             //AlarmLevel_1 alarmlvl_1;		//告警位1,40007
             /**
-             * 		char low_pressure_compressor; 		//压缩机低压,bit15
-            char high_pressure_compressor; 		//压缩机高压,bit14
-            char air_flow_loss; 							//气流丢失,bit13
-            char fan_overload; 								//风机过载,bit12
-            char heater_overload; 						//加热器过载,bit11
-            char airstrainer; 								//空气过滤网,bit10
-            char high_temp_alert; 						//高温告警,bit9
-            char low_temp_alert; 							//低温告警,bit8
-            char high_humid_alert; 				//高湿告警,bit7
-            char low_humid_alert; 				//低湿告警,bit6
-            char air_temp_probe_alert; 			//回风温度探头故障,bit5
-            char wind_temp_probe_alert; 		//送风温度探头故障,bit4
-            char air_humid_probe_alert; 		//回风湿度探头告警,bit3
-            char out_temp_probe_alert; 			//室外温度探头告警,bit2
-            char wind_temp_alert; 				//送风温度告警,bit1
+             *        char low_pressure_compressor;        //压缩机低压,bit15
+             * char high_pressure_compressor;        //压缩机高压,bit14
+             * char air_flow_loss;                            //气流丢失,bit13
+             * char fan_overload;                                //风机过载,bit12
+             * char heater_overload;                        //加热器过载,bit11
+             * char airstrainer;                                //空气过滤网,bit10
+             * char high_temp_alert;                        //高温告警,bit9
+             * char low_temp_alert;                            //低温告警,bit8
+             * char high_humid_alert;                //高湿告警,bit7
+             * char low_humid_alert;                //低湿告警,bit6
+             * char air_temp_probe_alert;            //回风温度探头故障,bit5
+             * char wind_temp_probe_alert;        //送风温度探头故障,bit4
+             * char air_humid_probe_alert;        //回风湿度探头告警,bit3
+             * char out_temp_probe_alert;            //室外温度探头告警,bit2
+             * char wind_temp_alert;                //送风温度告警,bit1
              */
-            $v = unpack('c*', substr($memData, 20,35));
+            $v = unpack('c*', substr($memData, 20, 35));
             $k200Obj->low_pressure_compressor = $v[1];//
             $k200Obj->high_pressure_compressor = $v[2];//
             $k200Obj->air_flow_loss = $v[3];//
             $k200Obj->fan_overload = $v[4];//
-            $k200Obj->heater_overload  = $v[5];//
-            $k200Obj->airstrainer  = $v[6];//
-            $k200Obj->high_temp_alert  = $v[7];//
-            $k200Obj->low_temp_alert  = $v[8];//
-            $k200Obj->high_humid_alert  = $v[9];//
-            $k200Obj->low_humid_alert  = $v[10];//
-            $k200Obj->air_temp_probe_alert  = $v[11];//
-            $k200Obj->wind_temp_probe_alert  = $v[12];//
-            $k200Obj->air_humid_probe_alert  = $v[13];//
-            $k200Obj->out_temp_probe_alert  = $v[14];//
-            $k200Obj->wind_temp_alert  = $v[15];//
+            $k200Obj->heater_overload = $v[5];//
+            $k200Obj->airstrainer = $v[6];//
+            $k200Obj->high_temp_alert = $v[7];//
+            $k200Obj->low_temp_alert = $v[8];//
+            $k200Obj->high_humid_alert = $v[9];//
+            $k200Obj->low_humid_alert = $v[10];//
+            $k200Obj->air_temp_probe_alert = $v[11];//
+            $k200Obj->wind_temp_probe_alert = $v[12];//
+            $k200Obj->air_humid_probe_alert = $v[13];//
+            $k200Obj->out_temp_probe_alert = $v[14];//
+            $k200Obj->wind_temp_alert = $v[15];//
 
             //  AlarmLevel_2 alarmlvl_2;      	//需要显示
             /**
-             * 	char ; 		//加湿器电流过大.bit15
-            char ; 	//加湿器缺水,bit14
-            char ; 				//无加湿电流,bit13
-
-            char ; 				//溢流告警,bit9
-            char ; 					//用户告警,bit8
-            char ; 					//烟雾告警,bit7
-
-            char ; 	//压缩机2高压,bit2
-            char ; 		//压缩机2低压	,bit1
-            char ; 			//水流开关告警,bit0
+             *    char ;        //加湿器电流过大.bit15
+             * char ;    //加湿器缺水,bit14
+             * char ;                //无加湿电流,bit13
+             *
+             * char ;                //溢流告警,bit9
+             * char ;                    //用户告警,bit8
+             * char ;                    //烟雾告警,bit7
+             *
+             * char ;    //压缩机2高压,bit2
+             * char ;        //压缩机2低压    ,bit1
+             * char ;            //水流开关告警,bit0
              */
             $v = unpack('c*', substr($memData, 55, 9));
-            $k200Obj->high_hunidifier_current  = $v[1];//
-            $k200Obj->humidifier_water_shortage  = $v[2];//
-            $k200Obj->no_humid_current  = $v[3];//
-            $k200Obj->overflow_alert  = $v[4];//
-            $k200Obj->user_alert  = $v[5];//
-            $k200Obj->smoke_alert  = $v[6];//
-            $k200Obj->high_pressure_compressor2  = $v[7];//
-            $k200Obj->low_pressure_compressor2  = $v[8];//
-            $k200Obj->water_switch_alert  = $v[9];//
+            $k200Obj->high_hunidifier_current = $v[1];//
+            $k200Obj->humidifier_water_shortage = $v[2];//
+            $k200Obj->no_humid_current = $v[3];//
+            $k200Obj->overflow_alert = $v[4];//
+            $k200Obj->user_alert = $v[5];//
+            $k200Obj->smoke_alert = $v[6];//
+            $k200Obj->high_pressure_compressor2 = $v[7];//
+            $k200Obj->low_pressure_compressor2 = $v[8];//
+            $k200Obj->water_switch_alert = $v[9];//
 
             //tele_c_time update_time;
             //update_time
             $v = unpack('S*', substr($memData, 64, 2));
-            $year = $v[1] ;
+            $year = $v[1];
             $v = unpack('C*', substr($memData, 66, 5));
             $k200Obj->update_time .= $year . "-" . $v[1] . "-" .
                 $v[2] . " " . $v[3] . ":" . $v[4] . ":" . $v[5];//时间
-        }else {
+        } else {
             $k200Obj->isEmpty = true;
         }
 
@@ -4836,12 +4829,35 @@ struct tele_c_aeg_ms10m
         return $cache;
     }
 
-    static function GetSmartRTData($dataID,$model){
-        //数据库获取对应$model 类型的信号信号列表
+    static function GetSmartRTData($dataID, $model)
+    {
+        //***这里的model 是设备 如dk09 cuc21vb，不是总类如sps ac...
+        $CI = &get_instance();
+        $dbObj = $CI->load->database('default', TRUE);
+        $signals = $dbObj->where('model', $model)->get('realtime_signals')->result();
 
-        //生成信号列表对应的数据，以遍历信号源
 
-        //生成对应的信号数据，返回给js
+        $CI->load->driver('cache');
+        $realtimeData = [];
+        $realtimeData->dataID = $dataID;
+        $realtimeData->isEmpty = true;
+
+        //获取对应dataID的设备ID
+        $memData = $CI->cache->get(dataID);
+
+        if(strlen($memData)>= 0){
+            $realtimeData->isEmpty = false;
+            foreach ($signals as $signal) {
+                $signalData = [];
+                //数据库获取对应$model 类型的信号信号列表
+
+
+                //生成信号列表对应的数据，以遍历信号源
+
+                //生成对应的信号数据，返回给js
+
+            }
+        }
     }
 }
 
