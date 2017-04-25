@@ -108,6 +108,7 @@ $(".add_realtime_signal").bind("click", function () {
         var signal_unit = $(this).parent().parent().find(".signal_unit").val();
         var signal_type = $(this).parent().parent().find(".signal_type").val();
         var signal_desc = $(this).parent().parent().find(".signal_desc").val();
+        var signal_name = $(this).parent().parent().find(".signal_name").val();
 
         if (model == '' || signal_unit == '' || signal_type == '' || parameter == '') {
             alert('信号未填写完全');
@@ -116,7 +117,7 @@ $(".add_realtime_signal").bind("click", function () {
             $.post("addRealtimeSignal",
                 {
                     "model": model, "signal_unit": signal_unit,"parameter":parameter,
-                    "signal_type": signal_type,"signal_desc": signal_desc
+                    "signal_type": signal_type,"signal_desc": signal_desc,"signal_name": signal_name
                 },
                 function (data) {
                     if (data == 'true') {
@@ -138,13 +139,15 @@ $(".update_realtime_signal").bind("click", function () {
  var signal_unit_update = $(this).parent().parent().find(".signal_unit_update").val();
  var signal_type_update = $(this).parent().parent().find(".signal_type_update").val();
  var signal_desc_update = $(this).parent().parent().find(".signal_desc_update").val();
+ var signal_name_update = $(this).parent().parent().find(".signal_name_update").val();
 
 
     if (model == '' || signal_unit_update == '' || signal_type_update == '' || parameter == '') {
         alert('信号名称必填');
     } else {
         $.post("updateRealtimeSignal", {"id": id,  "signal_unit": signal_unit_update,
-                "parameter":parameter, "signal_type": signal_type_update,"signal_desc": signal_desc_update},
+                "parameter":parameter, "signal_type": signal_type_update,
+                "signal_desc": signal_desc_update,"signal_name": signal_name_update},
             function (data) {
             if (data == 'true') {
                 alert('更新成功！');

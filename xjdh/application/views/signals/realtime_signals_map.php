@@ -64,16 +64,19 @@
                                 <th width="15%">信号变量名称</th>
                                 <th width="10%">信号变量单位</th>
                                 <th width="10%">变量类型</th>
+                                <th width ="10%" >变量中文名</th>
                                 <th width="">描述</th>
                                 <th width="">操作</th>
                             </tr>
                             </thead>
                             <tbody>
                             <tr>
+<!--                                信号变量名称-->
                                 <td>
                                     <input type="hidden" name='model' id='model' value="<?php echo $model ?>" ?>
                                     <input type="text" class="input desc parameter" name="parameter">
                                 </td>
+<!--                                信号变量单位-->
                                 <td>
                                     <select class="chzn-select signal_unit" data-placeholder="选择变量单位"
                                             name='signal_unit' id='signal_unit'>
@@ -87,6 +90,7 @@
 
                                     </select>
                                 </td>
+<!--                                变量类型-->
                                 <td>
                                     <select class="chzn-select signal_type" data-placeholder="选择标准信号名"
                                             name='signal_type' id='signal_type'>
@@ -120,7 +124,11 @@
                                         <option value='@'>NUL-fill to absolute position</option>
                                     </select>
                                 </td>
-
+<!--                                变量中文名-->
+                                <td>
+                                    <input type="text" class="input desc signal_name" name="signal_name">
+                                </td>
+<!--                                描述-->
                                 <td>
                                     <textarea class="span12 signal_desc" name='signal_desc' id='signal_desc'></textarea>
                                 </td>
@@ -153,7 +161,8 @@
                             <thead>
                             <tr>
                                 <th width="5%">id</th>
-                                <th width="15%">信号变量名称</th>
+                                <th width="13%">信号变量名称</th>
+                                <th width="18%">变量中文名</th>
                                 <th width="10%">信号变量单位</th>
                                 <th width="10%">变量类型</th>
                                 <th width="">描述</th>
@@ -167,10 +176,15 @@
                                         <h3 class="id"><?php echo $s->id ?></h3>
                                     </td>
                                     <td>
-                                        <input type="text" class="input parameter" value="<?php echo $s->parameter ?>">
+                                        <input type="text" class="input parameter span12" value="<?php echo $s->parameter ?>">
                                     </td>
+                                    <!-- 变量中文名-->
                                     <td>
-                                        <select class="chzn-select signal_unit_update" data-placeholder="选择变量单位"
+                                        <input type="text" class="input signal_name_update span15" value="<?php echo $s->name ?>">
+                                    </td>
+
+                                    <td>
+                                        <select class="chzn-select signal_unit_update span12" data-placeholder="选择变量单位"
                                                 name='signal_unit_update'>
 
                                             <option value='1' <?php if ($s->unit == 1) {
@@ -221,6 +235,7 @@
                                             <option value='@'>NUL-fill to absolute position</option>
                                         </select>
                                     </td>
+
                                     <!--                                    描述-->
                                     <td>
                                         <textarea class="span12 signal_desc_update" name='signal_desc_update' id='signal_desc'><?php echo $s->desc ?></textarea>

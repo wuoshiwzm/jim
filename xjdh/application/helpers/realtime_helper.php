@@ -16,19 +16,31 @@ class Realtime
         //生成页面
         switch ($model) {
             case "sps": {
-                if (Util::endsWith($dataObj->model, "ac")) {
-                    $tData = array_merge($data, Constants::$pmBusConfig[$dataObj->model]);
-                    $dataObj->html = $CI->load->view('portal/DevicePage/pmbus-ac', $tData, TRUE);
-                } else if (Util::endsWith($dataObj->model, "dc")) {
-                    $tData = array_merge($data, Constants::$pmBusConfig[$dataObj->model]);
-                    $dataObj->html = $CI->load->view('portal/DevicePage/pmbus-dc', $tData, TRUE);
-                } else if (Util::endsWith($dataObj->model, "rc")) {
-                    $tData = array_merge($data, Constants::$pmBusConfig[$dataObj->model]);
-                    $dataObj->html = $CI->load->view('portal/DevicePage/pmbus-rc', $tData, TRUE);
-                } else {
-                    $dataObj->html = $CI->load->view("portal/DevicePage/" . $dataObj->model, $data, TRUE);
-                }
-                $dataObj->html1 = $CI->load->view("portal/standard_data", $data, TRUE);
+                $dataObj->html = $CI->load->view('signals/realtime_page', $data, TRUE);
+
+                $dataObj->html1 = $CI->load->view("portal/standard_data",
+                    array('dataObj' => $dataObj, 'userObj' => $CI->userObj,
+                        'devName' => $data["devName"]), TRUE);
+
+                //引入JS文件
+                $scriptExtra .= '<script type="text/javascript" 
+                    src="/public/js/signals/realtime.js"></script>';
+                break;
+
+//                if (Util::endsWith($dataObj->model, "ac")) {
+//                    $tData = array_merge($data, Constants::$pmBusConfig[$dataObj->model]);
+//                    $dataObj->html = $CI->load->view('portal/DevicePage/pmbus-ac', $tData, TRUE);
+//                } else if (Util::endsWith($dataObj->model, "dc")) {
+//                    $tData = array_merge($data, Constants::$pmBusConfig[$dataObj->model]);
+//                    $dataObj->html = $CI->load->view('portal/DevicePage/pmbus-dc', $tData, TRUE);
+//                } else if (Util::endsWith($dataObj->model, "rc")) {
+//                    $tData = array_merge($data, Constants::$pmBusConfig[$dataObj->model]);
+//                    $dataObj->html = $CI->load->view('portal/DevicePage/pmbus-rc', $tData, TRUE);
+//                } else {
+//                    $dataObj->html = $CI->load->
+//                    view("portal/DevicePage/" . $dataObj->model, $data, TRUE);
+//                }
+//                $dataObj->html1 = $CI->load->view("portal/standard_data", $data, TRUE);
                 break;
             }
             case "liebert-ups": {
@@ -60,7 +72,6 @@ class Realtime
                 $dataObj->html1 = $CI->load->view("portal/standard_data", $data, TRUE);
                 break;
             }
-
             case "pdu": {
                 if (in_array($dataObj->model, array('aeg-ms10se', 'aeg-ms10m'))) {
                     $dataObj->html = $CI->load->view('portal/DevicePage/page-aeg', array('aegObj' => $dataObj, 'userObj' => $CI->userObj), TRUE);
@@ -71,9 +82,23 @@ class Realtime
                 break;
             }
             case "engine": {
-                $dataObj->html = $CI->load->view('portal/DevicePage/' . $dataObj->model, array('dataObj' => $dataObj, 'userObj' => $CI->userObj), TRUE);
-                $dataObj->html1 = $CI->load->view("portal/standard_data", array('dataObj' => $dataObj, 'userObj' => $CI->userObj, 'devName' => $data["devName"]), TRUE);
-                $scriptExtra .= '<script type="text/javascript" src="/public/portal/js/rt_data/rt_data-' . $dataObj->model . '.js"></script>';
+                //对应dataID   $dataObj->data_id生成页面
+                $dataObj->html = $CI->load->view('signals/realtime_page', array('dataObj' => $dataObj,
+                    'userObj' => $CI->userObj), TRUE);
+
+//                $dataObj->html = $CI->load->view('portal/DevicePage/' .
+//                    $dataObj->model, array('dataObj' => $dataObj,
+//                    'userObj' => $CI->userObj), TRUE);
+                $dataObj->html1 = $CI->load->view("portal/standard_data",
+                    array('dataObj' => $dataObj, 'userObj' => $CI->userObj,
+                        'devName' => $data["devName"]), TRUE);
+
+                //引入JS文件
+                $scriptExtra .= '<script type="text/javascript" 
+                    src="/public/js/signals/realtime.js"></script>';
+
+//                $scriptExtra .= '<script type="text/javascript" src="/public/portal/js/rt_data/rt_data-' .
+//                    $dataObj->model . '.js"></script>';
                 break;
             }
             case "smd_device": {
@@ -1259,11 +1284,11 @@ class Realtime
                         } else if ($devObj->model == "dk04c") {
                             $dataObj = Realtime::Get_Dk04cRtData($dataId);
                         } else if ($devObj->model == "dk09") {
-                            $dataObj = Realtime::Get_Dk09RtData($dataId);
+                            $dataObj = Realtime::GetSmartRTData($dataId);
+                            //$dataObj = Realtime::Get_Dk09RtData($dataId);
                         } else if ($devObj->model == "cuc21vb") {
                             $dataObj = Realtime::Get_Cuc21vbRtData($dataId);
                         } else if ($devObj->model == "des7310") {
-
                             $dataObj = Realtime::Get_Des7310RtData($dataId);
                         }
                         //$CI->cache->save($dataId."_webcache", $dataObj, 20);
@@ -4834,7 +4859,6 @@ struct tele_c_aeg_ms10m
         //***这里的model 是设备 如dk09 cuc21vb，不是总类如sps ac...
         $CI = &get_instance();
         $dbObj = $CI->load->database('default', TRUE);
-        $signals = $dbObj->where('model', $model)->get('realtime_signals')->result();
 
 
         $CI->load->driver('cache');
@@ -4843,21 +4867,145 @@ struct tele_c_aeg_ms10m
         $realtimeData->isEmpty = true;
 
         //获取对应dataID的设备ID
-        $memData = $CI->cache->get(dataID);
+        $memData = $CI->cache->get($dataID);
 
-        if(strlen($memData)>= 0){
+
+
+        if (strlen($memData) >= 0) {
+            $model = 'dk04';
+            $signals = $dbObj->where('model', $model)->get('realtime_signals')->result();
             $realtimeData->isEmpty = false;
+
+            $pointer = 0;
             foreach ($signals as $signal) {
                 $signalData = [];
-                //数据库获取对应$model 类型的信号信号列表
+                //中文名
+                $signalData['name'] = $signal->name;
+                //便利每一个信号，截取对应长度的字符串
+                switch ($signal->type) {
+                    //NUL-padded string
+                    case  'a':
 
+                        break;
+                    //SPACE-padded string
+                    case  'A':
 
-                //生成信号列表对应的数据，以遍历信号源
+                        break;
+                    //Hex string, low nibble first
+                    case  'h':
 
-                //生成对应的信号数据，返回给js
+                        break;
+                    //Hex string, high nibble first
+                    case  'H':
+
+                        break;
+
+                    //signed char
+                    case  'c':
+                        $sig = unpack('c*', substr($memData, $pointer, 1));
+                        $signalData['value'] = $sig[1];
+                        $pointer += 1;
+                        break;
+
+                    //unsigned char
+                    case  'C':
+                        $sig = unpack('C*', substr($memData, $pointer, 1));
+                        $signalData['value'] = $sig[1];
+                        $pointer += 1;
+                        break;
+
+                    //signed short (always 16 bit, machine byte order)
+                    case  's':
+                        $sig = unpack('s*', substr($memData, $pointer, 2));
+                        $signalData['value'] = $sig[1];
+                        $pointer += 2;
+                        break;
+
+                    //unsigned short (always 16 bit, machine byte order)
+                    case  'S':
+                        $sig = unpack('S*', substr($memData, $pointer, 2));
+                        $signalData['value'] = $sig[1];
+                        $pointer += 2;
+                        break;
+
+                    //unsigned short (always 16 bit, big endian byte order)
+                    case  'n':
+
+                        break;
+                    //unsigned short (always 16 bit, little endian byte order)
+                    case  'v':
+
+                        break;
+                    //signed integer (machine dependent size and byte order)
+                    case  'i':
+                        $sig = unpack('i*', substr($memData, $pointer, 4));
+                        $signalData['value'] = $sig[1];
+                        $pointer += 4;
+                        break;
+                    //unsigned integer (machine dependent size and byte order)
+                    case  'I':
+                        $sig = unpack('I*', substr($memData, $pointer, 4));
+                        $signalData['value'] = $sig[1];
+                        $pointer += 4;
+                        break;
+                    // signed long (always 32 bit, machine byte order)
+                    case  'l':
+                        $sig = unpack('l*', substr($memData, $pointer, 4));
+                        $signalData['value'] = $sig[1];
+                        $pointer += 4;
+                        break;
+                    //unsigned long (always 32 bit, machine byte order)
+                    case  'L':
+                        $sig = unpack('L*', substr($memData, $pointer, 4));
+                        $signalData['value'] = $sig[1];
+                        $pointer += 4;
+                        break;
+                    //unsigned long (always 32 bit, big endian byte order)
+                    case  'N':
+
+                        break;
+                    //unsigned long (always 32 bit, little endian byte order)
+                    case  'V':
+
+                        break;
+                    //float (machine dependent size and representation)
+                    case  'f':
+                        $sig = unpack('f*', substr($memData, $pointer, 4));
+                        $signalData['value'] = $sig[1];
+                        $pointer += 4;
+                        break;
+                    //double (machine dependent size and representation)
+                    case  'd':
+                        $sig = unpack('f*', substr($memData, $pointer, 8));
+                        $signalData['value'] = $sig[1];
+                        $pointer += 8;
+                        break;
+                    //NUL byte
+                    case  'x':
+
+                        break;
+                    //Back up one byte
+                    case  'X':
+
+                        break;
+                    //NUL-fill to absolute position
+                    case  '@':
+
+                        break;
+                }
+                t::f($signalData);
+                $realtimeData->$signal->parameter = $signalData;
+
 
             }
+
+            return $realtimeData;
         }
+
+
+        //生成对应的信号数据，返回给js
+
+
     }
 }
 

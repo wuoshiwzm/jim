@@ -3299,15 +3299,21 @@ class Portal extends CI_Controller
                             $scriptExtra .= '<script type="text/javascript" src="/public/portal/js/rt_data/rt_data-addi.js"></script>';
                             $scriptExtra .= '<script type="text/javascript" src="/public/portal/js/standard_data.js"></script>';
                             $html1 = $this->load->view("portal/standard_data", $data, TRUE);
-                            $data['deviceContentBody'] = $this->load->view('portal/DevicePage/enviroment', array("dataList" => $dataList, "room_name" => $roomObj->name, 'userObj' => $this->userObj, 'html1' => $html1), TRUE);
+                            $data['deviceContentBody'] = $this->load->view('portal/DevicePage/enviroment',
+                                array("dataList" => $dataList, "room_name" => $roomObj->name,
+                                    'userObj' => $this->userObj, 'html1' => $html1), TRUE);
                         } else {
                             if ($model == "sps") {
+                                //获取机房对应的所有设备
                                 $data['groupList'] = $groupList = $this->mp_xjdh->Get_DevGroup($roomId, $devConfig[0]);
                             } else if ($model == 'camera') {
                                 $data['groupList'] = $groupList = $this->mp_xjdh->Get_vcamera($roomId);
                             }
 
+                            //分配页面
+
                             foreach ($dataList as $dataObj) {
+//                              t::f($dataObj);
                                 $data['dataObj'] = $dataObj;
                                 //$devDcList = $this->mp_xjdh->Get_DeviceDynamicConfig($dataObj->data_id);
                                 Realtime::GetDevicePage($model, $scriptExtra, $data, $dataObj, $this->userObj);
@@ -4819,8 +4825,12 @@ class Portal extends CI_Controller
             $dataIdStr5 = $this->input->get('dataIdArr5');
             $jsonRet['freshAirList'] = Realtime::Get_FreshAirRtData($dataIdStr5);
         } elseif ($model == 'sps') {
-            $dataIdArr = $this->input->get('dataIdArr');
-            $jsonRet['spsList'] = Realtime::GetSpsPower($dataIdArr);
+
+            $dataId = $this->input->get('dataIdArr');
+            $jsonRet['realtimeData'] = Realtime::GetSmartRTData($dataId[0],'dk04');
+
+//            $dataIdArr = $this->input->get('dataIdArr');
+//            $jsonRet['spsList'] = Realtime::GetSpsPower($dataIdArr);
         } elseif ($model == 'zxdu') {
             $dataIdStr6 = $this->input->get('dataIdArr6');
             $dataIdStr7 = $this->input->get('dataIdArr7');

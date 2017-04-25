@@ -545,6 +545,7 @@ class Signals extends CommonController
         $unit = $post['signal_unit'];
         $type = $post['signal_type'];
         $desc = $post['signal_desc'];
+        $name = $post['signal_name'];
 
 
         $dbObj = $this->load->database('default', TRUE);
@@ -554,6 +555,7 @@ class Signals extends CommonController
             ->set('unit', $unit)
             ->set('type', $type)
             ->set('desc', $desc)
+            ->set('name',$name)
             ->insert('realtime_signals');
 
         echo 'true';
@@ -570,13 +572,15 @@ class Signals extends CommonController
         $unit = $post['signal_unit'];
         $type = $post['signal_type'];
         $desc = $post['signal_desc'];
+        $name = $post['signal_name'];
 
         $dbObj = $this->load->database('default', TRUE);
         $dbObj->where('id', $id)
             ->set('parameter', $parameter)
             ->set('unit',$unit)
             ->set('type',$type)
-            ->set('desc',$desc);
+            ->set('desc',$desc)
+            ->set('name',$name);
 
         $dbObj->update('realtime_signals');
         echo 'true';
