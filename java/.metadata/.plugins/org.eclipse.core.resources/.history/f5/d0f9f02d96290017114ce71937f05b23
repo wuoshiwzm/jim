@@ -1,0 +1,10 @@
+package testjava.exercise_3.exercise_4;
+
+public class MyTreeSet<AnyType extends Comparable<? super AnyType>> {
+	
+	private static class BinaryNode<AnyType>{
+		BinaryNode(AnyType theElement){
+			this(the Element,null,null,null);
+		}
+	}
+}

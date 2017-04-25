@@ -18,4 +18,7 @@
 <fullyQualifiedTypeName name="AnyType"/>
 <fullyQualifiedTypeName name="java.util.ArrayList"/>
 <fullyQualifiedTypeName name="java.util.LinkedList"/>
+<fullyQualifiedTypeName name="java.util.Iterator"/>
+<fullyQualifiedTypeName name="java.util.NoSuchElementException"/>
+<fullyQualifiedTypeName name="java.util.ConcurrentModificationException"/>
 </qualifiedTypeNameHistroy>

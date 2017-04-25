@@ -1,0 +1,27 @@
+package testjava.exercise_3.exercise_4;
+
+public class MyTreeSet<AnyType extends Comparable<? super AnyType>> {
+
+	private static class BinaryNode<AnyType> {
+		BinaryNode(AnyType theElement) {
+			this(theElement, null, null, null);
+		}
+
+		BinaryNode(AnyType theElement, BinaryNode<AnyType> lt, BinaryNode<AnyType> rt, BinaryNode<AnyType> pt) {
+			element = theElement;
+			left = lt;
+			right = rt;
+			parent = pt;
+		}
+
+		AnyType element;
+		BinaryNode<AnyType> left;
+		BinaryNode<AnyType> right;
+		BinaryNode<AnyType> parent;
+	}
+
+	
+	public java.util.Iterator<AnyType> iterator(){
+		return new MyTreeIterator();
+	}
+}

@@ -1,0 +1,156 @@
+package testjava.exercise_3.exercise_4;
+
+public class MyTreeSet<AnyType extends Comparable<? super AnyType>> {
+
+	private static class BinaryNode<AnyType> {
+		BinaryNode(AnyType theElement) {
+			this(theElement, null, null, null);
+		}
+
+		BinaryNode(AnyType theElement, BinaryNode<AnyType> lt, BinaryNode<AnyType> rt, BinaryNode<AnyType> pt) {
+			element = theElement;
+			left = lt;
+			right = rt;
+			parent = pt;
+		}
+
+		AnyType element;
+		BinaryNode<AnyType> left;
+		BinaryNode<AnyType> right;
+		BinaryNode<AnyType> parent;
+	}
+
+	public java.util.Iterator<AnyType> iterator() {
+		return new MyTreeIterator();
+	}
+
+	private class MyTreeIterator implements java.util.Iterator<AnyType> {
+		private BinaryNode<AnyType> current = findMin(root);
+		private BinaryNode<AnyType> previous = previous;
+		private int expectedModCount = modCount;
+		private boolean okToRemove = false;
+		private boolean atEnd = false;
+
+		public boolean hasNext() {
+			return !atEnd;
+		}
+
+		public AnyType next() {
+			if (modCount != expectedModCount) {
+				throw new java.util.ConcurrentModificationException();
+			}
+			if (!hasNext()) {
+				throw new java.util.NoSuchElementException();
+			}
+
+			AnyType nextItem = current.element;
+			previous = current;
+
+			if (current.right != null) {
+				current = findMin(current.right);
+			} else {
+				// else , find ancestor that it is left of
+				BinaryNode<AnyType> child = current;
+				current = current.parent;
+				// œÚ…œ
+				while (current != null && current.left != child) {
+					child = current;
+					current = current.parent;
+				}
+				if (current == null)
+					atEnd = true;
+			}
+
+			okToRemove = true;
+
+			return nextItem;
+
+		}
+
+		public void remove() {
+			if (modCount != expectedModCount)
+				throw new java.util.ConcurrentModificationException();
+
+			if (!okToRemove)
+				throw new IllegalStateException();
+
+			MyTreeSet.this.remove(previous.element);
+			okToRemove = false;
+		}
+
+	}
+	
+	public MyTreeSet(){
+		root = null;
+	}
+	
+	public void makeEmpty(){
+		modCount++;
+		root = null;
+	}
+	
+	public boolean isEmpty(){
+		return root == null;
+	}
+	
+	public boolean contains(AnyType x)
+	{
+		return contains(x,root);
+	}
+	
+	public AnyType findMin() throws UnderflowException
+	{
+		if(isEmpty())
+		throw new UnderflowException();
+		else
+			return findMin(root).element;
+	}
+	
+	public AnyType findMax() throws UnderflowException{
+		if(isEmpty())
+			throw new UnderflowException();
+		else
+			return findMax(root).element;
+	}
+	
+	public void insert(AnyType x)
+	{
+		root = insert(x,root,null);
+	}
+	
+	public void remove (AnyType x)
+	{
+		root = remove(x,root);
+	}
+	
+	public void printTree(){
+		if(isEmpty()){
+			System.out.println("Empty tree");
+		}
+		else
+			printTree(root);
+	}
+	
+	private void printTree(BinaryNode<AnyType> t){
+		
+	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+
+}

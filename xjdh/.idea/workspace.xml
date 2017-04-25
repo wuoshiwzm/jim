@@ -99,8 +99,8 @@
       <file leaf-file-name="realtime_helper.php" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/application/helpers/realtime_helper.php">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="158">
-              <caret line="4942" column="38" lean-forward="true" selection-start-line="4942" selection-start-column="38" selection-end-line="4942" selection-end-column="38" />
+            <state relative-caret-position="177">
+              <caret line="4883" column="36" lean-forward="false" selection-start-line="4883" selection-start-column="36" selection-end-line="4883" selection-end-column="36" />
               <folding>
                 <element signature="e#2018#2485#0#PHP" expanded="false" />
                 <element signature="e#2056#2448#0#PHP" expanded="false" />
@@ -528,11 +528,12 @@
                 <element signature="e#217048#218230#0#PHP" expanded="false" />
                 <element signature="e#218097#218230#0#PHP" expanded="false" />
                 <element signature="n#Get_smd_status#0;n#Realtime#0;n#!!top" expanded="false" />
-                <marker date="1493108841728" expanded="true" signature="823:890" ph="..." />
-                <marker date="1493108841728" expanded="true" signature="5885:5952" ph="..." />
-                <marker date="1493108841728" expanded="false" signature="59777:60103" ph="{...}" />
-                <marker date="1493108841728" expanded="false" signature="60150:60531" ph="{...}" />
-                <marker date="1493108841728" expanded="false" signature="60578:60941" ph="{...}" />
+                <element signature="e#219450#223793#0#PHP" expanded="false" />
+                <marker date="1493113182552" expanded="true" signature="823:890" ph="..." />
+                <marker date="1493113182552" expanded="true" signature="5885:5952" ph="..." />
+                <marker date="1493113182552" expanded="false" signature="59777:60103" ph="{...}" />
+                <marker date="1493113182552" expanded="false" signature="60150:60531" ph="{...}" />
+                <marker date="1493113182552" expanded="false" signature="60578:60941" ph="{...}" />
               </folding>
             </state>
           </provider>
@@ -1007,16 +1008,16 @@
       <workItem from="1492675535480" duration="30402000" />
       <workItem from="1492996681121" duration="12173000" />
       <workItem from="1493090606519" duration="4435000" />
-      <workItem from="1493103827440" duration="5131000" />
+      <workItem from="1493103827440" duration="6954000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="783842000" />
+    <option name="totallyTimeSpent" value="785665000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="-15" y="0" width="1382" height="728" extended-state="0" />
-    <editor active="true" />
+    <editor active="false" />
     <layout>
       <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.0204236" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
@@ -1677,8 +1678,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/application/helpers/realtime_helper.php">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="158">
-          <caret line="4942" column="38" lean-forward="true" selection-start-line="4942" selection-start-column="38" selection-end-line="4942" selection-end-column="38" />
+        <state relative-caret-position="177">
+          <caret line="4883" column="36" lean-forward="false" selection-start-line="4883" selection-start-column="36" selection-end-line="4883" selection-end-column="36" />
           <folding>
             <element signature="e#2018#2485#0#PHP" expanded="false" />
             <element signature="e#2056#2448#0#PHP" expanded="false" />
@@ -2106,11 +2107,12 @@
             <element signature="e#217048#218230#0#PHP" expanded="false" />
             <element signature="e#218097#218230#0#PHP" expanded="false" />
             <element signature="n#Get_smd_status#0;n#Realtime#0;n#!!top" expanded="false" />
-            <marker date="1493108841728" expanded="true" signature="823:890" ph="..." />
-            <marker date="1493108841728" expanded="true" signature="5885:5952" ph="..." />
-            <marker date="1493108841728" expanded="false" signature="59777:60103" ph="{...}" />
-            <marker date="1493108841728" expanded="false" signature="60150:60531" ph="{...}" />
-            <marker date="1493108841728" expanded="false" signature="60578:60941" ph="{...}" />
+            <element signature="e#219450#223793#0#PHP" expanded="false" />
+            <marker date="1493113182552" expanded="true" signature="823:890" ph="..." />
+            <marker date="1493113182552" expanded="true" signature="5885:5952" ph="..." />
+            <marker date="1493113182552" expanded="false" signature="59777:60103" ph="{...}" />
+            <marker date="1493113182552" expanded="false" signature="60150:60531" ph="{...}" />
+            <marker date="1493113182552" expanded="false" signature="60578:60941" ph="{...}" />
           </folding>
         </state>
       </provider>

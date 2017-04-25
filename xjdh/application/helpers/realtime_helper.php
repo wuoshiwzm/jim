@@ -4862,7 +4862,7 @@ struct tele_c_aeg_ms10m
 
 
         $CI->load->driver('cache');
-        $realtimeData = [];
+        $realtimeData = new stdClass();
         $realtimeData->dataID = $dataID;
         $realtimeData->isEmpty = true;
 
@@ -4993,12 +4993,13 @@ struct tele_c_aeg_ms10m
 
                         break;
                 }
-                t::f($signalData);
-                $realtimeData->$signal->parameter = $signalData;
+
+                $parameter = $signal->parameter;
+                $realtimeData->$parameter = $signalData;
 
 
             }
-
+            t::f($realtimeData);
             return $realtimeData;
         }
 
