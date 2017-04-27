@@ -282,7 +282,7 @@ class Signals extends CommonController
         $data['standard_signals'] = $dbObj->where('type', 1)
             ->get('signals_standard')->result();
 
-        $data['model'] =$model ;
+        $data['model'] = $model;
         $scriptExtra = '';
         $scriptExtra .= '<script src="/public/js/signals/signals.js"></script>';
 
@@ -371,7 +371,7 @@ class Signals extends CommonController
         $model = !empty($this->input->get('model')) ? $this->input->get('model') : 'camera';
 
         //type = 2 设备信号
-        $signals = $dbObj->where('type', 2)->where('model',$model)->get('signals_map')->result();
+        $signals = $dbObj->where('type', 2)->where('model', $model)->get('signals_map')->result();
 
         $data['signals'] = $signals;
         $data['model'] = $model;
@@ -493,12 +493,11 @@ class Signals extends CommonController
     }
 
 
-
-
     /**
      * -------------------分配实时数据信号----------------------
      */
-    public function realtimeSignalsSet(){
+    public function realtimeSignalsSet()
+    {
         $data = array();
         $data['userObj'] = $this->userObj;
         $data['bcList'] = array();
@@ -525,13 +524,18 @@ class Signals extends CommonController
         $signals = $dbObj->where('model', $model)->get('realtime_signals')->result();
         $data['signals'] = $signals;
 
+        //循环体信号
+        $loops = $dbObj->where('model', $model)->get('realtime_signals_loop')->result();
+        $data['loops'] = $loops;
+
         //对应设备信号名配置
-        $data['model'] =$model ;
+        $data['model'] = $model;
         $scriptExtra = '';
         $scriptExtra .= '<script src="/public/js/signals/signals.js"></script>';
+        $scriptExtra .= '<script src="/public/layer/layer.js"></script>';
 
         $content = $this->load->view("signals/realtime_signals_map", $data, TRUE);
-        $this->mp_master->Show_Portal($content, $scriptExtra, '二级审核', $data);
+        $this->mp_master->Show_Portal($content, $scriptExtra, '分配实时信号', $data);
     }
 
     /**
@@ -551,13 +555,48 @@ class Signals extends CommonController
         $dbObj = $this->load->database('default', TRUE);
 
         $dbObj->set('model', $model)
-            ->set('parameter',$parameter)
+            ->set('parameter', $parameter)
             ->set('unit', $unit)
             ->set('type', $type)
             ->set('desc', $desc)
-            ->set('name',$name)
+            ->set('name', $name)
             ->insert('realtime_signals');
 
+        echo 'true';
+    }
+
+
+    /**
+     * 添加某一循环实时数据信号
+     */
+    public function addRealtimeLoop()
+    {
+        $post = $this->input->post();
+        $model = $post['model'];
+        $loop_id = $post['loop_id'];
+
+        $dbObj = $this->load->database('default', TRUE);
+
+        $dbObj->set('model', $model)
+            ->set('loop_id', $loop_id)
+            ->insert('realtime_signals');
+        echo 'true';
+    }
+
+    /**
+     * 添加某一循环实时数据信号
+     */
+    public function updateRealtimeLoop()
+    {
+        $post = $this->input->post();
+        $id = $post['id'];
+        $loop_id = $post['loop_id'];
+
+        $dbObj = $this->load->database('default', TRUE);
+
+        $dbObj->where('id', $id)
+            ->set('loop_id', $loop_id)
+            ->update('realtime_signals');
         echo 'true';
     }
 
@@ -577,10 +616,10 @@ class Signals extends CommonController
         $dbObj = $this->load->database('default', TRUE);
         $dbObj->where('id', $id)
             ->set('parameter', $parameter)
-            ->set('unit',$unit)
-            ->set('type',$type)
-            ->set('desc',$desc)
-            ->set('name',$name);
+            ->set('unit', $unit)
+            ->set('type', $type)
+            ->set('desc', $desc)
+            ->set('name', $name);
 
         $dbObj->update('realtime_signals');
         echo 'true';
@@ -598,6 +637,236 @@ class Signals extends CommonController
 
         echo 'true';
     }
+
+
+    /**循环体**/
+    /**
+     *更新循环体
+     */
+    public function updateLoop()
+    {
+        $post = $this->input->post();
+        $times = $post['times'];
+        $id = $post['id'];
+        $type = $post['type'];
+        $name = $post['name'];
+
+        if (!empty($times) && !empty($name) && !empty($type) && !empty($id)) {
+            //判断 是否有数据，有则更新，没有则新建
+            $dbObj = $this->load->database('default', TRUE);
+            $dbObj->where('id', $id)
+                ->set('times', $times)
+                ->set('times_type', $type)
+                ->set('name', $name)
+                ->update('realtime_signals_loop');
+
+//            $loopData = $dbObj->where('model',$model)
+//                ->get('realtime_signals_loop')
+//                ->result();
+//
+//            if(empty($loopData)){
+//                $dbObj->set('times',$times)
+//                    ->set('model',$model)
+//                    ->set('times_type',$type)
+//                    ->set('name',$name)
+//                    ->insert('realtime_signals_loop');
+//            }
+            echo 'true';
+        }
+
+        return;
+    }
+
+    /**
+     *添加循环体
+     */
+    public function addLoop()
+    {
+        $post = $this->input->post();
+        $times = $post['times'];
+        $model = $post['model'];
+        $type = $post['type'];
+        $name = $post['name'];
+
+        if (!empty($times) && !empty($model) && !empty($type) && !empty($name)) {
+            $dbObj = $this->load->database('default', TRUE);
+
+            $dbObj->set('times', $times)
+                ->set('model', $model)
+                ->set('times_type', $type)
+                ->set('name', $name)
+                ->insert('realtime_signals_loop');
+
+        }
+        echo 'true';
+    }
+
+    /**
+     * 删除循环体
+     */
+    public function deleteLoop()
+    {
+        $post = $this->input->post();
+        $id = $post['id'];
+
+        $dbObj = $this->load->database('default', TRUE);
+        $dbObj->where('id', $id)
+            ->delete('realtime_signals_loop');
+
+        echo 'true';
+    }
+
+
+    /*************配置循环体内部变量*************/
+    public function configLoop($id)
+    {
+        $data = array();
+        $data['userObj'] = $this->userObj;
+
+        $dbObj = $this->load->database('default', TRUE);
+
+        $data = [];
+        $content = $dbObj->where('id',$id)
+            ->get('realtime_signals_loop')
+            ->row()->content;
+        $signals = json_encode($content);
+        $data['signals'] = $signals;
+
+        //信号列表
+        $contents = $dbObj->where('id',$id)->get('realtime_signals_loop')->row()->content;
+        $signals = json_decode($contents);
+        $data['signals'] = $signals;
+
+
+        //对应设备信号名配置
+        $model =  $dbObj->where('id',$id)
+            ->get('realtime_signals_loop')
+            ->row()->model;
+        $data['model'] = $model;
+        $data['id'] = $id;
+
+        $scriptExtra = '';
+        $scriptExtra .= '<script src="/public/js/signals/loop.js"></script>';
+        $scriptExtra .= '<script src="/public/layer/layer.js"></script>';
+
+        $content = $this->load->view("signals/realtime_signals_loop", $data, TRUE);
+        $this->mp_master->Show_Pure($content, $scriptExtra, '分配循环体实时信号', $data);
+    }
+
+    /**
+     * 添加某一实时数据信号
+     */
+    public function addLoopSignal()
+    {
+        $post = $this->input->post();
+        $id = $post['id'];
+
+        $parameter = $post['parameter'];
+        $unit = $post['signal_unit'];
+        $type = $post['signal_type'];
+        $desc = $post['signal_desc'];
+        $name = $post['signal_name'];
+
+        $dbObj = $this->load->database('default', TRUE);
+        $signal_new =[
+            $parameter=>['parameter'=>$parameter,'unit'=>$unit,'type'=>$type,'desc'=>$desc,'name'=>$name,]
+        ];
+        $contArr = $dbObj->where('id',$id)->get('realtime_signals_loop')->row()->content;
+        $contArr = json_decode($contArr,true);
+        if(empty($contArr)){
+            //无任务信号内容
+            $contArr= $signal_new;
+        }
+        else{//更新或添加
+            $contArr[$parameter]  = $signal_new[$parameter];
+        }
+        $contArr = json_encode($contArr);
+        $dbObj->where('id', $id)
+            ->set('content', $contArr)
+            ->update('realtime_signals_loop');
+        echo 'true';
+        return;
+    }
+
+    /**
+     * 更新实时数据信号
+     */
+    public function updateLoopSignal()
+    {
+        $post = $this->input->post();
+        $id = $post['id'];
+        $parameter = $post['parameter'];
+        $unit = $post['signal_unit'];
+        $type = $post['signal_type'];
+        $desc = $post['signal_desc'];
+        $name = $post['signal_name'];
+
+
+        $dbObj = $this->load->database('default', TRUE);
+        $signal_new =[
+            $parameter=>['parameter'=>$parameter,'unit'=>$unit,'type'=>$type,'desc'=>$desc,'name'=>$name,]
+        ];
+        $contArr = $dbObj->where('id',$id)->get('realtime_signals_loop')->row()->content;
+        $contArr = json_decode($contArr,true);
+
+        if(empty($contArr)){
+            //无任务信号内容
+            $contArr= $signal_new;
+        }
+        else{//更新或添加
+            $contArr[$parameter]  = $signal_new[$parameter];
+        }
+        $contArr = json_encode($contArr);
+        $dbObj->where('id', $id)
+            ->set('content', $contArr)
+            ->update('realtime_signals_loop');
+        echo 'true';
+        return;
+    }
+
+    /**
+     * 删除某一实时数据信号
+     */
+    public function deleteLoopSignal()
+    {
+        $post = $this->input->post();
+        $id = $post['id'];
+        $parameter = $post['parameter'];
+
+        $dbObj = $this->load->database('default', TRUE);
+
+        $contArr = $dbObj->where('id',$id)->get('realtime_signals_loop')->row()->content;
+        $contArr = json_decode($contArr,true);
+
+        array_splice($contArr,'asd asd');
+        $contArr = $this->array_remove($contArr, $parameter);
+
+        $contArr = json_encode($contArr);
+
+        $dbObj->where('id', $id)
+            ->set('content', $contArr)
+            ->update('realtime_signals_loop');
+        echo 'true';
+        return;
+    }
+
+    function array_remove($data, $key){
+        if(!array_key_exists($key, $data)){
+            return $data;
+        }
+        $keys = array_keys($data);
+        $index = array_search($key, $keys);
+        if($index !== FALSE){
+            array_splice($data, $index, 1);
+        }
+        return $data;
+
+    }
+
+
+
+
+
 
 
 

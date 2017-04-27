@@ -56,7 +56,6 @@ $(".add_signal").bind("click", function () {
         var add_tel_name_id = $(this).parent().parent().find(".add_tel_name_id").val();
         var type = $(this).parent().parent().find(".type").val();
 
-
         if (jim_name == '' && model_add == '' && add_tel_name_id == '') {
             alert('信号名称必填');
         } else {
@@ -71,7 +70,6 @@ $(".add_signal").bind("click", function () {
         return true;
     }
     return false;
-
 });
 
 
@@ -100,7 +98,7 @@ $(".delete_signal_convergence").bind("click", function () {
  * 实时数据信号处理
  */
 
-//添加
+//添加实时数据信号
 $(".add_realtime_signal").bind("click", function () {
     if (window.confirm("确认添加吗?")) {
         var model = $(this).parent().parent().find("#model").val();
@@ -131,6 +129,61 @@ $(".add_realtime_signal").bind("click", function () {
     }
 });
 
+//添加循环体
+$(".add_realtime_loop").bind("click", function () {
+    if (window.confirm("确认添加吗?")) {
+        var loop_id = $(this).parent().parent().find(".add_realtime_loop_id").val();
+        var model = $(this).parent().parent().find(".model").val();
+        if (model == '' || loop_id == '') {
+            alert('信号未填写完全');
+        }
+        else {
+            $.post("addRealtimeLoop",
+                {
+                    "model": model, "loop_id": loop_id
+                },
+                function (data) {
+                    if (data == 'true') {
+                        location.reload();
+                    }
+                });
+            return true;
+        }
+        return false;
+    }
+});
+
+//更新循环体
+$(".update_realtime_loop").bind("click", function () {
+
+        var id = $(this).parent().parent().find(".id").html();
+        var loop_id = $(this).parent().parent().find(".update_realtime_loop_id").val();
+
+
+        var model = $(this).parent().parent().find(".model").val();
+        if (id == '' || loop_id == '') {
+            alert('信号未填写完全');
+        }
+        else {
+            $.post("updateRealtimeLoop",
+                {
+                    "id": id, "loop_id": loop_id
+                },
+                function (data) {
+                    if (data == 'true') {
+                        location.reload();
+                    }
+                });
+            return true;
+        }
+        return false;
+
+});
+
+
+
+
+
 //update
 $(".update_realtime_signal").bind("click", function () {
 
@@ -160,7 +213,6 @@ $(".update_realtime_signal").bind("click", function () {
 //delete
 $(".delete_realtime_signal").bind("click", function () {
     if (window.confirm("确认删除吗?")) {
-
         var id = $(this).parent().parent().find(".id").html();
         $.post("deleteRealtimeSignal", {"id": id}, function (data) {
             if (data == 'true') {
@@ -170,4 +222,69 @@ $(".delete_realtime_signal").bind("click", function () {
         return true;
     }
     return false;
+});
+
+
+//信号循环体的添加
+$(".add_loop").bind("click",function () {
+    var times = $(this).parent().find(".loop_number").val();
+    var model = $(this).parent().find(".model").val();
+    var type = $(this).parent().find(".loop_type").val();
+    var name = $(this).parent().find(".loop_name").val();
+
+    $.post("addLoop",{"times":times,"model":model,"type":type,"name":name},function (data) {
+        if (data == 'true') {
+            location.reload();
+        }
+    });
+    return true;
+});
+
+//信号循环体的更新
+$(".update_loop").bind("click",function () {
+    var times = $(this).parent().parent().find(".loop_number").val();
+    var id = $(this).parent().parent().find(".loop_id").val();
+    var type = $(this).parent().parent().find(".loop_type").val();
+    var name = $(this).parent().parent().find(".loop_name").val();
+
+    $.post("updateLoop",{"times":times,"id":id,"type":type,"name":name},function (data) {
+        if (data == 'true') {
+            location.reload();
+        }else{
+            alert('更新失败， 请检查数据是否正确')
+        }
+    });
+    return true;
+});
+
+//信号循环体的删除
+$(".delete_loop").bind("click", function () {
+    if (window.confirm("确认删除吗?")) {
+        var id = $(this).parent().parent().find(".loop_id").val();
+
+        $.post("deleteLoop", {"id": id}, function (data) {
+            if (data == 'true') {
+                location.reload();
+            }
+        });
+        return true;
+    }
+    return false;
+});
+
+//跳转编辑循环体页面
+$(".config_loop").bind("click", function () {
+
+    var id = $(this).parent().parent().find(".loop_id").val();
+
+    layer.open({
+        type: 2,
+        area: ["1000px", "500px"],
+        fixed: false, //不固定
+        maxmin: true,
+        end : function () {
+            location.reload();
+        },
+        content: "/signals/configLoop/"+id,
+    });
 });

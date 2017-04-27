@@ -77,8 +77,6 @@
 <body>
 	<div class="layout">
 		<!-- Navbar================================================== -->
-
-
         <?php echo $mainPlaceHolder; ?>
         <div class="copyright">
 			<p>&copy; <?php echo date('Y');?> <a href='http://www.chinatelecom.com.cn'

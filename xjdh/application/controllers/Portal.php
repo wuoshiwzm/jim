@@ -3311,14 +3311,14 @@ class Portal extends CI_Controller
                             }
 
                             //分配页面
-
                             foreach ($dataList as $dataObj) {
-//                              t::f($dataObj);
                                 $data['dataObj'] = $dataObj;
                                 //$devDcList = $this->mp_xjdh->Get_DeviceDynamicConfig($dataObj->data_id);
                                 Realtime::GetDevicePage($model, $scriptExtra, $data, $dataObj, $this->userObj);
-
                             }
+
+
+                            $scriptExtra .= '<script type="text/javascript"  src="/public/js/signals/realtime.js"></script>';
                             $data["dataList"] = $dataList;
                             $data["devModel"] = $devConfig[2];
                             $data['deviceContentBody'] = $this->load->view("portal/device_data_ctrl", $data, TRUE);
@@ -4802,14 +4802,17 @@ class Portal extends CI_Controller
             $dataIdStr1 = $this->input->get('dataIdArr1');
             $jsonRet['aidiValue'] = Realtime::Get_AiDiRtData($dataIdStr1);
         } elseif ($model == 'powermeter') {
-            $dataIdStr1 = $this->input->get('dataIdArr1');
-            $jsonRet['imem12Value'] = Realtime::Get_Imem12RtData($dataIdStr1);
-            $dataIdStr2 = $this->input->get('dataIdArr2');
-            $jsonRet['power302aValue'] = Realtime::Get_Power302ARtData($dataIdStr2);
-            $dataIdArrPmac600a = $this->input->get('dataIdArrPmac600a');
-            $jsonRet['pmac600aValue'] = Realtime::Get_Pmac600aRtData($dataIdArrPmac600a);
-            $dataIdArrPmac600b = $this->input->get('dataIdArrPmac600b');
-            $jsonRet['pmac600bValue'] = Realtime::Get_Pmac600bRtData($dataIdArrPmac600b);
+            $dataIdArr = $this->input->get('dataIdArr');
+            $jsonRet['realTimeData'] = Realtime::GetSmartRTData($dataIdArr,'dk04');
+
+//            $dataIdStr1 = $this->input->get('dataIdArr1');
+//            $jsonRet['imem12Value'] = Realtime::Get_Imem12RtData($dataIdStr1);
+//            $dataIdStr2 = $this->input->get('dataIdArr2');
+//            $jsonRet['power302aValue'] = Realtime::Get_Power302ARtData($dataIdStr2);
+//            $dataIdArrPmac600a = $this->input->get('dataIdArrPmac600a');
+//            $jsonRet['pmac600aValue'] = Realtime::Get_Pmac600aRtData($dataIdArrPmac600a);
+//            $dataIdArrPmac600b = $this->input->get('dataIdArrPmac600b');
+//            $jsonRet['pmac600bValue'] = Realtime::Get_Pmac600bRtData($dataIdArrPmac600b);
         } elseif ($model == "engine") {
             $dataIdStr1 = $this->input->get('dataIdArr1');
             $jsonRet['mec10List'] = Realtime::Get_Mec10RtData($dataIdStr1);
@@ -4825,10 +4828,8 @@ class Portal extends CI_Controller
             $dataIdStr5 = $this->input->get('dataIdArr5');
             $jsonRet['freshAirList'] = Realtime::Get_FreshAirRtData($dataIdStr5);
         } elseif ($model == 'sps') {
-
-            $dataId = $this->input->get('dataIdArr');
-            $jsonRet['realtimeData'] = Realtime::GetSmartRTData($dataId[0],'dk04');
-
+            $dataIdArr = $this->input->get('dataIdArr');
+            $jsonRet['realtimeData'] = Realtime::GetSmartRTData($dataIdArr,'dk04');
 //            $dataIdArr = $this->input->get('dataIdArr');
 //            $jsonRet['spsList'] = Realtime::GetSpsPower($dataIdArr);
         } elseif ($model == 'zxdu') {

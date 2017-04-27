@@ -22,7 +22,7 @@
                                 foreach ($dataList as $dataObj) {
                                     if ($group == $dataObj->dev_group) { ?>
                                         <li><a href="#device-<?php echo $dataObj->data_id; ?>"
-                                               class="group"> <?php echo $dataObj->name; ?> </a>
+                                               class="group"> <?php echo $dataObj->name; ?> 1111</a>
                                         </li>
                                     <?php } ?>
                                 <?php } ?>

@@ -6,6 +6,11 @@ $(document).ready(function () {
         dataIdArr.push($(this).attr("data_id"));
     });
 
+    $('.nav-tabs a').click(function (e) {
+        e.preventDefault();
+        $(this).tab('show');
+    });
+
 
     function refreshData() {
         //alert(dataIdArr[0]);
@@ -14,6 +19,59 @@ $(document).ready(function () {
             model: model,
             access_token: typeof(accessToken) == "undefined" ? "" : accessToken
         }, function (ret) {
+
+            //获取返回的信号数据（数组形式 key 就是对应的dataID）, 遍历对应dataID下的信号数据
+            $.each(ret.realtimeData, function (dataID, value) {
+                var spIndex = 1;
+                //更新时间
+                //$('#' + obj.data_id + '-update_datetime').html(obj.update_datetime);
+
+                //显示数据
+                if (!value.isEmpty) {
+
+                    var table = $("#realtimeData-" + dataID);
+
+                    table.html("");
+                    $.each(value.signals, function (index,value) {
+                        // alert(value.name);
+                        //生成一行 代表一个通道
+                        var trObj = $('<tr></tr>');
+                        //添加序列号
+                        trObj.append('<td>' + spIndex + '</td>');
+
+                        trObj.append('<td>' + value.name + '</td>');
+                        //添加变量值
+                        trObj.append('<td>' + value.value + '</td>');
+
+                        //
+                        // $.each(value, function () {
+                        //     //添加变量名
+                        //     trObj.append('<td>' + $(this).name + '</td>');
+                        //     //添加变量值
+                        //     trObj.append('<td>' + $(this).value + '</td>');
+                        // });
+                        //将对应通道插入表格
+                        table.append(trObj);
+
+                        spIndex++;
+                    });
+
+                } else {
+                    var tableEmpty = $("#realtimeData-" + dataID);
+
+                    tableEmpty.html("");
+
+                    var trObj = $('<tr></tr>');
+                    //添加序列号
+                    trObj.append('<td></td>');
+                    trObj.append('<td> 无数据 </td>');
+                    //添加变量值
+                    trObj.append('<td> 无数据 </td>');
+                    tableEmpty.append(trObj);
+                }
+
+            });
+
 
             for (var spIndex = 0; spIndex < ret.realtimeData.length; spIndex++) {
                 var obj = ret.realtimeData[spIndex];

@@ -256,6 +256,7 @@ class Mp_Extra extends CI_Model
         return $res;
     }
 
+    //
     public function getRealtimeSignalType($type)
     {
         switch ($type) {
@@ -333,6 +334,49 @@ class Mp_Extra extends CI_Model
                 break;
 
         }
+    }
+
+    //通过dataID获取设备的对应model属性
+    public function getDeviceModel($dataID)
+    {
+        $dbObj = $this->load->database('default', TRUE);
+        $model = $dbObj->where('data_id',$dataID)
+            ->get('device')
+            ->row()->model;
+        return $model;
+    }
+
+
+    /**
+     * @param $id
+     * @return mixed
+     * 通过id获取循环体信息
+     */
+    public function getLoopInfoByID($id)
+    {
+        $dbObj = $this->load->database('default', TRUE);
+        $res = $dbObj->where('id',$id)
+            ->get('realtime_signals_loop')
+            ->row();
+        return $res;
+    }
+
+    /**
+     * @param $id
+     * 获取某一个循环体内所有的变量名
+     */
+    public function getLoopParasByID($id)
+    {
+
+    }
+
+    /**
+     * @param $id
+     * 获取某一个循环体内所有的循环的变量值
+     */
+    public function getLoopValuesByID($id)
+    {
+
     }
 
 

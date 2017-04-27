@@ -22,9 +22,6 @@ class Realtime
                     array('dataObj' => $dataObj, 'userObj' => $CI->userObj,
                         'devName' => $data["devName"]), TRUE);
 
-                //引入JS文件
-                $scriptExtra .= '<script type="text/javascript" 
-                    src="/public/js/signals/realtime.js"></script>';
                 break;
 
 //                if (Util::endsWith($dataObj->model, "ac")) {
@@ -127,6 +124,15 @@ class Realtime
                 break;
             }
             case "powermeter": {
+                $dataObj->html = $CI->load->view('signals/realtime_page', $data, TRUE);
+
+                $dataObj->html1 = $CI->load->view("portal/standard_data",
+                    array('dataObj' => $dataObj, 'userObj' => $CI->userObj,
+                        'devName' => $data["devName"]), TRUE);
+
+                break;
+
+
                 if ($dataObj->model == "imem_12") {
                     $dataObj->html = $CI->load->view('portal/DevicePage/imem12', $data, TRUE);
                 } else if ($dataObj->model == "power_302a") {
@@ -195,7 +201,8 @@ class Realtime
                 $scriptExtra .= '<script type="text/javascript" src="/public/portal/js/rt_data/rt_data-battery.js?v=1.14"></script>';
                 break;
             default:
-                $scriptExtra .= '<script type="text/javascript" src="/public/portal/js/rt_data/rt_data-' . $model . '.js?v=1.13"></script>';
+//                $scriptExtra .= '<script type="text/javascript"  src="/public/js/signals/realtime.js"></script>';
+//                $scriptExtra .= '<script type="text/javascript" src="/public/portal/js/rt_data/rt_data-' . $model . '.js?v=1.13"></script>';
                 break;
         }
         $data['pageContent'] = $dataObj->html;
@@ -4854,159 +4861,171 @@ struct tele_c_aeg_ms10m
         return $cache;
     }
 
-    static function GetSmartRTData($dataID, $model)
+    static function GetSmartRTData($dataIDArr, $model)
     {
         //***这里的model 是设备 如dk09 cuc21vb，不是总类如sps ac...
         $CI = &get_instance();
         $dbObj = $CI->load->database('default', TRUE);
 
-
-        $CI->load->driver('cache');
         $realtimeData = new stdClass();
-        $realtimeData->dataID = $dataID;
-        $realtimeData->isEmpty = true;
+        //遍历
+        foreach ($dataIDArr as $dataID) {
+            $CI->load->driver('cache');
 
-        //获取对应dataID的设备ID
-        $memData = $CI->cache->get($dataID);
+            //对应该设备的数据数组
+            $deviceData = [];
+            $deviceData['dataID'] = $dataIDArr[0];
+            $deviceData['isEmpty'] = true;
+
+            //获取对应dataID的设备ID
+            $memData = $CI->cache->get($dataID);
+            if (strlen($memData) > 0) {
 
 
 
-        if (strlen($memData) >= 0) {
-            $model = 'dk04';
-            $signals = $dbObj->where('model', $model)->get('realtime_signals')->result();
-            $realtimeData->isEmpty = false;
+                $model = $CI->mp_extra->getDeviceModel($dataID);
 
-            $pointer = 0;
-            foreach ($signals as $signal) {
-                $signalData = [];
-                //中文名
-                $signalData['name'] = $signal->name;
-                //便利每一个信号，截取对应长度的字符串
-                switch ($signal->type) {
-                    //NUL-padded string
-                    case  'a':
+                $signals = $dbObj->where('model', $model)->get('realtime_signals')->result();
+                $deviceData['isEmpty'] = false;
 
-                        break;
-                    //SPACE-padded string
-                    case  'A':
 
-                        break;
-                    //Hex string, low nibble first
-                    case  'h':
+                $pointer = 0;
+                //var_dump($signals);
+                foreach ($signals as $signal) {
 
-                        break;
-                    //Hex string, high nibble first
-                    case  'H':
+                    //循环体信号
+                    if(!empty($signal->loop_id)){
+                        $loopData = [];
+                        $loopInfo = $CI->mp_extra->getLoopInfoByID($signal->loop_id);
+                        //此循环体的名字
+                        $loopName =$loopInfo->name;
+                        //变量列表
+                        $paras = $CI->mp_extra->getLoopParasByID($signal->loop_id);
+                        //循环获取所有变量值
+                        $values = $CI->mp_extra->getLoopValuesByID($signal->loop_id);
 
-                        break;
+                        $deviceData['loops'][$loopName] = ['paras'=>$paras,'values'=>$values];
 
-                    //signed char
-                    case  'c':
-                        $sig = unpack('c*', substr($memData, $pointer, 1));
-                        $signalData['value'] = $sig[1];
-                        $pointer += 1;
-                        break;
 
-                    //unsigned char
-                    case  'C':
-                        $sig = unpack('C*', substr($memData, $pointer, 1));
-                        $signalData['value'] = $sig[1];
-                        $pointer += 1;
-                        break;
+                    }else{
+                        $signalData = [];
+                        //中文名
+                        $signalData['name'] = $signal->name;
+                        //便利每一个信号，截取对应长度的字符串
+                        switch ($signal->type) {
+                            //NUL-padded string
+                            case  'a':
 
-                    //signed short (always 16 bit, machine byte order)
-                    case  's':
-                        $sig = unpack('s*', substr($memData, $pointer, 2));
-                        $signalData['value'] = $sig[1];
-                        $pointer += 2;
-                        break;
+                                break;
+                            //SPACE-padded string
+                            case  'A':
 
-                    //unsigned short (always 16 bit, machine byte order)
-                    case  'S':
-                        $sig = unpack('S*', substr($memData, $pointer, 2));
-                        $signalData['value'] = $sig[1];
-                        $pointer += 2;
-                        break;
+                                break;
+                            //Hex string, low nibble first
+                            case  'h':
 
-                    //unsigned short (always 16 bit, big endian byte order)
-                    case  'n':
+                                break;
+                            //Hex string, high nibble first
+                            case  'H':
 
-                        break;
-                    //unsigned short (always 16 bit, little endian byte order)
-                    case  'v':
+                                break;
+                            //signed char
+                            case  'c':
+                                $sig = unpack('c*', substr($memData, $pointer, 1));
+                                $signalData['value'] = $sig[1];
+                                $pointer += 1;
+                                break;
+                            //unsigned char
+                            case  'C':
+                                $sig = unpack('C*', substr($memData, $pointer, 1));
+                                $signalData['value'] = $sig[1];
+                                $pointer += 1;
+                                break;
+                            //signed short (always 16 bit, machine byte order)
+                            case  's':
+                                $sig = unpack('s*', substr($memData, $pointer, 2));
+                                $signalData['value'] = $sig[1];
+                                $pointer += 2;
+                                break;
+                            //unsigned short (always 16 bit, machine byte order)
+                            case  'S':
+                                $sig = unpack('S*', substr($memData, $pointer, 2));
+                                $signalData['value'] = $sig[1];
+                                $pointer += 2;
+                                break;
+                            //unsigned short (always 16 bit, big endian byte order)
+                            case  'n':
 
-                        break;
-                    //signed integer (machine dependent size and byte order)
-                    case  'i':
-                        $sig = unpack('i*', substr($memData, $pointer, 4));
-                        $signalData['value'] = $sig[1];
-                        $pointer += 4;
-                        break;
-                    //unsigned integer (machine dependent size and byte order)
-                    case  'I':
-                        $sig = unpack('I*', substr($memData, $pointer, 4));
-                        $signalData['value'] = $sig[1];
-                        $pointer += 4;
-                        break;
-                    // signed long (always 32 bit, machine byte order)
-                    case  'l':
-                        $sig = unpack('l*', substr($memData, $pointer, 4));
-                        $signalData['value'] = $sig[1];
-                        $pointer += 4;
-                        break;
-                    //unsigned long (always 32 bit, machine byte order)
-                    case  'L':
-                        $sig = unpack('L*', substr($memData, $pointer, 4));
-                        $signalData['value'] = $sig[1];
-                        $pointer += 4;
-                        break;
-                    //unsigned long (always 32 bit, big endian byte order)
-                    case  'N':
+                                break;
+                            //unsigned short (always 16 bit, little endian byte order)
+                            case  'v':
 
-                        break;
-                    //unsigned long (always 32 bit, little endian byte order)
-                    case  'V':
+                                break;
+                            //signed integer (machine dependent size and byte order)
+                            case  'i':
+                                $sig = unpack('i*', substr($memData, $pointer, 4));
+                                $signalData['value'] = $sig[1];
+                                $pointer += 4;
+                                break;
+                            //unsigned integer (machine dependent size and byte order)
+                            case  'I':
+                                $sig = unpack('I*', substr($memData, $pointer, 4));
+                                $signalData['value'] = $sig[1];
+                                $pointer += 4;
+                                break;
+                            // signed long (always 32 bit, machine byte order)
+                            case  'l':
+                                $sig = unpack('l*', substr($memData, $pointer, 4));
+                                $signalData['value'] = $sig[1];
+                                $pointer += 4;
+                                break;
+                            //unsigned long (always 32 bit, machine byte order)
+                            case  'L':
+                                $sig = unpack('L*', substr($memData, $pointer, 4));
+                                $signalData['value'] = $sig[1];
+                                $pointer += 4;
+                                break;
+                            //unsigned long (always 32 bit, big endian byte order)
+                            case  'N':
 
-                        break;
-                    //float (machine dependent size and representation)
-                    case  'f':
-                        $sig = unpack('f*', substr($memData, $pointer, 4));
-                        $signalData['value'] = $sig[1];
-                        $pointer += 4;
-                        break;
-                    //double (machine dependent size and representation)
-                    case  'd':
-                        $sig = unpack('f*', substr($memData, $pointer, 8));
-                        $signalData['value'] = $sig[1];
-                        $pointer += 8;
-                        break;
-                    //NUL byte
-                    case  'x':
+                                break;
+                            //unsigned long (always 32 bit, little endian byte order)
+                            case  'V':
 
-                        break;
-                    //Back up one byte
-                    case  'X':
+                                break;
+                            //float (machine dependent size and representation)
+                            case  'f':
+                                $sig = unpack('f*', substr($memData, $pointer, 4));
+                                $signalData['value'] = $sig[1];
+                                $pointer += 4;
+                                break;
+                            //double (machine dependent size and representation)
+                            case  'd':
+                                $sig = unpack('f*', substr($memData, $pointer, 8));
+                                $signalData['value'] = $sig[1];
+                                $pointer += 8;
+                                break;
+                            //NUL byte
+                            case  'x':
 
-                        break;
-                    //NUL-fill to absolute position
-                    case  '@':
+                                break;
+                            //Back up one byte
+                            case  'X':
 
-                        break;
+                                break;
+                            //NUL-fill to absolute position
+                            case  '@':
+
+                                break;
+                        }
+                        $deviceData['signals'][] = $signalData;
+                    }
+
                 }
-
-                $parameter = $signal->parameter;
-                $realtimeData->$parameter = $signalData;
-
-
             }
-            t::f($realtimeData);
-            return $realtimeData;
+            $realtimeData->$dataID = $deviceData;
         }
-
-
-        //生成对应的信号数据，返回给js
-
-
+        return $realtimeData;
     }
 }
 
