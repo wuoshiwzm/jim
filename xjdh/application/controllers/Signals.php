@@ -34,12 +34,10 @@ class Signals extends CommonController
 
     public function index()
     {
-//
-//        $CI = &get_instance();
-//        $CI->load->driver('cache');
-//        $memData = $CI->cache->get(3784397844);
-//
-//        var_dump($memData);
+
+        $memData = $this->mp_extra->getLoopValuesByID(4);
+
+        var_dump($memData);
 
 //      数据格式化
 //        $dbObj = $this->load->database('default', TRUE);

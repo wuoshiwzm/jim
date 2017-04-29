@@ -3314,7 +3314,7 @@ class Portal extends CI_Controller
                             foreach ($dataList as $dataObj) {
                                 $data['dataObj'] = $dataObj;
                                 //$devDcList = $this->mp_xjdh->Get_DeviceDynamicConfig($dataObj->data_id);
-                                Realtime::GetDevicePage($model, $scriptExtra, $data, $dataObj, $this->userObj);
+                                Realtime::GetDevicePage($model, $scriptExtra, $data, $dataObj, $this->userObj,$dataObj->data_id);
                             }
 
 

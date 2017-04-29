@@ -26,7 +26,6 @@
 
         <!--选择对应的设备类型-->
 
-
         <div class="row-fluid">
             <div class="span12">
                 <div class="content-widgets light-gray">
@@ -37,11 +36,11 @@
                         <form class="form-horizontal" method="post">
                             <!--                        <form class="form-horizontal" onsubmit="return checkForm()">-->
                             <div class="control-group">
-                                <label class="control-label" style="float: left;">选择JIM告警信号</label>
+                                <label class="control-label" style="float: left;">选择设备告警信号</label>
                                 <div class="controls" style="margin-left: 20px; float: left;">
                                     <select class="chzn-select" data-placeholder="选择设备类型"
                                             name='jimSignal' id='jimSignal'>
-                                        <option value=''>选择设备类型</option>
+                                        <option value=''>选择设备告警信号</option>
                                         <?php foreach ($signalsJim as $signal) { ?>
                                             <option value='<?php echo $signal->id; ?>'>
                                                 <?php
@@ -63,15 +62,13 @@
                                                 <?php echo $signal->signal . '-' . $signal->alert_signal; ?>
                                             </option>
                                         <?php } ?>
-
                                     </select>
                                 </div>
-
-                                <label class="control-label" style="float: left;">选择机房类型</label>
+                                <label class="control-label" style="float: left;">选择对应标准信号</label>
                                 <div class="controls" style="margin-left: 20px; float: left;">
                                     <select class="chzn-select" data-placeholder="选择设备类型"
                                             name='telSignal' id='tel_Signal'>
-                                        <option value=''>选择机房类型</option>
+                                        <option value=''>选择对应标准信号</option>
                                         <?php foreach ($signalsTel as $signal) { ?>
                                             <option value='<?php echo $signal->id; ?>'>
                                                 <?php echo $signal->device_type . '-' . $signal->signal_standard_name . '-' .

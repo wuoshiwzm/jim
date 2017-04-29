@@ -340,7 +340,7 @@ class Mp_Extra extends CI_Model
     public function getDeviceModel($dataID)
     {
         $dbObj = $this->load->database('default', TRUE);
-        $model = $dbObj->where('data_id',$dataID)
+        $model = $dbObj->where('data_id', $dataID)
             ->get('device')
             ->row()->model;
         return $model;
@@ -355,28 +355,176 @@ class Mp_Extra extends CI_Model
     public function getLoopInfoByID($id)
     {
         $dbObj = $this->load->database('default', TRUE);
-        $res = $dbObj->where('id',$id)
+        $res = $dbObj->where('id', $id)
             ->get('realtime_signals_loop')
             ->row();
         return $res;
     }
 
-    /**
-     * @param $id
-     * 获取某一个循环体内所有的变量名
-     */
-    public function getLoopParasByID($id)
-    {
 
+    /**
+     * @param $id 循环体的id
+     * @param $memData 实时数据
+     * @param &$pointer 开始抓数据的指针位
+     * @param &$loopTime 循环次数
+     * 获取某一个循环体内所有的实时数据，运算结束更新指针
+     */
+    public function getLoopValuesByID($id, $memData, $pointer, $signals)
+    {
+        $dbObj = $this->load->database('default', TRUE);
+        $loop = $dbObj->where('id', $id)->get('realtime_signals_loop')->row();
+        //循环体的内容
+        $loopData = [];
+        $loopPointer = $pointer;
+
+        //循环信号列表
+        $loopSignals = json_decode($loop->content);
+
+        //获取循环次数
+        $loopTime = 0;
+        if ($loop->times_type == 1) {
+            //循环次数为固定的数字
+            $loopTime = $loop->times;
+        } else if ($loop->times_type == 2) {
+            //循环次数为变量名
+            foreach ($signals as $signal) {
+                if ($loop->times == $signal['parameter']) {
+                    $loopTime = $signal['value'];
+                }
+            }
+        }
+
+        for ($i = 0; $i < $loopTime; $i++) {
+            //一次循环产生的数据
+            $oneLoop = [];
+            foreach ($loopSignals as $loopSignal) {
+                $type = $loopSignal->type;
+                switch ($type){
+                    case  'a':
+                        $oneLoop[] = 'test_only';
+                        break;
+                    //SPACE-padded string
+                    case  'A':
+                        break;
+                    //Hex string, low nibble first
+                    case  'h':
+                        break;
+                    //Hex string, high nibble first
+                    case  'H':
+                        break;
+                    //signed char
+                    case  'c':
+                        $sig = unpack('c*', substr($memData, $loopPointer, 1));
+                        $oneLoop[] = $sig[1];
+                        $loopPointer += 1;
+                        break;
+                    //unsigned char
+                    case  'C':
+                        $sig = unpack('C*', substr($memData, $loopPointer, 1));
+                        $oneLoop[] = $sig[1];
+                        $loopPointer += 1;
+                        break;
+                    //signed short (always 16 bit, machine byte order)
+                    case  's':
+                        $sig = unpack('s*', substr($memData, $loopPointer, 2));
+                        $oneLoop[] = $sig[1];
+                        $loopPointer += 2;
+                        break;
+                    //unsigned short (always 16 bit, machine byte order)
+                    case  'S':
+                        $sig = unpack('S*', substr($memData, $loopPointer, 2));
+                        $oneLoop[] = $sig[1];
+                        $loopPointer += 2;
+                        break;
+                    //unsigned short (always 16 bit, big endian byte order)
+                    case  'n':
+                        break;
+                    //unsigned short (always 16 bit, little endian byte order)
+                    case  'v':
+                        break;
+                    //signed integer (machine dependent size and byte order)
+                    case  'i':
+                        $sig = unpack('i*', substr($memData, $loopPointer, 4));
+                        $oneLoop[] = $sig[1];
+                        $loopPointer += 4;
+                        break;
+                    //unsigned integer (machine dependent size and byte order)
+                    case  'I':
+                        $sig = unpack('I*', substr($memData, $loopPointer, 4));
+                        $oneLoop[] = $sig[1];
+                        $loopPointer += 4;
+                        break;
+                    // signed long (always 32 bit, machine byte order)
+                    case  'l':
+                        $sig = unpack('l*', substr($memData, $loopPointer, 4));
+                        $oneLoop[] = $sig[1];
+                        $loopPointer += 4;
+                        break;
+                    //unsigned long (always 32 bit, machine byte order)
+                    case  'L':
+                        $sig = unpack('L*', substr($memData, $loopPointer, 4));
+                        $oneLoop[] = $sig[1];
+                        $loopPointer += 4;
+                        break;
+                    //unsigned long (always 32 bit, big endian byte order)
+                    case  'N':
+                        break;
+                    //unsigned long (always 32 bit, little endian byte order)
+                    case  'V':
+                        break;
+                    //float (machine dependent size and representation)
+                    case  'f':
+                        $sig = unpack('f*', substr($memData, $loopPointer, 4));
+                        $oneLoop[] = $sig[1];
+                        $loopPointer += 4;
+                        break;
+                    //double (machine dependent size and representation)
+                    case  'd':
+                        $sig = unpack('f*', substr($memData, $loopPointer, 8));
+                        $oneLoop[] = $sig[1];
+                        $loopPointer += 8;
+                        break;
+                    //NUL byte
+                    case  'x':
+                        break;
+                    //Back up one byte
+                    case  'X':
+                        break;
+                    //NUL-fill to absolute position
+                    case  '@':
+                        break;
+                }
+                //一次循环得到的信号数据插入数组
+            }
+            $loopData[] = $oneLoop;
+        }
+
+        $res =  [
+            'loopPointer'=>$loopPointer,
+            'signals'=>$loopData
+        ];
+        return $res;
     }
 
     /**
      * @param $id
      * 获取某一个循环体内所有的循环的变量值
      */
-    public function getLoopValuesByID($id)
+    public function getLoopParasByID($id)
     {
+        $dbObj = $this->load->database('default', TRUE);
+        $parameters = [];
 
+        $content = $dbObj->where('id', $id)
+            ->get('realtime_signals_loop')
+            ->row()->content;
+        $loops = json_decode($content);
+        foreach ($loops as $key => $loop) {
+            if (!empty($loop->parameter)) {
+                $parameters[] = $loop->name;
+            }
+        }
+        return $parameters;
     }
 
 

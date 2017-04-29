@@ -7,7 +7,7 @@
             data_type="<?php echo $dataObj->model; ?>"
             id='realtimeData-<?php echo $dataObj->data_id; ?>'>
         <!--    id='table---><?php //echo $dataObj->data_id; ?><!--'-->
-        <?php echo $model; ?>
+
         <thead>
         <tr>
             <th>序号</th>
@@ -20,7 +20,25 @@
         </tbody>
     </table>
     <!--循环体 -->
-    <h4>通道数据</h4>
-    <table>
-    </table>
+    <?php foreach ($loops as $loop) { ?>
+        <h4>通道数据</h4>
+        <table class="table table-bordered responsive table-striped table-sortable rt-data-loops-<?php echo $loop->id ?>">
+            <?php echo $loop->id ?>
+            <thead>
+            <tr>
+                <?php
+                $contents = json_decode($loop->content);
+                foreach ($contents as $content) {
+                    ?>
+                    <th>
+                        <?php echo $content->name ?>
+                    </th>
+                <?php } ?>
+            </tr>
+            </thead>
+            <tbody>
+
+            </tbody>
+        </table>
+    <?php } ?>
 </div>

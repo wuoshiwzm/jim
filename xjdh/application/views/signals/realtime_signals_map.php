@@ -64,11 +64,10 @@
                                     class="table table-bordered responsive table-striped table-sortable">
                                 <thead>
                                 <tr>
-                                    <!--                                <th width="30%">设备类型</th>-->
                                     <th width="15%">信号变量名称</th>
+                                    <th width="10%">变量中文名</th>
                                     <th width="10%">信号变量单位</th>
                                     <th width="10%">变量类型</th>
-                                    <th width="10%">变量中文名</th>
                                     <th width="">描述</th>
                                     <th width="">操作</th>
                                 </tr>
@@ -80,6 +79,11 @@
                                         <input type="hidden" name='model' id='model' value="<?php echo $model ?>" ?>
                                         <input type="text" class="input desc parameter" name="parameter">
                                     </td>
+                                    <!--                                变量中文名-->
+                                    <td>
+                                        <input type="text" class="input desc signal_name" name="signal_name">
+                                    </td>
+
                                     <!--                                信号变量单位-->
                                     <td>
                                         <select class="chzn-select signal_unit" data-placeholder="选择变量单位"
@@ -132,10 +136,7 @@
                                             <option value='@'>NUL-fill to absolute position</option>
                                         </select>
                                     </td>
-                                    <!--                                变量中文名-->
-                                    <td>
-                                        <input type="text" class="input desc signal_name" name="signal_name">
-                                    </td>
+
                                     <!--                                描述-->
                                     <td>
                                         <textarea class="span12 signal_desc" name='signal_desc'

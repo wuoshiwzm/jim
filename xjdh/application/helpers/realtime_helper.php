@@ -16,6 +16,21 @@ class Realtime
         //生成页面
         switch ($model) {
             case "sps": {
+                $dbObj = $CI->load->database('default', TRUE);
+                $model = $CI->mp_extra->getDeviceModel($data_id);
+                $loopInfos = $dbObj->where('model',$model)
+                    ->where('loop_id IS NOT NULL')
+                    ->select('loop_id')
+                    ->get('realtime_signals')
+                    ->result();
+                $loopIDs = [];
+                foreach ($loopInfos as $loopInfo){
+                    $loopIDs[] = $loopInfo->loop_id;
+                }
+
+                $loops = $dbObj->where_in('id',$loopIDs)->get('realtime_signals_loop')->result();
+                $data['loops'] = $loops;
+
                 $dataObj->html = $CI->load->view('signals/realtime_page', $data, TRUE);
 
                 $dataObj->html1 = $CI->load->view("portal/standard_data",
@@ -4875,19 +4890,20 @@ struct tele_c_aeg_ms10m
             //对应该设备的数据数组
             $deviceData = [];
             $deviceData['dataID'] = $dataIDArr[0];
+            //无数据标签
             $deviceData['isEmpty'] = true;
+            //无循环标签
+            $deviceData['noLoop'] = true;
+
 
             //获取对应dataID的设备ID
             $memData = $CI->cache->get($dataID);
-            if (strlen($memData) > 0) {
-
-
+            if (strlen($memData) >= 0) {
 
                 $model = $CI->mp_extra->getDeviceModel($dataID);
 
                 $signals = $dbObj->where('model', $model)->get('realtime_signals')->result();
                 $deviceData['isEmpty'] = false;
-
 
                 $pointer = 0;
                 //var_dump($signals);
@@ -4895,27 +4911,33 @@ struct tele_c_aeg_ms10m
 
                     //循环体信号
                     if(!empty($signal->loop_id)){
+                        $deviceData['noLoop'] = false;
+
                         $loopData = [];
                         $loopInfo = $CI->mp_extra->getLoopInfoByID($signal->loop_id);
                         //此循环体的名字
-                        $loopName =$loopInfo->name;
+                        $loopID =$loopInfo->id;
                         //变量列表
                         $paras = $CI->mp_extra->getLoopParasByID($signal->loop_id);
+                        $loopData['parameters'] = $paras;
                         //循环获取所有变量值
-                        $values = $CI->mp_extra->getLoopValuesByID($signal->loop_id);
-
-                        $deviceData['loops'][$loopName] = ['paras'=>$paras,'values'=>$values];
-
-
+                        $values = $CI->mp_extra->getLoopValuesByID($signal->loop_id,
+                            $memData,$pointer,$deviceData['signals']);
+                        $signals = $values['signals'];
+                        //更新指针
+                        $pointer = $values['loopPointer'];
+                        //存入deviceData
+                        $deviceData['loops'][$loopID] = ['paras'=>$paras,'values'=>$signals];
                     }else{
                         $signalData = [];
                         //中文名
                         $signalData['name'] = $signal->name;
+                        $signalData['parameter'] = $signal->parameter;
                         //便利每一个信号，截取对应长度的字符串
                         switch ($signal->type) {
                             //NUL-padded string
                             case  'a':
-
+                                $signalData['value'] = 'test';
                                 break;
                             //SPACE-padded string
                             case  'A':
@@ -5020,7 +5042,6 @@ struct tele_c_aeg_ms10m
                         }
                         $deviceData['signals'][] = $signalData;
                     }
-
                 }
             }
             $realtimeData->$dataID = $deviceData;
