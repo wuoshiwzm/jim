@@ -596,6 +596,14 @@
                                 <i class="icon-time"></i><span>实时数据信号配置</span>
                             </a>
                         </li>
+
+                        <li>
+                            <a class="bondi-blue"
+                               href="<?php echo site_url("budget"); ?>">
+                                <i class="icon-money"></i><span>预算管理</span>
+                            </a>
+                        </li>
+
                     </ul>
                 </div>
             </div>
