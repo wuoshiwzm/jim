@@ -16,6 +16,7 @@ class Realtime
         //生成页面
         switch ($model) {
             case "sps": {
+                //普通 信号
                 $dbObj = $CI->load->database('default', TRUE);
                 $model = $CI->mp_extra->getDeviceModel($data_id);
                 $loopInfos = $dbObj->where('model',$model)
@@ -28,15 +29,19 @@ class Realtime
                     $loopIDs[] = $loopInfo->loop_id;
                 }
 
-                $loops = $dbObj->where_in('id',$loopIDs)->get('realtime_signals_loop')->result();
+                //循环信号
+                $loops = [];
+                if(!empty($loopIDs)){
+                    $loops = $dbObj->where_in('id',$loopIDs)
+                        ->get('realtime_signals_loop')
+                        ->result();
+                }
                 $data['loops'] = $loops;
 
                 $dataObj->html = $CI->load->view('signals/realtime_page', $data, TRUE);
-
                 $dataObj->html1 = $CI->load->view("portal/standard_data",
                     array('dataObj' => $dataObj, 'userObj' => $CI->userObj,
                         'devName' => $data["devName"]), TRUE);
-
                 break;
 
 //                if (Util::endsWith($dataObj->model, "ac")) {
@@ -150,9 +155,11 @@ class Realtime
 
                 if ($dataObj->model == "imem_12") {
                     $dataObj->html = $CI->load->view('portal/DevicePage/imem12', $data, TRUE);
-                } else if ($dataObj->model == "power_302a") {
+                }
+                else if ($dataObj->model == "power_302a") {
                     $dataObj->html = $CI->load->view('portal/DevicePage/power_302a', $data, TRUE);
-                } else if ($dataObj->model == "pmac600-a" || $dataObj->model == "pmac600-b") {
+                }
+                else if ($dataObj->model == "pmac600-a" || $dataObj->model == "pmac600-b") {
                     $dataObj->html = $CI->load->view('portal/DevicePage/' . $dataObj->model, $data, TRUE);
                 }
                 //$dataObj->html1 = $CI->load->view ("portal/standard_data", array('dataObj' => $dataObj, 'userObj'=>$CI->userObj, 'devName'=>$data["devName"]), TRUE);
@@ -4883,9 +4890,9 @@ struct tele_c_aeg_ms10m
         $dbObj = $CI->load->database('default', TRUE);
 
         $realtimeData = new stdClass();
+        $CI->load->driver('cache');
         //遍历
         foreach ($dataIDArr as $dataID) {
-            $CI->load->driver('cache');
 
             //对应该设备的数据数组
             $deviceData = [];
@@ -4901,18 +4908,14 @@ struct tele_c_aeg_ms10m
             if (strlen($memData) >= 0) {
 
                 $model = $CI->mp_extra->getDeviceModel($dataID);
-
                 $signals = $dbObj->where('model', $model)->get('realtime_signals')->result();
                 $deviceData['isEmpty'] = false;
-
                 $pointer = 0;
-                //var_dump($signals);
                 foreach ($signals as $signal) {
 
                     //循环体信号
                     if(!empty($signal->loop_id)){
                         $deviceData['noLoop'] = false;
-
                         $loopData = [];
                         $loopInfo = $CI->mp_extra->getLoopInfoByID($signal->loop_id);
                         //此循环体的名字

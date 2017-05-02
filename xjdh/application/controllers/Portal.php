@@ -3317,7 +3317,6 @@ class Portal extends CI_Controller
                                 Realtime::GetDevicePage($model, $scriptExtra, $data, $dataObj, $this->userObj,$dataObj->data_id);
                             }
 
-
                             $scriptExtra .= '<script type="text/javascript"  src="/public/js/signals/realtime.js"></script>';
                             $data["dataList"] = $dataList;
                             $data["devModel"] = $devConfig[2];
@@ -4729,6 +4728,8 @@ class Portal extends CI_Controller
         $jsonRet = array();
         $model = trim($this->input->get('model'));
 
+        //t::f($this->input->get());
+
         if ($model == "door") {
             $doorArray = array();
             $CI = &get_instance();
@@ -4830,6 +4831,7 @@ class Portal extends CI_Controller
         } elseif ($model == 'sps') {
             $dataIdArr = $this->input->get('dataIdArr');
             $jsonRet['realtimeData'] = Realtime::GetSmartRTData($dataIdArr,'dk04');
+//            t::f($jsonRet['realtimeData']);
 //            $dataIdArr = $this->input->get('dataIdArr');
 //            $jsonRet['spsList'] = Realtime::GetSpsPower($dataIdArr);
         } elseif ($model == 'zxdu') {

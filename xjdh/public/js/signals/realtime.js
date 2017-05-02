@@ -1,6 +1,5 @@
 $(document).ready(function () {
 
-
     var dataIdArr = new Array();
     $('.rt-data').each(function () {
         dataIdArr.push($(this).attr("data_id"));
@@ -13,7 +12,6 @@ $(document).ready(function () {
 
 
     function refreshData() {
-        //alert(dataIdArr[0]);
         $.get('/portal/refreshData', {
             'dataIdArr[]': dataIdArr,
             model: model,

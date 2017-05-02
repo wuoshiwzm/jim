@@ -13,4 +13,19 @@ class t{
         var_dump($data);
         die();
     }
+
+    //判断一个数组是否全为空
+    public function arrayEmpty(array $array)
+    {
+        foreach ($array as $key=>$value){
+            if(!empty($value))
+                return false;
+        }
+
+        return true;
+    }
+
+
+
+
 }
